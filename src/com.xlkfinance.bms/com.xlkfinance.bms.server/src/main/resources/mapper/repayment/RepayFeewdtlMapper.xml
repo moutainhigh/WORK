@@ -1,0 +1,417 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.repayment.mapper.RepayFeewdtlMapper">
+	<resultMap id="regCgapplyFileMaps"
+		type="com.xlkfinance.bms.rpc.repayment.RegAdvapplyFileview">
+		<result property="pId" column="PID" />
+		<result property="filePath" column="FILE_URL" />
+		<result property="fileType" column="FILE_TYPE" />
+		<result property="fileName" column="FILE_NAME" />
+		<result property="fileSize" column="FILE_SIZE" />
+		<result property="uploadDttm" column="UPLOAD_DTTM" />
+		<result property="fileFunType" column="FILE_FUN_TYPE" />
+		<result property="fileDesc" column="FILE_DESC" />
+	</resultMap>
+		<resultMap id="repayFeewdtlDatmaps"
+		type="com.xlkfinance.bms.rpc.repayment.RepayFeewdtlDatView">
+		<result property="pId" column="PID" />
+		<result property="loanId" column="LOAN_ID" />
+		<result property="repayId" column="REPAY_ID" />
+		<result property="projectId" column="PROJECT_ID" />
+		<result property="projectName" column="PROJECT_NAME" />
+		<result property="projectNum" column="PROJECT_NUMBER" />
+		<result property="shouldPrincipal" column="SHOULD_PRINCIPAL" />
+		<result property="shouldInterest" column="FEE_INTEREST" />
+		<result property="shouldMangCost" column="SHOULD_MANG_COST" />
+		<result property="shouldOtherCost" column="SHOULD_OTHER_COST" />
+		<result property="overdueInterest" column="OVERDUE_LOAN_TEREST_AMT" />
+		<result property="overdueFine" column="OVERDUE_FINE_INTEREST_AMT" />
+		<result property="total" column="TOTAL" />
+		<result property="reason" column="REASON" />
+		<result property="status" column="STATUS" />
+		<result property="requestStatus" column="REQUEST_STATUS" />
+		<result property="requestDttm" column="REQUEST_DTTM" />
+		<result property="completeDttm" column="COMPLETE_DTTM" />
+		<result property="typeName" column="TYPE_NAME" />
+		<result property="planCycleNum" column="PLAN_CYCLE_NUM" />
+		<result property="repaymentId" column="REPAYMENT_ID" />
+		<result property="shouldInterest" column="SHOULD_INTEREST" />
+		<result property="planRepayDt" column="PLAN_REPAY_DT" />
+		
+	</resultMap>
+	
+	<insert id="insertLoanFeewdelInfo" parameterType="com.xlkfinance.bms.rpc.repayment.RepayFeewdtlDatDTO">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pId">
+			SELECT SEQ_BIZ_PROJECT_FEEW.Nextval as PID from
+			DUAL
+		</selectKey>
+		insert into BIZ_PROJECT_FEEW(
+			PID,
+			PROJECT_ID ,
+			WAIVER_REASON ,
+			WAIVER_DTTM ,
+			STATUS ,
+			LOAN_ID,
+	    	 REQUEST_DTTM,
+	      	REQUEST_STATUS,
+			COMPLETE_DTTM
+		)
+		values (
+			#{pId,jdbcType=INTEGER},
+			#{projectId,jdbcType=INTEGER},
+			#{reason,jdbcType=VARCHAR},
+			sysdate,
+			1,
+			#{loanId,jdbcType=INTEGER},
+			sysdate,
+			#{requestStatus,jdbcType=INTEGER}
+			,
+			#{completeDttm,jdbcType=DATE}
+		)
+	</insert>
+	<insert id="insertLoanFeewInfo" parameterType="com.xlkfinance.bms.rpc.repayment.RepayFeewdtlDatDTO">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pId">
+			SELECT SEQ_BIZ_PROJECT_FEEWDTL.Nextval as PID from
+			DUAL
+		</selectKey>
+			insert into BIZ_PROJECT_FEEWDTL(
+				PID ,
+				FEE_WAIVER_ID ,
+				WAIVER_DTTM ,
+				WAIVER_CYCLE_NUM ,
+				FEE_MGR ,
+				FEE_INTEREST,
+				FEE_OTHER ,
+				OVERDU_LOAN_INTEREST ,
+				OVERDU_FINE_INTEREST,
+				STATUS
+			) values (
+				#{pId,jdbcType=INTEGER},
+				#{repayId,jdbcType=INTEGER},
+				sysdate,
+				#{planCycleNum,jdbcType=INTEGER},
+				#{shouldMangCost,jdbcType=INTEGER} ,
+			    #{shouldInterest,jdbcType=INTEGER} ,
+				#{shouldOtherCost,jdbcType=INTEGER} ,
+				#{overdueLoanInterestAmt,jdbcType=INTEGER},
+				#{overdueFineInterestAmt,jdbcType=INTEGER},
+				1
+				
+			)
+	</insert>
+	
+	<insert id="insertLoanFeewfileInfo"
+		parameterType="com.xlkfinance.bms.rpc.repayment.UploadinstAdvapplyBaseDTO">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pId">
+			SELECT SEQ_BIZ_PROJECT_FEEW_FILE.Nextval as PID from
+			DUAL
+		</selectKey>
+		insert into BIZ_PROJECT_FEEW_FILE(
+			PID,
+			FEE_WAIVER_ID,
+			FILE_ID,
+			STATUS,
+			FILE_TYPE,
+			FILE_DESC
+		)
+		values (
+			#{pId,jdbcType=INTEGER},
+			#{repayId,jdbcType=INTEGER},
+			#{fileId,jdbcType=INTEGER},
+			1,
+			#{fileKinds,jdbcType=VARCHAR},
+			#{fileDesc,jdbcType=VARCHAR}
+		)
+	</insert>
+	<insert id="insertFeewfileInfo"
+		parameterType="com.xlkfinance.bms.rpc.repayment.UploadinstAdvapplyBaseDTO">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pId">
+			SELECT SEQ_BIZ_FILE.Nextval as PID from DUAL
+		</selectKey>
+		insert into BIZ_FILE (
+			PID,
+			FILE_NAME,
+			FILE_TYPE,
+			FILE_SIZE,
+			UPLOAD_USER_ID,
+			FILE_URL,
+			UPLOAD_DTTM,
+			STATUS
+		)values (
+			#{pId,jdbcType=INTEGER},
+			#{fileName,jdbcType=VARCHAR},
+			#{fileType,jdbcType=VARCHAR},
+			#{fileSize,jdbcType=INTEGER},
+			#{uploadUserid,jdbcType=INTEGER},
+			#{filePath,jdbcType=VARCHAR},
+			sysdate,
+			1
+		)
+	</insert>
+
+	<select id="queryRegFeewapplyFile" resultMap="regCgapplyFileMaps" parameterType="Map">
+		SELECT * FROM (SELECT A.*, ROWNUM RN
+   			FROM (
+				SELECT BF.FILE_NAME,
+					BPFF.FILE_TYPE as FILE_FUN_TYPE,
+					BF.UPLOAD_DTTM,
+					BF.PID,
+					BF.FILE_TYPE as FILE_TYPE,
+					BPFF.FILE_DESC,
+					BF.FILE_SIZE,
+					BF.FILE_URL
+				FROM BIZ_PROJECT_FEEW_FILE BPFF, BIZ_FILE BF
+					WHERE BPFF.FILE_ID = BF.PID(+)
+					AND BF.STATUS=1
+					AND BPFF.FEE_WAIVER_ID =#{repayId}) A)
+		  WHERE RN BETWEEN (((#{page}-1) * #{rows})+1) AND (#{page} * #{rows})
+	</select>
+	<select id="queryRegFeewapplyFileTotal" resultType="Integer"
+		parameterType="Integer">
+		SELECT COUNT(1)
+		FROM BIZ_PROJECT_FEEW_FILE BPFF, BIZ_FILE BF
+		WHERE BPFF.FILE_ID = BF.PID(+)
+		AND BPFF.FEE_WAIVER_ID =#{repayId}
+		AND
+		BF.STATUS=1
+	</select>
+	<select id="queryRegFeewLoanbyprocess" resultMap="repayFeewdtlDatmaps"
+		parameterType="com.xlkfinance.bms.rpc.repayment.RepayFeewdtlDatView">
+    SELECT BLRP.PID,
+           BLRP.LOAN_INFO_ID,
+           BLRP.PLAN_CYCLE_NUM,
+           BLRP.SHOULD_PRINCIPAL,
+           BLRP.SHOULD_MANG_COST,
+           BLRP.SHOULD_OTHER_COST,
+           BLRP.SHOULD_INTEREST,
+           BLRP.TOTAL,
+           BLRP.PLAN_REPAY_DT
+      FROM BIZ_LOAN_REPAYMENT_PLAN BLRP
+     WHERE BLRP.LOAN_INFO_ID = #{loanId}
+       AND BLRP.PLAN_CYCLE_NUM =#{planCycleNum} 
+       AND BLRP.PLAN_VERSION =
+           (SELECT MAX(PLAN_VERSION)
+              FROM BIZ_LOAN_REPAYMENT_PLAN
+             WHERE FREEZE_STATUS = 1  and  STATUS = 1
+               AND LOAN_INFO_ID = #{loanId})
+       AND BLRP.STATUS = 1
+	</select>
+	<select id="queryRegFeewDealbyprocess" resultMap="repayFeewdtlDatmaps"
+		parameterType="java.lang.Integer">
+		SELECT
+			BPF.PID,
+			BPF.FEE_WAIVER_ID AS REPAY_ID,
+			BPF.FEE_INTEREST,
+			BPFE.PROJECT_ID,
+			BPFE.WAIVER_REASON  AS REASON,
+			BPFE.LOAN_ID,
+			BPF.FEE_INTEREST,
+			BPF.WAIVER_CYCLE_NUM AS PLAN_CYCLE_NUM,
+			BPF.FEE_MGR AS SHOULD_MANG_COST,
+			BPF.FEE_OTHER AS SHOULD_OTHER_COST ,
+			BPF.OVERDU_LOAN_INTEREST AS  OVERDUE_LOAN_TEREST_AMT,
+			BPF.OVERDU_FINE_INTEREST AS OVERDUE_FINE_INTEREST_AMT
+			FROM BIZ_PROJECT_FEEWDTL BPF
+		LEFT JOIN BIZ_PROJECT_FEEW BPFE
+			ON BPF.FEE_WAIVER_ID = BPFE.PID
+		WHERE BPFE.PID = #{repayId}
+		and BPFE.STATUS=1
+	</select>
+	<select id="queryRegFeewReasonbyprocess" resultMap="repayFeewdtlDatmaps"
+		parameterType="java.lang.Integer">
+	 SELECT BPF.WAIVER_REASON AS REASON
+      FROM BIZ_PROJECT_FEEW BPF
+     WHERE BPF.PID = #{repayId}
+	</select>
+	<select id="queryRegFeewprojectinfobyrepayId" resultMap="repayFeewdtlDatmaps"
+		parameterType="java.lang.Integer">
+		SELECT 
+			BP.PID AS PROJECT_ID,
+       		BL.PID AS LOAN_ID,
+       		BP.PROJECT_NUMBER,
+      		BP.PROJECT_NAME
+  		FROM BIZ_PROJECT BP, BIZ_LOAN BL
+		 WHERE BP.PID =
+			(SELECT BPF.PROJECT_ID
+                FROM BIZ_PROJECT_FEEW BPF
+             WHERE BPF.PID = #{repayId}) 
+        AND BP.PID = BL.PROJECT_ID 
+	</select>
+<!-- 根据挪用ID获取挪用对象 -->	
+	<select id="queryRegFeewprojectinfobyproId" resultMap="repayFeewdtlDatmaps"
+		parameterType="java.lang.Integer">
+		SELECT 
+			BP.PID AS PROJECT_ID,
+      	 	BL.PID AS LOAN_ID,
+       		BP.PROJECT_NUMBER,
+       		BP.PROJECT_NAME
+  		FROM BIZ_PROJECT BP, BIZ_LOAN BL
+ 		WHERE BP.PID = #{projectId}
+   			AND BP.PID = BL.PROJECT_ID(+)
+	</select>
+	
+	<update id="updateRegFeewDealReason" 
+		parameterType="com.xlkfinance.bms.rpc.repayment.RepayFeewdtlDatDTO">
+		UPDATE BIZ_PROJECT_FEEW set
+			WAIVER_REASON = #{reason,jdbcType=VARCHAR}
+		WHERE PID =#{repayId}
+			
+	</update>
+	<update id="updateRegFeewDealinfo"
+		parameterType="com.xlkfinance.bms.rpc.repayment.RepayFeewdtlDatDTO">
+		UPDATE BIZ_PROJECT_FEEWDTL
+		<trim prefix="set" suffixOverrides=",">
+			<if test="shouldInterest != null ">
+				FEE_INTEREST = #{shouldInterest},
+			</if>
+			<if test="shouldMangCost != null">
+				FEE_MGR = #{shouldMangCost},
+			</if>
+			<if test="shouldOtherCost != null ">
+				FEE_OTHER = #{shouldOtherCost},
+			</if>
+			<if test="overdueLoanInterestAmt != null">
+				OVERDU_LOAN_INTEREST = #{overdueLoanInterestAmt},
+			</if>
+			<if test="overdueFineInterestAmt != null ">
+				OVERDU_FINE_INTEREST = #{overdueFineInterestAmt},
+			</if>
+		</trim>
+		WHERE PID =#{pId}
+	</update>
+	
+	<!-- 批量跟新费用减免 -->
+	<update id="updateProjectFeewdtlBatch" parameterType="List">
+		BEGIN
+		 <foreach collection="list" item="item" index="index" separator=";">
+		 UPDATE BIZ_PROJECT_FEEWDTL
+			<trim prefix="SET" suffixOverrides=",">
+				<if test="item.shouldInterest != null">
+					FEE_INTEREST = #{item.shouldInterest},
+				</if>
+				<if test="item.shouldMangCost != null">
+					FEE_MGR = #{item.shouldMangCost},
+				</if>
+				<if test="item.shouldOtherCost != null">
+					FEE_OTHER = #{item.shouldOtherCost},
+				</if>
+				<if test="item.overdueLoanInterestAmt != null">
+					OVERDU_LOAN_INTEREST = #{item.overdueLoanInterestAmt},
+				</if>
+				<if test="item.overdueFineInterestAmt != null">
+					OVERDU_FINE_INTEREST = #{item.overdueFineInterestAmt},
+				</if>
+			</trim>
+			WHERE PID =#{item.pId}
+		 </foreach>
+		; END;
+	</update>
+	
+	
+	<!-- 更新已经对账完毕的期数的费用减免为无效 -->
+	<update id="changeFeewdelStatus" parameterType="java.lang.Integer">
+		UPDATE biz_project_feewdtl t SET t.status=-1
+		WHERE t.pid IN
+		(SELECT dtl.pid
+		  FROM BIZ_PROJECT_FEEWDTL DTL, BIZ_PROJECT_FEEW W,biz_loan_repayment_plan k
+		 WHERE W.PID = DTL.FEE_WAIVER_ID
+		 AND k.loan_info_id=w.loan_id AND k.plan_cycle_num=DTL.WAIVER_CYCLE_NUM AND k.plan_version=PKG_FINANCE_COMMON.GET_MAX_PLAN_VERSION(w.loan_id)
+		 AND k.is_reconciliation=1 
+		  AND DTL.FEE_WAIVER_ID = #{feedId})
+	</update>
+	
+	
+	
+	<update id="changeReqstFeewdel" parameterType="com.xlkfinance.bms.rpc.repayment.RepayFeewdtlDatView">
+		UPDATE BIZ_PROJECT_FEEW
+	     SET REQUEST_STATUS =#{requestStatus}
+	     	<if test="requestStatus==4">
+			,	complete_dttm =sysdate
+			</if> 
+		WHERE PID = #{repayId}
+	</update>
+	<update id="deleteProjectbyFeewDeal" parameterType="java.lang.Integer">
+		UPDATE BIZ_PROJECT_FEEW
+	     SET STATUS =0
+		WHERE PID = #{repayId}
+	</update>
+	<update id="deleteProjectbyFeewDealList" parameterType="List">
+		UPDATE BIZ_PROJECT_FEEW
+	     SET STATUS =0
+		WHERE PID in (
+			<foreach collection="list" item="item" separator=",">
+				#{item}
+			</foreach>
+		)
+	</update>
+	<select id="checkFeewDealByProjectId"   parameterType="java.lang.Integer" resultType="java.lang.Integer">
+		SELECT COUNT(*)
+		  FROM BIZ_PROJECT_FEEW BLPR
+		  LEFT JOIN BIZ_LOAN BLO
+		    ON BLO.PID = BLPR.LOAN_ID
+		 WHERE BLPR.REQUEST_STATUS IN (1,2)
+		   AND BLPR.STATUS = 1
+		   AND BLO.PROJECT_ID = #{projectId}
+	</select>
+	<update id="updateLoanFeewdelInfo" parameterType="com.xlkfinance.bms.rpc.repayment.RepayFeewdtlDatDTO">
+		UPDATE BIZ_PROJECT_FEEW
+	     SET WAIVER_REASON =#{reason}
+		WHERE PID = #{repayId}
+	</update>
+	<update id="deleteFeewDealDatilbyrepayId" parameterType="java.lang.Integer">
+		UPDATE BIZ_PROJECT_FEEWDTL
+	     SET STATUS =0
+		WHERE FEE_WAIVER_ID = #{repayId}
+	</update>
+	
+	<!-- 费用减免申请书数据查询 -->
+	<select id="findFeeWaiverApplication" parameterType="java.util.Map" resultType="com.xlkfinance.bms.rpc.repayment.FeeWaiverApplicationDTO">
+		SELECT DISTINCT (BLR.PID) AS repayId,
+           PROJEC.PID AS projectId,
+           PROJEC.PROJECT_NAME AS projectName,
+           PROJEC.PROJECT_NUMBER AS projectNumber,
+           CA.ACCT_NAME AS cusName,
+           SU.REAL_NAME AS pmuserName,
+           CAST(LOAN.CREDIT_AMT AS DECIMAL(18, 2)) AS creditAmt,
+            TO_CHAR(BLR.REQUEST_DTTM, 'yyyy-mm-dd') AS requestDttm,
+            TO_CHAR(BLR.COMPLETE_DTTM, 'yyyy-mm-dd') AS completeDttm,
+           BLR.REQUEST_STATUS AS requestStatus,
+           TO_CHAR(BLR.WAIVER_DTTM, 'yyyy-mm-dd') AS waiverDttm,
+           BLR.WAIVER_REASON AS waiverReason,
+           TO_CHAR(LOAN.PLAN_OUT_LOAN_DT, 'yyyy-mm-dd') AS planOutLoanDt,
+           TO_CHAR(LOAN.PLAN_REPAY_LOAN_DT, 'yyyy-mm-dd') AS planRepayLoanDt,
+           LOAN.REPAY_CYCLE AS repayCycle,
+           LOAN.MONTH_LOAN_INTEREST AS monthLoanInterest,
+           LOAN.MONTH_LOAN_MGR AS monthLoanMgr,
+           (SELECT TO_CHAR(WMSYS.WM_CONCAT(SL.LOOKUP_VAL))
+              FROM SYS_LOOKUP_VAL SL, BIZ_PROJECT_GUARANTEE_TYPE BPGT
+             WHERE SL.PID = BPGT.GUARANTEE_TYPE
+               AND BPGT.PROJECT_ID = PROJEC.PID
+             GROUP BY BPGT.PROJECT_ID) AS lookupVal,
+             TO_CHAR((SELECT MAX(RECEIVE_DT)
+                   FROM BIZ_LOAN_INPUT
+                  WHERE LOAN_ID = LOAN.PID), 'yyyy-mm-dd') AS lastReceiveDt,
+             PKG_FINANCE_COMMON.GET_LOAN_R_TYPE_AMT(LOAN.PID,30) AS returnPrincipal,
+             PKG_CONTRACT.FUN_GET_CONTRACT_LOAN_NUM(PROJEC.PID) AS contractNo
+		  FROM BIZ_PROJECT_FEEW BLR
+		  LEFT JOIN BIZ_LOAN LOAN
+		    ON BLR.LOAN_ID = LOAN.PID
+		  LEFT JOIN BIZ_PROJECT PROJEC
+		    ON (BLR.LOAN_ID = LOAN.PID AND PROJEC.PID = LOAN.PROJECT_ID)
+		  LEFT JOIN CUS_ACCT_V CA
+		    ON (BLR.LOAN_ID = LOAN.PID AND PROJEC.PID = LOAN.PROJECT_ID AND
+		       PROJEC.ACCT_ID = CA.ACCT_ID)
+		  LEFT JOIN SYS_USER SU
+		    ON (BLR.LOAN_ID = LOAN.PID AND PROJEC.PID = LOAN.PROJECT_ID AND
+		       PROJEC.PM_USER_ID = SU.PID)
+		 WHERE PROJEC.STATUS = 1
+		   AND PROJEC.REQUEST_STATUS = 4
+		   AND PROJEC.PROJECT_TYPE IN (5, 2, 3, 4)
+		   AND BLR.STATUS = 1
+		   AND BLR.PID = #{repayId}
+	</select>
+</mapper>

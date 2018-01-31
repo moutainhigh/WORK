@@ -1,0 +1,664 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.system.mapper.SysUserMapper">
+	<resultMap id="SysUserResultMap" type="com.xlkfinance.bms.rpc.system.SysUser">
+		<id column="PID" property="pid" jdbcType="INTEGER" />
+		<result column="USER_NAME" property="userName" jdbcType="VARCHAR" />
+		<result column="REAL_NAME" property="realName" jdbcType="VARCHAR" />
+		<result column="MEMBER_ID" property="memberId" jdbcType="VARCHAR" />		
+		<result column="STATUS" property="status" jdbcType="INTEGER" />
+		<result column="DEPARTMENT" property="department" jdbcType="VARCHAR" />
+		<result column="JOB_TITLE" property="jobTitle" jdbcType="VARCHAR" />
+		<result column="MAIL" property="mail" jdbcType="VARCHAR" />
+		<result column="PWD" property="pwd" jdbcType="VARCHAR" />
+		<result column="PHOTO_URL" property="photoUrl" jdbcType="VARCHAR" />
+		<result column="TOKEN" property="token" jdbcType="VARCHAR" />
+		<result column="PERSONAL_QQ" property="personalQQ" jdbcType="VARCHAR" />
+		<result column="ENTERPRISE_QQ" property="enterpriseQQ" jdbcType="VARCHAR" />
+		<result column="PHONE" property="phone" jdbcType="VARCHAR" />
+		<result column="WORK_PHONE" property="workPhone" jdbcType="VARCHAR" />
+		<result column="EXTENSION" property="extension" jdbcType="VARCHAR" />
+		<result column="SUPERIOR_USER_ID" property="superiorId" jdbcType="INTEGER" />
+		<result column="SUPERIOR_USER_NAME" property="superiorName" jdbcType="VARCHAR" />
+		<result column="ORG_ID" property="orgId" jdbcType="INTEGER" />
+		<result column="ORG_NAME" property="orgName" jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap id="UserDetailsResultMap" type="com.xlkfinance.bms.rpc.system.SysUser">
+		<id column="PID" property="pid" jdbcType="INTEGER" />
+		<result column="USER_NAME" property="userName" jdbcType="VARCHAR" />
+		<result column="REAL_NAME" property="realName" jdbcType="VARCHAR" />
+		<result column="MEMBER_ID" property="memberId" jdbcType="VARCHAR" />		
+		<result column="STATUS" property="status" jdbcType="INTEGER" />
+		<result column="DEPARTMENT" property="department" jdbcType="VARCHAR" />
+		<result column="JOB_TITLE" property="jobTitle" jdbcType="VARCHAR" />
+		<result column="MAIL" property="mail" jdbcType="VARCHAR" />
+		<result column="PWD" property="pwd" jdbcType="VARCHAR" />
+		<result column="PHOTO_URL" property="photoUrl" jdbcType="VARCHAR" />
+		<result column="TOKEN" property="token" jdbcType="VARCHAR" />
+		<result column="PERSONAL_QQ" property="personalQQ" jdbcType="VARCHAR" />
+		<result column="ENTERPRISE_QQ" property="enterpriseQQ" jdbcType="VARCHAR" />
+		<result column="PHONE" property="phone" jdbcType="VARCHAR" />
+		<result column="WORK_PHONE" property="workPhone" jdbcType="VARCHAR" />
+		<result column="EXTENSION" property="extension" jdbcType="VARCHAR" />
+		<result column="SUPERIOR_USER_ID" property="superiorId" jdbcType="INTEGER" />
+		<result column="SUPERIOR_USER_NAME" property="superiorName" jdbcType="VARCHAR" />
+		<result column="ORG_ID" property="orgId" jdbcType="INTEGER" />
+		<result column="ORG_NAME" property="orgName" jdbcType="VARCHAR" />
+		<association property="roles" column="id" select="com.xlkfinance.bms.server.system.mapper.SystemUserRoleMapper.getRoleById">
+		</association>
+	</resultMap>
+	 
+	<resultMap id="SysUserPermissionResultMap" type="com.xlkfinance.bms.rpc.system.SysPermission" >
+		<id column="PID" property="pid" jdbcType="INTEGER" />
+		<result column="PERMIS_TYPE" property="permisType" jdbcType="VARCHAR" />
+		<result column="PERMIS_NAME" property="permisName" jdbcType="VARCHAR" />
+		<result column="PERMIS_DESC" property="permisDesc" jdbcType="VARCHAR" />
+		<result column="PERMIS_CODE" property="permisCode" jdbcType="VARCHAR" />
+		<result column="MENU_ID" property="menuId" jdbcType="INTEGER" />
+	</resultMap>
+
+	<sql id="SysUser_Column_List">
+		PID,USER_NAME,REAL_NAME,MEMBER_ID,STATUS,DEPARTMENT,JOB_TITLE,MAIL,PWD,PHOTO_URL,TOKEN,
+		PERSONAL_QQ,ENTERPRISE_QQ,PHONE,WORK_PHONE,EXTENSION,SUPERIOR_USER_ID,ORG_ID
+	</sql>
+	
+	<sql id="SysUserPermission_Column_List">
+		PID,PERMIS_TYPE,PERMIS_NAME,PERMIS_DESC,PERMIS_CODE
+	</sql>
+
+	<!-- 添加系统用户 -->
+	<insert id="insert" parameterType="com.xlkfinance.bms.rpc.system.SysUser">
+		<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+			SELECT SEQ_SYS_USER.Nextval as PID from DUAL
+		</selectKey>
+
+		insert into SYS_USER
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			PID,
+			<if test="userName != null">
+				USER_NAME,
+			</if>
+			<if test="realName != null">
+				REAL_NAME,
+			</if>
+			<if test="status != null">
+				STATUS,
+			</if>
+			<if test="memberId != null">
+				MEMBER_ID,
+			</if>
+			<if test="department != null">
+				DEPARTMENT,
+			</if>
+			<if test="jobTitle != null">
+				JOB_TITLE,
+			</if>
+			<if test="mail != null">
+				MAIL,
+			</if>
+			<if test="pwd != null">
+				PWD,
+			</if>
+			<if test="photoUrl != null">
+				PHOTO_URL,
+			</if>
+			<if test="token != null">
+				TOKEN,
+			</if>
+			<if test="personalQQ != null">
+				PERSONAL_QQ,
+			</if>
+			<if test="enterpriseQQ != null">
+				ENTERPRISE_QQ,
+			</if>
+			<if test="phone != null">
+				PHONE,
+			</if>
+			<if test="workPhone != null">
+				WORK_PHONE,
+			</if>
+			<if test="extension != null">
+				EXTENSION,
+			</if>
+			<if test="superiorId != null">
+				SUPERIOR_USER_ID,
+			</if>
+			<if test="orgId != null">
+				ORG_ID
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+				#{pid,jdbcType=INTEGER},
+			<if test="userName != null">
+				#{userName,jdbcType=VARCHAR},
+			</if>
+			<if test="realName != null">
+				#{realName,jdbcType=VARCHAR},
+			</if>
+			<if test="status != null">
+				#{status,jdbcType=INTEGER},
+			</if>
+			<if test="memberId != null">
+				#{memberId,jdbcType=VARCHAR},
+			</if>
+			<if test="department != null">
+				#{department,jdbcType=VARCHAR},
+			</if>
+			<if test="jobTitle != null">
+				#{jobTitle,jdbcType=VARCHAR},
+			</if>
+			<if test="mail != null">
+				#{mail,jdbcType=VARCHAR},
+			</if>
+			<if test="pwd != null">
+				#{pwd,jdbcType=VARCHAR},
+			</if>
+			<if test="photoUrl != null">
+				#{photoUrl,jdbcType=VARCHAR},
+			</if>
+			<if test="token != null">
+				#{token,jdbcType=VARCHAR},
+			</if>
+			<if test="personalQQ != null">
+				#{personalQQ,jdbcType=VARCHAR},
+			</if>
+			<if test="enterpriseQQ != null">
+				#{enterpriseQQ,jdbcType=VARCHAR},
+			</if>
+			<if test="phone != null">
+				#{phone,jdbcType=VARCHAR},
+			</if>
+			<if test="workPhone != null">
+				#{workPhone,jdbcType=VARCHAR},
+			</if>
+			<if test="extension != null">
+				#{extension,jdbcType=VARCHAR},
+			</if>
+			<if test="superiorId != null">
+				#{superiorId,jdbcType=VARCHAR},
+			</if>
+			<if test="orgId != null">
+				#{orgId,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	
+	<!-- 批量删除系统用户 -->
+	<delete id="batchDelete" parameterType="java.lang.String">
+		DELETE FROM SYS_USER where USER_NAME in
+		<foreach item="idItem" collection="array" open="(" separator="," close=")">
+			#{idItem}
+		</foreach>
+	</delete>
+	
+	<!-- 删除用户与角色的关系 -->
+	<delete id="deleteByUserId" parameterType="java.util.Map">
+		DELETE FROM sys_user_role rp where rp.user_id=#{userId}
+	</delete>
+	
+	<!-- 批量更新状态（逻辑删除系统用户） -->
+	<update id="batchUpdate" parameterType="java.lang.String">
+        update SYS_USER  set
+       	STATUS = 0,ORG_ID = 0
+        where USER_NAME in 
+        <foreach item="idItem" collection="array" open="(" separator="," close=")">
+			#{idItem}
+		</foreach>
+	</update>
+	
+	<!-- 修改系统用户 -->
+	<update id="updateByPrimaryKey" parameterType="com.xlkfinance.bms.rpc.system.SysUser">
+		update SYS_USER
+		<trim prefix="set" suffixOverrides=",">
+			<if test="memberId != null">
+				MEMBER_ID = #{memberId},
+			</if>
+			<if test="realName != null">
+				REAL_NAME = #{realName},
+			</if>
+			<if test="department != null">
+				DEPARTMENT = #{department},
+			</if>
+			<if test="jobTitle != null">
+				JOB_TITLE = #{jobTitle},
+			</if>
+			<if test="mail != null">
+				MAIL = #{mail},
+			</if>
+			<if test="photoUrl != null">
+				PHOTO_URL = #{photoUrl},
+			</if>
+			<if test="personalQQ != null">
+				PERSONAL_QQ = #{personalQQ},
+			</if>
+			<if test="enterpriseQQ != null">
+				ENTERPRISE_QQ = #{enterpriseQQ},
+			</if>
+			<if test="phone != null">
+				PHONE = #{phone},
+			</if>
+			<if test="workPhone != null">
+				WORK_PHONE = #{workPhone},
+			</if>
+			<if test="extension != null">
+				EXTENSION = #{extension},
+			</if>
+			<if test="superiorId != null">
+				SUPERIOR_USER_ID = #{superiorId},
+			</if>	
+			<if test="orgId != null and orgId >0">
+				ORG_ID = #{orgId},
+			</if>	
+			<if test="token != null and token !=''">
+				TOKEN = #{token}
+			</if>	
+			<if test="status != null ">
+				STATUS = #{status}
+			</if>	
+		</trim>
+		WHERE PID = #{pid}
+	</update>
+	<!-- 修改系统用户token -->
+	<update id="updateToken" parameterType="java.util.Map">
+		UPDATE SYS_USER
+		<trim prefix="set" suffixOverrides=",">
+			<if test="token != null and token !=''">
+				TOKEN = #{token}
+			</if>	
+		</trim>
+		WHERE PID = #{userId}
+	</update>
+	
+	<!-- 修改用户密码 -->
+	<update id="updateSysUserPwd" parameterType="com.xlkfinance.bms.rpc.system.SysUser">
+		update SYS_USER SET PWD = #{pwd} WHERE PID = #{pid}
+	</update>
+	
+	<!-- 根据账号查询用户信息 -->
+	<select id="selectSysUserByUserName" resultMap="SysUserResultMap" parameterType="java.lang.String">
+		SELECT 
+		<include refid="SysUser_Column_List" />
+		  FROM SYS_USER
+		 WHERE 1=1
+<!-- 		 AND STATUS = 1 -->
+		 AND USER_NAME = #{userName,jdbcType=VARCHAR}
+	</select>
+	
+	<!-- 查询所有用户 -->
+	<select id="selectAll" resultMap="SysUserResultMap">
+		SELECT
+		<include refid="SysUser_Column_List" />
+		FROM SYS_USER 
+		WHERE 1=1
+		AND STATUS = 1 
+	</select>
+	
+	<!-- 查询所有用户 -->
+	<select id="selectSysUserPermissionByUserName" resultMap="SysUserPermissionResultMap" parameterType="java.lang.String">
+		SELECT P.*
+		  FROM SYS_USER            U,
+		       SYS_PERMISSION      P,
+		       SYS_ROLE            R,
+		       SYS_USER_ROLE       UR,
+		       SYS_ROLE_PERMISSION RP
+		 WHERE 1=1
+		   AND U.PID = UR.USER_ID
+		   AND R.PID = UR.ROLE_ID
+		   AND P.PID = RP.PERMIS_ID
+		   AND R.PID = RP.ROLE_ID
+		   AND U.USER_NAME = #{userName,jdbcType=VARCHAR}
+	</select>
+	
+	<!-- 查询所有用户 根据条件查询 -->
+	<select id="getAllSysUser" resultMap="SysUserResultMap" parameterType="com.xlkfinance.bms.rpc.system.SysUser">
+		SELECT 
+		   U.PID,
+	       U.USER_NAME,
+	       U.REAL_NAME,
+	       U.MEMBER_ID,
+	       U.STATUS,
+	       U.DEPARTMENT,
+	       U.JOB_TITLE,
+	       U.MAIL,
+	       U.PHOTO_URL,
+	       U.TOKEN,
+	       U.PERSONAL_QQ,
+	       U.ENTERPRISE_QQ,
+	       U.PHONE,
+	       U.WORK_PHONE,
+	       U.EXTENSION,
+	       U.SUPERIOR_USER_ID,
+	       (SELECT T.REAL_NAME FROM SYS_USER T WHERE T.PID = U.SUPERIOR_USER_ID) AS SUPERIOR_USER_NAME,
+	       (SELECT O.NAME FROM SYS_ORG_INFO O WHERE O.ID = U.ORG_ID) AS ORG_NAME,
+	       U.ORG_ID
+  		FROM 
+		(SELECT A.*, ROWNUM RN FROM
+			(SELECT 
+				<include refid="SysUser_Column_List" /> 
+			FROM SYS_USER 
+			WHERE STATUS != 0  
+			<if test="userIds!=null and userIds.size()>0">
+				AND PID IN
+				<foreach item="itemId" collection="userIds" open="("
+					separator="," close=")">
+					#{itemId}
+				</foreach>
+			</if>
+			<if test="roleCode != null and roleCode != '' ">
+				AND PID IN (SELECT UR.USER_ID
+                   FROM SYS_ROLE R
+                   LEFT JOIN SYS_USER_ROLE UR
+                     ON R.PID = UR.ROLE_ID WHERE R.ROLE_CODE=#{roleCode})
+			</if>
+			<if test="realName != null and realName != '' ">
+				AND REAL_NAME like '%${realName}%'
+			</if>
+			<if test="userName != null and userName != '' ">
+				AND USER_NAME like '%${userName}%'
+			</if>
+			<if test="memberId != null and memberId != '' ">
+				AND MEMBER_ID like '%${memberId}%'
+			</if>
+			<if test="orgId != null and orgId != '' ">
+				AND ORG_ID = #{orgId}
+			</if>) A) U
+		<if test="rows != null and rows != 0">
+			WHERE RN BETWEEN (((#{page}-1) * #{rows})+1) AND (#{page} * #{rows})
+		</if>
+	</select>
+	<!-- 查询所有用户 根据条件查询 获取总记录条数 -->
+	<select id="getAllSysUserCount" resultType="Integer" parameterType="com.xlkfinance.bms.rpc.system.SysUser">
+			SELECT 
+				COUNT(PID)
+			FROM SYS_USER 
+			WHERE STATUS != 0  
+			<if test="userIds!=null and userIds.size()>0">
+				AND PID IN
+				<foreach item="itemId" collection="userIds" open="("
+					separator="," close=")">
+					#{itemId}
+				</foreach>
+			</if>
+			<if test="roleCode != null and roleCode != '' ">
+				AND PID IN (SELECT UR.USER_ID
+                   FROM SYS_ROLE R
+                   LEFT JOIN SYS_USER_ROLE UR
+                     ON R.PID = UR.ROLE_ID WHERE R.ROLE_CODE=#{roleCode})
+			</if>
+			<if test="realName != null and realName != '' ">
+				AND REAL_NAME like '%${realName}%'
+			</if>
+			<if test="userName != null and userName != '' ">
+				AND USER_NAME like '%${userName}%'
+			</if>
+			<if test="memberId != null and memberId != '' ">
+				AND MEMBER_ID like '%${memberId}%'
+			</if>
+			<if test="orgId != null and orgId != '' ">
+				AND ORG_ID = #{orgId}
+			</if>
+	</select>
+	<select id="getSysUserByUserName" resultMap="SysUserResultMap" parameterType="java.lang.String">
+		SELECT 
+		<include refid="SysUser_Column_List" /> 
+		FROM SYS_USER  
+		WHERE USER_NAME = #{userName}
+	</select>
+	
+	<select id="queryUserByUserName" resultMap="SysUserResultMap" parameterType="java.lang.String">
+		SELECT 
+			<include refid="SysUser_Column_List" /> 
+		FROM SYS_USER  
+		WHERE 
+			USER_NAME IN
+			<foreach item="userName" collection="array" open="(" separator="," close=")">
+				#{userName}
+			</foreach>
+	</select>
+	
+	<select id="getSysUserByPhone" resultMap="SysUserResultMap" parameterType="java.lang.String">
+		SELECT 
+		<include refid="SysUser_Column_List" /> 
+		FROM SYS_USER  
+		WHERE PHONE = #{phone}
+		      AND ROWNUM=1
+	</select>
+	<select id="getSysUserByMemberId" resultMap="SysUserResultMap" parameterType="java.lang.String">
+		SELECT 
+		<include refid="SysUser_Column_List" /> 
+		FROM SYS_USER  
+		WHERE MEMBER_ID = #{memberId}
+		      AND ROWNUM=1
+	</select>
+	<select id="getUserByMemberId" resultMap="SysUserResultMap" parameterType="String">
+		SELECT 
+		<include refid="SysUser_Column_List" /> 
+		FROM SYS_USER  
+		WHERE MEMBER_ID = #{memberId}
+	</select>
+	<select id="getSysUserByPids" resultMap="SysUserResultMap" parameterType="java.lang.String">
+		SELECT 
+		<include refid="SysUser_Column_List" /> 
+		FROM SYS_USER  
+		WHERE PID in 
+        <foreach item="idItem" collection="array" open="(" separator="," close=")">
+			#{idItem}
+		</foreach>
+	</select>
+	<!-- 根据用户Id查询用户 -->
+	<select id="getSysUserByPid" resultMap="SysUserResultMap" parameterType="java.lang.String">
+		SELECT 
+		<include refid="SysUser_Column_List" /> 
+		FROM SYS_USER  
+		WHERE PID = #{pid}
+	</select>
+	<!-- 根据用户Id查询用户 -->
+	<select id="getUserDetailsByPid" resultMap="UserDetailsResultMap" parameterType="int">
+	SELECT A.*, B.NAME AS ORG_NAME
+	FROM SYS_USER A
+	INNER JOIN SYS_ORG_INFO B
+	ON A.ORG_ID = B.ID
+	WHERE A.PID = #{pid}
+	</select>
+	<!-- 修改密码 -->
+	<update id="eidtPassword" parameterType="com.xlkfinance.bms.rpc.system.EidtPassword">
+		UPDATE SYS_USER SU2
+		   SET SU2.PWD = '${newPwd}'
+		 WHERE SU2.PID = 
+		 	(SELECT SU1.PID FROM SYS_USER SU1 
+		 		WHERE SU1.PID = ${uid} AND SU1.PWD = '${oldPwd}')
+	</update>
+	
+	<!-- 查询所有用户 根据条件查询 -->
+	<select id="getUsersByRoleCode" resultMap="SysUserResultMap" parameterType="java.lang.String">
+		SELECT 
+			<include refid="SysUser_Column_List" /> 
+  		FROM (SELECT SU.*
+          FROM SYS_USER SU, SYS_USER_ROLE SUR, SYS_ROLE SR
+         WHERE SU.PID = SUR.USER_ID
+           AND SUR.ROLE_ID = SR.PID
+           AND SR.ROLE_CODE = #{roleCode}
+           AND SR.STATUS = 1)
+	</select>
+	<select id="getuperiorSysUserByPid" resultMap="SysUserResultMap" parameterType="Integer">
+		SELECT <include refid="SysUser_Column_List" />
+		  FROM SYS_USER U
+		 WHERE U.SUPERIOR_USER_ID = (SELECT T.SUPERIOR_USER_ID
+		                               FROM SYS_USER T
+		                              WHERE T.STATUS = 1
+		                                AND T.SUPERIOR_USER_ID != 0
+		                                AND T.PID = #{pid})
+	</select>
+	<!-- 根据机构编号查询该机构下的用户id -->
+	<select id="getUsersByOrgId" resultType="Integer" parameterType="Integer">
+		SELECT
+			U.PID
+		FROM SYS_USER U
+		WHERE U.STATUS = 1 AND U.ORG_ID IN
+		 <foreach item="idItem" collection="list" open="(" separator="," close=")">
+			#{idItem,jdbcType=INTEGER}
+		</foreach>
+	</select>
+	<!-- 根据机构编号和角色编码查询该机构下的用户 -->
+	<select id="getUsersByOrgIdAndRoleCode" resultMap="SysUserResultMap"
+		parameterType="java.util.Map">
+		SELECT A.*
+		FROM SYS_USER A
+		INNER JOIN SYS_USER_ROLE B
+		ON A.PID = B.USER_ID
+		INNER JOIN SYS_ROLE C
+		ON B.ROLE_ID = C.PID
+		WHERE A.ORG_ID IN (SELECT D.ID
+		FROM SYS_ORG_INFO D
+		START WITH D.PARENT_ID = #{orgId}
+		AND D.STATUS = 1
+		CONNECT BY PRIOR ID = D.PARENT_ID
+		UNION ALL SELECT #{orgId} FROM DUAL)
+		AND A.STATUS = 1
+		AND C.STATUS = 1
+		AND C.ROLE_CODE =#{roleCode}
+	</select>
+	
+	<!-- 根据机构编号和角色编号获取用户 -->
+	<select id="findBizUserByOrgIdAndRoleId" resultMap="SysUserResultMap"	parameterType="java.util.HashMap">
+		
+		SELECT 
+			U.*
+		FROM 
+	       SYS_USER_ROLE R,
+	       SYS_USER U 
+	             
+		WHERE R.USER_ID= U.PID
+		    AND U.STATUS = 1
+		AND R.ROLE_ID = #{roleId}
+		AND U.ORG_ID  = #{orgId}
+	</select>
+	<!-- 根据登錄用戶查詢客戶經理列表 -->
+	<select id="getAcctManagerByLogin" resultMap="SysUserResultMap" parameterType="java.util.Map">
+	SELECT DISTINCT A.PID,A.REAL_NAME 
+	FROM SYS_USER A,SYS_USER_ROLE B,SYS_ROLE C 
+	WHERE A.PID = B.USER_ID AND B.ROLE_ID = C.PID
+	AND C.ROLE_CODE = 'JUNIOR_ACCOUNT_MANAGER'
+	<if test="userIds!=null and userIds.size()>0">
+		AND	A.PID IN
+	<foreach item="itemId" collection="userIds" open="(" separator="," close=")">
+	          #{itemId}
+	</foreach>
+	</if>
+	ORDER BY A.PID 
+	</select>
+	<!-- 根据机构ID以及角色编码查询此机构下属自己够所有的人员 -->
+	<select id="getUserByOrg" resultMap="SysUserResultMap" parameterType="java.util.Map">
+		SELECT DISTINCT A.PID,A.REAL_NAME,A.PHONE
+		  FROM SYS_USER A,SYS_USER_ROLE B,SYS_ROLE C 
+		  WHERE A.PID = B.USER_ID AND B.ROLE_ID = C.PID
+		  AND C.ROLE_CODE = #{roleCode}
+		  AND A.ORG_ID IN(
+		    SELECT   
+		       ID
+		    FROM SYS_ORG_INFO 
+		    WHERE STATUS = 1
+		    START WITH PARENT_ID=#{orgId}
+		    CONNECT BY PRIOR ID=PARENT_ID)
+	</select>
+	
+	
+	
+	
+	
+	<!-- 查询所有用户 根据条件查询 -->
+	<select id="getAllSysUserNormal" resultMap="SysUserResultMap" parameterType="com.xlkfinance.bms.rpc.system.SysUser">
+	SELECT 
+		   U.PID,
+	       U.USER_NAME,
+	       U.REAL_NAME,
+	       U.MEMBER_ID,
+	       U.STATUS,
+	       U.DEPARTMENT,
+	       U.JOB_TITLE,
+	       U.MAIL,
+	       U.PHOTO_URL,
+	       U.TOKEN,
+	       U.PERSONAL_QQ,
+	       U.ENTERPRISE_QQ,
+	       U.PHONE,
+	       U.WORK_PHONE,
+	       U.EXTENSION,
+	       U.SUPERIOR_USER_ID,
+	       (SELECT T.REAL_NAME FROM SYS_USER T WHERE T.PID = U.SUPERIOR_USER_ID) AS SUPERIOR_USER_NAME,
+	       (SELECT O.NAME FROM SYS_ORG_INFO O WHERE O.ID = U.ORG_ID) AS ORG_NAME,
+	       U.ORG_ID
+  		FROM 
+		(SELECT A.*, ROWNUM RN FROM
+			(SELECT 
+				<include refid="SysUser_Column_List" /> 
+			FROM SYS_USER 
+			WHERE STATUS != 2 
+			<if test="userIds!=null and userIds.size()>0">
+				AND PID IN
+				<foreach item="itemId" collection="userIds" open="("
+					separator="," close=")">
+					#{itemId}
+				</foreach>
+			</if>
+			<if test="roleCode != null and roleCode != '' ">
+				AND PID IN (SELECT UR.USER_ID
+                   FROM SYS_ROLE R
+                   LEFT JOIN SYS_USER_ROLE UR
+                     ON R.PID = UR.ROLE_ID WHERE R.ROLE_CODE=#{roleCode})
+			</if>
+			<if test="realName != null and realName != '' ">
+				AND REAL_NAME like '%${realName}%'
+			</if>
+			<if test="userName != null and userName != '' ">
+				AND USER_NAME like '%${userName}%'
+			</if>
+			<if test="memberId != null and memberId != '' ">
+				AND MEMBER_ID like '%${memberId}%'
+			</if>
+			<if test="orgId != null and orgId != '' ">
+				AND ORG_ID = #{orgId}
+			</if>) A) U
+		<if test="rows != null and rows != 0">
+			WHERE RN BETWEEN (((#{page}-1) * #{rows})+1) AND (#{page} * #{rows})
+		</if>
+	</select>
+	<!-- 查询所有用户 根据条件查询 获取总记录条数 -->
+	<select id="getAllSysUserNormalCount" resultType="Integer" parameterType="com.xlkfinance.bms.rpc.system.SysUser">
+		SELECT 
+		   count(1)
+	      
+  		FROM 
+		(SELECT A.*, ROWNUM RN FROM
+			(SELECT 
+				<include refid="SysUser_Column_List" /> 
+			FROM SYS_USER 
+			WHERE STATUS != 2  
+			<if test="userIds!=null and userIds.size()>0">
+				AND PID IN
+				<foreach item="itemId" collection="userIds" open="("
+					separator="," close=")">
+					#{itemId}
+				</foreach>
+			</if>
+			<if test="roleCode != null and roleCode != '' ">
+				AND PID IN (SELECT UR.USER_ID
+                   FROM SYS_ROLE R
+                   LEFT JOIN SYS_USER_ROLE UR
+                     ON R.PID = UR.ROLE_ID WHERE R.ROLE_CODE=#{roleCode})
+			</if>
+			<if test="realName != null and realName != '' ">
+				AND REAL_NAME like '%${realName}%'
+			</if>
+			<if test="userName != null and userName != '' ">
+				AND USER_NAME like '%${userName}%'
+			</if>
+			<if test="memberId != null and memberId != '' ">
+				AND MEMBER_ID like '%${memberId}%'
+			</if>
+			<if test="orgId != null and orgId != '' ">
+				AND ORG_ID = #{orgId}
+			</if>) A) U
+		
+	</select>
+</mapper>

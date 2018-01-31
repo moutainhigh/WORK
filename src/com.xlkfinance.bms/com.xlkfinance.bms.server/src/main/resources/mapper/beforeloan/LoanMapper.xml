@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.beforeloan.mapper.LoanMapper">
+			<resultMap id="Loanmaps" type="com.xlkfinance.bms.rpc.beforeloan.Loan">
+			<result property="pid" column="PID" />
+			<result property="projectId" column="PROJECT_ID" />
+			<result property="creditAmt" column="CREDIT_AMT" />
+			<result property="currency" column="CURRENCY" />
+			<result property="dateMode" column="DATE_MODE" />
+			<result property="repayFun" column="REPAY_FUN" />
+			<result property="repayCycleType" column="REPAY_CYCLE_TYPE" />
+			<result property="repayCycleDate" column="REPAY_CYCLE_DATE" />
+			<result property="repayCycle" column="REPAY_CYCLE" />
+			<result property="planOutLoanDt" column="PLAN_OUT_LOAN_DT" />
+			<result property="planRepayLoanDt" column="PLAN_REPAY_LOAN_DT" />
+			<result property="repayOption" column="REPAY_OPTION" />
+			<result property="repayDate" column="REPAY_DATE" />
+			<result property="monthLoanInterest" column="MONTH_LOAN_INTEREST" />
+			<result property="monthLoanMgr" column="MONTH_LOAN_MGR" />
+			<result property="monthLoanOtherFee" column="MONTH_LOAN_OTHER_FEE" />
+			<result property="yearLoanInterest" column="YEAR_LOAN_INTEREST" />
+			<result property="yearLoanMgr" column="YEAR_LOAN_MGR" />
+			<result property="yearLoanOtherFee" column="YEAR_LOAN_OTHER_FEE" />
+			<result property="dayLoanInterest" column="DAY_LOAN_INTEREST" />
+			<result property="dayLoanMgr" column="DAY_LOAN_MGR" />
+			<result property="dayLoanOtherFee" column="DAY_LOAN_OTHER_FEE" />
+			<result property="liqDmgProportion" column="LIQ_DMG_PROPORTION" />
+			<result property="overdueLoanInterest" column="OVERDUE_LOAN_INTEREST" />
+			<result property="overdueFineInterest" column="OVERDUE_FINE_INTEREST" />
+			<result property="misFineInterest" column="MIS_FINE_INTEREST" />
+			<result property="prepayLiqDmgProportion" column="PREPAY_LIQ_DMG_PROPORTION" />
+			<result property="status" column="STATUS" />
+			<result property="eachissueOption" column="EACHISSUE_OPTION" />
+			<result property="feesProportion" column="FEES_PROPORTION" />
+			</resultMap>
+	<sql id="loan_Column_List">
+	   PID pid,
+       PROJECT_ID projectId,
+       CREDIT_AMT creditAmt,
+       CURRENCY currency,
+       DATE_MODE dateMode,
+       REPAY_FUN repayFun,
+       REPAY_CYCLE_TYPE repayCycleType,
+       REPAY_CYCLE_DATE repayCycleDate,
+       REPAY_CYCLE repayCycle,
+       TO_CHAR(PLAN_OUT_LOAN_DT, 'yyyy-MM-dd') planOutLoanDt,
+       TO_CHAR(PLAN_REPAY_LOAN_DT, 'yyyy-MM-dd') planRepayLoanDt,
+       REPAY_OPTION repayOption,
+       REPAY_DATE repayDate,
+       MONTH_LOAN_INTEREST monthLoanInterest,
+       MONTH_LOAN_MGR monthLoanMgr,
+       MONTH_LOAN_OTHER_FEE monthLoanOtherFee,
+       LIQ_DMG_PROPORTION liqDmgProportion,
+       OVERDUE_LOAN_INTEREST overdueLoanInterest,
+       OVERDUE_FINE_INTEREST overdueFineInterest,
+       MIS_FINE_INTEREST misFineInterest,
+       PREPAY_LIQ_DMG_PROPORTION prepayLiqDmgProportion,
+       REQUEST_STATUS requestStatus,
+       TO_CHAR(REQUEST_DTTM, 'yyyy-MM-DD HH24-mi-ss') requestDttm,
+       TO_CHAR(COMPLETE_DTTM, 'yyyy-MM-DD HH24-mi-ss') completeDttm,
+       INTEREST_VERSION interestVersion,
+       FROZEN_SATUS frozenStatus,
+       STATUS status,
+       EACHISSUE_OPTION eachissueOption,
+       FEES_PROPORTION feesProportion
+    </sql>
+			
+	<select id="getLoanIdByProjectId"  resultType="java.lang.Integer" parameterType="java.lang.Integer">
+		SELECT PID FROM BIZ_LOAN WHERE PROJECT_ID = #{projectId}
+	</select>
+	
+	<select id="getProjectIdByLoanId"  resultType="java.lang.Integer" parameterType="java.lang.Integer">
+		SELECT PROJECT_ID FROM BIZ_LOAN WHERE PID = #{loanId}
+	</select>
+	
+	<select id="getSeqBizLoan"  resultType="java.lang.Integer">
+		SELECT SEQ_BIZ_LOAN.Nextval as PID from DUAL
+	</select>
+	
+	<insert id="insert" parameterType="com.xlkfinance.bms.rpc.beforeloan.Loan">
+		INSERT INTO BIZ_LOAN
+		  (PID,
+		   PROJECT_ID,
+		   CREDIT_AMT,
+		   CURRENCY,
+		   DATE_MODE,
+		   REPAY_FUN,
+		   REPAY_CYCLE_TYPE,
+		   REPAY_CYCLE_DATE,
+		   REPAY_CYCLE,
+		   PLAN_OUT_LOAN_DT,
+		   PLAN_REPAY_LOAN_DT,
+		   REPAY_OPTION,
+		   REPAY_DATE,
+		   MONTH_LOAN_INTEREST,
+		   MONTH_LOAN_MGR,
+		   MONTH_LOAN_OTHER_FEE,
+		   YEAR_LOAN_INTEREST,
+		   YEAR_LOAN_MGR,
+		   YEAR_LOAN_OTHER_FEE,
+		   DAY_LOAN_INTEREST,
+		   DAY_LOAN_MGR,
+		   DAY_LOAN_OTHER_FEE,
+		   LIQ_DMG_PROPORTION,
+		   OVERDUE_LOAN_INTEREST,
+		   OVERDUE_FINE_INTEREST,
+		   MIS_FINE_INTEREST,
+		   PREPAY_LIQ_DMG_PROPORTION,
+		   STATUS,
+		   EACHISSUE_OPTION,
+		   FEES_PROPORTION)
+		values (
+		    #{pid},
+		    #{projectId},
+		    #{creditAmt},
+		    #{currency},
+		    #{dateMode},
+		    #{repayFun},
+		    #{repayCycleType},
+		    #{repayCycleDate},
+		    #{repayCycle},
+		    #{planOutLoanDt,jdbcType=DATE,javaType=String},
+		    #{planRepayLoanDt,jdbcType=DATE,javaType=String},
+		    #{repayOption},
+		    #{repayDate},
+		    #{monthLoanInterest},
+		    #{monthLoanMgr},
+		    #{monthLoanOtherFee},
+		    #{yearLoanInterest},
+		    #{yearLoanMgr},
+		    #{yearLoanOtherFee},
+		    #{dayLoanInterest},
+		    #{dayLoanMgr},
+		    #{dayLoanOtherFee},
+		    #{liqDmgProportion},
+		    #{overdueLoanInterest},
+		    #{overdueFineInterest},
+		    #{misFineInterest},
+		    #{prepayLiqDmgProportion},
+		    #{status},
+		    #{eachissueOption},
+		    #{feesProportion})
+	</insert>
+	
+	<!-- 修改贷款信息 -->
+	<update id="updateByPrimaryKey" parameterType="com.xlkfinance.bms.rpc.beforeloan.Loan">
+		UPDATE BIZ_LOAN
+		<trim prefix="set" suffixOverrides=",">
+			<if test="creditAmt != null and creditAmt != -1 ">
+				CREDIT_AMT = #{creditAmt},
+			</if>
+			<if test="currency != null and currency != -1   and currency !='' ">
+				CURRENCY = #{currency},
+			</if>
+			<if test="dateMode != null and dateMode != -1  and dateMode !=''  ">
+				DATE_MODE = #{dateMode},
+			</if>
+			<if test="repayFun != null and repayFun != -1   and repayFun !='' ">
+				REPAY_FUN = #{repayFun},
+			</if>
+			<if test="repayCycleType != null and repayCycleType != -1   and repayCycleType !='' ">
+				REPAY_CYCLE_TYPE = #{repayCycleType},
+			</if>
+			<if test="repayCycleDate != null and repayCycleDate != -1   and repayCycleDate !='' ">
+				REPAY_CYCLE_DATE = #{repayCycleDate},
+			</if>
+			<if test="repayCycle != null and repayCycle != -1   and repayCycle !='' ">
+				REPAY_CYCLE = #{repayCycle},
+			</if>
+			<if test="planOutLoanDt != null and planOutLoanDt != ''  ">
+				PLAN_OUT_LOAN_DT = #{planOutLoanDt,jdbcType=DATE,javaType=String},
+			</if>
+			<if test="planRepayLoanDt != null and planRepayLoanDt != ''  ">
+				PLAN_REPAY_LOAN_DT = #{planRepayLoanDt,jdbcType=DATE,javaType=String},
+			</if>
+			<if test="repayOption != null and repayOption != -1   and  repayOption !='' ">
+				REPAY_OPTION = #{repayOption},
+			</if>
+			<if test="repayDate != null and repayDate != -1  and repayDate !='' ">
+				REPAY_DATE = #{repayDate},
+			</if>
+			<if test="monthLoanInterest != null ">
+				MONTH_LOAN_INTEREST = #{monthLoanInterest},
+			</if>
+			<if test="monthLoanMgr != null ">
+				MONTH_LOAN_MGR = #{monthLoanMgr},
+			</if>
+			<if test="monthLoanOtherFee != null ">
+				MONTH_LOAN_OTHER_FEE = #{monthLoanOtherFee},
+			</if>
+			<if test="yearLoanInterest != null ">
+				YEAR_LOAN_INTEREST = #{yearLoanInterest},
+			</if>
+			<if test="yearLoanMgr != null  ">
+				YEAR_LOAN_MGR = #{yearLoanMgr},
+			</if>
+			<if test="yearLoanOtherFee != null ">
+				YEAR_LOAN_OTHER_FEE = #{yearLoanOtherFee},
+			</if>
+			<if test="dayLoanInterest != null ">
+				DAY_LOAN_INTEREST = #{dayLoanInterest},
+			</if>
+			<if test="dayLoanMgr != null ">
+				DAY_LOAN_MGR = #{dayLoanMgr},
+			</if>
+			<if test="dayLoanOtherFee != null ">
+				DAY_LOAN_OTHER_FEE = #{dayLoanOtherFee},
+			</if>
+			<if test="liqDmgProportion != null ">
+				LIQ_DMG_PROPORTION = #{liqDmgProportion},
+			</if>
+			<if test="overdueLoanInterest != null ">
+				OVERDUE_LOAN_INTEREST = #{overdueLoanInterest},
+			</if>
+			<if test="overdueFineInterest != null ">
+				OVERDUE_FINE_INTEREST = #{overdueFineInterest},
+			</if>
+			<if test="misFineInterest != null ">
+				MIS_FINE_INTEREST = #{misFineInterest},
+			</if>
+			<if test="prepayLiqDmgProportion != null ">
+				PREPAY_LIQ_DMG_PROPORTION = #{prepayLiqDmgProportion},
+			</if>
+			<if test="requestStatus != null and requestStatus != -1  and requestStatus !='' ">
+				REQUEST_STATUS = #{requestStatus},
+			</if>
+			<if test="eachissueOption != null and eachissueOption != 0   and eachissueOption !='' ">
+				eachissue_option = #{eachissueOption},
+			</if>
+			<if test="requestDttm != null and requestDttm != ''  and requestDttm !=''  ">
+				REQUEST_DTTM = #{requestDttm,jdbcType=DATE,javaType=String},
+			</if>
+			<if test="status != null and status != -1   and status !='' ">
+				STATUS = #{status},
+			</if>
+			<if test="feesProportion != null ">
+				FEES_PROPORTION = #{feesProportion},
+			</if>
+		</trim>
+		WHERE PID = #{pid}
+	</update>
+	
+	<!-- 根据项目ID查询 贷款信息和被展期项目的贷款信息 -->
+	<select id="getLoansByExtensionProId" resultType="com.xlkfinance.bms.rpc.beforeloan.Loan" parameterType="java.lang.Integer">
+		SELECT PID pid,
+           PROJECT_ID projectId,
+           CREDIT_AMT creditAmt,
+           REPAY_FUN repayFun,
+           REPAY_CYCLE repayCycle,
+           TO_CHAR(PLAN_OUT_LOAN_DT, 'yyyy-MM-dd') planOutLoanDt,
+           TO_CHAR(PLAN_REPAY_LOAN_DT, 'yyyy-MM-dd') planRepayLoanDt,
+           REPAY_OPTION repayOption,
+           REPAY_DATE repayDate,
+           MONTH_LOAN_INTEREST monthLoanInterest,
+           MONTH_LOAN_MGR monthLoanMgr,
+           MONTH_LOAN_OTHER_FEE monthLoanOtherFee
+      FROM BIZ_LOAN
+     WHERE PROJECT_ID IN (
+                      SELECT PROJECT_ID
+                        FROM BIZ_PROJECT_EXTENSION
+                       START WITH EXTENSION_PROJECT_ID =#{projectId}
+                      CONNECT BY PRIOR PROJECT_ID = EXTENSION_PROJECT_ID)
+        OR PROJECT_ID = #{projectId}
+	</select>
+	
+	<!-- 修改贷款状态 -->
+	<update id="updateLoanStatus" parameterType="java.lang.Integer">
+		UPDATE BIZ_LOAN SET 
+		FROZEN_SATUS = #{requestStatus} 
+		WHERE PROJECT_ID = #{projectId} 
+	</update>
+	
+	<select id="selectByPrimaryKey" resultType="com.xlkfinance.bms.rpc.beforeloan.Loan" parameterType="java.lang.Integer">
+		SELECT 
+		<include refid="loan_Column_List" />
+		  FROM BIZ_LOAN WHERE PID=#{pid}
+	</select>
+		<select id="getLoansByProId" resultMap="Loanmaps" parameterType="java.lang.Integer">
+		SELECT 
+		   PID,
+		   PROJECT_ID,
+		   CREDIT_AMT,
+		   CURRENCY,
+		   DATE_MODE,
+		   REPAY_FUN,
+		   REPAY_CYCLE_TYPE,
+		   REPAY_CYCLE_DATE,
+		   REPAY_CYCLE,
+		   TO_CHAR(PLAN_OUT_LOAN_DT, 'yyyy-mm-dd')  as  PLAN_OUT_LOAN_DT,
+		   TO_CHAR(PLAN_REPAY_LOAN_DT, 'yyyy-mm-dd')  as PLAN_REPAY_LOAN_DT ,
+		   REPAY_OPTION,
+		   REPAY_DATE ,
+		   MONTH_LOAN_INTEREST,
+		   MONTH_LOAN_MGR,
+		   MONTH_LOAN_OTHER_FEE,
+		   YEAR_LOAN_INTEREST,
+		   YEAR_LOAN_MGR,
+		   YEAR_LOAN_OTHER_FEE,
+		   DAY_LOAN_INTEREST,
+		   DAY_LOAN_MGR,
+		   DAY_LOAN_OTHER_FEE,
+		   LIQ_DMG_PROPORTION,
+		   OVERDUE_LOAN_INTEREST,
+		   OVERDUE_FINE_INTEREST,
+		   MIS_FINE_INTEREST,
+		   PREPAY_LIQ_DMG_PROPORTION,
+		   EACHISSUE_OPTION,
+		   FEES_PROPORTION
+		  FROM BIZ_LOAN
+		 WHERE PROJECT_ID = #{projectId}
+	</select>
+	
+	<update id="updateByloanId" parameterType="com.xlkfinance.bms.rpc.beforeloan.Loan">
+		begin 
+			UPDATE BIZ_LOAN SET 
+			PLAN_REPAY_LOAN_DT = to_date(#{planRepayLoanDt},'yyyy-mm-dd'),
+			PLAN_OUT_LOAN_DT = to_date(#{planOutLoanDt},'yyyy-mm-dd'),
+			REPAY_DATE = #{repayCycleDate,jdbcType=INTEGER}
+			WHERE PID = #{pid}; 
+			<if test="creditEndDate != ''">
+				UPDATE BIZ_CREDIT BC SET BC.CREDTI_END_DT = to_date(#{creditEndDate},'yyyy-mm-dd')   WHERE BC.PROJECT_ID = #{projectId}; 
+			</if>
+		end ;
+	</update>
+	
+	<!-- 更改流程状态  -->
+	<update id="updateWorkflowStatus" parameterType="Map">
+		UPDATE BIZ_LOAN BL SET BL.WORKFLOW_STATUS = #{workflowStatus} WHERE PID = #{loadId}
+	</update>
+	
+	
+	<!-- 更改还款计划表对账状态  -->
+	<update id="updateIsReconciliationStatus" parameterType="java.lang.Integer">
+		UPDATE BIZ_LOAN_REPAYMENT_PLAN P
+		   SET P.IS_RECONCILIATION = 1
+		 WHERE (P.SHOULD_PRINCIPAL + P.SHOULD_MANG_COST + P.SHOULD_OTHER_COST +
+		       P.SHOULD_INTEREST) = 0
+		   AND P.PLAN_VERSION =
+		       (SELECT MAX(PLAN_VERSION)
+		          FROM BIZ_LOAN_REPAYMENT_PLAN
+		         WHERE LOAN_INFO_ID = P.LOAN_INFO_ID)
+		   AND P.LOAN_INFO_ID =
+		       (SELECT L.PID FROM BIZ_LOAN L WHERE L.PROJECT_ID = #{projectId})
+	</update>
+	
+	<!-- 根据Pid查询流程状态 -->
+	<select id="getWorkflowStatusByPid" parameterType="Integer" resultType="Integer">
+		SELECT BL.WORKFLOW_STATUS FROM BIZ_LOAN BL WHERE BL.PID = #{pid}
+	</select>
+</mapper>

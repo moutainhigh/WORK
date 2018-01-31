@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xlkfinance.bms.server.system.mapper.CapitalOrgInfoMapper">
+	<resultMap id="capitalOrgInfoMap" type="com.xlkfinance.bms.rpc.system.CapitalOrgInfo">
+		<id property="pid" column="PID" />
+		<id property="orgName" column="ORG_NAME" />
+		<id property="orgCode" column="ORG_CODE" />
+		<id property="loanMoneyTotal" column="LOAN_MONEY_TOTAL" />
+		<id property="status" column="STATUS" />
+		<id property="createDate" column="CREATE_DATE" />
+		<id property="createId" column="CREATE_ID" />
+		<id property="updateId" column="UPDATE_ID" />
+		<id property="updateDate" column="UPDATE_DATE" />
+		<id property="isPush" column="IS_PUSH" />
+		
+	</resultMap>
+	<sql id="column_list">
+        PID,ORG_NAME,ORG_CODE,LOAN_MONEY_TOTAL,STATUS,TO_CHAR(CREATE_DATE,'yyyy-mm-dd hh24:mi:ss') AS CREATE_DATE,CREATE_ID,UPDATE_ID,UPDATE_DATE,
+        IS_PUSH
+	</sql>
+	<!-- 查询所有启用的 -->
+	<select id="getAllByStatus" resultMap="capitalOrgInfoMap" parameterType="com.xlkfinance.bms.rpc.system.CapitalOrgInfo">
+	  SELECT
+		<include refid="column_list" />
+		FROM CAPITAL_ORG_INFO C
+		WHERE C.STATUS=1 AND C.IS_PUSH=1
+		ORDER BY PID ASC
+	</select>
+	<!-- 查询所有 -->
+	<select id="getAll" resultMap="capitalOrgInfoMap" parameterType="com.xlkfinance.bms.rpc.system.CapitalOrgInfo">
+		SELECT
+		<include refid="column_list" />
+		FROM CAPITAL_ORG_INFO
+		<where>
+			<trim>
+		      <if test="pid != null and pid >0">
+	          PID=#{pid}
+	          </if>
+		      <if test="orgName != null and orgName !=''">
+	          AND ORG_NAME=#{orgName}
+	          </if>
+		      <if test="orgCode != null and orgCode !=''">
+	          AND ORG_CODE=#{orgCode}
+	          </if>
+		      <if test="loanMoneyTotal != null and loanMoneyTotal >0">
+	          AND LOAN_MONEY_TOTAL=#{loanMoneyTotal}
+	          </if>
+		      <if test="status != null and status >0">
+	          AND STATUS=#{status}
+	          </if>
+		      <if test="createDate != null and createDate !=''">
+	          AND CREATE_DATE=#{createDate}
+	          </if>
+		      <if test="createId != null and createId >0">
+	          AND CREATE_ID=#{createId}
+	          </if>
+		      <if test="updateId != null and updateId >0">
+	          AND UPDATE_ID=#{updateId}
+	          </if>
+		      <if test="updateDate != null and updateDate !=''">
+	          AND UPDATE_DATE=#{updateDate}
+	          </if>
+	          <if test="isPush != null and isPush >0">
+			  AND IS_PUSH =#{isPush}
+			  </if>
+			</trim>
+		</where>
+		ORDER BY PID ASC
+	</select>
+	<!-- 根据id获取 -->
+	<select id="getById" resultMap="capitalOrgInfoMap">
+		SELECT <include refid="column_list" /> FROM CAPITAL_ORG_INFO WHERE PID=#{pid}
+	</select>
+	<select id="getByOrgName" resultMap="capitalOrgInfoMap">
+		SELECT <include refid="column_list" /> FROM CAPITAL_ORG_INFO WHERE ORG_NAME=#{orgName}
+	</select>
+	<!-- 插入一条数据 -->
+	<insert id="insert" parameterType="com.xlkfinance.bms.rpc.system.CapitalOrgInfo">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_CAPITAL_ORG_INFO.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO CAPITAL_ORG_INFO
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+				PID,
+			</if>
+		    <if test="orgName != null and orgName !=''">
+				ORG_NAME,
+			</if>
+		    <if test="orgCode != null and orgCode !=''">
+				ORG_CODE,
+			</if>
+		    <if test="loanMoneyTotal != null and loanMoneyTotal >0">
+				LOAN_MONEY_TOTAL,
+			</if>
+		    <if test="status != null and status >0">
+				STATUS,
+			</if>
+				CREATE_DATE,
+		    <if test="createId != null and createId >0">
+				CREATE_ID,
+			</if>
+		    <if test="updateId != null and updateId >0">
+				UPDATE_ID,
+			</if>
+		    <if test="updateDate != null and updateDate !=''">
+				UPDATE_DATE,
+			</if>
+		    <if test="isPush != null and isPush >0">
+				IS_PUSH,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+		    #{pid},
+			</if>
+		    <if test="orgName != null and orgName !=''">
+		    #{orgName},
+			</if>
+		    <if test="orgCode != null and orgCode !=''">
+		    #{orgCode},
+			</if>
+		    <if test="loanMoneyTotal != null and loanMoneyTotal >0">
+		    #{loanMoneyTotal},
+			</if>
+		    <if test="status != null and status >0">
+		    #{status},
+			</if>
+		    SYSDATE,
+		    <if test="createId != null and createId >0">
+		    #{createId},
+			</if>
+		    <if test="updateId != null and updateId >0">
+		    #{updateId},
+			</if>
+		    <if test="updateDate != null and updateDate !=''">
+		    #{updateDate,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		    <if test="isPush != null and isPush >0">
+			#{isPush},
+			</if>
+		</trim>
+	</insert>
+
+	<!-- 根据id更新数据 -->
+		<update id="update" parameterType="com.xlkfinance.bms.rpc.system.CapitalOrgInfo">
+		UPDATE CAPITAL_ORG_INFO
+		<set>
+		    <if test="pid != null and pid >0">
+		     PID=#{pid},
+			</if>
+		    <if test="orgName != null and orgName !=''">
+		     ORG_NAME=#{orgName},
+			</if>
+		    <if test="orgCode != null and orgCode !=''">
+		     ORG_CODE=#{orgCode},
+			</if>
+		    <if test="loanMoneyTotal != null and loanMoneyTotal >0">
+		     LOAN_MONEY_TOTAL=#{loanMoneyTotal},
+			</if>
+		    <if test="status != null and status >0">
+		     STATUS=#{status},
+			</if>
+		    <if test="createDate != null and createDate !=''">
+		     CREATE_DATE=#{createDate,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		    <if test="createId != null and createId >0">
+		     CREATE_ID=#{createId},
+			</if>
+		    <if test="updateId != null and updateId >0">
+		     UPDATE_ID=#{updateId},
+			</if>
+		    <if test="isPush != null and isPush >0">
+			IS_PUSH =#{isPush},
+			</if>
+		     UPDATE_DATE=SYSDATE,
+		</set>
+		WHERE PID = #{pid}
+	</update>
+	<!-- 分页查询 -->
+	<select id="getCapitalByPage" parameterType="com.xlkfinance.bms.rpc.system.CapitalOrgInfo" resultMap="capitalOrgInfoMap">
+		<![CDATA[SELECT D.* FROM (SELECT T.*, ROWNUM RN
+	        FROM (
+		 	SELECT A.* FROM CAPITAL_ORG_INFO A
+		 	WHERE 1=1
+		 ]]>
+			<if test="status != null and status >0 ">
+				AND A.STATUS = #{status}
+			</if>
+			<if test="orgName != null and orgName != '' ">
+				AND A.ORG_NAME like '%${orgName}%' 
+			</if>
+  			<![CDATA[ORDER BY A.STATUS,A.PID DESC) T
+			WHERE ROWNUM <=#{page}*#{rows}
+			) D
+		WHERE D.RN > ((#{page}-1)*#{rows})]]>
+	</select>
+	
+	<select id="getCapitalCount"  parameterType="com.xlkfinance.bms.rpc.system.CapitalOrgInfo" resultType="Integer">
+		SELECT COUNT(PID) FROM CAPITAL_ORG_INFO A
+		WHERE 1=1
+		<if test="status != null and status >0 ">
+			AND A.STATUS = #{status}
+		</if>
+		<if test="orgName != null and orgName != '' ">
+			AND A.ORG_NAME like '%${orgName}%' 
+		</if>
+	</select>
+	
+	<!-- 修改放款总金额 -->
+	<update id="updateLoanMoney"  parameterType="com.xlkfinance.bms.rpc.system.CapitalOrgInfo">
+		UPDATE CAPITAL_ORG_INFO SET LOAN_MONEY_TOTAL=#{loanMoneyTotal} WHERE PID = #{pid}
+	</update>
+	
+	<select id="getByOrgCode" resultMap="capitalOrgInfoMap">
+		SELECT <include refid="column_list" /> FROM CAPITAL_ORG_INFO WHERE ORG_CODE=#{orgCode}
+	</select>
+</mapper>

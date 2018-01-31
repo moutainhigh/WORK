@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xlkfinance.bms.server.project.mapper.CusEnterpriseInfoMapper">
+	<resultMap id="cusEnterpriseInfoMap" type="com.xlkfinance.bms.rpc.project.CusEnterpriseInfo">
+		<id property="pid" column="PID" />
+		<id property="projectId" column="PROJECT_ID" />
+		<id property="acctId" column="ACCT_ID" />
+		<id property="enterpriseName" column="ENTERPRISE_NAME" />
+		<id property="legalRepresentative" column="LEGAL_REPRESENTATIVE" />
+		<id property="foundDate" column="FOUND_DATE" />
+		<id property="regMoney" column="REG_MONEY" />
+		<id property="stockholderType" column="STOCKHOLDER_TYPE" />
+		<id property="staffNum" column="STAFF_NUM" />
+		<id property="operationScope" column="OPERATION_SCOPE" />
+		<id property="employSituation" column="EMPLOY_SITUATION" />
+		<id property="enterpriseType" column="ENTERPRISE_TYPE" />
+		<id property="createDate" column="CREATE_DATE" />
+		<id property="createrId" column="CREATER_ID" />
+		<id property="updateId" column="UPDATE_ID" />
+		<id property="updateDate" column="UPDATE_DATE" />
+	</resultMap>
+	<sql id="column_list">
+        PID,PROJECT_ID,ACCT_ID,ENTERPRISE_NAME,LEGAL_REPRESENTATIVE,FOUND_DATE,REG_MONEY,STOCKHOLDER_TYPE,STAFF_NUM,OPERATION_SCOPE,EMPLOY_SITUATION,ENTERPRISE_TYPE,CREATE_DATE,CREATER_ID,UPDATE_ID,UPDATE_DATE
+	</sql>
+	<!-- 查询所有 -->
+	<select id="getAll" resultMap="cusEnterpriseInfoMap" parameterType="com.xlkfinance.bms.rpc.project.CusEnterpriseInfo">
+		SELECT
+		<include refid="column_list" />
+		FROM CUS_ENTERPRISE_INFO
+		<where>
+			<trim>
+		      <if test="pid != null and pid >0">
+	          PID=#{pid}
+	          </if>
+		      <if test="projectId != null and projectId >0">
+	          AND PROJECT_ID=#{projectId}
+	          </if>
+		      <if test="acctId != null and acctId >0">
+	          AND ACCT_ID=#{acctId}
+	          </if>
+		      <if test="enterpriseName != null and enterpriseName !=''">
+	          AND ENTERPRISE_NAME=#{enterpriseName}
+	          </if>
+		      <if test="legalRepresentative != null and legalRepresentative !=''">
+	          AND LEGAL_REPRESENTATIVE=#{legalRepresentative}
+	          </if>
+		      <if test="foundDate != null and foundDate !=''">
+	          AND FOUND_DATE=#{foundDate}
+	          </if>
+		      <if test="regMoney != null and regMoney !=''">
+	          AND REG_MONEY=#{regMoney}
+	          </if>
+		      <if test="stockholderType != null and stockholderType !=''">
+	          AND STOCKHOLDER_TYPE=#{stockholderType}
+	          </if>
+		      <if test="staffNum != null and staffNum >0">
+	          AND STAFF_NUM=#{staffNum}
+	          </if>
+		      <if test="operationScope != null and operationScope !=''">
+	          AND OPERATION_SCOPE=#{operationScope}
+	          </if>
+		      <if test="employSituation != null and employSituation !=''">
+	          AND EMPLOY_SITUATION=#{employSituation}
+	          </if>
+		      <if test="enterpriseType != null and enterpriseType !=''">
+	          AND ENTERPRISE_TYPE=#{enterpriseType}
+	          </if>
+		      <if test="createDate != null and createDate !=''">
+	          AND CREATE_DATE=#{createDate}
+	          </if>
+		      <if test="createrId != null and createrId >0">
+	          AND CREATER_ID=#{createrId}
+	          </if>
+		      <if test="updateId != null and updateId >0">
+	          AND UPDATE_ID=#{updateId}
+	          </if>
+		      <if test="updateDate != null and updateDate !=''">
+	          AND UPDATE_DATE=#{updateDate}
+	          </if>
+			</trim>
+		</where>
+	</select>
+	
+	<!-- 根据id获取 -->
+	<select id="getById" resultMap="cusEnterpriseInfoMap">
+		SELECT <include refid="column_list" /> FROM CUS_ENTERPRISE_INFO WHERE PID=#{pid}
+	</select>
+	
+	<!-- 根据ProjectId获取 -->
+	<select id="getEnterpriseInfoByProjectId" resultMap="cusEnterpriseInfoMap">
+		SELECT <include refid="column_list" /> FROM CUS_ENTERPRISE_INFO WHERE PROJECT_ID=#{projectId,jdbcType=INTEGER}
+	</select>
+	
+	<!-- 插入一条数据 -->
+	<insert id="insert" parameterType="com.xlkfinance.bms.rpc.project.CusEnterpriseInfo">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_CUS_ENTERPRISE_INFO.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO CUS_ENTERPRISE_INFO
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+				PID,
+			</if>
+		    <if test="projectId != null and projectId >0">
+				PROJECT_ID,
+			</if>
+		    <if test="acctId != null and acctId >0">
+				ACCT_ID,
+			</if>
+		    <if test="enterpriseName != null and enterpriseName !=''">
+				ENTERPRISE_NAME,
+			</if>
+		    <if test="legalRepresentative != null and legalRepresentative !=''">
+				LEGAL_REPRESENTATIVE,
+			</if>
+		    <if test="foundDate != null and foundDate !=''">
+				FOUND_DATE,
+			</if>
+		    <if test="regMoney != null and regMoney !=''">
+				REG_MONEY,
+			</if>
+		    <if test="stockholderType != null and stockholderType !=''">
+				STOCKHOLDER_TYPE,
+			</if>
+		    <if test="staffNum != null and staffNum >0">
+				STAFF_NUM,
+			</if>
+		    <if test="operationScope != null and operationScope !=''">
+				OPERATION_SCOPE,
+			</if>
+		    <if test="employSituation != null and employSituation !=''">
+				EMPLOY_SITUATION,
+			</if>
+		    <if test="enterpriseType != null and enterpriseType !=''">
+				ENTERPRISE_TYPE,
+			</if>
+		    <if test="createDate != null and createDate !=''">
+				CREATE_DATE,
+			</if>
+		    <if test="createrId != null and createrId >0">
+				CREATER_ID,
+			</if>
+		    <if test="updateId != null and updateId >0">
+				UPDATE_ID,
+			</if>
+		    <if test="updateDate != null and updateDate !=''">
+				UPDATE_DATE,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+		    #{pid},
+			</if>
+		    <if test="projectId != null and projectId >0">
+		    #{projectId},
+			</if>
+		    <if test="acctId != null and acctId >0">
+		    #{acctId},
+			</if>
+		    <if test="enterpriseName != null and enterpriseName !=''">
+		    #{enterpriseName},
+			</if>
+		    <if test="legalRepresentative != null and legalRepresentative !=''">
+		    #{legalRepresentative},
+			</if>
+		    <if test="foundDate != null and foundDate !=''">
+		    #{foundDate,jdbcType= DATE,javaType= java.lang.String},
+			</if>
+		    <if test="regMoney != null and regMoney !=''">
+		    #{regMoney},
+			</if>
+		    <if test="stockholderType != null and stockholderType !=''">
+		    #{stockholderType},
+			</if>
+		    <if test="staffNum != null and staffNum >0">
+		    #{staffNum},
+			</if>
+		    <if test="operationScope != null and operationScope !=''">
+		    #{operationScope},
+			</if>
+		    <if test="employSituation != null and employSituation !=''">
+		    #{employSituation},
+			</if>
+		    <if test="enterpriseType != null and enterpriseType !=''">
+		    #{enterpriseType},
+			</if>
+		    <if test="createDate != null and createDate !=''">
+		    #{createDate,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		    <if test="createrId != null and createrId >0">
+		    #{createrId},
+			</if>
+		    <if test="updateId != null and updateId >0">
+		    #{updateId},
+			</if>
+		    <if test="updateDate != null and updateDate !=''">
+		    #{updateDate,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		</trim>
+	</insert>
+	<!-- 根据id删除数据 -->
+	<delete id="deleteById" parameterType="com.xlkfinance.bms.rpc.project.CusEnterpriseInfo">
+		<![CDATA[DELETE FROM CUS_ENTERPRISE_INFO WHERE PID=#{pid}]]>
+	</delete>
+	<!-- 根据id更新数据 -->
+		<update id="update" parameterType="com.xlkfinance.bms.rpc.project.CusEnterpriseInfo">
+		UPDATE CUS_ENTERPRISE_INFO
+		<set>
+		    <if test="pid != null and pid >0">
+		     PID=#{pid},
+			</if>
+		    <if test="projectId != null and projectId >0">
+		     PROJECT_ID=#{projectId},
+			</if>
+		    <if test="acctId != null and acctId >0">
+		     ACCT_ID=#{acctId},
+			</if>
+		    <if test="enterpriseName != null and enterpriseName !=''">
+		     ENTERPRISE_NAME=#{enterpriseName},
+			</if>
+		    <if test="legalRepresentative != null and legalRepresentative !=''">
+		     LEGAL_REPRESENTATIVE=#{legalRepresentative},
+			</if>
+		    <if test="foundDate != null and foundDate !=''">
+		     FOUND_DATE=#{foundDate,jdbcType= DATE,javaType= java.lang.String},
+			</if>
+		    <if test="regMoney != null and regMoney !=''">
+		     REG_MONEY=#{regMoney},
+			</if>
+		    <if test="stockholderType != null and stockholderType !=''">
+		     STOCKHOLDER_TYPE=#{stockholderType},
+			</if>
+		    <if test="staffNum != null and staffNum >0">
+		     STAFF_NUM=#{staffNum},
+			</if>
+		    <if test="operationScope != null and operationScope !=''">
+		     OPERATION_SCOPE=#{operationScope},
+			</if>
+		    <if test="employSituation != null and employSituation !=''">
+		     EMPLOY_SITUATION=#{employSituation},
+			</if>
+		    <if test="enterpriseType != null and enterpriseType !=''">
+		     ENTERPRISE_TYPE=#{enterpriseType},
+			</if>
+		    <if test="createDate != null and createDate !=''">
+		     CREATE_DATE=#{createDate,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		    <if test="createrId != null and createrId >0">
+		     CREATER_ID=#{createrId},
+			</if>
+		    <if test="updateId != null and updateId >0">
+		     UPDATE_ID=#{updateId},
+			</if>
+		    <if test="updateDate != null and updateDate !=''">
+		     UPDATE_DATE=#{updateDate,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		</set>
+		WHERE PID = #{pid}
+	</update>
+	<!-- 根据传入多个id删除数据 -->
+	<delete id="deleteByIds" parameterType="java.util.List">
+		DELETE FROM CUS_ENTERPRISE_INFO WHERE PID in
+		<foreach collection="list" item="item" index="index" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+</mapper>

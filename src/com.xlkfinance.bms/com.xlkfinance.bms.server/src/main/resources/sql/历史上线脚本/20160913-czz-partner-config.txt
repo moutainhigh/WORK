@@ -1,0 +1,68 @@
+
+添加字典项
+	
+	1、主配置类型---------
+	
+	配置类型：PARTNER_XIAOGYIN_CITY
+	配置名称：合作机构小赢城市
+	描述：合作机构小赢城市:
+		子类型key:小赢code_Q房code
+	
+	配置值---------
+	数据字典值：001_110100
+	数据字典描述：北京
+	
+	数据字典值：002_310100
+	数据字典描述：上海
+	
+	数据字典值：003_440300
+	数据字典描述：深圳
+	
+	数据字典值：004_440100
+	数据字典描述：广州
+
+
+	2、主配置类型---------  （统联己存在，无需再添加）
+	
+	配置类型：PARTNER_LOAN_LIMIT   
+	配置名称：机构放款额度
+	描述：机构合作接口放款额度限制 
+		PARTNER_LOAN_LIMIT_TL(统联)
+		PARTNER_LOAN_LIMIT_DR_ONE(点融单笔放款额度)
+		PARTNER_LOAN_LIMIT_DR_DAY(点融单天放款额度)
+		PARTNER_LOAN_LIMIT_DR_MONEY(点融当月放款额度)
+		PARTNER_LOAN_LIMIT_DR_TOTAL(点融放款总额度)
+	
+	配置值---------
+	数据字典值：PARTNER_LOAN_LIMIT_TL
+	数据字典描述：40000000
+	
+	数据字典值：PARTNER_LOAN_LIMIT_DR_ONE
+	数据字典描述：5000000
+	
+	数据字典值：PARTNER_LOAN_LIMIT_DR_DAY
+	数据字典描述：-1
+	
+	数据字典值：PARTNER_LOAN_LIMIT_DR_MONTH
+	数据字典描述：1000000000
+	
+	数据字典值：PARTNER_LOAN_LIMIT_DR_TOTAL
+	数据字典描述：2000000000
+	
+ 	3、主配置类型---------
+		
+	配置类型：PARTNER_LOAN_BANK
+	配置名称：合作机构小科银行
+	描述：
+		合作机构放款公司接收银行帐号信息 
+		子配置格式： 
+		银行_支行_开户名_帐号_省code_市_code
+	
+	配置值---------
+	数据字典值：PARTNER_LOAN_BANK_1
+	数据字典描述：中国农业银行_深圳凤凰支行_深圳前海小科互联网金融服务有限公司_41033100040023235_440000_440300
+	
+ 
+	
+	
+	  

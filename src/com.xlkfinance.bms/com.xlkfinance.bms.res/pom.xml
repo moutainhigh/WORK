@@ -1,0 +1,43 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.xlkfinance.bms</groupId>
+    <artifactId>com.xlkfinance.bms</artifactId>
+    <version>0.0.1</version>
+  </parent>
+  <groupId>com.xlkfinance.bms.res</groupId>
+  <artifactId>com.xlkfinance.bms.res</artifactId>
+  <name>前海小科信贷款业务平台-静态资源服务器</name>
+  <description>前海小科信贷款业务平台-静态资源服务器</description>
+  <packaging>war</packaging>
+  
+  <build>
+		<finalName>RES</finalName>
+		<defaultGoal>compile</defaultGoal>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>${maven-war-plugin.version}</version>
+				<configuration>
+					<warSourceDirectory>${basedir}/WebContent</warSourceDirectory>
+					<webXml>WebContent\WEB-INF\web.xml</webXml>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>${maven-source-plugin.version}</version>
+				<configuration>
+					<attach>true</attach>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.tomcat.maven</groupId>
+				<artifactId>tomcat7-maven-plugin</artifactId>
+				<version>${tomcat7-maven-plugin.version}</version>
+			</plugin>
+		</plugins>
+	</build>
+</project>

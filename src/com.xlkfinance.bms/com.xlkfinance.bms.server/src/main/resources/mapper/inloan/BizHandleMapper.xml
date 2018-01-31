@@ -1,0 +1,3082 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.inloan.mapper.BizHandleMapper">
+	<!-- 业务受理列表 -->
+	<resultMap type="applyHandleIndexDTO" id="applyHandleIndexMap">
+		<id property="pid" column="PID" />
+		<id property="projectId" column="PROJECT_ID" />
+		<id property="pmUserName" column="PM_USER_NAME" />
+		<id property="projectNumber" column="PROJECT_NUMBER" />
+		<id property="projectName" column="PROJECT_NAME" />
+		<id property="projectStatus" column="REQUEST_STATUS" />
+		<id property="recStatus" column="REC_STATUS" />
+		<id property="recFeeStatus" column="REC_FEE_STATUS" />
+		<id property="applyHandleStatus" column="APPLY_HANDLE_STATUS" />
+		<id property="createrId" column="CREATER_ID" />
+		<id property="createrDate" column="CREATER_DATE" />
+		<id property="feedback" column="FEEDBACK" />
+		<id property="handleDate" column="HANDLE_DATE" />
+		<id property="taskName" column="TASK_NAME" />
+		<id property="projectPassDate" column="PROJECT_PASS_DATE" />
+		<id property="productName" column="PRODUCT_NAME" />
+		<id property="loanMoney" column="LOAN_MONEY" />
+		<id property="handleId" column="HANDLE_ID" />
+		<id property="houseName" column="HOUSE_NAME" />
+		<id property="buyerName" column="BUYER_NAME" />
+		<id property="sellerName" column="SELLER_NAME" />
+		<id property="isChechan" column="IS_CHECHAN" />
+		<id property="oldLoanBank" column="OLD_LOAN_BANK" />
+		<id property="oldLoanBankBranch" column="OLD_LOAN_BANK_BRANCH" />
+		<id property="isNeedHandle" column="IS_NEED_HANDLE" />
+	</resultMap>
+	<!-- 业务处理信息（主表） -->
+	<resultMap type="handleInfoDTO" id="handleInfoMap">
+		<id property="pid" column="PID" />
+		<id property="projectId" column="PROJECT_ID" />
+		<id property="recStatus" column="REC_STATUS" />
+		<id property="applyHandleStatus" column="APPLY_HANDLE_STATUS" />
+		<id property="createrId" column="CREATER_ID" />
+		<id property="createrDate" column="CREATER_DATE" />
+		<id property="foreclosureStatus" column="FORECLOSURE_STATUS" />
+		<id property="foreclosureTurnDownRemark" column="FORECLOSURE_TURN_DOWN_REMARK" />
+	</resultMap>
+	<!-- 申请业务处理信息（基本信息） -->
+	<resultMap type="applyHandleInfoDTO" id="applyHandleInfoMap">
+		<id property="pid" column="PID" />
+		<id property="handleId" column="HANDLE_ID" />
+		<id property="subDate" column="SUB_DATE" />
+		<id property="contactPerson" column="CONTACT_PERSON" />
+		<id property="contactPhone" column="CONTACT_PHONE" />
+		<id property="handleDate" column="HANDLE_DATE" />
+		<id property="specialCase" column="SPECIAL_CASE" />
+		<id property="createrId" column="CREATER_ID" />
+		<id property="remark" column="REMARK" />
+		<id property="feedback" column="FEEDBACK" />
+		<id property="projectId" column="PROJECT_ID" />
+	</resultMap>
+	<!-- 赎楼及余额回转信息 -->
+	<resultMap type="houseBalanceDTO" id="houseBalanceMap">
+		<id property="pid" column="PID" />
+		<id property="handleId" column="HANDLE_ID" />
+		<id property="principal" column="PRINCIPAL" />
+		<id property="payDate" column="PAY_DATE" />
+		<id property="houseClerk" column="HOUSE_CLERK" />
+		<id property="interest" column="INTEREST" />
+		<id property="defaultInterest" column="DEFAULT_INTEREST" />
+		<id property="balance" column="BALANCE" />
+		<id property="backAccount" column="BACK_ACCOUNT" />
+		<id property="count" column="COUNT" />
+		<id property="createrId" column="CREATER_ID" />
+		<id property="balanceConfirm" column="BALANCE_CONFIRM" />
+		<id property="handleUserId" column="HANDLE_USER_ID" />
+		<id property="handleUserName" column="HANDLE_USER_NAME" />
+		<id property="createrName" column="CREATER_NAME" />
+		<id property="createrDate" column="CREATER_DATE" />
+		<id property="loanAmount" column="LOAN_AMOUNT" />
+		<id property="loanTime" column="LOAN_TIME" />
+	</resultMap>
+	<!-- 财务退款明细 -->
+	<resultMap type="refundDetailsDTO" id="refundDetailsMap">
+		<id property="pid" column="PID" />
+		<id property="handleId" column="HANDLE_ID" />
+		<id property="refundPro" column="REFUND_PRO" />
+		<id property="refundMoney" column="REFUND_MONEY" />
+		<id property="recAccount" column="REC_ACCOUNT" />
+		<id property="recName" column="REC_NAME" />
+		<id property="payDate" column="PAY_DATE" />
+		<id property="operator" column="OPERATOR" />
+		<id property="createrId" column="CREATER_ID" />
+	</resultMap>
+	<!-- 办理流程条目 -->
+	<resultMap type="handleFlowDTO" id="handleFlowMap">
+		<id property="pid" column="PID" />
+		<id property="name" column="NAME" />
+		<id property="fixDay" column="FIX_DAY" />
+		<id property="advanceNoticeDay" column="ADVANCE_NOTICE_DAY" />
+		<id property="noticeType" column="NOTICE_TYPE" />
+		<id property="oneLevel" column="ONE_LEVEL" />
+		<id property="twoLevel" column="TWO_LEVEL" />
+		<id property="threeLevel" column="THREE_LEVEL" />
+	</resultMap>
+	<!-- 办理动态 -->
+	<resultMap type="handleDynamicDTO" id="handleDynamicMap">
+		<id property="pid" column="PID" />
+		<id property="handleId" column="HANDLE_ID" />
+		<id property="handleFlowId" column="HANDLE_FLOW_ID" />
+		<id property="finishDate" column="FINISH_DATE" />
+		<id property="handleDay" column="HANDLE_DAY" />
+		<id property="operator" column="OPERATOR" />
+		<id property="differ" column="DIFFER" />
+		<id property="differMonitorCount" column="DIFFER_MONITOR_COUNT" />
+		<id property="createDate" column="CREATE_DATE" />
+		<id property="createrId" column="CREATER_ID" />
+		<id property="remark" column="REMARK" />
+		<id property="currentHandleUserId" column="CURRENT_HANDLE_USER_ID" />
+		<id property="currentHandleUserName" column="CURRENT_HANDLE_USER_NAME" />
+	</resultMap>
+	<!-- 业务办理和任务关联 -->
+	<resultMap type="bizHandleWorkflowDTO" id="bizHandleWorkflowMap">
+		<id property="pid" column="PID" />
+		<id property="handleId" column="HANDLE_ID" />
+		<id property="executionId" column="EXECUTION_ID" />
+		<id property="status" column="STATUS" />
+		<id property="taskId" column="TASK_ID" />
+		<id property="projectId" column="PROJECT_ID" />
+	</resultMap>
+	<!-- 差异预警处理 -->
+	<resultMap type="handleDifferWarnDTO" id="handleDifferWarnMap">
+		<id property="pid" column="PID" />
+		<id property="handleDynamicId" column="HANDLE_DYNAMIC_ID" />
+		<id property="projectId" column="PROJECT_ID" />
+		<id property="projectName" column="PROJECT_NAME" />
+		<id property="flowName" column="FLOW_NAME" />
+		<id property="flowId" column="FLOW_ID" />
+		<id property="differ" column="DIFFER" />
+		<id property="status" column="STATUS" />
+		<id property="handleDate" column="HANDLE_DATE" />
+		<id property="handleAuthor" column="HANDLE_AUTHOR" />
+		<id property="handleAuthorName" column="HANDLE_AUTHOR_NAME" />
+		<id property="createDate" column="CREATE_DATE" />
+		<id property="remark" column="REMARK" />
+		<id property="handleType" column="HANDLE_TYPE" />
+	</resultMap>
+	<!-- 差异预警首页 -->
+	<resultMap type="handleDifferWarnIndexDTO" id="handleDifferWarnIndexMap">
+		<id property="pid" column="PID" />
+		<id property="handleDynamicId" column="HANDLE_DYNAMIC_ID" />
+		<id property="projectId" column="PROJECT_ID" />
+		<id property="pmUserName" column="PM_USER_NAME" />
+		<id property="projectName" column="PROJECT_NAME" />
+		<id property="projectNumber" column="PROJECT_NUMBER" />
+		<id property="flowName" column="FLOW_NAME" />
+		<id property="differ" column="DIFFER" />
+		<id property="fixDay" column="FIX_DAY" />
+		<id property="status" column="STATUS" />
+		<id property="handleDate" column="HANDLE_DATE" />
+		<id property="handleAuthor" column="HANDLE_AUTHOR" />
+		<id property="handleAuthorName" column="HANDLE_AUTHOR_NAME" />
+		<id property="createDate" column="CREATE_DATE" />
+		<id property="remark" column="REMARK" />
+		<id property="houseName" column="HOUSE_NAME" />
+		<id property="buyerName" column="BUYER_NAME" />
+		<id property="sellerName" column="SELLER_NAME" />
+		<id property="handleType" column="HANDLE_TYPE" />
+	</resultMap>
+	<!-- 办理动态文件关联 -->
+	<resultMap type="handleDynamicFileDTO" id="handleDynamicFileMap">
+		<id property="pid" column="PID" />
+		<id property="handleDynamicId" column="HANDLE_DYNAMIC_ID" />
+		<id property="fileId" column="FILE_ID" />
+		<id property="status" column="STATUS" />
+		<id property="uploadUserId" column="UPLOAD_USER_ID" />
+		<id property="uploadUserName" column="UPLOAD_USER_NAME" />
+		<id property="fileName" column="FILE_NAME" />
+		<id property="fileType" column="FILE_TYPE" />
+		<id property="fileSize" column="FILE_SIZE" />
+		<id property="fileUrl" column="FILE_URL" />
+		<id property="remark" column="REMARK" />
+	</resultMap>
+	<!-- 赎楼列表 -->
+	<resultMap type="foreclosureIndexDTO" id="foreclosureIndexMap">
+		<id property="bizHandleId" column="BIZ_HANDLE_ID" />
+		<id property="handleUserName" column="HANDLE_USER_NAME" />
+		<id property="payDate" column="PAY_DATE" />
+		<id property="projectId" column="PROJECT_ID" />
+		<id property="projectNumber" column="PROJECT_NUMBER" />
+		<id property="projectName" column="PROJECT_NAME" />
+		<id property="recFeeStatus" column="REC_FEE_STATUS" />
+		<id property="houseClerkId" column="HOUSE_CLERK_ID" />
+		<id property="houseClerkName" column="HOUSE_CLERK_NAME" />
+		<id property="foreclosureStatus" column="FORECLOSURE_STATUS" />
+		<id property="foreclosureTurnDownRemark" column="FORECLOSURE_TURN_DOWN_REMARK" />
+		<id property="balanceConfirm" column="BALANCE_CONFIRM" />
+		<id property="realLoan" column="REAL_LOAN" />
+		<id property="balance" column="BALANCE" />
+		<id property="oneForeclosureMoney" column="ONE_FORECLOSURE_MONEY" />
+		<id property="twoForeclosureMoney" column="TWO_FORECLOSURE_MONEY" />
+		<id property="foreclosureMoney" column="FORECLOSURE_MONEY" />
+
+		<id property="oneRealLoan" column="ONE_REAL_LOAN" />
+		<id property="twoRealLoan" column="TWO_REAL_LOAN" />
+		<id property="oneBalance" column="ONE_BALANCE" />
+		<id property="twoBalance" column="TWO_BALANCE" />
+		<id property="projectSource" column="PROJECT_SOURCE" />
+
+		<id property="houseName" column="HOUSE_NAME" />
+		<id property="buyerName" column="BUYER_NAME" />
+		<id property="sellerName" column="SELLER_NAME" />
+		<id property="productName" column="PRODUCT_NAME" />
+	</resultMap>
+	<!-- 机构的保后监管列表 -->
+	<resultMap type="com.xlkfinance.bms.rpc.inloan.OrgBizHandlePage"
+		id="orgBizHandlePageMap">
+		<id property="bizHandleId" column="BIZ_HANDLE_ID" />
+		<id property="projectId" column="PROJECT_ID" />
+		<id property="projectNumber" column="PROJECT_NUMBER" />
+		<id property="projectName" column="PROJECT_NAME" />
+		<id property="projectStatus" column="PROJECT_STATUS" />
+		<id property="applyUserName" column="APPLY_USER_NAME" />
+		<id property="loanMoney" column="LOAN_MONEY" />
+		<id property="realLoan" column="REAL_LOAN" />
+		<id property="houseName" column="HOUSE_NAME" />
+		<id property="buyerName" column="BUYER_NAME" />
+		<id property="sellerName" column="SELLER_NAME" />
+	</resultMap>
+	<!-- 业务受理列表分页查询 -->
+	<select id="findAllApplyHandleIndex" resultMap="applyHandleIndexMap"
+		parameterType="applyHandleIndexDTO">
+	<![CDATA[
+	SELECT D.* FROM (SELECT T.*, ROWNUM RN
+	        FROM (SELECT B.PID,
+       B.PROJECT_ID,
+       B.PID AS HANDLE_ID,
+       A.PROJECT_NUMBER,
+       A.PROJECT_NAME,
+       A.FORECLOSURE_STATUS AS REQUEST_STATUS,
+       A.IS_CHECHAN,
+       F.CREATER_DATE AS PROJECT_PASS_DATE,
+       B.REC_STATUS,
+       F.STATUS AS REC_FEE_STATUS,
+       B.APPLY_HANDLE_STATUS,
+       C.HANDLE_DATE,
+       C.FEEDBACK,
+       CASE
+         WHEN D.STATUS = 1 THEN
+          E.NAME_
+         ELSE
+          CAST('' AS NVARCHAR2(55))
+       END AS TASK_NAME,
+       B.CREATER_DATE,
+       G.PRODUCT_NAME,
+       H.LOAN_MONEY,
+       EH.HOUSE_NAME,
+       I.BUYER_NAME,
+       I.SELLER_NAME,
+      CC.REAL_NAME AS PM_USER_NAME,
+       (SELECT S.BANK_NAME  FROM OLD_LOAN_BANK_V S WHERE S.PID = A.PID) AS OLD_LOAN_BANK,
+		(SELECT S.BANK_NAME  FROM SYS_BANK_INFO S WHERE S.PID = J.OLD_LOAN_BANK_BRANCH) AS OLD_LOAN_BANK_BRANCH
+  FROM BIZ_PROJECT A
+ INNER JOIN BIZ_LOAN_HANDLE_INFO B
+    ON A.PID = B.PROJECT_ID
+  LEFT JOIN SYS_USER CC ON CC.PID = A.PM_USER_ID
+  LEFT JOIN BIZ_LOAN_APPLY_HANDLE_INFO C
+    ON B.PID = C.HANDLE_ID
+  LEFT JOIN BIZ_HANDLE_WORKFLOW D
+    ON B.PID = D.HANDLE_ID
+  LEFT JOIN ACT_RU_TASK E
+    ON D.EXECUTION_ID = E.EXECUTION_ID_
+  LEFT JOIN BIZ_LOAN_FINANCE_HANDLE F
+    ON F.PROJECT_ID = A.PID
+  LEFT JOIN BIZ_PRODUCT G
+    ON A.PRODUCT_ID = G.PID
+  LEFT JOIN BIZ_PROJECT_GUARANTEE H
+    ON H.PROJECT_ID = A.PID
+  LEFT JOIN BIZ_PROJECT_PROPERTY I
+    ON I.PROJECT_ID=A.PID
+  LEFT JOIN BIZ_PROJECT_FORECLOSURE J
+    ON J.PROJECT_ID = A.PID
+    LEFT JOIN BIZ_PRODUCT HC ON A.PRODUCT_ID=HC.PID
+    
+    LEFT JOIN V_HOUSE_NAME EH ON EH.PROJECT_ID = A.PID
+	]]>
+		<where>
+			<trim>
+				<if test="userIds!=null and userIds.size()>0">
+					AND A.PM_USER_ID IN
+					<foreach item="itemId" collection="userIds" open="("
+						separator="," close=")">
+						#{itemId}
+					</foreach>
+				</if>
+				<if test="createrId!=null and createrId>0">
+					AND B.CREATER_ID = #{createrId}
+				</if>
+				<if test="workFlowStatus ==-1">
+					AND D.STATUS = 1 AND E.NAME_ IS NOT NULL
+					<if test="taskUserName !=null and taskUserName !=''">
+						AND E.ID_ IN(SELECT RUI.TASK_ID_ FROM
+						ACT_RU_IDENTITYLINK RUI WHERE
+						RUI.TYPE_ = 'candidate' AND
+						RUI.USER_ID_=#{taskUserName})
+					</if>
+				</if>
+				<if test="applyHandleStatus!=null and applyHandleStatus>0">
+					AND B.APPLY_HANDLE_STATUS = #{applyHandleStatus}
+				</if>
+				<if test="projectStatus!=null and projectStatus>0">
+					AND A.FORECLOSURE_STATUS = #{projectStatus}
+				</if>
+				<if test="recFeeStatus!=null and recFeeStatus>0">
+					AND F.STATUS = #{recFeeStatus}
+				</if>
+				<if test="recStatus!=null and recStatus>0">
+					AND B.REC_STATUS = #{recStatus}
+				</if>
+				<!-- 如果根据办理动态查询，要保证流程状态是有效的，且 -->
+				<if test="taskName !=null and taskName !=''">
+					AND E.NAME_ = #{taskName}
+					AND D.STATUS = 1
+				</if>
+				<if test="projectName!=null and projectName!=''">
+					AND A.PROJECT_NAME LIKE '%${projectName}%'
+				</if>
+				<if test="projectNumber!=null and projectNumber!=''">
+					AND A.PROJECT_NUMBER LIKE '%${projectNumber}%'
+				</if>
+				<if test="pmUserName!=null and pmUserName!=''">
+					AND CC.REAL_NAME LIKE '%${pmUserName}%'
+				</if>
+				<if test="houseName !=null and houseName !=''">
+					AND EH.HOUSE_NAME LIKE '%${houseName}%'
+				</if>
+				<if test="buyerName !=null and buyerName !=''">
+					AND I.BUYER_NAME LIKE '%${buyerName}%'
+				</if>
+				<if test="sellerName !=null and sellerName !=''">
+					AND I.SELLER_NAME LIKE '%${sellerName}%'
+				</if>
+				<if
+					test="oldLoanBankBranch !=null and oldLoanBankBranch !='' and oldLoanBankBranch !='-1'">
+					AND J.OLD_LOAN_BANK_BRANCH = TO_NUMBER('${oldLoanBankBranch}')
+				</if>
+				<if test="productId !=null and productId >0">
+					AND G.PID = #{productId}
+				</if>
+				<if test="projectId!=null and projectId>0">
+					AND A.PID = #{projectId}
+				</if>
+				<if test="pid!=null and pid>0">
+					AND B.PID = #{pid}
+				</if>
+			</trim>
+		</where>
+	<![CDATA[
+	ORDER BY B.CREATER_DATE DESC,B.PID DESC
+	) T
+	WHERE ROWNUM <=#{page}*#{rows}
+	) D
+	WHERE D.RN > ((#{page}-1)*#{rows})
+	
+	]]>
+	</select>
+	<!-- 业务受理总数 -->
+	<select id="getApplyHandleIndexTotal" parameterType="applyHandleIndexDTO"
+		resultType="Integer">
+	<![CDATA[
+	SELECT COUNT(1) FROM
+			(SELECT B.PID,
+       B.PROJECT_ID,
+       A.PROJECT_NUMBER,
+       A.PROJECT_NAME,
+       A.REQUEST_STATUS,
+       B.REC_STATUS,
+       B.APPLY_HANDLE_STATUS,
+       C.HANDLE_DATE,
+       C.FEEDBACK,
+       E.NAME_ AS TASK_NAME
+  FROM BIZ_PROJECT A
+ INNER JOIN BIZ_LOAN_HANDLE_INFO B
+    ON A.PID = B.PROJECT_ID
+  LEFT JOIN BIZ_LOAN_APPLY_HANDLE_INFO C
+    ON B.PID = C.HANDLE_ID
+ LEFT JOIN SYS_USER CC ON CC.PID = A.PM_USER_ID
+  LEFT JOIN BIZ_HANDLE_WORKFLOW D
+    ON B.PID = D.HANDLE_ID
+  LEFT JOIN ACT_RU_TASK E
+    ON D.EXECUTION_ID = E.EXECUTION_ID_
+  LEFT JOIN BIZ_LOAN_FINANCE_HANDLE F
+    ON F.PROJECT_ID = A.PID
+  LEFT JOIN BIZ_PRODUCT G
+    ON A.PRODUCT_ID = G.PID
+  LEFT JOIN BIZ_PROJECT_GUARANTEE H
+    ON H.PROJECT_ID = A.PID
+  LEFT JOIN BIZ_PROJECT_PROPERTY I
+    ON I.PROJECT_ID=A.PID
+  LEFT JOIN BIZ_PROJECT_FORECLOSURE J
+    ON J.PROJECT_ID = A.PID
+    LEFT JOIN BIZ_PRODUCT HC ON A.PRODUCT_ID=HC.PID
+    LEFT JOIN V_HOUSE_NAME EH ON EH.PROJECT_ID = A.PID
+	]]>
+		<where>
+			<trim>
+				<if test="userIds!=null and userIds.size()>0">
+					AND A.PM_USER_ID IN
+					<foreach item="itemId" collection="userIds" open="("
+						separator="," close=")">
+						#{itemId}
+					</foreach>
+				</if>
+				<if test="createrId!=null and createrId>0">
+					AND B.CREATER_ID = #{createrId}
+				</if>
+				<if test="workFlowStatus ==-1">
+					AND D.STATUS = 1 AND E.NAME_ IS NOT NULL
+					<if test="taskUserName !=null and taskUserName !=''">
+						AND E.ID_ IN(SELECT RUI.TASK_ID_ FROM
+						ACT_RU_IDENTITYLINK RUI WHERE
+						RUI.TYPE_ = 'candidate' AND
+						RUI.USER_ID_=#{taskUserName})
+					</if>
+				</if>
+				<if test="applyHandleStatus!=null and applyHandleStatus>0">
+					AND B.APPLY_HANDLE_STATUS = #{applyHandleStatus}
+				</if>
+				<if test="projectStatus!=null and projectStatus>0">
+					AND A.FORECLOSURE_STATUS = #{projectStatus}
+				</if>
+				<if test="recFeeStatus!=null and recFeeStatus>0">
+					AND F.STATUS = #{recFeeStatus}
+				</if>
+				<if test="recStatus!=null and recStatus>0">
+					AND B.REC_STATUS = #{recStatus}
+				</if>
+				<!-- 如果根据办理动态查询，要保证流程状态是有效的，且 -->
+				<if test="taskName !=null and taskName !=''">
+					AND E.NAME_ = #{taskName}
+					AND D.STATUS = 1
+				</if>
+				<if test="projectName!=null and projectName!=''">
+					AND A.PROJECT_NAME LIKE '%${projectName}%'
+				</if>
+				<if test="pmUserName!=null and pmUserName!=''">
+					AND CC.REAL_NAME LIKE '%${pmUserName}%'
+				</if>
+				<if test="projectNumber!=null and projectNumber!=''">
+					AND A.PROJECT_NUMBER LIKE '%${projectNumber}%'
+				</if>
+				<if test="houseName !=null and houseName !=''">
+					AND EH.HOUSE_NAME LIKE '%${houseName}%'
+				</if>
+				<if test="buyerName !=null and buyerName !=''">
+					AND I.BUYER_NAME LIKE '%${buyerName}%'
+				</if>
+				<if test="sellerName !=null and sellerName !=''">
+					AND I.SELLER_NAME LIKE '%${sellerName}%'
+				</if>
+				<if
+					test="oldLoanBankBranch !=null and oldLoanBankBranch !='' and oldLoanBankBranch !='-1'">
+					AND J.OLD_LOAN_BANK_BRANCH = TO_NUMBER('${oldLoanBankBranch}')
+				</if>
+				<if test="productId !=null and productId >0">
+					AND G.PID = #{productId}
+				</if>
+				<if test="projectId!=null and projectId>0">
+					AND A.PID = #{projectId}
+				</if>
+				<if test="pid!=null and pid>0">
+					AND B.PID = #{pid}
+				</if>
+			</trim>
+		</where>
+		) T
+	</select>
+	<select id="qeuryHandleDynamicCountMapList" resultType="handleDynamicMap">
+		SELECT E.NAME_ DYNAMICNAME,
+		COUNT(E.NAME_) AS COUNT
+		FROM BIZ_PROJECT A
+		INNER JOIN BIZ_LOAN_HANDLE_INFO B
+		ON A.PID = B.PROJECT_ID
+		LEFT JOIN
+		BIZ_LOAN_APPLY_HANDLE_INFO C
+		ON B.PID = C.HANDLE_ID
+		LEFT JOIN
+		BIZ_HANDLE_WORKFLOW D
+		ON B.PID = D.HANDLE_ID
+		LEFT JOIN ACT_RU_TASK E
+		ON
+		D.EXECUTION_ID = E.EXECUTION_ID_
+		LEFT JOIN BIZ_PROJECT_FORECLOSURE F
+		ON F.PROJECT_ID = A.PID
+		LEFT JOIN BIZ_PRODUCT HC ON HC.PID = A.PRODUCT_ID
+		<where>
+			<trim>
+				<if test="userIds!=null and userIds.size()>0">
+					AND A.PM_USER_ID IN
+					<foreach item="itemId" collection="userIds" open="("
+						separator="," close=")">
+						#{itemId}
+					</foreach>
+				</if>
+				<if test="1==1">
+					AND E.ASSIGNEE_ IS NULL
+					AND E.NAME_ IS NOT NULL
+					AND
+					D.STATUS = 1
+				</if>
+				<if test="taskUserName !=null and taskUserName !=''">
+					AND E.ID_ IN(SELECT RUI.TASK_ID_ FROM
+					ACT_RU_IDENTITYLINK RUI WHERE
+					RUI.TYPE_ = 'candidate' AND
+					RUI.USER_ID_=#{taskUserName})
+				</if>
+				<if test="createrId!=null and createrId>0">
+					AND B.CREATER_ID = #{createrId}
+				</if>
+				<if test="applyHandleStatus!=null and applyHandleStatus>0">
+					AND B.APPLY_HANDLE_STATUS = #{applyHandleStatus}
+				</if>
+				<if test="projectStatus!=null and projectStatus>0">
+					AND A.FORECLOSURE_STATUS = #{projectStatus}
+				</if>
+				<if test="recStatus!=null and recStatus>0">
+					AND B.REC_STATUS = #{recStatus}
+				</if>
+				<if test="taskName !=null and taskName !=''">
+					AND E.NAME_ = #{taskName}
+				</if>
+				<if test="projectName!=null and projectName!=''">
+					AND A.PROJECT_NAME LIKE '%${projectName}%'
+				</if>
+				<if test="projectNumber!=null and projectNumber!=''">
+					AND A.PROJECT_NUMBER LIKE '%${projectNumber}%'
+				</if>
+				<if test="projectId!=null and projectId>0">
+					AND A.PID = #{projectId}
+				</if>
+				<if test="pid!=null and pid>0">
+					AND B.PID = #{pid}
+				</if>
+			</trim>
+		</where>
+		GROUP BY E.NAME_
+	</select>
+	<!-- 业务处理信息列表分页查询 -->
+	<select id="findAllHandleInfoDTO" resultMap="handleInfoMap"
+		parameterType="handleInfoDTO">
+	<![CDATA[
+	SELECT D.* FROM (SELECT T.*, ROWNUM RN
+	        FROM (SELECT HI.*
+         FROM BIZ_LOAN_HANDLE_INFO HI 
+         LEFT JOIN 	BIZ_PROJECT A ON A.PID = HI.PROJECT_ID
+         LEFT JOIN BIZ_PRODUCT HC ON A.PRODUCT_ID = HC.PID
+	]]>
+		<where>
+			<trim>
+				<if test="userIds!=null and userIds.size()>0">
+					AND HI.CREATER_ID IN
+					<foreach item="itemId" collection="userIds" open="("
+						separator="," close=")">
+						#{itemId}
+					</foreach>
+				</if>
+				<if test="createrId!=null and createrId>0">
+					AND HI.CREATER_ID = #{createrId}
+				</if>
+				<if test="foreclosureStatus !=null and foreclosureStatus >0">
+					AND HI.FORECLOSURE_STATUS = #{foreclosureStatus}
+				</if>
+				<if test="applyHandleStatus!=null and applyHandleStatus>0">
+					AND HI.APPLY_HANDLE_STATUS = #{applyHandleStatus}
+				</if>
+				<if test="recStatus!=null and recStatus>0">
+					AND HI.REC_STATUS = #{recStatus}
+				</if>
+				<if test="projectId!=null and projectId>0">
+					AND HI.PROJECT_ID = #{projectId}
+				</if>
+				<if test="pid!=null and pid>0">
+					AND HI.PID = #{pid}
+				</if>
+			</trim>
+		</where>
+	<![CDATA[
+	) T
+	WHERE ROWNUM <=#{page}*#{rows}
+	) D
+	WHERE D.RN > ((#{page}-1)*#{rows})
+	]]>
+	</select>
+	<!-- 查询业务处理信息总数 -->
+	<select id="getHandleInfoDTOTotal" parameterType="handleInfoDTO"
+		resultType="Integer">
+	<![CDATA[
+	SELECT COUNT(1) FROM
+			(SELECT HI.PID,HI.PROJECT_ID,HI.REC_STATUS,HI.APPLY_HANDLE_STATUS,HI.CREATER_ID
+         FROM BIZ_LOAN_HANDLE_INFO HI 
+	]]>
+		<where>
+			<trim>
+				<if test="userIds!=null and userIds.size()>0">
+					AND HI.CREATER_ID IN
+					<foreach item="itemId" collection="userIds" open="("
+						separator="," close=")">
+						#{itemId}
+					</foreach>
+				</if>
+				<if test="createrId!=null and createrId>0">
+					AND HI.CREATER_ID = #{createrId}
+				</if>
+				<if test="foreclosureStatus !=null and foreclosureStatus >0">
+					AND HI.FORECLOSURE_STATUS = #{foreclosureStatus}
+				</if>
+				<if test="applyHandleStatus!=null and applyHandleStatus>0">
+					AND HI.APPLY_HANDLE_STATUS = #{applyHandleStatus}
+				</if>
+				<if test="recStatus!=null and recStatus>0">
+					AND HI.REC_STATUS = #{recStatus}
+				</if>
+				<if test="projectId!=null and projectId>0">
+					AND HI.PROJECT_ID = #{projectId}
+				</if>
+				<if test="pid!=null and pid>0">
+					AND HI.PID = #{pid}
+				</if>
+			</trim>
+		</where>
+		) T
+	</select>
+	<!-- 根据ID进行查询业务处理信息 -->
+	<select id="getHandleInfoById" resultMap="handleInfoMap"
+		parameterType="int">
+	<![CDATA[SELECT A.*
+         FROM BIZ_LOAN_HANDLE_INFO A 
+				WHERE A.PID = #{pid}
+	]]>
+	</select>
+	<!-- 添加业务处理信息（主表） -->
+	<insert id="addHandleInfo" parameterType="handleInfoDTO">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_HANDLE_INFO.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_LOAN_HANDLE_INFO
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			PID,
+			<if test="projectId != null and projectId >0">
+				PROJECT_ID,
+			</if>
+			<if test="applyHandleStatus != null and applyHandleStatus >0">
+				APPLY_HANDLE_STATUS,
+			</if>
+			<if test="recStatus != null and recStatus >0">
+				REC_STATUS,
+			</if>
+			<if test="createrId != null and createrId >0">
+				CREATER_ID,
+			</if>
+			<if test="foreclosureStatus != null and foreclosureStatus >0">
+				foreclosure_status,
+			</if>
+			<if
+				test="foreclosureTurnDownRemark != null and foreclosureTurnDownRemark !=''">
+				FORECLOSURE_TURN_DOWN_REMARK,
+			</if>
+			CREATER_DATE
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{pid},
+			<if test="projectId != null and projectId >0">
+				#{projectId},
+			</if>
+			<if test="applyHandleStatus != null and applyHandleStatus >0">
+				#{applyHandleStatus},
+			</if>
+			<if test="recStatus != null and recStatus >0">
+				#{recStatus},
+			</if>
+			<if test="createrId != null and createrId >0">
+				#{createrId},
+			</if>
+			<if test="foreclosureStatus != null and foreclosureStatus >0">
+				#{foreclosureStatus},
+			</if>
+			<if
+				test="foreclosureTurnDownRemark != null and foreclosureTurnDownRemark !=''">
+				#{foreclosureTurnDownRemark},
+			</if>
+			SYSDATE
+		</trim>
+	</insert>
+	<!-- 根据ID更新业务处理信息 -->
+	<update id="updateHandleInfo" parameterType="handleInfoDTO">
+		UPDATE BIZ_LOAN_HANDLE_INFO
+		<set>
+			<if test="projectId != null and projectId >0">
+				PROJECT_ID=#{projectId},
+			</if>
+			<if test="applyHandleStatus != null and applyHandleStatus >0">
+				APPLY_HANDLE_STATUS=#{applyHandleStatus},
+			</if>
+			<if test="recStatus != null and recStatus >0">
+				REC_STATUS=#{recStatus},
+			</if>
+			<if test="createrId != null and createrId >0">
+				CREATER_ID=#{createrId},
+			</if>
+			<if test="createrDate != null and createrDate !=''">
+				CREATER_DATE=#{createrDate,jdbcType=DATE,javaType=String},
+			</if>
+			<if test="foreclosureStatus != null and foreclosureStatus >0">
+				FORECLOSURE_STATUS=#{foreclosureStatus},
+			</if>
+			<if
+				test="foreclosureTurnDownRemark != null and foreclosureTurnDownRemark !=''">
+				FORECLOSURE_TURN_DOWN_REMARK=#{foreclosureTurnDownRemark}
+			</if>
+		</set>
+		where pid = #{pid}
+	</update>
+	<!-- 查询业务处理信息 分页查询 -->
+	<select id="findAllApplyHandleInfo" resultMap="applyHandleInfoMap"
+		parameterType="applyHandleInfoDTO">
+	<![CDATA[
+	SELECT D.* FROM (SELECT T.*, ROWNUM RN
+	        FROM (SELECT A.PID,A.HANDLE_ID,TO_CHAR(A.SUB_DATE, 'yyyy-MM-dd') AS SUB_DATE,A.CONTACT_PERSON,A.CONTACT_PHONE,TO_CHAR(A.HANDLE_DATE, 'yyyy-MM-dd') AS HANDLE_DATE,A.SPECIAL_CASE,A.REMARK,A.CREATER_ID,A.FEEDBACK
+            FROM BIZ_LOAN_APPLY_HANDLE_INFO A
+	]]>
+		<where>
+			<trim>
+				<if test="userIds!=null and userIds.size()>0">
+					AND A.CREATER_ID IN
+					<foreach item="itemId" collection="userIds" open="("
+						separator="," close=")">
+						#{itemId}
+					</foreach>
+				</if>
+				<if test="contactPerson!=null and contactPerson!=''">
+					AND A.CONTACT_PERSON LIKE '%${contactPerson}%'
+				</if>
+				<if test="contactPhone!=null and contactPhone!=''">
+					AND A.CONTACT_PHONE LIKE '%${contactPhone}%'
+				</if>
+				<if test="createrId!=null and createrId>0">
+					AND A.CREATER_ID = #{createrId}
+				</if>
+				<if test="handleId!=null and handleId>0">
+					AND A.HANDLE_ID = #{handleId}
+				</if>
+				<if test="pid!=null and pid>0">
+					AND A.PID = #{pid}
+				</if>
+				<if test="projectId!=null and projectId>0">
+					AND A.PROJECT_ID = #{projectId}
+				</if>
+			</trim>
+		</where>
+	<![CDATA[
+	) T
+	WHERE ROWNUM <=#{page}*#{rows}
+	) D
+	WHERE D.RN > ((#{page}-1)*#{rows})
+	]]>
+	</select>
+	<!-- 查询业务处理信息总数 -->
+	<select id="getApplyHandleInfoTotal" resultType="Integer"
+		parameterType="applyHandleInfoDTO">
+	<![CDATA[
+	SELECT COUNT(1) FROM
+			(SELECT A.PID,A.HANDLE_ID,TO_CHAR(A.SUB_DATE, 'yyyy-MM-dd') AS SUB_DATE,A.CONTACT_PERSON,A.CONTACT_PHONE,TO_CHAR(A.HANDLE_DATE, 'yyyy-MM-dd') AS HANDLE_DATE,A.SPECIAL_CASE,A.REMARK,A.CREATER_ID
+            FROM BIZ_LOAN_APPLY_HANDLE_INFO A
+	]]>
+		<where>
+			<trim>
+				<if test="userIds!=null and userIds.size()>0">
+					AND A.CREATER_ID IN
+					<foreach item="itemId" collection="userIds" open="("
+						separator="," close=")">
+						#{itemId}
+					</foreach>
+				</if>
+				<if test="contactPerson!=null and contactPerson!=''">
+					AND A.CONTACT_PERSON LIKE '%${contactPerson}%'
+				</if>
+				<if test="contactPhone!=null and contactPhone!=''">
+					AND A.CONTACT_PHONE LIKE '%${contactPhone}%'
+				</if>
+				<if test="createrId!=null and createrId>0">
+					AND A.CREATER_ID = #{createrId}
+				</if>
+				<if test="handleId!=null and handleId>0">
+					AND A.HANDLE_ID = #{handleId}
+				</if>
+				<if test="pid!=null and pid>0">
+					AND A.PID = #{pid}
+				</if>
+				<if test="projectId!=null and projectId>0">
+					AND A.PROJECT_ID = #{projectId}
+				</if>
+			</trim>
+		</where>
+		) T
+	</select>
+	<!-- 根据ID获取申请业务处理信息 -->
+	<select id="getApplyHandleInfoById" resultMap="applyHandleInfoMap"
+		parameterType="int">
+	<![CDATA[SELECT A.*
+         FROM BIZ_LOAN_APPLY_HANDLE_INFO A 
+				WHERE A.PID = #{pid}
+	]]>
+	</select>
+	<!-- 添加申请业务处理信息 -->
+	<insert id="addApplyHandleInfo" parameterType="applyHandleInfoDTO">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_APPLY_HANDLE.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_LOAN_APPLY_HANDLE_INFO
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			PID,
+			<if test="handleId != null and handleId >0">
+				HANDLE_ID,
+			</if>
+			<if test="subDate != null and subDate !=''">
+				SUB_DATE,
+			</if>
+			<if test="contactPerson != null and contactPerson !=''">
+				CONTACT_PERSON,
+			</if>
+			<if test="contactPhone != null and contactPhone!=''">
+				CONTACT_PHONE,
+			</if>
+			<if test="handleDate != null and handleDate !=''">
+				HANDLE_DATE,
+			</if>
+			<if test="specialCase != null and specialCase !=''">
+				SPECIAL_CASE,
+			</if>
+			<if test="remark != null and remark !=''">
+				REMARK,
+			</if>
+			<if test="feedback != null and feedback !=''">
+				FEEDBACK,
+			</if>
+			<if test="createrId != null and createrId >0">
+				CREATER_ID,
+			</if>
+			<if test="projectId!=null and projectId>0">
+				PROJECT_ID,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{pid},
+			<if test="handleId != null and handleId >0">
+				#{handleId},
+			</if>
+			<if test="subDate != null and subDate !=''">
+				#{subDate,jdbcType=DATE,javaType=String},
+			</if>
+			<if test="contactPerson != null and contactPerson !=''">
+				#{contactPerson},
+			</if>
+			<if test="contactPhone != null and contactPhone !=''">
+				#{contactPhone},
+			</if>
+			<if test="handleDate != null and handleDate !=''">
+				#{handleDate,jdbcType=DATE,javaType=String},
+			</if>
+			<if test="specialCase != null and specialCase !=''">
+				#{specialCase},
+			</if>
+			<if test="remark != null and remark !=''">
+				#{remark},
+			</if>
+			<if test="feedback != null and feedback !=''">
+				#{feedback},
+			</if>
+			<if test="createrId != null and createrId >0">
+				#{createrId},
+			</if>
+			<if test="projectId!=null and projectId>0">
+				#{projectId},
+			</if>
+		</trim>
+	</insert>
+	<!-- 根据ID更新申请业务处理信息 -->
+	<update id="updateApplyHandleInfo" parameterType="applyFinanceHandleDTO">
+		UPDATE BIZ_LOAN_APPLY_HANDLE_INFO
+		<set>
+			<if test="handleId != null and handleId >0">
+				HANDLE_ID=#{handleId},
+			</if>
+			<if test="subDate != null and subDate !=''">
+				SUB_DATE=#{subDate,jdbcType=DATE,javaType=String},
+			</if>
+			<if test="contactPerson != null and contactPerson !=''">
+				CONTACT_PERSON=#{contactPerson},
+			</if>
+			<if test="contactPhone != null and contactPhone !=''">
+				CONTACT_PHONE=#{contactPhone},
+			</if>
+			<if test="handleDate != null and handleDate !=''">
+				HANDLE_DATE=#{handleDate,jdbcType=DATE,javaType=String},
+			</if>
+			<if test="specialCase != null and specialCase !=''">
+				SPECIAL_CASE=#{specialCase},
+			</if>
+			<if test="remark != null and remark !=''">
+				REMARK=#{remark},
+			</if>
+			<if test="feedback != null and feedback !=''">
+				FEEDBACK=#{feedback},
+			</if>
+			<if test="createrId != null and createrId >0">
+				CREATER_ID=#{createrId}
+			</if>
+		</set>
+		where pid = #{pid}
+	</update>
+	<sql id="HouseBalance_Column_List">
+		A.PID,
+		A.HANDLE_ID,
+		A.PRINCIPAL,
+		TO_CHAR(A.PAY_DATE,
+		'yyyy-MM-dd') AS PAY_DATE,
+		A.HOUSE_CLERK,
+		A.INTEREST,
+		A.DEFAULT_INTEREST,
+		A.BALANCE,
+		A.BACK_ACCOUNT,
+		A.COUNT,
+		A.CREATER_ID,
+		A.REMARK,
+		A.BALANCE_CONFIRM,
+		A.HANDLE_USER_ID,
+		(SELECT T.REAL_NAME FROM
+		SYS_USER T WHERE T.PID=A.HANDLE_USER_ID) AS
+		HANDLE_USER_NAME,
+		TO_CHAR(A.CREATER_DATE,'YYYY-MM-DD HH24:MI:SS') AS CREATER_DATE,
+		(SELECT T.REAL_NAME FROM SYS_USER T WHERE T.PID=A.CREATER_ID) AS
+		CREATER_NAME,
+		(SELECT AFH.REC_MONEY
+		FROM BIZ_LOAN_APPLY_FINANCE_HANDLE
+		AFH
+		WHERE d.PID = AFH.FINANCE_HANDLE_ID
+		AND AFH.REC_PRO =3) AS
+		LOAN_AMOUNT,
+		TO_CHAR(BLF.REC_DATE,'YYYY-MM-DD HH:MM:SS') AS LOAN_TIME
+	</sql>
+	<!-- 查询赎楼及余额回转信息 分页查询 -->
+	<select id="findAllHouseBalance" resultMap="houseBalanceMap"
+		parameterType="houseBalanceDTO">
+		SELECT D.* FROM (SELECT T.*, ROWNUM RN
+		FROM (SELECT
+		<include refid="HouseBalance_Column_List" />
+		FROM BIZ_LOAN_HOUSE_BALANCE A
+		LEFT JOIN BIZ_LOAN_HANDLE_INFO B ON
+		A.HANDLE_ID =B.PID
+		LEFT JOIN BIZ_PROJECT C ON C.PID = B.PROJECT_ID
+		LEFT
+		JOIN BIZ_LOAN_FINANCE_HANDLE D ON D.PROJECT_ID= C.PID
+		LEFT JOIN (SELECT
+		AFH.REC_DATE,AFH.FINANCE_HANDLE_ID
+		FROM BIZ_LOAN_APPLY_FINANCE_HANDLE
+		AFH
+		WHERE AFH.REC_PRO = 3) BLF ON D.PID = BLF.FINANCE_HANDLE_ID
+		<where>
+			<trim>
+				<if test="userIds!=null and userIds.size()>0">
+					AND A.CREATER_ID IN
+					<foreach item="itemId" collection="userIds" open="("
+						separator="," close=")">
+						#{itemId}
+					</foreach>
+				</if>
+				<if test="houseClerk !=null and houseClerk !=''">
+					AND A.HOUSE_CLERK LIKE '%${houseClerk}%'
+				</if>
+				<if test="count !=null and count >0">
+					AND A.COUNT = #{count}
+				</if>
+				<if test="balanceConfirm !=null and balanceConfirm >0">
+					AND A.BALANCE_CONFIRM = #{balanceConfirm}
+				</if>
+				<if test="projectId !=null and projectId >0">
+					AND A.HANDLE_ID = (SELECT HI.PID FROM
+					BIZ_LOAN_HANDLE_INFO HI WHERE
+					HI.PROJECT_ID=#{projectId})
+				</if>
+				<if test="createrId !=null and createrId >0">
+					AND A.CREATER_ID = #{createrId}
+				</if>
+				<if test="handleId !=null and handleId >0">
+					AND A.HANDLE_ID = #{handleId}
+				</if>
+				<if test="pid!=null and pid>0">
+					AND A.PID = #{pid}
+				</if>
+			</trim>
+		</where>
+	<![CDATA[
+	) T
+	WHERE ROWNUM <=#{page}*#{rows}
+	) D
+	WHERE D.RN > ((#{page}-1)*#{rows})
+	]]>
+	</select>
+	<!-- 查询赎楼及余额回转信息总数 -->
+	<select id="getHouseBalanceTotal" resultType="Integer"
+		parameterType="houseBalanceDTO">
+	<![CDATA[
+	SELECT COUNT(1) FROM
+			(SELECT A.PID,A.HANDLE_ID,A.PRINCIPAL,A.PAY_DATE,A.HOUSE_CLERK,A.INTEREST,A.DEFAULT_INTEREST,A.BALANCE,A.BACK_ACCOUNT,A.COUNT,A.CREATER_ID 
+            FROM BIZ_LOAN_HOUSE_BALANCE A
+             LEFT JOIN BIZ_LOAN_HANDLE_INFO B ON A.HANDLE_ID =B.PID
+			 LEFT JOIN BIZ_PROJECT C ON  C.PID = B.PROJECT_ID
+			 LEFT JOIN BIZ_LOAN_FINANCE_HANDLE D ON D.PROJECT_ID= C.PID
+			 LEFT JOIN (SELECT AFH.REC_DATE,AFH.FINANCE_HANDLE_ID
+                           FROM BIZ_LOAN_APPLY_FINANCE_HANDLE AFH
+                          WHERE AFH.REC_PRO = 3) BLF ON D.PID = BLF.FINANCE_HANDLE_ID
+	]]>
+		<where>
+			<trim>
+				<if test="userIds!=null and userIds.size()>0">
+					AND A.CREATER_ID IN
+					<foreach item="itemId" collection="userIds" open="("
+						separator="," close=")">
+						#{itemId}
+					</foreach>
+				</if>
+				<if test="houseClerk !=null and houseClerk !=''">
+					AND A.HOUSE_CLERK LIKE '%${houseClerk}%'
+				</if>
+				<if test="count !=null and count >0">
+					AND A.COUNT = #{count}
+				</if>
+				<if test="balanceConfirm !=null and balanceConfirm >0">
+					AND A.BALANCE_CONFIRM = #{balanceConfirm}
+				</if>
+				<if test="projectId !=null and projectId >0">
+					AND A.HANDLE_ID = (SELECT HI.PID FROM
+					BIZ_LOAN_HANDLE_INFO HI WHERE
+					HI.PROJECT_ID=#{projectId})
+				</if>
+				<if test="createrId !=null and createrId >0">
+					AND A.CREATER_ID = #{createrId}
+				</if>
+				<if test="handleId !=null and handleId >0">
+					AND A.HANDLE_ID = #{handleId}
+				</if>
+				<if test="pid!=null and pid>0">
+					AND A.PID = #{pid}
+				</if>
+			</trim>
+		</where>
+		) T
+	</select>
+	<select id="getHouseBalanceListByProjectId" resultMap="houseBalanceMap"
+		parameterType="int">
+		SELECT
+		<include refid="HouseBalance_Column_List" />
+		FROM BIZ_LOAN_HANDLE_INFO A
+		INNER JOIN BIZ_LOAN_HOUSE_BALANCE B
+		ON A.PID
+		= B.HANDLE_ID
+		WHERE A.PROJECT_ID=#{projectId}
+	</select>
+	<select id="getForeclosureMoneyByProjectId" resultType="double"
+		parameterType="int">
+		SELECT CASE WHEN SUM(B.PRINCIPAL) > 0 THEN
+		SUM(B.PRINCIPAL) ELSE 0 END
+		FROM BIZ_LOAN_HANDLE_INFO A
+		INNER JOIN
+		BIZ_LOAN_HOUSE_BALANCE B
+		ON A.PID = B.HANDLE_ID
+		WHERE
+		A.PROJECT_ID=#{projectId}
+	</select>
+	<!-- 添加赎楼及余额回转信息 -->
+	<insert id="addHouseBalance" parameterType="houseBalanceDTO">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_HOUSE_BALANCE.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_LOAN_HOUSE_BALANCE
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			PID,
+			<if test="handleId != null and handleId >0">
+				HANDLE_ID,
+			</if>
+			<if test="principal != null and principal >-1">
+				PRINCIPAL,
+			</if>
+			<if test="payDate != null and payDate !=''">
+				PAY_DATE,
+			</if>
+			<if test="houseClerk != null and houseClerk !=''">
+				HOUSE_CLERK,
+			</if>
+			<if test="interest != null and interest >-1">
+				INTEREST,
+			</if>
+			<if test="defaultInterest != null and defaultInterest >-1">
+				DEFAULT_INTEREST,
+			</if>
+			<if test="balance != null and balance >-1">
+				BALANCE,
+			</if>
+			<if test="backAccount != null and backAccount !=''">
+				BACK_ACCOUNT,
+			</if>
+			<if test="count != null and count >0">
+				COUNT,
+			</if>
+			<if test="remark != null and remark !=''">
+				REMARK,
+			</if>
+			<if test="createrId != null and createrId >0">
+				CREATER_ID,
+			</if>
+			<if test="balanceConfirm != null and balanceConfirm >0">
+				BALANCE_CONFIRM,
+			</if>
+			<if test="handleUserId != null and handleUserId >0">
+				HANDLE_USER_ID
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{pid},
+			<if test="handleId != null and handleId >0">
+				#{handleId},
+			</if>
+			<if test="principal != null and principal >-1">
+				#{principal},
+			</if>
+			<if test="payDate != null and payDate !=''">
+				#{payDate,jdbcType=DATE,javaType=String},
+			</if>
+			<if test="houseClerk != null and houseClerk !=''">
+				#{houseClerk},
+			</if>
+			<if test="interest != null and interest >-1">
+				#{interest},
+			</if>
+			<if test="defaultInterest != null and defaultInterest >-1">
+				#{defaultInterest},
+			</if>
+			<if test="balance != null and balance >-1">
+				#{balance},
+			</if>
+			<if test="backAccount != null and backAccount !=''">
+				#{backAccount},
+			</if>
+			<if test="count != null and count >0">
+				#{count},
+			</if>
+			<if test="remark != null and remark !=''">
+				#{remark},
+			</if>
+			<if test="createrId != null and createrId >0">
+				#{createrId},
+			</if>
+			<if test="balanceConfirm != null and balanceConfirm >0">
+				#{balanceConfirm},
+			</if>
+			<if test="handleUserId != null and handleUserId >0">
+				#{handleUserId}
+			</if>
+		</trim>
+	</insert>
+	<!-- 根据ID更新赎楼及余额回转信息 -->
+	<update id="updateHouseBalance" parameterType="applyFinanceHandleDTO">
+		UPDATE BIZ_LOAN_HOUSE_BALANCE
+		<set>
+			<if test="handleId != null and handleId >0">
+				HANDLE_ID=#{handleId},
+			</if>
+			<if test="principal != null and principal !=''">
+				PRINCIPAL=#{principal},
+			</if>
+			<if test="payDate != null and payDate !=''">
+				PAY_DATE=#{payDate,jdbcType=DATE,javaType=String},
+			</if>
+			<if test="houseClerk != null and houseClerk !=''">
+				HOUSE_CLERK=#{houseClerk},
+			</if>
+			<if test="interest != null and interest >0">
+				INTEREST=#{interest},
+			</if>
+			<if test="defaultInterest != null and defaultInterest >0">
+				DEFAULT_INTEREST=#{defaultInterest},
+			</if>
+			<if test="balance != null and balance >-1">
+				BALANCE=#{balance},
+			</if>
+			<if test="backAccount != null and backAccount !=''">
+				BACK_ACCOUNT=#{backAccount},
+			</if>
+			<if test="count != null and count >0">
+				COUNT=#{count},
+			</if>
+			<if test="remark != null and remark !=''">
+				remark=#{remark},
+			</if>
+			<if test="createrId != null and createrId >0">
+				CREATER_ID=#{createrId},
+			</if>
+			<if test="balanceConfirm != null and balanceConfirm >0">
+				balance_confirm=#{balanceConfirm},
+			</if>
+			<if test="handleUserId != null and handleUserId >0">
+				HANDLE_USER_ID=#{handleUserId}
+			</if>
+		</set>
+		where pid = #{pid}
+	</update>
+	<!-- 查询财务退款明细 分页查询 -->
+	<select id="findAllRefundDetails" resultMap="refundDetailsMap"
+		parameterType="refundDetailsDTO">
+	<![CDATA[
+	SELECT D.* FROM (SELECT T.*, ROWNUM RN
+	        FROM (SELECT A.PID,A.HANDLE_ID,A.REFUND_PRO,A.REFUND_MONEY,A.REC_ACCOUNT,A.REC_NAME,TO_CHAR(A.PAY_DATE, 'yyyy-MM-dd') AS PAY_DATE,A.OPERATOR,A.CREATER_ID 
+            FROM BIZ_LOAN_REFUND_DETAILS A
+	]]>
+		<where>
+			<trim>
+				<if test="userIds!=null and userIds.size()>0">
+					AND A.CREATER_ID IN
+					<foreach item="itemId" collection="userIds" open="("
+						separator="," close=")">
+						#{itemId}
+					</foreach>
+				</if>
+				<if test="refundPro !=null and refundPro >0">
+					AND A.REFUND_PRO = #{refundPro}
+				</if>
+				<if test="createrId !=null and createrId >0">
+					AND A.CREATER_ID = #{createrId}
+				</if>
+				<if test="handleId !=null and handleId >0">
+					AND A.HANDLE_ID = #{handleId}
+				</if>
+				<if test="pid!=null and pid>0">
+					AND A.PID = #{pid}
+				</if>
+			</trim>
+		</where>
+	<![CDATA[
+	) T
+	WHERE ROWNUM <=#{page}*#{rows}
+	) D
+	WHERE D.RN > ((#{page}-1)*#{rows})
+	]]>
+	</select>
+	<!-- 查询财务退款明细 总数 -->
+	<select id="getRefundDetailsTotal" resultType="Integer"
+		parameterType="refundDetailsDTO">
+	<![CDATA[
+	SELECT COUNT(1) FROM
+			(SELECT A.PID,A.HANDLE_ID,A.REFUND_PRO,A.REFUND_MONEY,A.REC_ACCOUNT,A.REC_NAME,A.PAY_DATE,A.OPERATOR,A.CREATER_ID 
+            FROM BIZ_LOAN_REFUND_DETAILS A
+	]]>
+		<where>
+			<trim>
+				<if test="userIds!=null and userIds.size()>0">
+					AND A.CREATER_ID IN
+					<foreach item="itemId" collection="userIds" open="("
+						separator="," close=")">
+						#{itemId}
+					</foreach>
+				</if>
+				<if test="refundPro !=null and refundPro >0">
+					AND A.REFUND_PRO = #{refundPro}
+				</if>
+				<if test="createrId !=null and createrId >0">
+					AND A.CREATER_ID = #{createrId}
+				</if>
+				<if test="handleId !=null and handleId >0">
+					AND A.HANDLE_ID = #{handleId}
+				</if>
+				<if test="pid!=null and pid>0">
+					AND A.PID = #{pid}
+				</if>
+			</trim>
+		</where>
+		) T
+	</select>
+	<!-- 根据项目id 查询财务退款明细 -->
+	<select id="getRefundDetailsListByProjectId" resultMap="refundDetailsMap"
+		parameterType="java.util.Map">
+		SELECT B.*
+		FROM BIZ_LOAN_HANDLE_INFO A
+		INNER JOIN
+		BIZ_LOAN_REFUND_DETAILS
+		B
+		ON A.PID = B.HANDLE_ID
+		WHERE B.REFUND_PRO IN
+		<foreach item="itemId" collection="refundPros" open="("
+			separator="," close=")">
+			#{itemId}
+		</foreach>
+		AND A.PROJECT_ID=#{projectId}
+	</select>
+	<!-- 添加财务退款明细 -->
+	<insert id="addRefundDetails" parameterType="refundDetailsDTO">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_REFUND_DETAILS.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_LOAN_REFUND_DETAILS
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			PID,
+			<if test="handleId != null and handleId >0">
+				HANDLE_ID,
+			</if>
+			<if test="refundPro != null and refundPro >0">
+				REFUND_PRO,
+			</if>
+			<if test="refundMoney != null and refundMoney >0">
+				REFUND_MONEY,
+			</if>
+			<if test="recAccount != null and recAccount !=''">
+				REC_ACCOUNT,
+			</if>
+			<if test="recName != null and recName !=''">
+				REC_NAME,
+			</if>
+			<if test="payDate != null and payDate !=''">
+				PAY_DATE,
+			</if>
+			<if test="operator != null and operator !=''">
+				OPERATOR,
+			</if>
+			<if test="createrId != null and createrId >0">
+				CREATER_ID
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{pid},
+			<if test="handleId != null and handleId >0">
+				#{handleId},
+			</if>
+			<if test="refundPro != null and refundPro >0">
+				#{refundPro},
+			</if>
+			<if test="refundMoney != null and refundMoney >0">
+				#{refundMoney},
+			</if>
+			<if test="recAccount != null and recAccount !=''">
+				#{recAccount},
+			</if>
+			<if test="recName != null and recName !=''">
+				#{recName},
+			</if>
+			<if test="payDate != null and payDate !=''">
+				#{payDate,jdbcType=DATE,javaType=String},
+			</if>
+			<if test="operator != null and operator !=''">
+				#{operator},
+			</if>
+			<if test="createrId != null and createrId >0">
+				#{createrId}
+			</if>
+		</trim>
+	</insert>
+	<!-- 根据ID更新财务退款明细 -->
+	<update id="updateRefundDetails" parameterType="refundDetailsDTO">
+		UPDATE BIZ_LOAN_REFUND_DETAILS
+		<set>
+			<if test="handleId != null and handleId >0">
+				HANDLE_ID=#{handleId},
+			</if>
+			<if test="refundPro != null and refundPro >0">
+				REFUND_PRO=#{refundPro},
+			</if>
+			<if test="refundMoney != null and refundMoney >0">
+				REFUND_MONEY=#{refundMoney},
+			</if>
+			<if test="recAccount != null and recAccount !=''">
+				REC_ACCOUNT=#{recAccount},
+			</if>
+			<if test="recName != null and recName !=''">
+				REC_NAME=#{recName},
+			</if>
+			<if test="payDate != null and payDate !=''">
+				PAY_DATE=#{payDate,jdbcType=DATE,javaType=String},
+			</if>
+			<if test="operator != null and operator !=''">
+				OPERATOR=#{operator},
+			</if>
+			<if test="createrId != null and createrId >0">
+				CREATER_ID=#{createrId}
+			</if>
+		</set>
+		where pid = #{pid}
+	</update>
+	<!-- 查询办理流程条目 分页查询 -->
+	<select id="findAllHandleFlow" resultMap="handleFlowMap"
+		parameterType="handleFlowDTO">
+	<![CDATA[
+	SELECT D.* FROM (SELECT T.*, ROWNUM RN
+	        FROM (SELECT * FROM BIZ_LOAN_HANDLE_FLOW A
+	]]>
+		<where>
+			<trim>
+				<if test="pid!=null and pid>0">
+					AND A.PID = #{pid}
+				</if>
+			</trim>
+		</where>
+	<![CDATA[
+	) T
+	WHERE ROWNUM <=#{page}*#{rows}
+	) D
+	WHERE D.RN > ((#{page}-1)*#{rows})
+	]]>
+	</select>
+	<!-- 查询办理流程条目总数 -->
+	<select id="getHandleFlowTotal" resultType="Integer"
+		parameterType="handleFlowDTO">
+	<![CDATA[
+	SELECT COUNT(1) FROM
+			(SELECT * FROM BIZ_LOAN_HANDLE_FLOW A
+	]]>
+		<where>
+			<trim>
+				<if test="pid!=null and pid>0">
+					AND A.PID = #{pid}
+				</if>
+			</trim>
+		</where>
+		) T
+	</select>
+	<!-- 查询办理动态 分页查询 -->
+	<select id="findAllHandleDynamic" resultMap="handleDynamicMap"
+		parameterType="handleDynamicDTO">
+	<![CDATA[
+	SELECT D.* FROM (SELECT T.*, ROWNUM RN
+	        FROM (SELECT A.PID,
+       A.HANDLE_ID,
+       A.HANDLE_FLOW_ID,
+       A.FINISH_DATE,
+       A.HANDLE_DAY,
+       A.OPERATOR,
+       A.DIFFER,
+       A.DIFFER_MONITOR_COUNT,
+       A.CREATE_DATE,
+       A.REMARK,
+       A.CREATER_ID,
+       B.REAL_NAME AS CURRENT_HANDLE_USER_NAME
+  FROM BIZ_LOAN_HANDLE_DYNAMIC A
+  LEFT JOIN SYS_USER B
+    ON A.CURRENT_HANDLE_USER_ID = B.PID
+	]]>
+		<where>
+			<trim>
+				<if test="userIds!=null and userIds.size()>0">
+					AND A.CREATER_ID IN
+					<foreach item="itemId" collection="userIds" open="("
+						separator="," close=")">
+						#{itemId}
+					</foreach>
+				</if>
+				<if test="handleFlowId !=null and handleFlowId >0">
+					AND A.HANDLE_FLOW_ID = #{handleFlowId}
+				</if>
+				<if test="createrId !=null and createrId >0">
+					AND A.CREATER_ID = #{createrId}
+				</if>
+				<if test="handleId !=null and handleId >0">
+					AND A.HANDLE_ID = #{handleId}
+				</if>
+				<if test="pid!=null and pid>0">
+					AND A.PID = #{pid}
+				</if>
+			</trim>
+		</where>
+	<![CDATA[
+	) T
+	WHERE ROWNUM <=#{page}*#{rows}
+	) D
+	WHERE D.RN > ((#{page}-1)*#{rows})
+	]]>
+	</select>
+	<!-- 查询办理动态总数 -->
+	<select id="getHandleDynamicTotal" resultType="Integer"
+		parameterType="handleDynamicDTO">
+	<![CDATA[
+	SELECT COUNT(1) FROM
+			(SELECT A.PID,
+       A.HANDLE_ID,
+       A.HANDLE_FLOW_ID,
+       A.FINISH_DATE,
+       A.HANDLE_DAY,
+       A.OPERATOR,
+       A.DIFFER,
+       A.DIFFER_MONITOR_COUNT,
+       A.CREATE_DATE,
+       A.REMARK,
+       A.CREATER_ID,
+       B.REAL_NAME
+  FROM BIZ_LOAN_HANDLE_DYNAMIC A
+  LEFT JOIN SYS_USER B
+    ON A.CURRENT_HANDLE_USER_ID = B.PID
+	]]>
+		<where>
+			<trim>
+				<if test="userIds!=null and userIds.size()>0">
+					AND A.CREATER_ID IN
+					<foreach item="itemId" collection="userIds" open="("
+						separator="," close=")">
+						#{itemId}
+					</foreach>
+				</if>
+				<if test="handleFlowId !=null and handleFlowId >0">
+					AND A.HANDLE_FLOW_ID = #{handleFlowId}
+				</if>
+				<if test="createrId !=null and createrId >0">
+					AND A.CREATER_ID = #{createrId}
+				</if>
+				<if test="handleId !=null and handleId >0">
+					AND A.HANDLE_ID = #{handleId}
+				</if>
+				<if test="pid!=null and pid>0">
+					AND A.PID = #{pid}
+				</if>
+			</trim>
+		</where>
+		) T
+	</select>
+	<!-- 根据项目id查询办理总历时天数 -->
+	<select id="gethandleDaysByProjectId" resultType="int"
+		parameterType="int">
+	<![CDATA[
+	SELECT SUM(A.HANDLE_DAY)
+  FROM BIZ_LOAN_HANDLE_DYNAMIC A
+  LEFT JOIN BIZ_LOAN_HANDLE_INFO B
+    ON A.HANDLE_ID = B.PID
+ WHERE B.PROJECT_ID = #{projectId}
+	]]>
+	</select>
+	<!-- 添加办理动态 -->
+	<insert id="addHandleDynamic" parameterType="handleDynamicDTO">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_HANDLE_DYNAMIC.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_LOAN_HANDLE_DYNAMIC
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			PID,
+			<if test="handleId != null and handleId >0">
+				HANDLE_ID,
+			</if>
+			<if test="handleFlowId != null and handleFlowId >0">
+				HANDLE_FLOW_ID,
+			</if>
+			<if test="finishDate != null and finishDate !=''">
+				FINISH_DATE,
+			</if>
+			<if test="handleDay != null and handleDay >0">
+				HANDLE_DAY,
+			</if>
+			<if test="operator != null and operator !=''">
+				OPERATOR,
+			</if>
+			<if test="differ != null">
+				DIFFER,
+			</if>
+			<if test="differMonitorCount != null and differMonitorCount >0">
+				DIFFER_MONITOR_COUNT,
+			</if>
+			<if test="remark != null and remark !=''">
+				REMARK,
+			</if>
+			<if test="createrId != null and createrId >0">
+				CREATER_ID,
+			</if>
+			<if test="currentHandleUserId != null and currentHandleUserId >0">
+				CURRENT_HANDLE_USER_ID,
+			</if>
+			CREATE_DATE
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{pid},
+			<if test="handleId != null and handleId >0">
+				#{handleId},
+			</if>
+			<if test="handleFlowId != null and handleFlowId >0">
+				#{handleFlowId},
+			</if>
+			<if test="finishDate != null and finishDate !=''">
+				#{finishDate,jdbcType=DATE,javaType=String},
+			</if>
+			<if test="handleDay != null and handleDay >0">
+				#{handleDay},
+			</if>
+			<if test="operator != null and operator !=''">
+				#{operator},
+			</if>
+			<if test="differ != null">
+				#{differ},
+			</if>
+			<if test="differMonitorCount != null and differMonitorCount >0">
+				#{differMonitorCount},
+			</if>
+			<if test="remark != null and remark !=''">
+				#{remark},
+			</if>
+			<if test="createrId != null and createrId >0">
+				#{createrId},
+			</if>
+			<if test="currentHandleUserId != null and currentHandleUserId >0">
+				#{currentHandleUserId},
+			</if>
+			SYSDATE
+		</trim>
+	</insert>
+	<!-- 根据ID更新办理动态 -->
+	<update id="updateHandleDynamic" parameterType="handleDynamicDTO">
+		UPDATE BIZ_LOAN_HANDLE_DYNAMIC
+		<set>
+			<if test="handleId != null and handleId >0">
+				HANDLE_ID=#{handleId},
+			</if>
+			<if test="handleFlowId != null and handleFlowId >0">
+				HANDLE_FLOW_ID=#{handleFlowId},
+			</if>
+			<if test="finishDate != null and finishDate !=''">
+				FINISH_DATE=#{finishDate,jdbcType=DATE,javaType=String},
+			</if>
+			<if test="handleDay != null and handleDay >=0">
+				HANDLE_DAY=#{handleDay},
+			</if>
+			<if test="operator != null and operator !=''">
+				OPERATOR=#{operator},
+			</if>
+			<if test="differ != null">
+				DIFFER=#{differ},
+			</if>
+			<if test="differMonitorCount != null and differMonitorCount >0">
+				DIFFER_MONITOR_COUNT=#{differMonitorCount},
+			</if>
+			<if test="createDate != null and createDate !=''">
+				CREATE_DATE=#{createDate,jdbcType=DATE,javaType=String},
+			</if>
+			<if test="remark != null">
+				REMARK=decode(#{remark},null,'',#{remark}),
+			</if>
+			<if test="createrId != null and createrId >0">
+				CREATER_ID=#{createrId},
+			</if>
+			<if test="currentHandleUserId != null and currentHandleUserId >0">
+				CURRENT_HANDLE_USER_ID=#{currentHandleUserId}
+			</if>
+		</set>
+		where pid = #{pid}
+	</update>
+	<!-- 查询业务办理和任务关联 分页查询 -->
+	<select id="findAllBizHandleWorkflow" resultMap="bizHandleWorkflowMap"
+		parameterType="bizHandleWorkflowDTO">
+	<![CDATA[
+	SELECT D.* FROM (SELECT T.*, ROWNUM RN
+	        FROM (SELECT A.*, B.NAME_ AS TASK_NAME, B.ID_ AS TASK_ID
+            FROM BIZ_HANDLE_WORKFLOW A
+            LEFT JOIN ACT_RU_TASK B
+            ON A.EXECUTION_ID = B.EXECUTION_ID_
+            LEFT JOIN ACT_RU_IDENTITYLINK C
+            ON B.ID_=C.TASK_ID_
+	]]>
+		<where>
+			<trim>
+				<if test="userName !=null and userName !=''">
+					AND C.USER_ID_ = #{userName}
+				</if>
+				<if test="status != null and status >=-1">
+					AND A.STATUS = #{status}
+				</if>
+				<if test="handleId !=null and handleId >0">
+					AND A.HANDLE_ID = #{handleId}
+				</if>
+				<if test="executionId !=null and executionId >0">
+					AND A.EXECUTION_ID = #{executionId}
+				</if>
+				<if test="taskId !=null and taskId >0">
+					AND B.ID_ = #{taskId}
+				</if>
+				<if test="projectId != null and projectId >0">
+					AND A.PROJECT_ID= #{projectId}
+				</if>
+				<if test="pid !=null and pid >0">
+					AND A.PID = #{pid}
+				</if>
+			</trim>
+		</where>
+	<![CDATA[
+	) T
+	WHERE ROWNUM <=#{page}*#{rows}
+	) D
+	WHERE D.RN > ((#{page}-1)*#{rows})
+	]]>
+	</select>
+	<!-- 添加业务办理和任务关联 -->
+	<insert id="addBizHandleWorkflow" parameterType="bizHandleWorkflowDTO">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_biz_handle_WORKFLOW.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_HANDLE_WORKFLOW
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			PID,
+			<if test="handleId != null and handleId >0">
+				HANDLE_ID,
+			</if>
+			<if test="executionId != null and executionId >0">
+				EXECUTION_ID,
+			</if>
+			<if test="projectId != null and projectId >0">
+				PROJECT_ID,
+			</if>
+			<if test="status != null and status >=-1">
+				STATUS
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{pid},
+			<if test="handleId != null and handleId >0">
+				#{handleId},
+			</if>
+			<if test="executionId != null and executionId >0">
+				#{executionId},
+			</if>
+			<if test="projectId != null and projectId >0">
+				#{projectId},
+			</if>
+			<if test="status != null and status >=-1">
+				#{status}
+			</if>
+		</trim>
+	</insert>
+	<!-- 根据ID更新业务办理和任务关联 -->
+	<update id="updateBizHandleWorkflow" parameterType="bizHandleWorkflowDTO">
+		UPDATE BIZ_HANDLE_WORKFLOW
+		<set>
+			<if test="handleId != null and handleId >0">
+				HANDLE_ID=#{handleId},
+			</if>
+			<if test="executionId != null and executionId >0">
+				EXECUTION_ID=#{executionId},
+			</if>
+			<if test="projectId != null and projectId >0">
+				PROJECT_ID=#{projectId},
+			</if>
+			<if test="status != null and status >=-1">
+				STATUS=#{status},
+			</if>
+		</set>
+		where pid = #{pid}
+	</update>
+	<!-- 查询差异预警处理 分页查询 -->
+	<select id="findAllHandleDifferWarn" resultMap="handleDifferWarnMap"
+		parameterType="handleDifferWarnDTO">
+		<if test="page!=-1">
+			SELECT D.* FROM (SELECT T.*, ROWNUM RN
+			FROM (
+		</if>
+		SELECT A.PID,
+		A.HANDLE_DYNAMIC_ID,
+		A.PROJECT_ID,
+		A.PROJECT_NAME,
+		A.DIFFER,
+		A.STATUS,
+		A.HANDLE_DATE,
+		A.HANDLE_AUTHOR,
+		A.CREATE_DATE,
+		A.HANDLE_TYPE,
+		C.NAME AS FLOW_NAME
+		FROM BIZ_LOAN_HANDLE_DIFFER_WARN A
+		LEFT JOIN BIZ_LOAN_HANDLE_DYNAMIC B
+		ON A.HANDLE_DYNAMIC_ID = B.PID
+		LEFT
+		JOIN BIZ_LOAN_HANDLE_FLOW C
+		ON B.HANDLE_FLOW_ID = C.PID
+		<where>
+			<trim>
+				<if test="status != null and status !=0">
+					AND A.STATUS = #{status}
+				</if>
+				<if test="handleDynamicId !=null and handleDynamicId >0">
+					AND A.HANDLE_DYNAMIC_ID = #{handleDynamicId}
+				</if>
+				<if test="handleAuthor !=null and handleAuthor >0">
+					AND A.HANDLE_AUTHOR = #{handleAuthor}
+				</if>
+				<if test="projectId !=null and projectId >0">
+					AND A.PROJECT_ID = #{projectId}
+				</if>
+				<if test="pid!=null and pid>0">
+					AND A.PID = #{pid}
+				</if>
+				<if test="handleType !=null and handleType>0 ">
+					AND A.HANDLE_TYPE = #{handleType}
+				</if>
+			</trim>
+		</where>
+		<if test="page!=-1">
+	<![CDATA[
+	) T
+	WHERE ROWNUM <=#{page}*#{rows}
+	) D
+	WHERE D.RN > ((#{page}-1)*#{rows})
+	]]>
+		</if>
+	</select>
+	<!-- 查询差异预警处理总数 -->
+	<select id="getHandleDifferWarnTotal" resultType="Integer"
+		parameterType="handleDifferWarnDTO">
+	<![CDATA[
+	SELECT COUNT(1) FROM
+			(SELECT A.PID,A.HANDLE_DYNAMIC_ID,A.DIFFER,A.STATUS,A.HANDLE_DATE,A.HANDLE_AUTHOR,A.CREATE_DATE,A.REMARK 
+            FROM BIZ_LOAN_HANDLE_DIFFER_WARN A
+	]]>
+		<where>
+			<trim>
+				<if test="status != null and status !=0">
+					AND A.STATUS = #{status}
+				</if>
+				<if test="handleDynamicId !=null and handleDynamicId >0">
+					AND A.HANDLE_DYNAMIC_ID = #{handleDynamicId}
+				</if>
+				<if test="handleAuthor !=null and handleAuthor >0">
+					AND A.HANDLE_AUTHOR = #{handleAuthor}
+				</if>
+				<if test="projectId !=null and projectId >0">
+					AND A.PROJECT_ID = #{projectId}
+				</if>
+				<if test="pid!=null and pid>0">
+					AND A.PID = #{pid}
+				</if>
+				<if test="handleType !=null and handleType>0 ">
+					AND A.HANDLE_TYPE = #{handleType}
+				</if>
+			</trim>
+		</where>
+		) T
+	</select>
+	<!-- 查询差异预警历史处理 分页查询 -->
+	<select id="findAllHisHandleDifferWarn" resultMap="handleDifferWarnMap"
+		parameterType="handleDifferWarnDTO">
+	<![CDATA[
+	SELECT D.* FROM (SELECT T.*, ROWNUM RN
+	        FROM (
+	        SELECT * FROM ( 
+	   SELECT A.PID,
+       A.HANDLE_DYNAMIC_ID,
+       A.PROJECT_ID,
+       A.PROJECT_NAME,
+       A.DIFFER,
+       TO_CHAR(A.HANDLE_DATE, 'YYYY-MM-DD HH24:MI:SS') AS HANDLE_DATE,
+       A.HANDLE_AUTHOR,
+       A.CREATE_DATE,
+       A.REMARK,
+       B.REAL_NAME AS HANDLE_AUTHOR_NAME,
+       D.NAME AS FLOW_NAME
+  FROM BIZ_HIS_HANDLE_DIFFER_WARN A
+  LEFT JOIN SYS_USER B
+    ON A.HANDLE_AUTHOR = B.PID
+  LEFT JOIN BIZ_LOAN_HANDLE_DYNAMIC C
+    ON C.PID = A.HANDLE_DYNAMIC_ID
+  LEFT JOIN BIZ_LOAN_HANDLE_FLOW D
+    ON D.PID = C.HANDLE_FLOW_ID
+	]]>
+		<where>
+			<trim>
+				<if test="handleDynamicId !=null and handleDynamicId >0">
+					AND A.HANDLE_DYNAMIC_ID = #{handleDynamicId}
+				</if>
+				<if test="flowId !=null and flowId >0">
+					AND D.PID = #{flowId}
+				</if>
+				<if test="handleAuthor !=null and handleAuthor >0">
+					AND A.HANDLE_AUTHOR = #{handleAuthor}
+				</if>
+				<if test="projectId !=null and projectId >0">
+					AND A.PROJECT_ID = #{projectId}
+				</if>
+				<if test="pid!=null and pid>0">
+					AND A.PID = #{pid}
+				</if>
+			</trim>
+		</where>
+	<![CDATA[
+	) ORDER BY HANDLE_DATE DESC
+	) T
+	WHERE ROWNUM <=#{page}*#{rows}
+	) D
+	WHERE D.RN > ((#{page}-1)*#{rows})
+	
+	]]>
+	</select>
+	<!-- 查询差异预警历史处理总数 -->
+	<select id="getHisHandleDifferWarnTotal" resultType="Integer"
+		parameterType="handleDifferWarnDTO">
+	<![CDATA[
+	SELECT COUNT(1) FROM
+			(SELECT A.PID
+  FROM BIZ_HIS_HANDLE_DIFFER_WARN A
+  LEFT JOIN SYS_USER B
+    ON A.HANDLE_AUTHOR = B.PID
+  LEFT JOIN BIZ_LOAN_HANDLE_DYNAMIC C
+    ON C.PID = A.HANDLE_DYNAMIC_ID
+  LEFT JOIN BIZ_LOAN_HANDLE_FLOW D
+    ON D.PID = C.HANDLE_FLOW_ID
+	]]>
+		<where>
+			<trim>
+				<if test="handleDynamicId !=null and handleDynamicId >0">
+					AND A.HANDLE_DYNAMIC_ID = #{handleDynamicId}
+				</if>
+				<if test="flowId !=null and flowId >0">
+					AND D.PID = #{flowId}
+				</if>
+				<if test="handleAuthor !=null and handleAuthor >0">
+					AND A.HANDLE_AUTHOR = #{handleAuthor}
+				</if>
+				<if test="projectId !=null and projectId >0">
+					AND A.PROJECT_ID = #{projectId}
+				</if>
+				<if test="pid!=null and pid>0">
+					AND A.PID = #{pid}
+				</if>
+			</trim>
+		</where>
+		) T
+	</select>
+	<!-- 查询(首页)差异预警处理 -->
+	<select id="findIndexHandleDifferWarn" resultMap="handleDifferWarnMap"
+		parameterType="Integer">
+
+		SELECT A.PID,D.PROJECT_NAME,D.PID AS
+		PROJECT_ID,TO_CHAR(B.CREATE_DATE,
+		'yyyy-MM-dd') AS
+		CREATE_DATE,A.DIFFER,E.NAME AS FLOW_NAME FROM
+		BIZ_LOAN_HANDLE_DIFFER_WARN A
+		LEFT JOIN BIZ_LOAN_HANDLE_DYNAMIC B
+		ON
+		A.HANDLE_DYNAMIC_ID=B.PID
+		LEFT JOIN BIZ_LOAN_HANDLE_INFO C
+		ON
+		C.PID=B.HANDLE_ID
+		LEFT JOIN BIZ_PROJECT D
+		ON D.PID=C.PROJECT_ID
+		LEFT JOIN
+		BIZ_LOAN_HANDLE_FLOW E
+		ON E.PID=B.HANDLE_FLOW_ID
+		left join
+		BIZ_HANDLE_WORKFLOW f
+		ON F.HANDLE_ID=C.PID
+		LEFT JOIN ACT_RU_TASK G
+		ON
+		G.EXECUTION_ID_=F.EXECUTION_ID
+		WHERE A.STATUS=1 AND G.NAME_=E.NAME
+		AND
+		D.PM_USER_ID=#{userId}
+		ORDER BY A.DIFFER DESC
+	</select>
+	<!-- 查询查询(首页)差异预警处理总数 -->
+	<select id="getIndexHandleDifferWarnTotal" resultType="Integer"
+		parameterType="handleDifferWarnDTO">
+	<![CDATA[
+	SELECT COUNT(1) FROM
+			(SELECT A.PID,
+       A.HANDLE_DYNAMIC_ID,
+       A.DIFFER,
+       A.STATUS,
+       A.HANDLE_DATE,
+       A.HANDLE_AUTHOR,
+       A.CREATE_DATE,
+       A.REMARK
+  FROM BIZ_LOAN_HANDLE_DIFFER_WARN A
+  LEFT JOIN BIZ_LOAN_HANDLE_DYNAMIC B
+    ON A.HANDLE_DYNAMIC_ID = B.PID
+  LEFT JOIN BIZ_LOAN_HANDLE_INFO C
+    ON C.PID = B.HANDLE_ID
+  LEFT JOIN BIZ_PROJECT D
+    ON D.PID = C.PROJECT_ID
+  LEFT JOIN BIZ_LOAN_HANDLE_FLOW E
+    ON E.PID = B.HANDLE_FLOW_ID
+  LEFT JOIN BIZ_HANDLE_WORKFLOW F
+    ON F.HANDLE_ID = C.PID
+  LEFT JOIN ACT_RU_TASK G
+    ON G.EXECUTION_ID_ = F.EXECUTION_ID
+	]]>
+		<where>
+			<trim>
+				<if test="status != null and status !=0">
+					AND A.STATUS = #{status}
+				</if>
+				<if test="handleDynamicId !=null and handleDynamicId >0">
+					AND A.HANDLE_DYNAMIC_ID = #{handleDynamicId}
+				</if>
+				<if test="handleAuthor !=null and handleAuthor >0">
+					AND A.HANDLE_AUTHOR = #{handleAuthor}
+				</if>
+				<if test="projectId !=null and projectId >0">
+					AND A.PROJECT_ID = #{projectId}
+				</if>
+				<if test="pid!=null and pid>0">
+					AND A.PID = #{pid}
+				</if>
+			</trim>
+		</where>
+		) T
+	</select>
+	<!-- 添加差异预警处理表 -->
+	<insert id="addHandleDifferWarn" parameterType="handleDifferWarnDTO">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_HANDLE_DIFFER_WARN.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_LOAN_HANDLE_DIFFER_WARN
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			PID,
+			<if test="handleDynamicId != null and handleDynamicId >0">
+				HANDLE_DYNAMIC_ID,
+			</if>
+			<if test="projectId != null and projectId >0">
+				PROJECT_ID,
+			</if>
+			<if test="projectName != null and projectName !=''">
+				PROJECT_NAME,
+			</if>
+			<if test="differ != null">
+				DIFFER,
+			</if>
+			<if test="status != null and status !=0">
+				STATUS,
+			</if>
+			<if test="handleDate != null and handleDate !=''">
+				HANDLE_DATE,
+			</if>
+			<if test="handleAuthor != null and handleAuthor >0">
+				HANDLE_AUTHOR,
+			</if>
+			<if test="remark != null and remark !=''">
+				REMARK,
+			</if>
+			<if test="handleType != null and handleType >0">
+				HANDLE_TYPE,
+			</if>
+			CREATE_DATE
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{pid},
+			<if test="handleDynamicId != null and handleDynamicId >0">
+				#{handleDynamicId},
+			</if>
+			<if test="projectId != null and projectId >0">
+				#{projectId},
+			</if>
+			<if test="projectName != null and projectName !=''">
+				#{projectName},
+			</if>
+			<if test="differ != null">
+				#{differ},
+			</if>
+			<if test="status != null and status !=0">
+				#{status},
+			</if>
+			<if test="handleDate != null and handleDate !=''">
+				#{handleDate,jdbcType=DATE,javaType=String},
+			</if>
+			<if test="handleAuthor != null and handleAuthor >0">
+				#{handleAuthor},
+			</if>
+			<if test="remark != null and remark !=''">
+				#{remark},
+			</if>
+			<if test="handleType != null and handleType >0">
+				#{handleType},
+			</if>
+			SYSDATE
+		</trim>
+	</insert>
+	<!-- 添加差异预警历史处理表 -->
+	<insert id="addHisHandleDifferWarn" parameterType="handleDifferWarnDTO">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_HIS_HANDLE_DIFFER_WARN.Nextval as PID from
+			DUAL
+		</selectKey>
+		INSERT INTO BIZ_HIS_HANDLE_DIFFER_WARN
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			PID,
+			<if test="handleDynamicId != null and handleDynamicId >0">
+				HANDLE_DYNAMIC_ID,
+			</if>
+			<if test="projectId != null and projectId >0">
+				PROJECT_ID,
+			</if>
+			<if test="projectName != null and projectName !=''">
+				PROJECT_NAME,
+			</if>
+			<if test="differ != null">
+				DIFFER,
+			</if>
+			HANDLE_DATE,
+			<if test="handleAuthor != null and handleAuthor >0">
+				HANDLE_AUTHOR,
+			</if>
+			<if test="remark != null and remark !=''">
+				REMARK,
+			</if>
+			<if test="handleType != null and handleType >0">
+				HANDLE_TYPE,
+			</if>
+			CREATE_DATE
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{pid},
+			<if test="handleDynamicId != null and handleDynamicId >0">
+				#{handleDynamicId},
+			</if>
+			<if test="projectId != null and projectId >0">
+				#{projectId},
+			</if>
+			<if test="projectName != null and projectName !=''">
+				#{projectName},
+			</if>
+			<if test="differ != null">
+				#{differ},
+			</if>
+			SYSDATE,
+			<if test="handleAuthor != null and handleAuthor >0">
+				#{handleAuthor},
+			</if>
+			<if test="remark != null and remark !=''">
+				#{remark},
+			</if>
+			<if test="handleType != null and handleType >0">
+				#{handleType},
+			</if>
+			SYSDATE
+		</trim>
+	</insert>
+	<!-- 根据ID更新差异预警处理表 -->
+	<update id="updateHandleDifferWarn" parameterType="handleDifferWarnDTO">
+		UPDATE BIZ_LOAN_HANDLE_DIFFER_WARN
+		<set>
+			<if test="handleDynamicId != null and handleDynamicId >0">
+				HANDLE_DYNAMIC_ID=#{handleDynamicId},
+			</if>
+			<if test="projectId != null and projectId >0">
+				PROJECT_ID=#{projectId},
+			</if>
+			<if test="projectName != null and projectName !=''">
+				PROJECT_NAME=#{projectName},
+			</if>
+			<if test="differ != null">
+				DIFFER=#{differ},
+			</if>
+			<if test="status != null and status !=0">
+				STATUS=#{status},
+			</if>
+			HANDLE_DATE=SYSDATE,
+			<if test="handleAuthor != null and handleAuthor >0">
+				HANDLE_AUTHOR=#{handleAuthor},
+			</if>
+			<if test="remark != null and remark !=''">
+				REMARK=#{remark},
+			</if>
+			<if test="handleType != null and handleType >0">
+				HANDLE_TYPE=#{handleType},
+			</if>
+		</set>
+		where pid = #{pid}
+	</update>
+	<!-- 根据ID删除差异预警处理 -->
+	<delete id="delHandleDifferWarn" parameterType="handleDifferWarnDTO">
+		DELETE FROM BIZ_LOAN_HANDLE_DIFFER_WARN
+		<where>
+			<trim>
+				<if test="pid !=null and pid >0">
+					AND pid = #{pid}
+				</if>
+				<if test="handleAuthor !=null and handleAuthor >0">
+					AND HANDLE_AUTHOR = #{handleAuthor}
+				</if>
+				<if test="status ==-1 or status ==1 or status ==2">
+					AND STATUS = #{status}
+				</if>
+				<if test="handleTypeList !=null and handleTypeList.size()>0">
+					AND HANDLE_TYPE in
+					<foreach item="itemId" collection="handleTypeList" open="("
+						separator="," close=")">
+						#{itemId}
+					</foreach>
+				</if>
+			</trim>
+		</where>
+	</delete>
+	<!-- 查询办理动态文件关联 分页查询 -->
+	<select id="findAllHandleDynamicFile" resultMap="handleDynamicFileMap"
+		parameterType="handleDynamicFileDTO">
+	<![CDATA[
+	SELECT D.* FROM (SELECT T.*, ROWNUM RN
+	        FROM (SELECT A.PID,
+			       A.HANDLE_DYNAMIC_ID,
+			       A.FILE_ID,
+			       B.STATUS,
+			       B.REMARK,
+			       B.UPLOAD_USER_ID,
+			       C.REAL_NAME AS UPLOAD_USER_NAME,
+			       B.FILE_NAME,
+			       B.FILE_TYPE,
+			       B.FILE_SIZE,
+			       B.FILE_URL
+			  FROM BIZ_LOAN_HANDLE_DYNAMIC_FILE A
+			  LEFT JOIN BIZ_FILE B
+			    ON A.FILE_ID = B.PID
+			  LEFT JOIN SYS_USER C
+			    ON C.PID=B.UPLOAD_USER_ID
+	]]>
+		<where>
+			<trim>
+				<if test="handleId != null and handleId >0">
+					AND A.HANDLE_DYNAMIC_ID IN(SELECT C.PID FROM
+					BIZ_LOAN_HANDLE_DYNAMIC C
+					WHERE C.HANDLE_ID=#{handleId})
+				</if>
+				<if test="status == 1 or status ==-1">
+					AND B.STATUS = #{status}
+				</if>
+				<if test="handleDynamicId !=null and handleDynamicId >0">
+					AND A.HANDLE_DYNAMIC_ID = #{handleDynamicId}
+				</if>
+				<if test="uploadUserId !=null and uploadUserId >0">
+					AND B.UPLOAD_USER_ID = #{uploadUserId}
+				</if>
+				<if test="fileId !=null and fileId >0">
+					AND A.FILE_ID = #{fileId}
+				</if>
+				<if test="pid!=null and pid>0">
+					AND A.PID = #{pid}
+				</if>
+			</trim>
+		</where>
+		ORDER BY B.UPLOAD_DTTM DESC
+	<![CDATA[
+	) T
+	WHERE ROWNUM <=#{page}*#{rows}
+	) D
+	WHERE D.RN > ((#{page}-1)*#{rows})
+	]]>
+	</select>
+	<!-- 查询办理动态文件关联总数 -->
+	<select id="getHandleDynamicFileTotal" resultType="Integer"
+		parameterType="handleDynamicFileDTO">
+	<![CDATA[
+	SELECT COUNT(1) FROM
+			(SELECT A.PID,A.HANDLE_DYNAMIC_ID,A.FILE_ID,B.STATUS,B.REMARK,B.UPLOAD_USER_ID,B.FILE_NAME,B.FILE_TYPE,B.FILE_SIZE,B.FILE_URL
+		    FROM BIZ_LOAN_HANDLE_DYNAMIC_FILE A
+		    LEFT JOIN BIZ_FILE B
+		    ON A.FILE_ID = B.PID
+	]]>
+		<where>
+			<trim>
+				<if test="handleId != null and handleId >0">
+					AND A.HANDLE_DYNAMIC_ID IN(SELECT C.PID FROM
+					BIZ_LOAN_HANDLE_DYNAMIC C
+					WHERE C.HANDLE_ID=#{handleId})
+				</if>
+				<if test="status == 1 or status ==-1">
+					AND B.STATUS = #{status}
+				</if>
+				<if test="handleDynamicId !=null and handleDynamicId >0">
+					AND A.HANDLE_DYNAMIC_ID = #{handleDynamicId}
+				</if>
+				<if test="uploadUserId !=null and uploadUserId >0">
+					AND B.UPLOAD_USER_ID = #{uploadUserId}
+				</if>
+				<if test="fileId !=null and fileId >0">
+					AND A.FILE_ID = #{fileId}
+				</if>
+				<if test="pid!=null and pid>0">
+					AND A.PID = #{pid}
+				</if>
+			</trim>
+		</where>
+		) T
+	</select>
+	<!-- 添加办理动态文件关联 -->
+	<insert id="addHandleDynamicFile" parameterType="handleDynamicFileDTO">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_HANDLE_DYNAMIC_FILE.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_LOAN_HANDLE_DYNAMIC_FILE
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			PID,
+			<if test="handleDynamicId != null and handleDynamicId >0">
+				HANDLE_DYNAMIC_ID,
+			</if>
+			<if test="fileId != null and fileId >0">
+				FILE_ID,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{pid},
+			<if test="handleDynamicId != null and handleDynamicId >0">
+				#{handleDynamicId},
+			</if>
+			<if test="fileId != null and fileId >0">
+				#{fileId},
+			</if>
+		</trim>
+	</insert>
+	<!-- 根据ID更新办理动态文件关联 -->
+	<update id="updateHandleDynamicFile" parameterType="handleDynamicFileDTO">
+		UPDATE BIZ_LOAN_HANDLE_DYNAMIC_FILE
+		<set>
+			<if test="handleDynamicId != null and handleDynamicId >0">
+				HANDLE_DYNAMIC_ID=#{handleDynamicId},
+			</if>
+			<if test="fileId != null and fileId >0">
+				FILE_ID=#{fileId},
+			</if>
+		</set>
+		where pid = #{pid}
+	</update>
+	<!-- 根据用户名(任务处理人)，获取可处理的办理动态id的list -->
+	<select id="getCanHandleDynamicIds" resultType="Integer"
+		parameterType="String">
+		SELECT D.PID HANDLEDYNAMICID
+		FROM ACT_RU_TASK A
+		LEFT JOIN
+		BIZ_HANDLE_WORKFLOW B
+		ON B.EXECUTION_ID = A.EXECUTION_ID_
+		LEFT JOIN
+		ACT_RU_IDENTITYLINK C
+		ON C.TASK_ID_ = A.ID_
+		LEFT JOIN
+		BIZ_LOAN_HANDLE_DYNAMIC D
+		ON B.HANDLE_ID = D.HANDLE_ID
+		LEFT JOIN
+		BIZ_LOAN_HANDLE_FLOW E
+		ON E.PID = D.HANDLE_FLOW_ID
+		WHERE A.ASSIGNEE_ IS
+		NULL
+		AND C.TYPE_ = 'candidate'
+		AND C.USER_ID_ = #{userName}
+		AND A.NAME_ =
+		E.NAME
+	</select>
+	<!-- 根据用户id（任务发起人），获取未处理（需要预警）的办理办理信息集合，用途：业务经理在登录系统的时候，查看自己申请的业务办理有没有未完成的办理动态,有未完成的则在BIZ_LOAN_HANDLE_DIFFER_WARN插入一条数据，如果数据已存在则不插入 -->
+	<select id="getNeedHandleWarn" resultMap="handleDifferWarnMap"
+		parameterType="Integer">
+
+		SELECT D.PID handledynamicid,
+		C.NAME_,
+		B.PROJECT_ID,
+		F.PROJECT_NAME,
+		E.FIX_DAY,
+		CASE WHEN
+		E.FIX_DAY-(TO_DATE(TO_CHAR(SYSDATE, 'yyyy-MM-dd'),
+		'yyyy-MM-dd') -
+		TO_DATE(TO_CHAR(D.CREATE_DATE, 'yyyy-MM-dd'),
+		'yyyy-MM-dd'))>0
+		THEN 0
+		ELSE (E.FIX_DAY-(TO_DATE(TO_CHAR(SYSDATE,
+		'yyyy-MM-dd'), 'yyyy-MM-dd') -
+		TO_DATE(TO_CHAR(D.CREATE_DATE,
+		'yyyy-MM-dd'), 'yyyy-MM-dd')))*-1
+		end AS DIFFER
+		FROM
+		BIZ_LOAN_HANDLE_INFO A
+		LEFT JOIN BIZ_HANDLE_WORKFLOW B
+		ON A.PID =
+		B.HANDLE_ID
+		LEFT JOIN ACT_RU_TASK C
+		ON B.EXECUTION_ID = C.EXECUTION_ID_
+		LEFT JOIN BIZ_LOAN_HANDLE_DYNAMIC D
+		ON A.PID = D.HANDLE_ID
+		LEFT JOIN
+		BIZ_LOAN_HANDLE_FLOW E
+		ON D.HANDLE_FLOW_ID = E.PID
+		LEFT JOIN BIZ_PROJECT
+		F
+		ON A.PROJECT_ID = F.PID
+		WHERE (((TO_DATE(TO_CHAR(SYSDATE,
+		'yyyy-MM-dd'), 'yyyy-MM-dd') -
+		TO_DATE(TO_CHAR(D.CREATE_DATE,
+		'yyyy-MM-dd'), 'yyyy-MM-dd')) <![CDATA[>=]]>
+		(E.FIX_DAY - E.ADVANCE_NOTICE_DAY)) or ((TO_DATE(TO_CHAR(SYSDATE,
+		'yyyy-MM-dd'), 'yyyy-MM-dd') -
+		TO_DATE(TO_CHAR(D.CREATE_DATE,
+		'yyyy-MM-dd'), 'yyyy-MM-dd'))<![CDATA[<]]>0))
+		AND D.PID NOT IN( SELECT T.HANDLE_DYNAMIC_ID FROM
+		BIZ_LOAN_HANDLE_DIFFER_WARN T WHERE T.HANDLE_TYPE=1)
+		AND C.NAME_ =
+		E.NAME
+		AND B.STATUS = 1
+		AND F.PM_USER_ID = #{userId}
+
+	</select>
+	<select id="queryNeedHandleWarnIndex" resultMap="handleDifferWarnIndexMap"
+		parameterType="handleDifferWarnIndexDTO">
+		<if test="page!=-1">
+			SELECT D.* FROM (SELECT T.*, ROWNUM RN
+			FROM (
+		</if>
+		SELECT D.PID handledynamicid,
+		C.NAME_ AS FLOW_NAME,
+		B.PROJECT_ID,
+		F.PROJECT_NAME,
+		F.PROJECT_NUMBER,
+		E.FIX_DAY,
+		CASE WHEN
+		E.FIX_DAY-(TO_DATE(TO_CHAR(SYSDATE, 'yyyy-MM-dd'), 'yyyy-MM-dd') -
+		TO_DATE(TO_CHAR(D.CREATE_DATE, 'yyyy-MM-dd'), 'yyyy-MM-dd'))>0
+		THEN 0
+		ELSE (E.FIX_DAY-(TO_DATE(TO_CHAR(SYSDATE, 'yyyy-MM-dd'), 'yyyy-MM-dd')
+		-
+		TO_DATE(TO_CHAR(D.CREATE_DATE, 'yyyy-MM-dd'), 'yyyy-MM-dd')))*-1
+		end
+		AS DIFFER,
+		G.HOUSE_NAME,
+		G.BUYER_NAME,
+		G.SELLER_NAME,
+		CC.REAL_NAME AS
+		PM_USER_NAME
+
+		FROM BIZ_LOAN_HANDLE_INFO A
+		LEFT JOIN BIZ_HANDLE_WORKFLOW B
+		ON A.PID = B.HANDLE_ID
+		LEFT JOIN ACT_RU_TASK C
+		ON B.EXECUTION_ID =
+		C.EXECUTION_ID_
+		LEFT JOIN BIZ_LOAN_HANDLE_DYNAMIC D
+		ON A.PID =
+		D.HANDLE_ID
+		LEFT JOIN BIZ_LOAN_HANDLE_FLOW E
+		ON D.HANDLE_FLOW_ID = E.PID
+		LEFT JOIN BIZ_PROJECT F
+		ON A.PROJECT_ID = F.PID
+		LEFT JOIN SYS_USER CC ON
+		CC.PID = F.PM_USER_ID
+		LEFT JOIN BIZ_PROJECT_PROPERTY G
+		ON
+		G.PROJECT_ID=A.PROJECT_ID
+		<where>
+			<trim>
+				<if test="1==1">
+					(((TO_DATE(TO_CHAR(SYSDATE, 'yyyy-MM-dd'), 'yyyy-MM-dd') -
+					TO_DATE(TO_CHAR(D.CREATE_DATE, 'yyyy-MM-dd'), 'yyyy-MM-dd')) <![CDATA[>=]]>
+					(E.FIX_DAY - E.ADVANCE_NOTICE_DAY)) or ((TO_DATE(TO_CHAR(SYSDATE,
+					'yyyy-MM-dd'), 'yyyy-MM-dd') -
+					TO_DATE(TO_CHAR(D.CREATE_DATE,
+					'yyyy-MM-dd'), 'yyyy-MM-dd'))<![CDATA[<]]>0))
+					AND C.NAME_ = E.NAME
+					AND B.STATUS = 1
+				</if>
+				<if test="userIds!=null and userIds.size()>0">
+					AND F.PM_USER_ID IN
+					<foreach item="itemId" collection="userIds" open="("
+						separator="," close=")">
+						#{itemId}
+					</foreach>
+				</if>
+				<if test="houseName !=null and houseName !=''">
+					AND G.HOUSE_NAME LIKE '%${houseName}%'
+				</if>
+				<if test="buyerName !=null and buyerName !=''">
+					AND G.BUYER_NAME LIKE '%${buyerName}%'
+				</if>
+				<if test="pmUserName !=null and pmUserName !=''">
+					AND CC.REAL_NAME LIKE '%${pmUserName}%'
+				</if>
+				<if test="sellerName !=null and sellerName !=''">
+					AND G.SELLER_NAME LIKE '%${sellerName}%'
+				</if>
+				<if test="projectName !=null and projectName !=''">
+					AND F.PROJECT_NAME LIKE '%${projectName}%'
+				</if>
+				<if test="projectNumber !=null and projectNumber !=''">
+					AND F.PROJECT_NUMBER LIKE '%${projectNumber}%'
+				</if>
+				<if test="flowName !=null and flowName !=''">
+					AND C.NAME_ = #{flowName}
+				</if>
+			</trim>
+		</where>
+		<if test="page!=-1">
+	<![CDATA[
+	) T
+	WHERE ROWNUM <=#{page}*#{rows}
+	) D
+	WHERE D.RN > ((#{page}-1)*#{rows})
+	]]>
+		</if>
+	</select>
+	<select id="getNeedHandleWarnIndexTotal" resultType="Integer"
+		parameterType="handleDifferWarnIndexDTO">
+	<![CDATA[
+	SELECT COUNT(1) FROM
+			(SELECT D.PID handledynamicid
+  FROM BIZ_LOAN_HANDLE_INFO A
+  LEFT JOIN BIZ_HANDLE_WORKFLOW B
+    ON A.PID = B.HANDLE_ID
+  LEFT JOIN ACT_RU_TASK C
+    ON B.EXECUTION_ID = C.EXECUTION_ID_
+  LEFT JOIN BIZ_LOAN_HANDLE_DYNAMIC D
+    ON A.PID = D.HANDLE_ID
+  LEFT JOIN BIZ_LOAN_HANDLE_FLOW E
+    ON D.HANDLE_FLOW_ID = E.PID
+  LEFT JOIN BIZ_PROJECT F
+    ON A.PROJECT_ID = F.PID
+  LEFT JOIN BIZ_PROJECT_PROPERTY G
+    ON G.PROJECT_ID=A.PROJECT_ID
+  LEFT JOIN SYS_USER CC ON CC.PID = F.PM_USER_ID
+	]]>
+		<where>
+			<trim>
+				<if test="1==1">
+					(((TO_DATE(TO_CHAR(SYSDATE, 'yyyy-MM-dd'), 'yyyy-MM-dd') -
+					TO_DATE(TO_CHAR(D.CREATE_DATE, 'yyyy-MM-dd'), 'yyyy-MM-dd')) <![CDATA[>=]]>
+					(E.FIX_DAY - E.ADVANCE_NOTICE_DAY)) or ((TO_DATE(TO_CHAR(SYSDATE,
+					'yyyy-MM-dd'), 'yyyy-MM-dd') -
+					TO_DATE(TO_CHAR(D.CREATE_DATE,
+					'yyyy-MM-dd'), 'yyyy-MM-dd'))<![CDATA[<]]>0))
+					AND C.NAME_ = E.NAME
+					AND B.STATUS = 1
+				</if>
+				<if test="userIds!=null and userIds.size()>0">
+					AND F.PM_USER_ID IN
+					<foreach item="itemId" collection="userIds" open="("
+						separator="," close=")">
+						#{itemId}
+					</foreach>
+				</if>
+				<if test="houseName !=null and houseName !=''">
+					AND G.HOUSE_NAME LIKE '%${houseName}%'
+				</if>
+				<if test="buyerName !=null and buyerName !=''">
+					AND G.BUYER_NAME LIKE '%${buyerName}%'
+				</if>
+				<if test="sellerName !=null and sellerName !=''">
+					AND G.SELLER_NAME LIKE '%${sellerName}%'
+				</if>
+				<if test="pmUserName !=null and pmUserName !=''">
+					AND CC.REAL_NAME LIKE '%${pmUserName}%'
+				</if>
+				<if test="projectName !=null and projectName !=''">
+					AND F.PROJECT_NAME LIKE '%${projectName}%'
+				</if>
+				<if test="projectNumber !=null and projectNumber !=''">
+					AND F.PROJECT_NUMBER LIKE '%${projectNumber}%'
+				</if>
+				<if test="flowName !=null and flowName !=''">
+					AND C.NAME_ = #{flowName}
+				</if>
+			</trim>
+		</where>
+		) T
+	</select>
+	<!-- 根据条件查询赎楼列表（分页查询） -->
+	<select id="queryForeclosureIndex" resultMap="foreclosureIndexMap"
+		parameterType="foreclosureIndexDTO">
+		<if test="page!=-1">
+			SELECT D.* FROM (SELECT T.*, ROWNUM RN
+			FROM (
+		</if>
+		SELECT D.PID AS BIZ_HANDLE_ID,
+		B.PROJECT_ID,
+		B.STATUS AS REC_FEE_STATUS,
+		A.PROJECT_NAME,
+		A.PROJECT_NUMBER,
+		A.PROJECT_SOURCE,
+		B.CREATER_ID,
+		HC.PRODUCT_NAME,
+		B.CREATER_DATE,
+		B.HOUSE_CLERK_ID,
+		(SELECT U.REAL_NAME
+		FROM SYS_USER U WHERE U.PID = HB.HANDLE_USER_ID) AS
+		HANDLE_USER_NAME,
+		D.FORECLOSURE_STATUS,
+		HB.BALANCE_CONFIRM,
+		F.REAL_LOAN,
+		F.ONE_REAL_LOAN,
+		F.TWO_REAL_LOAN,
+		(SELECT TO_CHAR(B.pay_date,'YYYY-MM-DD') FROM
+		BIZ_LOAN_HANDLE_INFO C
+		LEFT JOIN BIZ_LOAN_HOUSE_BALANCE B ON
+		C.PID=B.HANDLE_ID
+		WHERE C.PROJECT_ID = A.PID AND B.COUNT=1) AS
+		PAY_DATE,
+		HB.BALANCE,
+		D.FORECLOSURE_TURN_DOWN_REMARK,
+		HB.FORECLOSURE_MONEY,
+		HB.ONE_FORECLOSURE_MONEY,
+		HB.TWO_FORECLOSURE_MONEY,
+		HB.ONE_BALANCE,
+		HB.TWO_BALANCE,
+		EH.HOUSE_NAME,
+		E.BUYER_NAME,
+		E.SELLER_NAME
+		FROM BIZ_PROJECT A
+		INNER JOIN
+		BIZ_LOAN_FINANCE_HANDLE B ON A.PID = B.PROJECT_ID
+		INNER JOIN
+		BIZ_LOAN_HANDLE_INFO D ON D.PROJECT_ID = A.PID
+		LEFT JOIN
+		BIZ_PROJECT_PROPERTY E ON E.PROJECT_ID = A.PID
+		LEFT JOIN (SELECT
+		AFH.FINANCE_HANDLE_ID,
+		SUM(CASE WHEN REC_PRO IN(3, 4, 5, 6) THEN
+		REC_MONEY ELSE 0 END) AS REAL_LOAN,
+		SUM(CASE WHEN REC_PRO = 3 THEN
+		REC_MONEY ELSE 0 END) AS ONE_REAL_LOAN,
+		SUM(CASE WHEN REC_PRO IN(4, 5,
+		6) THEN REC_MONEY ELSE 0 END) AS
+		TWO_REAL_LOAN
+		FROM
+		BIZ_LOAN_APPLY_FINANCE_HANDLE AFH
+		GROUP BY AFH.FINANCE_HANDLE_ID) F
+		ON
+		F.FINANCE_HANDLE_ID=B.PID
+		LEFT JOIN
+		(SELECT
+		HANDLE_ID,HANDLE_USER_ID,HB.COUNT AS HBCOUNT,
+		SUM(HB.BALANCE) AS
+		BALANCE,
+		SUM(HB.PRINCIPAL + HB.INTEREST + HB.DEFAULT_INTEREST) AS
+		FORECLOSURE_MONEY,
+		SUM(CASE WHEN HB.COUNT = 1 THEN HB.PRINCIPAL +
+		HB.INTEREST +
+		HB.DEFAULT_INTEREST ELSE 0 END) ONE_FORECLOSURE_MONEY,
+		SUM(CASE WHEN HB.COUNT = 2 THEN HB.PRINCIPAL + HB.INTEREST +
+		HB.DEFAULT_INTEREST ELSE 0 END) TWO_FORECLOSURE_MONEY,
+		SUM(CASE WHEN
+		HB.COUNT = 1 THEN HB.BALANCE ELSE 0 END) AS ONE_BALANCE,
+		SUM(CASE WHEN
+		HB.COUNT = 2 THEN HB.BALANCE ELSE 0 END) AS TWO_BALANCE,
+		MIN(CASE WHEN
+		HB.COUNT = 1 THEN HB.BALANCE_CONFIRM END) AS
+		BALANCE_CONFIRM
+		FROM
+		BIZ_LOAN_HOUSE_BALANCE HB
+		GROUP BY HANDLE_ID,HANDLE_USER_ID,HB.COUNT
+		)
+		HB ON HB.HANDLE_ID = D.PID
+		LEFT JOIN BIZ_PRODUCT HC ON
+		A.PRODUCT_ID=HC.PID
+		LEFT JOIN V_HOUSE_NAME EH ON EH.PROJECT_ID = A.PID
+		<where>
+			<trim>
+				<if test="1==1">
+					AND A.IS_NEED_HANDLE =1 AND HBCOUNT=1 AND HC.PRODUCT_NUM
+					!='FJYWSLTFD' AND HC.PRODUCT_NUM !='JYWSLTFD'
+				</if>
+				<if test="userIds!=null and userIds.size()>0">
+					AND A.PM_USER_ID IN
+					<foreach item="itemId" collection="userIds" open="("
+						separator="," close=")">
+						#{itemId}
+					</foreach>
+				</if>
+				<if test="recFeeStatusList !=null and recFeeStatusList.size()>0">
+					AND B.STATUS IN
+					<foreach item="itemId" collection="recFeeStatusList" open="("
+						separator="," close=")">
+						#{itemId}
+					</foreach>
+				</if>
+				<if test="recFeeStatus !=null and recFeeStatus >0">
+					AND B.STATUS =#{recFeeStatus}
+				</if>
+				<if test="productId !=null and productId >0">
+					AND A.PRODUCT_ID =#{productId}
+				</if>
+				<if test="foreclosureStatus !=null and foreclosureStatus >0">
+					AND D.FORECLOSURE_STATUS =#{foreclosureStatus}
+				</if>
+				<if test="balanceConfirm !=null and balanceConfirm >0">
+					AND D.PID = (SELECT HB.HANDLE_ID
+					FROM
+					BIZ_LOAN_HOUSE_BALANCE HB
+					WHERE HB.HANDLE_ID = D.PID
+					AND
+					HB.BALANCE_CONFIRM=#{balanceConfirm} AND ROWNUM = 1)
+				</if>
+				<if test="projectName !=null and projectName !=''">
+					AND A.PROJECT_NAME LIKE '%${projectName}%'
+				</if>
+				<if test="projectNumber !=null and projectNumber !=''">
+					AND A.PROJECT_NUMBER LIKE '%${projectNumber}%'
+				</if>
+				<if test="houseName !=null and houseName !=''">
+					AND EH.HOUSE_NAME LIKE '%${houseName}%'
+				</if>
+				<if test="buyerName !=null and buyerName !=''">
+					AND E.BUYER_NAME LIKE '%${buyerName}%'
+				</if>
+				<if test="sellerName !=null and sellerName !=''">
+					AND E.SELLER_NAME LIKE '%${sellerName}%'
+				</if>
+				<if test="projectId !=null and projectId >0">
+					AND A.PROJECT_ID = #{projectId}
+				</if>
+				<if test="handleUserName !=null and handleUserName !=''">
+					AND (SELECT U.REAL_NAME
+					FROM SYS_USER U
+					WHERE U.PID =
+					HB.HANDLE_USER_ID) LIKE '%${handleUserName}%'
+				</if>
+				<if test="fromPayDate !=null and fromPayDate !=''">
+					AND (SELECT B.pay_date FROM BIZ_LOAN_HANDLE_INFO C
+					LEFT JOIN
+					BIZ_LOAN_HOUSE_BALANCE B ON C.PID=B.HANDLE_ID
+					WHERE C.PROJECT_ID =
+					A.PID AND B.COUNT=1) 
+					  <![CDATA[>=]]>
+					TO_DATE(CONCAT(#{fromPayDate},' 00:00:00'),'yyyy-mm-dd hh24:mi:ss')
+				</if>
+				<if test="endPayDate !=null and endPayDate !=''">
+					AND (SELECT B.pay_date FROM BIZ_LOAN_HANDLE_INFO C
+					LEFT JOIN
+					BIZ_LOAN_HOUSE_BALANCE B ON C.PID=B.HANDLE_ID
+					WHERE C.PROJECT_ID =
+					A.PID AND B.COUNT=1) 
+					  <![CDATA[<=]]>
+					TO_DATE(CONCAT(#{endPayDate},' 23:59:59'),'yyyy-mm-dd hh24:mi:ss')
+				</if>
+			</trim>
+		</where>
+		ORDER BY A.REQUEST_DTTM DESC
+		<if test="page!=-1">
+	<![CDATA[
+	) T
+	WHERE ROWNUM <=#{page}*#{rows}
+	) D
+	WHERE D.RN > ((#{page}-1)*#{rows})
+	]]>
+		</if>
+	</select>
+	<select id="getForeclosureIndexTotal" resultType="Integer"
+		parameterType="foreclosureIndexDTO">
+	<![CDATA[
+	SELECT COUNT(1) FROM
+			(SELECT D.PID AS BIZ_HANDLE_ID
+				  FROM BIZ_PROJECT A
+				 INNER JOIN BIZ_LOAN_FINANCE_HANDLE B ON A.PID = B.PROJECT_ID
+				 INNER JOIN BIZ_LOAN_HANDLE_INFO D ON D.PROJECT_ID = A.PID
+				  LEFT JOIN BIZ_PROJECT_PROPERTY E ON E.PROJECT_ID = A.PID
+				  LEFT JOIN (SELECT AFH.FINANCE_HANDLE_ID,
+				                    SUM(CASE WHEN REC_PRO IN(3, 4, 5, 6) THEN REC_MONEY ELSE 0 END) AS REAL_LOAN,
+				                    SUM(CASE WHEN REC_PRO = 3 THEN REC_MONEY ELSE 0 END) AS ONE_REAL_LOAN,
+				                    SUM(CASE WHEN REC_PRO IN(4, 5, 6) THEN REC_MONEY ELSE 0 END) AS TWO_REAL_LOAN
+				               FROM BIZ_LOAN_APPLY_FINANCE_HANDLE AFH
+				              GROUP BY AFH.FINANCE_HANDLE_ID) F
+				     ON F.FINANCE_HANDLE_ID=B.PID
+				  LEFT JOIN 
+		  (SELECT HANDLE_ID,HANDLE_USER_ID,HB.COUNT AS HBCOUNT,
+		          SUM(HB.BALANCE) AS BALANCE,
+		          SUM(HB.PRINCIPAL + HB.INTEREST + HB.DEFAULT_INTEREST) AS FORECLOSURE_MONEY,
+		          SUM(CASE  WHEN HB.COUNT = 1 THEN HB.PRINCIPAL + HB.INTEREST + HB.DEFAULT_INTEREST ELSE 0 END) ONE_FORECLOSURE_MONEY, 
+		          SUM(CASE  WHEN HB.COUNT = 2 THEN HB.PRINCIPAL + HB.INTEREST + HB.DEFAULT_INTEREST ELSE 0 END) TWO_FORECLOSURE_MONEY, 
+		          SUM(CASE  WHEN HB.COUNT = 1 THEN HB.BALANCE  ELSE 0 END)  AS ONE_BALANCE, 
+		          SUM(CASE  WHEN HB.COUNT = 2 THEN HB.BALANCE  ELSE 0 END)  AS TWO_BALANCE,
+		          MIN(CASE  WHEN HB.COUNT = 1 THEN HB.BALANCE_CONFIRM END) AS BALANCE_CONFIRM
+		    FROM BIZ_LOAN_HOUSE_BALANCE HB
+		   GROUP BY HANDLE_ID,HANDLE_USER_ID,HB.COUNT
+		  ) HB ON HB.HANDLE_ID = D.PID 
+		   LEFT JOIN BIZ_PRODUCT HC ON  A.PRODUCT_ID=HC.PID 
+		   LEFT JOIN V_HOUSE_NAME EH ON EH.PROJECT_ID = A.PID
+	]]>
+		<where>
+			<trim>
+				<if test="1==1">
+					AND A.IS_NEED_HANDLE =1 AND HBCOUNT=1 AND HC.PRODUCT_NUM
+					!='FJYWSLTFD' AND HC.PRODUCT_NUM !='JYWSLTFD'
+				</if>
+				<if test="userIds!=null and userIds.size()>0">
+					AND A.PM_USER_ID IN
+					<foreach item="itemId" collection="userIds" open="("
+						separator="," close=")">
+						#{itemId}
+					</foreach>
+				</if>
+				<if test="recFeeStatusList !=null and recFeeStatusList.size()>0">
+					AND B.STATUS IN
+					<foreach item="itemId" collection="recFeeStatusList" open="("
+						separator="," close=")">
+						#{itemId}
+					</foreach>
+				</if>
+				<if test="recFeeStatus !=null and recFeeStatus >0">
+					AND B.STATUS =#{recFeeStatus}
+				</if>
+				<if test="productId !=null and productId >0">
+					AND A.PRODUCT_ID =#{productId}
+				</if>
+				<if test="foreclosureStatus !=null and foreclosureStatus >0">
+					AND D.FORECLOSURE_STATUS =#{foreclosureStatus}
+				</if>
+				<if test="balanceConfirm !=null and balanceConfirm >0">
+					AND D.PID = (SELECT HB.HANDLE_ID
+					FROM
+					BIZ_LOAN_HOUSE_BALANCE HB
+					WHERE HB.HANDLE_ID = D.PID
+					AND
+					HB.BALANCE_CONFIRM=#{balanceConfirm} AND ROWNUM = 1)
+				</if>
+				<if test="projectName !=null and projectName !=''">
+					AND A.PROJECT_NAME LIKE '%${projectName}%'
+				</if>
+				<if test="projectNumber !=null and projectNumber !=''">
+					AND A.PROJECT_NUMBER LIKE '%${projectNumber}%'
+				</if>
+				<if test="houseName !=null and houseName !=''">
+					AND EH.HOUSE_NAME LIKE '%${houseName}%'
+				</if>
+				<if test="buyerName !=null and buyerName !=''">
+					AND E.BUYER_NAME LIKE '%${buyerName}%'
+				</if>
+				<if test="sellerName !=null and sellerName !=''">
+					AND E.SELLER_NAME LIKE '%${sellerName}%'
+				</if>
+				<if test="projectId !=null and projectId >0">
+					AND A.PROJECT_ID = #{projectId}
+				</if>
+				<if test="handleUserName !=null and handleUserName !=''">
+					AND (SELECT U.REAL_NAME
+					FROM SYS_USER U
+					WHERE U.PID =
+					HB.HANDLE_USER_ID) LIKE '%${handleUserName}%'
+				</if>
+
+				<if test="fromPayDate !=null and fromPayDate !=''">
+					AND (SELECT B.pay_date FROM BIZ_LOAN_HANDLE_INFO C
+					LEFT JOIN
+					BIZ_LOAN_HOUSE_BALANCE B ON C.PID=B.HANDLE_ID
+					WHERE C.PROJECT_ID =
+					A.PID AND B.COUNT=1) 
+					  <![CDATA[>=]]>
+					TO_DATE(CONCAT(#{fromPayDate},' 00:00:00'),'yyyy-mm-dd hh24:mi:ss')
+				</if>
+				<if test="endPayDate !=null and endPayDate !=''">
+					AND (SELECT B.pay_date FROM BIZ_LOAN_HANDLE_INFO C
+					LEFT JOIN
+					BIZ_LOAN_HOUSE_BALANCE B ON C.PID=B.HANDLE_ID
+					WHERE C.PROJECT_ID =
+					A.PID AND B.COUNT=1) 
+					  <![CDATA[<=]]>
+					TO_DATE(CONCAT(#{endPayDate},' 23:59:59'),'yyyy-mm-dd hh24:mi:ss')
+				</if>
+			</trim>
+		</where>
+		) T
+	</select>
+	<select id="getHandleUserName" resultType="java.lang.String"
+		parameterType="java.lang.Integer">
+		SELECT
+		I.USER_ID_
+		FROM BIZ_HANDLE_WORKFLOW BWP
+		INNER JOIN
+		ACT_RU_TASK RES
+		ON BWP.EXECUTION_ID = RES.PROC_INST_ID_
+		LEFT JOIN
+		ACT_RU_IDENTITYLINK I
+		ON I.TASK_ID_ = RES.ID_
+		WHERE
+		BWP.HANDLE_ID=#{handleId}
+		AND ROWNUM=1
+	</select>
+	<!-- 机构的保后监管列表(分页查询) -->
+	<select id="queryOrgBizHandlePage" resultMap="orgBizHandlePageMap"
+		parameterType="com.xlkfinance.bms.rpc.inloan.OrgBizHandlePage">
+		<if test="page!=-1">
+			SELECT D.* FROM (SELECT T.*, ROWNUM RN
+			FROM (
+		</if>
+		SELECT A.PID AS PROJECT_ID,
+		A.PROJECT_NAME,
+		A.PROJECT_NUMBER,
+		A.FORECLOSURE_STATUS AS PROJECT_STATUS,
+		D.PID AS BIZ_HANDLE_ID,
+		C.LOAN_MONEY,
+		EH.HOUSE_NAME,
+		E.BUYER_NAME,
+		E.SELLER_NAME,
+		(SELECT
+		SUM(AFH.REC_MONEY)
+		FROM BIZ_LOAN_APPLY_FINANCE_HANDLE AFH
+		WHERE
+		AFH.FINANCE_HANDLE_ID = B.PID
+		AND AFH.REC_PRO IN (3, 4, 5, 6)) AS
+		REAL_LOAN,
+		(SELECT U.REAL_NAME
+		FROM ORG_USER_INFO U
+		WHERE U.PID =
+		A.APPLY_USER_ID) AS APPLY_USER_NAME
+		FROM BIZ_PROJECT A
+		INNER JOIN
+		BIZ_LOAN_FINANCE_HANDLE B
+		ON A.PID = B.PROJECT_ID
+		INNER JOIN
+		BIZ_PROJECT_GUARANTEE C
+		ON C.PROJECT_ID = A.PID
+		INNER JOIN
+		BIZ_LOAN_HANDLE_INFO D
+		ON D.PROJECT_ID = A.PID
+		LEFT JOIN
+		BIZ_PROJECT_PROPERTY E
+		ON E.PROJECT_ID = A.PID
+		LEFT JOIN V_HOUSE_NAME EH ON EH.PROJECT_ID = A.PID
+		<where>
+			<trim>
+				<if test="projectName!=null and projectName!=''">
+					AND A.PROJECT_NAME LIKE '%${projectName}%'
+				</if>
+				<if test="projectNumber!=null and projectNumber!=''">
+					AND A.PROJECT_NUMBER LIKE '%${projectNumber}%'
+				</if>
+				<if test="houseName !=null and houseName !=''">
+					AND EH.HOUSE_NAME LIKE '%${houseName}%'
+				</if>
+				<if test="buyerName !=null and buyerName !=''">
+					AND E.BUYER_NAME LIKE '%${buyerName}%'
+				</if>
+				<if test="sellerName !=null and sellerName !=''">
+					AND E.SELLER_NAME LIKE '%${sellerName}%'
+				</if>
+				<if test="1==1">
+					AND A.ORG_ID=#{orgId}
+				</if>
+				<if test="applyUserId!=null and applyUserId >0">
+					AND A.APPLY_USER_ID = #{applyUserId}
+				</if>
+				<if test="projectId!=null and projectId >0">
+					AND A.PID = #{projectId}
+				</if>
+			</trim>
+		</where>
+		ORDER BY B.CREATER_DATE DESC
+		<if test="page!=-1">
+	<![CDATA[
+	) T
+	WHERE ROWNUM <=#{page}*#{rows}
+	) D
+	WHERE D.RN > ((#{page}-1)*#{rows})
+	]]>
+		</if>
+	</select>
+	<!--机构息费列表总数 -->
+	<select id="getOrgBizHandlePageTotal" resultType="Integer"
+		parameterType="com.xlkfinance.bms.rpc.inloan.OrgBizHandlePage">
+	<![CDATA[
+	SELECT COUNT(1) FROM
+			(SELECT A.PID
+		  FROM BIZ_PROJECT A
+ INNER JOIN BIZ_LOAN_FINANCE_HANDLE B
+    ON A.PID = B.PROJECT_ID
+ INNER JOIN BIZ_PROJECT_GUARANTEE C
+    ON C.PROJECT_ID = A.PID
+  INNER JOIN BIZ_LOAN_HANDLE_INFO D
+    ON D.PROJECT_ID = A.PID
+  LEFT JOIN BIZ_PROJECT_PROPERTY E
+    ON E.PROJECT_ID = A.PID
+    LEFT JOIN V_HOUSE_NAME EH ON EH.PROJECT_ID = A.PID
+	]]>
+		<where>
+			<trim>
+				<if test="projectName!=null and projectName!=''">
+					AND A.PROJECT_NAME LIKE '%${projectName}%'
+				</if>
+				<if test="projectNumber!=null and projectNumber!=''">
+					AND A.PROJECT_NUMBER LIKE '%${projectNumber}%'
+				</if>
+				<if test="houseName !=null and houseName !=''">
+					AND EH.HOUSE_NAME LIKE '%${houseName}%'
+				</if>
+				<if test="buyerName !=null and buyerName !=''">
+					AND E.BUYER_NAME LIKE '%${buyerName}%'
+				</if>
+				<if test="sellerName !=null and sellerName !=''">
+					AND E.SELLER_NAME LIKE '%${sellerName}%'
+				</if>
+				<if test="1==1">
+					AND A.ORG_ID=#{orgId}
+				</if>
+				<if test="applyUserId!=null and applyUserId >0">
+					AND A.APPLY_USER_ID = #{applyUserId}
+				</if>
+				<if test="projectId!=null and projectId >0">
+					AND A.PID = #{projectId}
+				</if>
+			</trim>
+		</where>
+		) T
+	</select>
+
+
+
+
+	<!-- 查询历史差异预警处理总数 -->
+	<select id="getHisHandleDifferWarnCount" resultType="Integer"
+		parameterType="handleDifferWarnDTO">
+		SELECT COUNT(1) FROM BIZ_HIS_HANDLE_DIFFER_WARN A
+		<where>
+			<trim>
+				<if test="handleDynamicId !=null and handleDynamicId >0">
+					AND A.HANDLE_DYNAMIC_ID = #{handleDynamicId}
+				</if>
+				<if test="handleAuthor !=null and handleAuthor >0">
+					AND A.HANDLE_AUTHOR = #{handleAuthor}
+				</if>
+				<if test="projectId !=null and projectId >0">
+					AND A.PROJECT_ID = #{projectId}
+				</if>
+				<if test="pid!=null and pid>0">
+					AND A.PID = #{pid}
+				</if>
+				<if test="handleType !=null and handleType>0 ">
+					AND A.HANDLE_TYPE = #{handleType}
+				</if>
+			</trim>
+		</where>
+
+	</select>
+
+	<!-- 查询预警处理列表 -->
+	<select id="getHandleDifferWarnList" resultMap="handleDifferWarnMap"
+		parameterType="handleDifferWarnDTO">
+
+		SELECT A.PID , A.HANDLE_DYNAMIC_ID ,A.PROJECT_ID ,A.PROJECT_NAME ,
+		((TO_DATE(TO_CHAR(SYSDATE, 'yyyy-MM-dd'),
+		'yyyy-MM-dd'))-(TO_DATE(TO_CHAR(A.CREATE_DATE, 'yyyy-MM-dd'),
+		'yyyy-MM-dd'))) AS DIFFER,
+		A.STATUS ,
+		A.HANDLE_DATE , A.HANDLE_AUTHOR ,
+		TO_CHAR(A.CREATE_DATE, 'yyyy-MM-dd') as CREATE_DATE ,
+		A.REMARK ,
+		A.HANDLE_TYPE
+		FROM BIZ_LOAN_HANDLE_DIFFER_WARN A
+		<where>
+			<trim>
+				<if test="status != null and status !=0">
+					AND A.STATUS = #{status}
+				</if>
+				<if test="handleDynamicId !=null and handleDynamicId >0">
+					AND A.HANDLE_DYNAMIC_ID = #{handleDynamicId}
+				</if>
+				<if test="handleAuthor !=null and handleAuthor >0">
+					AND A.HANDLE_AUTHOR = #{handleAuthor}
+				</if>
+				<if test="projectId !=null and projectId >0">
+					AND A.PROJECT_ID = #{projectId}
+				</if>
+				<if test="pid!=null and pid>0">
+					AND A.PID = #{pid}
+				</if>
+				<if test="handleType !=null and handleType>0 ">
+					AND A.HANDLE_TYPE = #{handleType}
+				</if>
+			</trim>
+		</where>
+
+	</select>
+
+	<!-- 根据项目id查询查询办理动态 -->
+	<select id="findHandleDynamicFileByProjectId" resultMap="handleDynamicFileMap"
+		parameterType="java.util.Map">
+		SELECT A.* FROM BIZ_LOAN_HANDLE_DYNAMIC_FILE A
+		LEFT JOIN
+		BIZ_LOAN_HANDLE_DYNAMIC B
+		ON A.HANDLE_DYNAMIC_ID=B.PID
+		LEFT JOIN
+		BIZ_LOAN_HANDLE_INFO C
+		ON C.PID=B.HANDLE_ID
+		WHERE B.HANDLE_FLOW_ID=2 AND
+		C.PROJECT_ID=${projectId}
+	</select>
+
+</mapper> 

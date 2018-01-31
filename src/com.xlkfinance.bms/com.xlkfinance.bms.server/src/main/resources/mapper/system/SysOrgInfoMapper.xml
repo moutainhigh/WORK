@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.system.mapper.SysOrgInfoMapper">
+	<resultMap id="SysOrgInfoResultMap" type="com.xlkfinance.bms.rpc.system.SysOrgInfo">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="parent_id" property="parentId" jdbcType="INTEGER" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="code" property="code" jdbcType="VARCHAR" />		
+		<result column="category" property="category" jdbcType="INTEGER" />
+		<result column="layer" property="layer" jdbcType="INTEGER" />
+		<result column="status" property="status" jdbcType="INTEGER" />
+	</resultMap>
+	
+	<!-- 保存机构信息 -->
+	<insert id="saveSysOrgInfo" parameterType="com.xlkfinance.bms.rpc.system.SysOrgInfo">
+		<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="id">
+			SELECT SEQ_SYS_ORG_INFO.Nextval as ID from DUAL
+		</selectKey>
+		
+		INSERT INTO sys_org_info(id,parent_id,name,code,category,layer,status)
+			values(#{id},#{parentId},#{name},#{code},#{category},#{layer},1	)
+	</insert>
+	<!-- 修改机构信息 -->
+	<update id="updateSysOrgInfo" parameterType="com.xlkfinance.bms.rpc.system.SysOrgInfo">
+	
+		UPDATE sys_org_info org 
+		<trim prefix="set" suffixOverrides=",">
+			<if test="parentId != 0">
+				org.parent_id=#{parentId},
+			</if>
+			<if test="name != null and name !='' ">
+				org.name=#{name},
+			</if>
+			<if test="code != null and code != '' ">
+				org.code= #{code},
+			</if>
+			<if test="category != null and category != 0">
+				org.category= #{category},
+			</if>
+			<if test="layer != null and layer !=0">
+				org.layer=#{layer}
+			</if>
+		</trim>
+		WHERE org.id=#{id}
+	</update>
+	
+	<!-- 修改机构树 -->
+	<update id="updateApplicationTree" parameterType="com.xlkfinance.bms.rpc.system.SysOrgInfo">
+	   UPDATE sys_org_info org SET org.parent_id = #{parentId} WHERE org.id=#{id}
+	</update>
+	
+	<!-- 设置机构状态,0表示无效,1表示有效 -->
+	<update id="deleteSysOrgInfo" parameterType="com.xlkfinance.bms.rpc.system.SysOrgInfo">
+		UPDATE sys_org_info org SET org.status = #{status} WHERE org.id=#{id}
+	</update>
+	<!-- 根据机构名称和父级机构Id获取机构信息 -->
+	<select id="getSysOrgInfoByName" parameterType="java.util.Map" resultMap="SysOrgInfoResultMap">
+	
+		SELECT 
+			id,
+			parent_id,
+			name,
+			code,
+			category,
+			layer,
+			status
+		FROM sys_org_info 
+		WHERE parent_id=#{parentId,jdbcType=INTEGER} and name=#{name,jdbcType=VARCHAR} 
+	
+	</select>
+	<!-- 根据机构id获取机构信息 -->
+	<select id="getSysOrgInfo" parameterType="Integer" resultMap="SysOrgInfoResultMap">
+		SELECT 
+			id,
+			parent_id,
+			name,
+			code,
+			category,
+			layer,
+			status
+		FROM sys_org_info 
+		WHERE id=#{_parameter}
+	</select>
+	
+	<!-- 根据机构类型获取机构列表 -->
+	<select id="getSysOrgInfoByCategory" parameterType="Integer" resultMap="SysOrgInfoResultMap">
+		SELECT 
+			id,
+			parent_id,
+			name,
+			code,
+			category,
+			layer,
+			status
+		FROM sys_org_info 
+		WHERE status=1 and  category=#{_parameter}
+	</select>
+	
+	<!-- 根据父级机构编号获取其下的所有子机构列表 -->
+	<select id="listSysOrgByParentId"  parameterType="Integer" resultMap="SysOrgInfoResultMap">
+		SELECT 	
+		 	id,
+			parent_id,
+			name,
+			code,
+			category,
+			layer,
+			status
+		FROM sys_org_info 
+		WHERE status = 1
+		START WITH parent_id=#{_parameter}
+		CONNECT BY PRIOR id=parent_id
+	</select>
+	
+	<!-- 获取机构列表 -->
+	<select id="listSysOrgByLayer" parameterType="com.xlkfinance.bms.rpc.system.SysOrgInfo" resultMap="SysOrgInfoResultMap">
+		SELECT 	
+		 	id,
+			parent_id,
+			name,
+			code,
+			category,
+			layer
+			
+		FROM sys_org_info 
+		WHERE status = 1
+		<if test="parentId != null and parentId !=0">
+			and parent_id=#{parentId}
+		</if>
+		<if test="category != null and category !=0">
+			and category=#{category}
+		</if>
+		<if test="id != null and id !=0">
+			and id=#{id}
+		</if>
+		<if test="layer != null and layer !=0">
+			and layer=#{layer}
+		</if>
+	</select>
+	<!-- 根据机构id获取其所有父级机构 -->
+	<select id="listSysParentOrg" parameterType="com.xlkfinance.bms.rpc.system.SysOrgInfo" resultMap="SysOrgInfoResultMap">
+		SELECT 
+    		org.id,
+    		org.name,
+    		org.code,
+    		org.layer,
+    		org.category
+		FROM 
+		    sys_org_info org 
+		WHERE 1=1
+		<if test="layer != null and layer !=0">
+			AND org.layer =#{layer}
+		</if> 
+		<if test="name != null">
+			AND org.name=#{name}
+		</if>
+		<if test="id != null and id != 0">
+		 	START WITH org.id = #{id} 
+		 	CONNECT BY PRIOR org.parent_id = org.id
+		</if>
+		 ORDER BY ID ASC
+	</select>
+	
+</mapper>

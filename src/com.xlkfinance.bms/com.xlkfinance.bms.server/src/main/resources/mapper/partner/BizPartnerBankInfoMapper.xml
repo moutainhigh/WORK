@@ -1,0 +1,567 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xlkfinance.bms.server.partner.mapper.BizPartnerBankInfoMapper">
+	<resultMap id="bizPartnerBankInfoMap" type="com.xlkfinance.bms.rpc.partner.BizPartnerBankInfo">
+		<id property="pid" column="PID" />
+		<id property="bankNo" column="BANK_NO" />
+		<id property="bankName" column="BANK_NAME" />
+		<id property="remitType" column="REMIT_TYPE" />
+		<id property="bankType" column="BANK_TYPE" />
+		<id property="unionStatus" column="UNION_STATUS" />
+		<id property="stationNo" column="STATION_NO" />
+		<id property="clearBankNo" column="CLEAR_BANK_NO" />
+		<id property="nodeCode" column="NODE_CODE" />
+		<id property="upBankNo" column="UP_BANK_NO" />
+		<id property="pbcBankNo" column="PBC_BANK_NO" />
+		<id property="cityCode" column="CITY_CODE" />
+		<id property="unionBankNameS" column="UNION_BANK_NAME_S" />
+		<id property="updateTerm" column="UPDATE_TERM" />
+		<id property="amt" column="AMT" />
+		<id property="provinceName" column="PROVINCE_NAME" />
+		<id property="cityName" column="CITY_NAME" />
+		<id property="bankPhone" column="BANK_PHONE" />
+		<id property="bankAddr" column="BANK_ADDR" />
+		<id property="reservNum1" column="RESERV_NUM1" />
+		<id property="reservStr1" column="RESERV_STR1" />
+		<id property="startDate" column="START_DATE" />
+		<id property="dueDate" column="DUE_DATE" />
+		<id property="useTerm" column="USE_TERM" />
+		<id property="lastModDate" column="LAST_MOD_DATE" />
+		<id property="zipcode" column="ZIPCODE" />
+		<id property="email" column="EMAIL" />
+		<id property="remark" column="REMARK" />
+	</resultMap>
+	<sql id="column_list">
+        PID,BANK_NO,BANK_NAME,REMIT_TYPE,BANK_TYPE,UNION_STATUS,STATION_NO,CLEAR_BANK_NO,NODE_CODE,UP_BANK_NO,PBC_BANK_NO,CITY_CODE,UNION_BANK_NAME_S,UPDATE_TERM,AMT,PROVINCE_NAME,CITY_NAME,BANK_PHONE,BANK_ADDR,RESERV_NUM1,RESERV_STR1,START_DATE,DUE_DATE,USE_TERM,LAST_MOD_DATE,ZIPCODE,EMAIL,REMARK
+	</sql>
+	<!-- 查询所有 -->
+	<select id="getAll" resultMap="bizPartnerBankInfoMap" parameterType="com.xlkfinance.bms.rpc.partner.BizPartnerBankInfo">
+		SELECT
+		<include refid="column_list" />
+		FROM BIZ_PARTNER_BANK_INFO
+		<where>
+			<trim>
+		      <if test="pid != null and pid >0">
+	          PID=#{pid}
+	          </if>
+		      <if test="bankNo != null and bankNo !=''">
+	          AND BANK_NO=#{bankNo}
+	          </if>
+		      <if test="bankName != null and bankName !=''">
+	          AND BANK_NAME=#{bankName}
+	          </if>
+		      <if test="remitType != null and remitType !=''">
+	          AND REMIT_TYPE=#{remitType}
+	          </if>
+		      <if test="bankType != null and bankType !=''">
+	          AND BANK_TYPE=#{bankType}
+	          </if>
+		      <if test="unionStatus != null and unionStatus !=''">
+	          AND UNION_STATUS=#{unionStatus}
+	          </if>
+		      <if test="stationNo != null and stationNo !=''">
+	          AND STATION_NO=#{stationNo}
+	          </if>
+		      <if test="clearBankNo != null and clearBankNo !=''">
+	          AND CLEAR_BANK_NO=#{clearBankNo}
+	          </if>
+		      <if test="nodeCode != null and nodeCode !=''">
+	          AND NODE_CODE=#{nodeCode}
+	          </if>
+		      <if test="upBankNo != null and upBankNo !=''">
+	          AND UP_BANK_NO=#{upBankNo}
+	          </if>
+		      <if test="pbcBankNo != null and pbcBankNo !=''">
+	          AND PBC_BANK_NO=#{pbcBankNo}
+	          </if>
+		      <if test="cityCode != null and cityCode !=''">
+	          AND CITY_CODE=#{cityCode}
+	          </if>
+		      <if test="unionBankNameS != null and unionBankNameS !=''">
+	          AND UNION_BANK_NAME_S=#{unionBankNameS}
+	          </if>
+		      <if test="updateTerm != null and updateTerm !=''">
+	          AND UPDATE_TERM=#{updateTerm}
+	          </if>
+		      <if test="amt != null and amt !=''">
+	          AND AMT=#{amt}
+	          </if>
+		      <if test="provinceName != null and provinceName !=''">
+	          AND PROVINCE_NAME=#{provinceName}
+	          </if>
+		      <if test="cityName != null and cityName !=''">
+	          AND CITY_NAME=#{cityName}
+	          </if>
+		      <if test="bankPhone != null and bankPhone !=''">
+	          AND BANK_PHONE=#{bankPhone}
+	          </if>
+		      <if test="bankAddr != null and bankAddr !=''">
+	          AND BANK_ADDR=#{bankAddr}
+	          </if>
+		      <if test="reservNum1 != null and reservNum1 !=''">
+	          AND RESERV_NUM1=#{reservNum1}
+	          </if>
+		      <if test="reservStr1 != null and reservStr1 !=''">
+	          AND RESERV_STR1=#{reservStr1}
+	          </if>
+		      <if test="startDate != null and startDate !=''">
+	          AND START_DATE=#{startDate}
+	          </if>
+		      <if test="dueDate != null and dueDate !=''">
+	          AND DUE_DATE=#{dueDate}
+	          </if>
+		      <if test="useTerm != null and useTerm !=''">
+	          AND USE_TERM=#{useTerm}
+	          </if>
+		      <if test="lastModDate != null and lastModDate !=''">
+	          AND LAST_MOD_DATE=#{lastModDate}
+	          </if>
+		      <if test="zipcode != null and zipcode !=''">
+	          AND ZIPCODE=#{zipcode}
+	          </if>
+		      <if test="email != null and email !=''">
+	          AND EMAIL=#{email}
+	          </if>
+		      <if test="remark != null and remark !=''">
+	          AND REMARK=#{remark}
+	          </if>
+			</trim>
+		</where>
+	</select>
+	<!-- 根据id获取 -->
+	<select id="getById" resultMap="bizPartnerBankInfoMap">
+		SELECT <include refid="column_list" /> FROM BIZ_PARTNER_BANK_INFO WHERE PID=#{pid}
+	</select>
+	<!-- 插入一条数据 -->
+	<insert id="insert" parameterType="com.xlkfinance.bms.rpc.partner.BizPartnerBankInfo">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_BIZ_PARTNER_BANK_INFO.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_PARTNER_BANK_INFO
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+				PID,
+			</if>
+		    <if test="bankNo != null and bankNo !=''">
+				BANK_NO,
+			</if>
+		    <if test="bankName != null and bankName !=''">
+				BANK_NAME,
+			</if>
+		    <if test="remitType != null and remitType !=''">
+				REMIT_TYPE,
+			</if>
+		    <if test="bankType != null and bankType !=''">
+				BANK_TYPE,
+			</if>
+		    <if test="unionStatus != null and unionStatus !=''">
+				UNION_STATUS,
+			</if>
+		    <if test="stationNo != null and stationNo !=''">
+				STATION_NO,
+			</if>
+		    <if test="clearBankNo != null and clearBankNo !=''">
+				CLEAR_BANK_NO,
+			</if>
+		    <if test="nodeCode != null and nodeCode !=''">
+				NODE_CODE,
+			</if>
+		    <if test="upBankNo != null and upBankNo !=''">
+				UP_BANK_NO,
+			</if>
+		    <if test="pbcBankNo != null and pbcBankNo !=''">
+				PBC_BANK_NO,
+			</if>
+		    <if test="cityCode != null and cityCode !=''">
+				CITY_CODE,
+			</if>
+		    <if test="unionBankNameS != null and unionBankNameS !=''">
+				UNION_BANK_NAME_S,
+			</if>
+		    <if test="updateTerm != null and updateTerm !=''">
+				UPDATE_TERM,
+			</if>
+		    <if test="amt != null and amt !=''">
+				AMT,
+			</if>
+		    <if test="provinceName != null and provinceName !=''">
+				PROVINCE_NAME,
+			</if>
+		    <if test="cityName != null and cityName !=''">
+				CITY_NAME,
+			</if>
+		    <if test="bankPhone != null and bankPhone !=''">
+				BANK_PHONE,
+			</if>
+		    <if test="bankAddr != null and bankAddr !=''">
+				BANK_ADDR,
+			</if>
+		    <if test="reservNum1 != null and reservNum1 !=''">
+				RESERV_NUM1,
+			</if>
+		    <if test="reservStr1 != null and reservStr1 !=''">
+				RESERV_STR1,
+			</if>
+		    <if test="startDate != null and startDate !=''">
+				START_DATE,
+			</if>
+		    <if test="dueDate != null and dueDate !=''">
+				DUE_DATE,
+			</if>
+		    <if test="useTerm != null and useTerm !=''">
+				USE_TERM,
+			</if>
+		    <if test="lastModDate != null and lastModDate !=''">
+				LAST_MOD_DATE,
+			</if>
+		    <if test="zipcode != null and zipcode !=''">
+				ZIPCODE,
+			</if>
+		    <if test="email != null and email !=''">
+				EMAIL,
+			</if>
+		    <if test="remark != null and remark !=''">
+				REMARK,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+		    #{pid},
+			</if>
+		    <if test="bankNo != null and bankNo !=''">
+		    #{bankNo},
+			</if>
+		    <if test="bankName != null and bankName !=''">
+		    #{bankName},
+			</if>
+		    <if test="remitType != null and remitType !=''">
+		    #{remitType},
+			</if>
+		    <if test="bankType != null and bankType !=''">
+		    #{bankType},
+			</if>
+		    <if test="unionStatus != null and unionStatus !=''">
+		    #{unionStatus},
+			</if>
+		    <if test="stationNo != null and stationNo !=''">
+		    #{stationNo},
+			</if>
+		    <if test="clearBankNo != null and clearBankNo !=''">
+		    #{clearBankNo},
+			</if>
+		    <if test="nodeCode != null and nodeCode !=''">
+		    #{nodeCode},
+			</if>
+		    <if test="upBankNo != null and upBankNo !=''">
+		    #{upBankNo},
+			</if>
+		    <if test="pbcBankNo != null and pbcBankNo !=''">
+		    #{pbcBankNo},
+			</if>
+		    <if test="cityCode != null and cityCode !=''">
+		    #{cityCode},
+			</if>
+		    <if test="unionBankNameS != null and unionBankNameS !=''">
+		    #{unionBankNameS},
+			</if>
+		    <if test="updateTerm != null and updateTerm !=''">
+		    #{updateTerm},
+			</if>
+		    <if test="amt != null and amt !=''">
+		    #{amt},
+			</if>
+		    <if test="provinceName != null and provinceName !=''">
+		    #{provinceName},
+			</if>
+		    <if test="cityName != null and cityName !=''">
+		    #{cityName},
+			</if>
+		    <if test="bankPhone != null and bankPhone !=''">
+		    #{bankPhone},
+			</if>
+		    <if test="bankAddr != null and bankAddr !=''">
+		    #{bankAddr},
+			</if>
+		    <if test="reservNum1 != null and reservNum1 !=''">
+		    #{reservNum1},
+			</if>
+		    <if test="reservStr1 != null and reservStr1 !=''">
+		    #{reservStr1},
+			</if>
+		    <if test="startDate != null and startDate !=''">
+		    #{startDate},
+			</if>
+		    <if test="dueDate != null and dueDate !=''">
+		    #{dueDate},
+			</if>
+		    <if test="useTerm != null and useTerm !=''">
+		    #{useTerm},
+			</if>
+		    <if test="lastModDate != null and lastModDate !=''">
+		    #{lastModDate},
+			</if>
+		    <if test="zipcode != null and zipcode !=''">
+		    #{zipcode},
+			</if>
+		    <if test="email != null and email !=''">
+		    #{email},
+			</if>
+		    <if test="remark != null and remark !=''">
+		    #{remark},
+			</if>
+		</trim>
+	</insert>
+	<!-- 根据id删除数据 -->
+	<delete id="deleteById" parameterType="com.xlkfinance.bms.rpc.partner.BizPartnerBankInfo">
+		<![CDATA[DELETE FROM BIZ_PARTNER_BANK_INFO WHERE PID=#{pid}]]>
+	</delete>
+	<!-- 根据id更新数据 -->
+		<update id="update" parameterType="com.xlkfinance.bms.rpc.partner.BizPartnerBankInfo">
+		UPDATE BIZ_PARTNER_BANK_INFO
+		<set>
+		    <if test="pid != null and pid >0">
+		     PID=#{pid},
+			</if>
+		    <if test="bankNo != null and bankNo !=''">
+		     BANK_NO=#{bankNo},
+			</if>
+		    <if test="bankName != null and bankName !=''">
+		     BANK_NAME=#{bankName},
+			</if>
+		    <if test="remitType != null and remitType !=''">
+		     REMIT_TYPE=#{remitType},
+			</if>
+		    <if test="bankType != null and bankType !=''">
+		     BANK_TYPE=#{bankType},
+			</if>
+		    <if test="unionStatus != null and unionStatus !=''">
+		     UNION_STATUS=#{unionStatus},
+			</if>
+		    <if test="stationNo != null and stationNo !=''">
+		     STATION_NO=#{stationNo},
+			</if>
+		    <if test="clearBankNo != null and clearBankNo !=''">
+		     CLEAR_BANK_NO=#{clearBankNo},
+			</if>
+		    <if test="nodeCode != null and nodeCode !=''">
+		     NODE_CODE=#{nodeCode},
+			</if>
+		    <if test="upBankNo != null and upBankNo !=''">
+		     UP_BANK_NO=#{upBankNo},
+			</if>
+		    <if test="pbcBankNo != null and pbcBankNo !=''">
+		     PBC_BANK_NO=#{pbcBankNo},
+			</if>
+		    <if test="cityCode != null and cityCode !=''">
+		     CITY_CODE=#{cityCode},
+			</if>
+		    <if test="unionBankNameS != null and unionBankNameS !=''">
+		     UNION_BANK_NAME_S=#{unionBankNameS},
+			</if>
+		    <if test="updateTerm != null and updateTerm !=''">
+		     UPDATE_TERM=#{updateTerm},
+			</if>
+		    <if test="amt != null and amt !=''">
+		     AMT=#{amt},
+			</if>
+		    <if test="provinceName != null and provinceName !=''">
+		     PROVINCE_NAME=#{provinceName},
+			</if>
+		    <if test="cityName != null and cityName !=''">
+		     CITY_NAME=#{cityName},
+			</if>
+		    <if test="bankPhone != null and bankPhone !=''">
+		     BANK_PHONE=#{bankPhone},
+			</if>
+		    <if test="bankAddr != null and bankAddr !=''">
+		     BANK_ADDR=#{bankAddr},
+			</if>
+		    <if test="reservNum1 != null and reservNum1 !=''">
+		     RESERV_NUM1=#{reservNum1},
+			</if>
+		    <if test="reservStr1 != null and reservStr1 !=''">
+		     RESERV_STR1=#{reservStr1},
+			</if>
+		    <if test="startDate != null and startDate !=''">
+		     START_DATE=#{startDate},
+			</if>
+		    <if test="dueDate != null and dueDate !=''">
+		     DUE_DATE=#{dueDate},
+			</if>
+		    <if test="useTerm != null and useTerm !=''">
+		     USE_TERM=#{useTerm},
+			</if>
+		    <if test="lastModDate != null and lastModDate !=''">
+		     LAST_MOD_DATE=#{lastModDate},
+			</if>
+		    <if test="zipcode != null and zipcode !=''">
+		     ZIPCODE=#{zipcode},
+			</if>
+		    <if test="email != null and email !=''">
+		     EMAIL=#{email},
+			</if>
+		    <if test="remark != null and remark !=''">
+		     REMARK=#{remark},
+			</if>
+		</set>
+		WHERE PID = #{pid}
+	</update>
+	<!-- 根据传入多个id删除数据 -->
+	<delete id="deleteByIds" parameterType="java.util.List">
+		DELETE FROM BIZ_PARTNER_BANK_INFO WHERE PID in
+		<foreach collection="list" item="item" index="index" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+	
+	
+	
+	<!-- 查询客户征信列表(可分页) -->
+	<select id="selectPartnerBankList" resultMap="bizPartnerBankInfoMap" parameterType="com.xlkfinance.bms.rpc.partner.BizPartnerBankInfo">
+		<if test="page!=-1">
+			SELECT D.* FROM (SELECT T.*, ROWNUM RN FROM (
+		</if>
+				SELECT B.PID,B.BANK_NO,B.BANK_NAME,B.REMIT_TYPE,B.BANK_TYPE,B.UNION_STATUS,B.STATION_NO,
+					CLEAR_BANK_NO,B.NODE_CODE,B.UP_BANK_NO,B.PBC_BANK_NO,B.CITY_CODE,B.UNION_BANK_NAME_S,
+					UPDATE_TERM,B.AMT,B.PROVINCE_NAME,B.CITY_NAME,B.BANK_PHONE,B.BANK_ADDR,B.RESERV_NUM1,
+					RESERV_STR1,B.START_DATE,B.DUE_DATE,B.USE_TERM,B.LAST_MOD_DATE,B.ZIPCODE,B.EMAIL,B.REMARK
+					
+				FROM BIZ_PARTNER_BANK_INFO B
+				<where>
+					<trim>
+		 		      <if test="pid != null and pid >0">
+			          	B.PID=#{pid}
+			          </if>
+				      <if test="bankNo != null and bankNo !=''">
+			         	 AND B.BANK_NO like '%${bankNo}%'   
+			          </if>
+				      <if test="bankName != null and bankName !=''">
+			          	AND B.BANK_NAME like '%${bankName}%'  
+			          </if>
+				      <if test="remitType != null and remitType !=''">
+			          	AND B.REMIT_TYPE=#{remitType}
+			          </if>
+				      <if test="bankType != null and bankType !=''">
+			         	 AND B.BANK_TYPE=#{bankType}
+			          </if>
+				      <if test="unionStatus != null and unionStatus !=''">
+			         	 AND B.UNION_STATUS=#{unionStatus}
+			          </if>
+				      <if test="stationNo != null and stationNo !=''">
+			          	AND B.STATION_NO=#{stationNo}
+			          </if>
+				      <if test="clearBankNo != null and clearBankNo !=''">
+			         	 AND B.CLEAR_BANK_NO=#{clearBankNo}
+			          </if>
+				      <if test="nodeCode != null and nodeCode !=''">
+			         	 AND B.NODE_CODE=#{nodeCode}
+			          </if>
+				      <if test="upBankNo != null and upBankNo !=''">
+			          	AND B.UP_BANK_NO=#{upBankNo}
+			          </if>
+				      <if test="pbcBankNo != null and pbcBankNo !=''">
+			         	 AND B.PBC_BANK_NO=#{pbcBankNo}
+			          </if>
+				      <if test="cityCode != null and cityCode !=''">
+			          	AND B.CITY_CODE=#{cityCode}
+			          </if>
+				      <if test="unionBankNameS != null and unionBankNameS !=''">
+			         	 AND B.UNION_BANK_NAME_S=#{unionBankNameS}
+			          </if>
+				      <if test="updateTerm != null and updateTerm !=''">
+			         	 AND B.UPDATE_TERM=#{updateTerm}
+			          </if>
+				      <if test="amt != null and amt !=''">
+			         	 AND B.AMT=#{amt}
+			          </if>
+				      <if test="provinceName != null and provinceName !=''">
+			         	 AND B.PROVINCE_NAME like '%${provinceName}%' 
+			          </if>
+				      <if test="cityName != null and cityName !=''">
+			         	 AND B.CITY_NAME  like '%${cityName}%' 
+			          </if>
+				      <if test="bankPhone != null and bankPhone !=''">
+			         	 AND B.BANK_PHONE=#{bankPhone}
+			          </if>
+					</trim>
+				</where>
+					
+					
+		<if test="page!=-1">
+			<![CDATA[
+			ORDER BY B.BANK_NO DESC
+			) T
+			WHERE ROWNUM <=#{page}*#{rows}
+			) D
+			WHERE D.RN > ((#{page}-1)*#{rows})
+			]]>
+		</if>
+	</select>
+	
+	<!-- 查询客户征信总数 -->
+	<select id="selectPartnerBankTotal" resultType="Integer" parameterType="com.xlkfinance.bms.rpc.partner.BizPartnerBankInfo">
+		SELECT COUNT(1) FROM BIZ_PARTNER_BANK_INFO B
+		<where>
+			<trim>
+	 		      <if test="pid != null and pid >0">
+		          	B.PID=#{pid}
+		          </if>
+			      <if test="bankNo != null and bankNo !=''">
+		         	 AND B.BANK_NO like '%${bankNo}%'   
+		          </if>
+			      <if test="bankName != null and bankName !=''">
+		          	AND B.BANK_NAME like '%${bankName}%'  
+		          </if>
+			      <if test="remitType != null and remitType !=''">
+		          	AND B.REMIT_TYPE=#{remitType}
+		          </if>
+			      <if test="bankType != null and bankType !=''">
+		         	 AND B.BANK_TYPE=#{bankType}
+		          </if>
+			      <if test="unionStatus != null and unionStatus !=''">
+		         	 AND B.UNION_STATUS=#{unionStatus}
+		          </if>
+			      <if test="stationNo != null and stationNo !=''">
+		          	AND B.STATION_NO=#{stationNo}
+		          </if>
+			      <if test="clearBankNo != null and clearBankNo !=''">
+		         	 AND B.CLEAR_BANK_NO=#{clearBankNo}
+		          </if>
+			      <if test="nodeCode != null and nodeCode !=''">
+		         	 AND B.NODE_CODE=#{nodeCode}
+		          </if>
+			      <if test="upBankNo != null and upBankNo !=''">
+		          	AND B.UP_BANK_NO=#{upBankNo}
+		          </if>
+			      <if test="pbcBankNo != null and pbcBankNo !=''">
+		         	 AND B.PBC_BANK_NO=#{pbcBankNo}
+		          </if>
+			      <if test="cityCode != null and cityCode !=''">
+		          	AND B.CITY_CODE=#{cityCode}
+		          </if>
+			      <if test="unionBankNameS != null and unionBankNameS !=''">
+		         	 AND B.UNION_BANK_NAME_S=#{unionBankNameS}
+		          </if>
+			      <if test="updateTerm != null and updateTerm !=''">
+		         	 AND B.UPDATE_TERM=#{updateTerm}
+		          </if>
+			      <if test="amt != null and amt !=''">
+		         	 AND B.AMT=#{amt}
+		          </if>
+			      <if test="provinceName != null and provinceName !=''">
+		         	 AND B.PROVINCE_NAME like '%${provinceName}%' 
+		          </if>
+			      <if test="cityName != null and cityName !=''">
+		         	 AND B.CITY_NAME  like '%${cityName}%' 
+		          </if>
+			      <if test="bankPhone != null and bankPhone !=''">
+		         	 AND B.BANK_PHONE=#{bankPhone}
+		          </if>
+			</trim>
+		</where>
+	</select>
+	
+	
+</mapper>

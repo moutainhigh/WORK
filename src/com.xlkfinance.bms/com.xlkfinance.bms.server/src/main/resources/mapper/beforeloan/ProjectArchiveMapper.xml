@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.beforeloan.mapper.ProjectArchiveMapper">
+	<resultMap id="BizFileMap" type="com.xlkfinance.bms.rpc.system.BizFile">
+		<id property="pid" column="PID"/>
+        <result property="fileName" column="FILE_NAME" />
+        <result property="fileType" column="FILE_TYPE" />
+        <result property="fileSize" column="FILE_SIZE" />
+        <result property="uploadDttm" column="UPLOAD_DTTM" />
+        <result property="uploadUserId" column="UPLOAD_USER_ID" />
+        <result property="fileUrl" column="FILE_URL" />
+        <result property="status" column="STATUS" />
+	</resultMap>
+	
+	<resultMap id="BizProjectArchiveMap" type="com.xlkfinance.bms.rpc.beforeloan.BizProjectArchive">
+		<id property="pid" column="PID"/>
+        <result property="projectId" column="PROJECT_ID" />
+        <result property="archiveCatelog" column="ARCHIVE_CATELOG" />
+        <result property="archiveCatelogValue" column="ARCHIVE_CATELOG_VALUE" />
+        <result property="archiveCatelogName" column="archiveCatelogName"/>
+        <result property="archiveFileName" column="ARCHIVE_FILE_NAME" />
+        <result property="archiveLocation" column="ARCHIVE_LOCATION" />
+        <result property="offlineCnt" column="OFFLINE_CNT" />
+        <result property="onlineCnt" column="ONLINE_CNT" />
+        <result property="isArchive" column="IS_ARCHIVE" />
+        <result property="isArchiveValue" column="IS_ARCHIVE_VALUE" />
+        <result property="remark" column="REMARK" />
+        <result property="createDttm" column="CREATE_DTTM" />
+        <result property="status" column="STATUS" />
+	</resultMap>
+	
+	<resultMap id="ProjectArchiveFileDTOMap" type="com.xlkfinance.bms.rpc.beforeloan.ProjectArchiveFileDTO">
+		<id property="bizFilePid" column="BIZ_FILE_PID"/>
+        <result property="fileName" column="FILE_NAME" />
+        <result property="fileType" column="FILE_TYPE" />
+        <result property="fileSize" column="FILE_SIZE" />
+        <result property="uploadDttm" column="UPLOAD_DTTM" />
+        <result property="fileUrl" column="FILE_URL" />
+        <result property="fileBusType" column="FILE_BUS_TYPE" />
+        <result property="fileRemark" column="FILE_REMARK" />
+	</resultMap>
+	
+	<insert id="saveBizProjectArchive" parameterType="com.xlkfinance.bms.rpc.beforeloan.BizProjectArchive">
+	   <selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+			SELECT SEQ_BIZ_PROJECT_ARCHIVE.Nextval as PID from DUAL
+		</selectKey>
+		    INSERT INTO BIZ_PROJECT_ARCHIVE(
+		    	PID, 
+		    	PROJECT_ID, 
+		    	ARCHIVE_CATELOG,
+		    	ARCHIVE_FILE_NAME,
+		    	ARCHIVE_LOCATION,
+		    	OFFLINE_CNT,
+		    	ONLINE_CNT,
+		    	IS_ARCHIVE,
+		    	REMARK,
+		    	CREATE_DTTM,
+		    	STATUS)
+		    values (
+		    	#{pid,jdbcType=INTEGER}, 
+		     	#{projectId,jdbcType=INTEGER},
+		     	#{archiveCatelog,jdbcType=VARCHAR},
+		     	#{archiveFileName,jdbcType=VARCHAR},
+		     	#{archiveLocation,jdbcType=VARCHAR},
+		     	#{offlineCnt,jdbcType=INTEGER},
+		     	#{onlineCnt,jdbcType=INTEGER},
+		     	#{isArchive,jdbcType=INTEGER},
+		     	#{remark,jdbcType=VARCHAR},
+		     	#{createDttm,jdbcType=TIMESTAMP},
+		     	#{status,jdbcType=INTEGER})
+  	</insert>
+  	
+  	<insert id="saveBizProjectArchiveFile" parameterType="com.xlkfinance.bms.rpc.beforeloan.BizProjectArchiveFile">
+	   <selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+			SELECT SEQ_BIZ_PROJECT_ARCHIVE_FILE.Nextval as PID from DUAL
+		</selectKey>
+		    INSERT INTO BIZ_PROJECT_ARCHIVE_FILE(
+		    	PID, 
+		    	ARCHIVE_ID, 
+		    	FILE_ID,
+		    	FILE_BUS_TYPE,
+		    	FILE_REMARK,
+		    	STATUS)
+		    values (
+		    	#{pid,jdbcType=INTEGER}, 
+		     	#{archiveId,jdbcType=INTEGER},
+		     	#{fileId,jdbcType=INTEGER},
+		     	#{fileBusType,jdbcType=INTEGER},
+		     	#{fileRemark,jdbcType=VARCHAR},
+		     	#{status,jdbcType=INTEGER})
+  	</insert>
+  	
+  	<select id="obtainBizProjectArchiveFileByArchiveId" resultMap="ProjectArchiveFileDTOMap" parameterType="java.lang.Integer">
+			SELECT BF.PID BIZ_FILE_PID,
+			       BF.FILE_NAME,
+			       BF.FILE_TYPE,
+			       BF.FILE_SIZE,
+			       to_char(BF.UPLOAD_DTTM,'yyyy-MM-DD HH24-mi-ss') UPLOAD_DTTM,
+			       BF.FILE_URL,
+			       BPAF.FILE_BUS_TYPE,
+			       BPAF.FILE_REMARK
+			  FROM BIZ_FILE BF
+			  JOIN BIZ_PROJECT_ARCHIVE_FILE BPAF
+			    ON BF.PID = BPAF.FILE_ID
+			 WHERE 1 = 1
+			   AND BPAF.ARCHIVE_ID = #{archiveId,jdbcType=INTEGER}
+  	</select> 
+  	
+  	<select id="obtainBizProjectArchiveByProjectId" resultMap="BizProjectArchiveMap" parameterType="java.lang.Integer">
+			    SELECT BPA.PID,
+				       BPA.PROJECT_ID,
+				       BPA.ARCHIVE_CATELOG,
+				       SLV.LOOKUP_DESC ARCHIVE_CATELOG_VALUE,
+				       SLV.LOOKUP_VAL archiveCatelogName,
+				       BPA.ARCHIVE_FILE_NAME,
+				       BPA.ARCHIVE_LOCATION,
+				       BPA.OFFLINE_CNT,
+				       BPA.ONLINE_CNT,
+				       BPA.IS_ARCHIVE,
+				       CASE BPA.IS_ARCHIVE
+				         WHEN 1 THEN
+				          '是'
+				         WHEN 0 THEN
+				          '否'
+				       END IS_ARCHIVE_VALUE,
+				       BPA.REMARK,
+				       TO_CHAR(BPA.CREATE_DTTM, 'yyyy-MM-DD HH24-mi-ss') CREATE_DTTM,
+				       BPA.STATUS
+				  FROM BIZ_PROJECT_ARCHIVE BPA, SYS_LOOKUP_VAL SLV
+				 WHERE 1 = 1
+				   AND BPA.ARCHIVE_CATELOG = SLV.PID
+				   AND BPA.PROJECT_ID = #{projectId,jdbcType=INTEGER}
+  	</select> 
+  	
+  	<delete id="deleteBizProjectArchiveByPid" parameterType="java.lang.Integer">
+  		DELETE FROM BIZ_PROJECT_ARCHIVE BPA
+  		WHERE BPA.PID = #{pid,jdbcType=INTEGER}
+  	</delete>
+  	
+  	<delete id="deleteBizProjectArchiveFileByArchiveId" parameterType="java.lang.Integer">
+  		DELETE FROM BIZ_PROJECT_ARCHIVE_FILE BPAF
+  		WHERE BPAF.ARCHIVE_ID = #{archiveId,jdbcType=INTEGER}
+  	</delete>
+  	
+  	<select id="obtainBizProjectArchiveByPID" resultType="com.xlkfinance.bms.rpc.beforeloan.BizProjectArchive" parameterType="java.lang.Integer">
+		    SELECT BPA.PID pid,
+		   		   BPA.PID projectArchiveId,
+	               BPA.PROJECT_ID projectId,
+	               BPA.PROJECT_ID archiveProjectId,
+	               BPA.ARCHIVE_CATELOG archiveCatelog,
+	               SLV.LOOKUP_DESC archiveCatelogValue,
+	               SLV.LOOKUP_VAL archiveCatelogName,
+	               BPA.ARCHIVE_FILE_NAME archiveFileName,
+	               BPA.ARCHIVE_LOCATION archiveLocation,
+	               BPA.OFFLINE_CNT offlineCnt,
+	               BPA.ONLINE_CNT onlineCnt,
+	               BPA.IS_ARCHIVE isArchive,
+	               CASE BPA.IS_ARCHIVE
+	                 WHEN 1 THEN
+	                  '是'
+	                 WHEN 0 THEN
+	                  '否'
+	               END isArchiveValue,
+	               BPA.REMARK remark,
+	               TO_CHAR(BPA.CREATE_DTTM, 'yyyy-MM-DD HH24-mi-ss') createDttm,
+	               BPA.STATUS status
+	          FROM BIZ_PROJECT_ARCHIVE BPA, SYS_LOOKUP_VAL SLV
+	         WHERE 1 = 1
+	           AND BPA.ARCHIVE_CATELOG = SLV.PID
+	           AND BPA.PID = #{pid,jdbcType=INTEGER}
+  	</select> 
+  	
+  	<update id="updateBizProjectArchive" parameterType="com.xlkfinance.bms.rpc.beforeloan.BizProjectArchive">
+	    	UPDATE BIZ_PROJECT_ARCHIVE
+		    SET
+		     	ARCHIVE_CATELOG = #{archiveCatelog,jdbcType=VARCHAR},
+		     	ARCHIVE_FILE_NAME = #{archiveFileName,jdbcType=VARCHAR},
+		     	ARCHIVE_LOCATION = #{archiveLocation,jdbcType=VARCHAR},
+		     	OFFLINE_CNT = #{offlineCnt,jdbcType=INTEGER},
+		     	ONLINE_CNT = #{onlineCnt,jdbcType=INTEGER},
+		     	IS_ARCHIVE = #{isArchive,jdbcType=INTEGER},
+		     	REMARK = #{remark,jdbcType=VARCHAR}
+		    WHERE 
+		    	PID = #{pid,jdbcType=INTEGER}
+  	</update>
+  	
+  	<delete id="deleteBizProjectArchiveFileByFileId" parameterType="java.lang.Integer">
+  		DELETE FROM BIZ_PROJECT_ARCHIVE_FILE BRFA
+  		WHERE BRFA.FILE_ID = #{fileId,jdbcType=INTEGER}
+  	</delete>
+  	
+  	<select id="obtainProjectArchiveFileDTOByFileId" resultType="com.xlkfinance.bms.rpc.beforeloan.ProjectArchiveFileDTO" parameterType="java.lang.Integer">
+			SELECT BF.PID bizFilePid,
+			       BF.FILE_NAME fileName,
+			       BF.FILE_NAME projectArchiveFileName,
+			       BF.FILE_TYPE fileType,
+			       BF.FILE_SIZE fileSize,
+			       to_char(BF.UPLOAD_DTTM,'yyyy-MM-DD HH24-mi-ss') uploadDttm,
+			       BF.FILE_URL fileUrl,
+			       BPAF.FILE_BUS_TYPE fileBusType,
+			       BPAF.FILE_REMARK fileRemark
+			  FROM BIZ_FILE BF
+			  JOIN BIZ_PROJECT_ARCHIVE_FILE BPAF
+			    ON BF.PID = BPAF.FILE_ID
+			 WHERE 1 = 1
+			   AND BPAF.FILE_ID = #{fileId,jdbcType=INTEGER}
+  	</select> 
+  	
+  	<update id="updateProjectArchiveFile" parameterType="com.xlkfinance.bms.rpc.beforeloan.BizProjectArchiveFile">
+	    	update BIZ_PROJECT_ARCHIVE_FILE
+			<trim prefix="set" suffixOverrides=",">
+				<if test="fileBusType != null and fileBusType!='' and fileBusType!='0'">
+					FILE_BUS_TYPE = #{fileBusType,jdbcType=INTEGER},
+				</if>
+				<if test="fileRemark != null">
+					FILE_REMARK = #{fileRemark,jdbcType=VARCHAR}
+				</if>
+			</trim>
+			WHERE FILE_ID = #{fileId,jdbcType=INTEGER}
+  	</update>
+
+</mapper>

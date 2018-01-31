@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.afterloan.mapper.AssignmentDistributionMapper">
+<resultMap id="getAssignmentDistributionMap"
+		type="com.xlkfinance.bms.rpc.afterloan.AssignmentDistribution">
+		<result property="pid" column="PROJECT_ID" />
+		<result property="projectName" column="PROJECT_NAME" />
+		<result property="projectId" column="PROJECT_NUMBER" />
+		<result property="acctType" column="CUS_TYPE" />
+		<result property="appDate" column="REQUEST_DTTM" javaType="String" jdbcType="TIMESTAMP"/>
+		<result property="telephone" column="TELEPHONE" />
+		<result property="creditAmt" column="CREDIT_AMT" />
+		<result property="balanceAmt" column="UNCOLLECT_AMT" />
+		<result property="userId" column="USER_ID"/>
+		<result property="realName" column="USER_NAME"/>
+		<result property="planOutLoanDt" column="PLAN_BEGIN_DT"  javaType="String" jdbcType="DATE"/>
+		<result property="rows" column="P_COUNT"/>
+		<result property="reminderId" column="REMINDER_ID"/>
+	</resultMap>
+	
+	<resultMap id="getRepaymentCollectionMap"
+		type="com.xlkfinance.bms.rpc.afterloan.RepaymentCollection">
+		<result property="pid" column="PROJECT_ID" />
+		<result property="projectName" column="PROJECT_NAME" />
+		<result property="projectId" column="PROJECT_NUMBER" />
+		<result property="acctType" column="CUS_TYPE"/>
+		<result property="appDate" column="REQUEST_DTTM" javaType="String" jdbcType="TIMESTAMP"/>
+		<result property="telephone" column="TELEPHONE" />
+		<result property="creditAmt" column="CREDIT_AMT" />
+		<result property="balanceAmt" column="UNCOLLECT_AMT" />
+		<result property="realName" column="USER_NAME"/>
+		<result property="planOutLoanDt" column="PLAN_BEGIN_DT" jdbcType="DATE" javaType="String"/>
+		<result property="factReminderUser" column="REMINDER_USER"/>
+		<result property="factPlanDt" column="REMINDER_DTTM" jdbcType="TIMESTAMP" javaType="String"/>
+		<result property="planId" column="PLAN_ID"/>
+		<result property="loanId" column="LOAN_ID"/>
+		<result property="total" column="TOTAL"/>
+		
+	</resultMap>
+	
+	<resultMap id="getCollectionRecordMap"
+		type="com.xlkfinance.bms.rpc.afterloan.CollectionRecordDto">
+		<result property="pid" column="PID" />
+		<result property="cycleNum" column="CYCLE_NUM" />
+		<result property="reminderDt" column="REMINDER_DTTM" javaType="String" jdbcType="TIMESTAMP"/>
+		<result property="reminderUser" column="REMINDER_USER"/>
+		<result property="ctMethods" column="CT_METHODS"/>
+		<result property="subject" column="REMINDER_SUBJECT" />
+		<result property="content" column="REMINDER_MSG" />
+		<result property="count" column="count" />
+	</resultMap>
+	
+		
+	<resultMap id="getCollectionCustomerMap"
+		type="com.xlkfinance.bms.rpc.afterloan.CollectionCustomer">
+		<result property="projectId" column="PID" />
+		<result property="acctId" column="ACCT_ID" />
+		<result property="acctName" column="ACCT_NAME" />
+		<result property="telephone" column="TELEPHONE"/>
+		<result property="email" column="MAIL"/>
+		<result property="recipient" column="REC_PERSON" />
+		<result property="address" column="ADDRESS" />
+		<result property="postalCode" column="POSTAL_CODE" />
+		<result property="acctType" column="ACCT_TYPE"/>
+	</resultMap>
+	
+			
+	<resultMap id="getCollectionCusComContactMap"
+		type="com.xlkfinance.bms.rpc.afterloan.CollectionCusComContact">
+		<result property="pid" column="PID" />
+		<result property="cttName" column="CTT_NAME" />
+		<result property="mainCtt" column="MAIN_CTT" />
+		<result property="duty" column="DUTY"/>
+		<result property="movePhone" column="MOVE_PHONE" />
+		<result property="fixedPhone" column="FIXED_PHONE" />
+		<result property="familyAddr" column="FAMILY_ADDR" />
+		<result property="comPhone" column="COM_PHONE" />
+	</resultMap>
+	
+	<resultMap type="com.xlkfinance.bms.rpc.afterloan.ReminderNoticePart" id="reminderNoticePartMap">
+		<result property="pid" column="PID"/>
+		<result property="contractNo" column="contractNo"/>
+		<result property="shouldAmt" column="shouldAmt"/>
+		<result property="shouldDttm" column="shouldDttm"/>
+		<result property="principal" column="principal"/>
+		<result property="interest" column="interest"/>
+		<result property="aType" column="ATYPE"/>
+	</resultMap>
+	
+	<resultMap type="com.xlkfinance.bms.rpc.afterloan.ReminderNotice" id="reminderNoticeMap">
+		<result property="acctName" column="ACCT_NAME"/>
+		<result property="accName" column="accName"/>
+		<result property="currency" column="currency"/>
+		<result property="bankCardType" column="BANKCARDTYPE"/>
+		<result property="contractNO" column="CONTRACT_NO"/>
+	</resultMap>
+	
+	<update id="updateReminderPlan" parameterType="com.xlkfinance.bms.rpc.afterloan.ProjectReminderPlanDto">
+		UPDATE BIZ_PROJECT_REMINDER_PLAN
+		<set>
+			<if test="reminderUserId !=null">
+				REMINDER_USER_ID=#{reminderUserId,jdbcType=INTEGER},
+			</if>
+			<if test="planBeginDt !=null">
+				PLAN_BEGIN_DT=#{planBeginDt,jdbcType=DATE,javaType=String},
+			</if>
+			<if test="isMail !=null">
+				IS_MAIL=#{isMail,jdbcType=INTEGER},
+			</if>
+			<if test="isSms !=null">
+				IS_SMS=#{isSms,jdbcType=INTEGER},
+			</if>
+		</set>
+		WHERE PID=#{pId,jdbcType=INTEGER}
+	</update>
+	
+	<!-- 保存催收员 -->
+	<insert id="insertReminderPlan"
+		parameterType="com.xlkfinance.bms.rpc.afterloan.ProjectReminderPlanDto">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pId">
+			SELECT SEQ_BIZ_PROJECT_REMINDER_PLAN.Nextval as PID from
+			DUAL
+		</selectKey>
+		insert into BIZ_PROJECT_REMINDER_PLAN (
+		PID,
+		PROJECT_ID,
+		REMINDER_USER_ID,
+		PLAN_BEGIN_DT,
+		IS_MAIL,
+		IS_SMS,
+		PLAN_DT
+		)
+		values (
+		#{pId,jdbcType=INTEGER},
+		#{projectId,jdbcType=INTEGER},
+		#{reminderUserId,jdbcType=INTEGER},
+		#{planBeginDt,jdbcType=DATE},
+		#{isMail,jdbcType=INTEGER},
+		#{isSms,jdbcType=INTEGER},sysdate
+		)
+	</insert>
+	
+	<!-- 插入催收记录 -->
+	<insert id="insertCollectionRecord"
+		parameterType="com.xlkfinance.bms.rpc.afterloan.CollectionRecord">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT seq_biz_reminder_history.Nextval as PID from
+			DUAL
+		</selectKey>
+		insert into BIZ_REMINDER_HISTORY (
+		PID,
+		REMINDER_PLAN_ID,
+		CYCLE_NUM,
+		REMINDER_DTTM,
+		REMINDER_USER_ID,
+		REMINDER_SUBJECT,
+		REMINDER_MSG,
+		METHOD_MAIL,
+		METHOD_SMS,
+		METHOD_PHONE,
+		METHOD_PAPER
+		)
+		values (
+		#{pid,jdbcType=INTEGER},
+		#{reminderPlanId,jdbcType=INTEGER},
+		#{cycleNum,jdbcType=INTEGER},
+		sysdate,
+		#{reminderUserId,jdbcType=INTEGER},
+		#{reminderSubject,jdbcType=VARCHAR},
+		#{reminderMsg,jdbcType=VARCHAR},
+		#{methodMall,jdbcType=INTEGER},
+		#{methodSms,jdbcType=INTEGER},
+		#{methodPhone,jdbcType=INTEGER},
+		#{methodPaper,jdbcType=INTEGER}
+		)
+	</insert>
+	
+	<!-- 催收记录查询列表 -->
+	<select id="getCollectionRecordList"
+			resultMap="getCollectionRecordMap"
+			parameterType="java.util.Map">
+ 			<!--  SELECT BRH.*, SU.USER_NAME AS REMINDER_USER
+  			FROM BIZ_REMINDER_HISTORY BRH, BIZ_PROJECT_REMINDER_PLAN BP,SYS_USER SU
+ 			WHERE BRH.REMINDER_USER_ID = SU.PID AND BRH.REMINDER_PLAN_ID=BP.PID AND BP.PROJECT_ID=#{projectId} -->
+ 			WITH tmp as(SELECT BRH.*, SU.USER_NAME AS REMINDER_USER
+  			FROM BIZ_REMINDER_HISTORY BRH, BIZ_PROJECT_REMINDER_PLAN BP,SYS_USER SU
+ 			WHERE BRH.REMINDER_USER_ID = SU.PID AND BRH.REMINDER_PLAN_ID=BP.PID AND BP.PROJECT_ID=#{projectId} ORDER BY BRH.PID DESC)
+      	SELECT * FROM (SELECT t.*,(SELECT COUNT(1)FROM tmp) count,ROWNUM rn FROM tmp t) WHERE rn BETWEEN (((#{page}-1) * #{rows})+1) AND (#{page} * #{rows})
+	</select>
+
+	<!-- 查询客户信息 -->
+	<select id="getCollectionCustomer" resultMap="getCollectionCustomerMap"
+		parameterType="java.lang.Integer">
+		SELECT distinct BP.PID, BP.ACCT_ID,
+    BP.PROJECT_NAME,BP.PROJECT_NUMBER,ca.ACCT_NAME,ca.ACCT_TYPE,ca.telephone,ca.cert_number,ca.mail,ca.ADDRESS,ca.POSTAL_CODE
+    ,ca.REC_PERSON  FROM BIZ_PROJECT BP INNER JOIN CUS_ACCT_V_N ca ON BP.Acct_Id=ca.ACCT_ID  
+     where ROWNUM=1 AND	BP.pid=#{projectId}
+	</select>
+	
+	<!-- 根据客户编号查询联系人信息 -->
+	<select id="getCollectionCusComContact" resultMap="getCollectionCusComContactMap" parameterType="java.lang.Integer">
+	  	SELECT 
+	  	   CUS.PID,
+	  	   CUS.CUS_COM_ID,
+	  	   CUS.CTT_NAME,
+	       CUS.DUTY,
+	       CUS.FIXED_PHONE,
+	       CUS.MOVE_PHONE,
+	       CASE CUS.MAIN_CTT
+                   WHEN 1 THEN
+                    '是'
+                   WHEN 2 THEN
+                    '否'
+                 END MAIN_CTT,
+	       CUS.COM_PHONE,
+	       CUS.FAMILY_ADDR
+	  FROM CUS_COM_CONTACT CUS
+	    WHERE 1=1 
+	    AND	CUS.STATUS = 1
+	    AND CUS.CUS_COM_ID=#{acctId}
+  </select> 
+  
+  	<!-- 还款催收办理查询列表 -->
+	<select id="getAssignmentDistribution" resultMap="getAssignmentDistributionMap" statementType="CALLABLE"
+			parameterType="com.xlkfinance.bms.rpc.afterloan.AssignmentDistributionSearch">
+		{ CALL PKG_AFT_PROJECT.PRC_AFL_PROJECT_REMINDER_PLAN(
+		#{results,mode=OUT,jdbcType=CURSOR,javaType=java.sql.ResultSet,resultMap=getAssignmentDistributionMap},
+		#{projectNum,mode=IN,jdbcType=VARCHAR},#{projectName,mode=IN,jdbcType=VARCHAR},#{requestStartDt,mode=IN,jdbcType=TIMESTAMP,javaType=String},
+		#{requestEndDT,mode=IN,jdbcType=TIMESTAMP,javaType=String},#{expireStartDt,mode=IN,jdbcType=DATE,javaType=String},#{expireEndt,mode=IN,jdbcType=DATE,javaType=String},
+		#{overdueStartDay,mode=IN,jdbcType=INTEGER},#{overdueEndDay,mode=IN,jdbcType=INTEGER},#{cusName,mode=IN,jdbcType=VARCHAR},
+		#{acctType,mode=IN,jdbcType=INTEGER},#{ecoTrade,mode=IN,jdbcType=INTEGER},#{collectionUser,mode=IN,jdbcType=VARCHAR},
+		#{planStartDt,mode=IN,jdbcType=DATE,javaType=String},#{planEndDT,mode=IN,jdbcType=DATE,javaType=String},#{reminderStatus,mode=IN,jdbcType=INTEGER},
+		#{page,mode=IN,jdbcType=INTEGER},#{rows,mode=IN,jdbcType=INTEGER}
+		)}
+   </select>
+   
+  <!-- 还款催收查询列表 -->
+   	<select id="getRepaymentCollectionList"
+			resultMap="getRepaymentCollectionMap" statementType="CALLABLE"
+			parameterType="com.xlkfinance.bms.rpc.afterloan.RepaymentCollectionSearch">
+			{ CALL PKG_AFT_PROJECT.PRC_AFL_PROJECT_REMINDER_HIS(
+		#{results,mode=OUT,jdbcType=CURSOR,javaType=java.sql.ResultSet,resultMap=getRepaymentCollectionMap},
+		#{projectNum,mode=IN,jdbcType=VARCHAR},#{projectName,mode=IN,jdbcType=VARCHAR},#{requestStartDt,mode=IN,jdbcType=TIMESTAMP,javaType=String},
+		#{requestEndDT,mode=IN,jdbcType=TIMESTAMP,javaType=String},#{expireStartDt,mode=IN,jdbcType=DATE,javaType=String},#{expireEndt,mode=IN,jdbcType=DATE,javaType=String},
+		#{overdueStartDay,mode=IN,jdbcType=INTEGER},#{overdueEndDay,mode=IN,jdbcType=INTEGER},#{cusName,mode=IN,jdbcType=VARCHAR},
+		#{acctType,mode=IN,jdbcType=INTEGER},#{ecoTrade,mode=IN,jdbcType=INTEGER},#{planCollectionUser,mode=IN,jdbcType=VARCHAR},
+		#{planStartDt,mode=IN,jdbcType=DATE,javaType=String},#{planEndDT,mode=IN,jdbcType=DATE,javaType=String},
+		#{factStartDt,mode=IN,jdbcType=TIMESTAMP,javaType=String},
+		#{factEndDT,mode=IN,jdbcType=TIMESTAMP,javaType=String},#{factCollectionUser,mode=IN,jdbcType=VARCHAR},
+		#{userId,mode=IN,jdbcType=INTEGER},
+		#{page,mode=IN,jdbcType=INTEGER},#{rows,mode=IN,jdbcType=INTEGER}
+		)}
+	</select>
+	
+	
+	  <!-- 还款催收查询列表总数 -->
+   	<select id="getRepaymentCollectionTotal"
+			resultMap="getRepaymentCollectionMap" statementType="CALLABLE"
+			parameterType="com.xlkfinance.bms.rpc.afterloan.RepaymentCollectionSearch">
+			{ CALL PKG_AFT_PROJECT.PRC_AFL_REMINDER_HIS_COUNT(
+		#{rows,mode=OUT,jdbcType=INTEGER,javaType=java.lang.Integer,resultMap=getRepaymentCollectionMap},
+		#{projectNum,mode=IN,jdbcType=VARCHAR},#{projectName,mode=IN,jdbcType=VARCHAR},#{requestStartDt,mode=IN,jdbcType=TIMESTAMP,javaType=String},
+		#{requestEndDT,mode=IN,jdbcType=TIMESTAMP,javaType=String},#{expireStartDt,mode=IN,jdbcType=DATE,javaType=String},#{expireStartDt,mode=IN,jdbcType=DATE,javaType=String},
+		#{overdueStartDay,mode=IN,jdbcType=INTEGER},#{overdueEndDay,mode=IN,jdbcType=INTEGER},#{cusName,mode=IN,jdbcType=VARCHAR},
+		#{acctType,mode=IN,jdbcType=INTEGER},#{ecoTrade,mode=IN,jdbcType=INTEGER},#{planCollectionUser,mode=IN,jdbcType=VARCHAR},
+		#{planStartDt,mode=IN,jdbcType=DATE,javaType=String},#{planEndDT,mode=IN,jdbcType=DATE,javaType=String},
+		#{factStartDt,mode=IN,jdbcType=TIMESTAMP,javaType=String},
+		#{factEndDT,mode=IN,jdbcType=TIMESTAMP,javaType=String},#{factCollectionUser,mode=IN,jdbcType=VARCHAR}
+		)}
+	</select>
+	
+   <!-- 还款催收办理查询列表总数 -->
+   	<select id="getAssignmentDistributionTotal" resultMap="getAssignmentDistributionMap" statementType="CALLABLE"
+			parameterType="com.xlkfinance.bms.rpc.afterloan.AssignmentDistributionSearch">
+		{ CALL PKG_AFT_PROJECT.PRC_AFL_REMINDER_PLAN_COUNT(
+		#{rows,mode=OUT,jdbcType=INTEGER,javaType=java.lang.Integer,resultMap=getAssignmentDistributionMap},
+		#{projectNum,mode=IN,jdbcType=VARCHAR},#{projectName,mode=IN,jdbcType=VARCHAR},#{requestStartDt,mode=IN,jdbcType=TIMESTAMP,javaType=String},
+		#{requestEndDT,mode=IN,jdbcType=TIMESTAMP,javaType=String},#{expireStartDt,mode=IN,jdbcType=DATE,javaType=String},#{expireEndt,mode=IN,jdbcType=DATE,javaType=String},
+		#{overdueStartDay,mode=IN,jdbcType=INTEGER},#{overdueEndDay,mode=IN,jdbcType=INTEGER},#{cusName,mode=IN,jdbcType=VARCHAR},
+		#{acctType,mode=IN,jdbcType=INTEGER},#{ecoTrade,mode=IN,jdbcType=INTEGER},#{collectionUser,mode=IN,jdbcType=VARCHAR},
+		#{planStartDt,mode=IN,jdbcType=DATE,javaType=String},#{planEndDT,mode=IN,jdbcType=DATE,javaType=String},#{reminderStatus,mode=IN,jdbcType=INTEGER}
+		)}
+   </select>
+   
+   
+	<select id="getNoticeCurrentSeq" parameterType="java.lang.String" resultType="java.lang.Integer">
+		SELECT B.NOTICE_CURRENT_SEQ FROM BIZ_REMINDER_NOTICE_BILLS B
+		WHERE B.NOTICE_YEAR = #{year,jdbcType=INTEGER,javaType=String}
+	</select>
+	
+	
+	<insert id="insertNoticeCurrentSeq" parameterType="com.xlkfinance.bms.rpc.afterloan.ReminderNoticeBills">
+	<selectKey keyProperty="pid" resultType="Integer" order="BEFORE">
+		SELECT SEQ_BIZ_REMINDER_NOTICE_BILLS.Nextval as PID from DUAL
+	</selectKey>
+		INSERT INTO BIZ_REMINDER_NOTICE_BILLS
+		  (PID, NOTICE_YEAR, NOTICE_CURRENT_SEQ, DATETIME, STATUS)
+		VALUES
+		  (#{pid}, #{noticeYear}, 1, sysdate, 1)
+	</insert>
+	
+	
+	<update id="updateNoticeCurrentSeq" parameterType="java.lang.String">
+		UPDATE BIZ_REMINDER_NOTICE_BILLS
+		SET NOTICE_CURRENT_SEQ = ((SELECT NOTICE_CURRENT_SEQ FROM BIZ_REMINDER_NOTICE_BILLS WHERE NOTICE_YEAR =#{noticeYear})+1)
+		WHERE NOTICE_YEAR =#{noticeYear}
+	</update>
+	
+	
+	<select id="getReminderNoticePart" resultMap="reminderNoticePartMap" parameterType="java.util.Map">
+		SELECT T.PID, TO_CHAR(T.PLAN_REPAY_DT,'yyyy-mm-dd') AS shouldDttm, 1 AS ATYPE
+		  FROM BIZ_LOAN_REPAYMENT_PLAN T
+		 WHERE T.LOAN_INFO_ID = (SELECT BL.PID FROM BIZ_LOAN BL WHERE BL.PROJECT_ID=#{projectId})
+		   AND T.PLAN_VERSION = PKG_FINANCE_COMMON.GET_MAX_PLAN_VERSION((SELECT BL.PID FROM BIZ_LOAN BL WHERE BL.PROJECT_ID=#{projectId}))
+		   AND T.PLAN_REPAY_DT <![CDATA[<]]> TO_DATE(#{nowDttm},'yyyy-mm-dd hh24:mi:ss')
+		UNION
+		SELECT Y.PID, TO_CHAR(Y.OPER_REPAY_DT,'yyyy-mm-dd') AS shouldDttm, 2 AS ATYPE
+		  FROM BIZ_LOAN_REALTIME_PLAN Y
+		 WHERE Y.LOAN_ID = (SELECT BL.PID FROM BIZ_LOAN BL WHERE BL.PROJECT_ID=#{projectId})
+		   AND Y.PLAN_VERSION = PKG_FINANCE_COMMON.FUN_REALTIME_MAX_VERSION((SELECT BL.PID FROM BIZ_LOAN BL WHERE BL.PROJECT_ID=#{projectId}))
+		   AND Y.OPER_REPAY_DT <![CDATA[<]]> TO_DATE(#{nowDttm},'yyyy-mm-dd hh24:mi:ss')
+
+	</select>
+	
+	
+	<select id="getReminderNoticePartMoney" statementType="CALLABLE" parameterType="java.util.Map" >
+        	<![CDATA[ 
+			{ call PKG_FINANCE_CUST.pro_overduelList_Notices(#{pid, mode=IN, jdbcType=INTEGER},
+				#{aType, mode=IN, jdbcType=INTEGER},
+				#{nowDttm, mode=IN, jdbcType=DATE},
+				#{result,mode=OUT,jdbcType=CURSOR,resultMap=reminderNoticePartMap}) } 
+			  ]]>  
+	</select>
+	
+	
+	
+	<select id="getReminderNotice" parameterType="java.lang.Integer" resultMap="reminderNoticeMap">
+		SELECT distinct A.BANKCARDTYPE,
+		       A.CHARGE_NAME accName,
+		       CAV.ACCT_NAME,
+		       (SELECT SLV.LOOKUP_DESC
+		          FROM SYS_LOOKUP_VAL SLV
+		         WHERE SLV.PID = BL.CURRENCY) CURRENCY,
+		       cn.CONTRACT_NO
+		  FROM BIZ_LOAN BL
+		  LEFT JOIN (SELECT PC.CONTRACT_NO, PC.PROJECT_ID
+		               FROM BIZ_PROJECT_CONTRACT PC, BIZ_CONTRACT_TEMPLATE CT
+		              WHERE 1 = 1
+		                AND CT.PID = PC.CONTRACT_TEMPLATE_ID
+		                AND ct.CONTRACT_TYPE_CODE	='JK' AND pc.status=1) CN
+            ON CN.PROJECT_ID = BL.PROJECT_ID ,
+		       BIZ_LOAN_FT BLF,
+		       (SELECT BFB.PID, BFB.CHARGE_NAME, BFB.BANK_CARD_TYPE BANKCARDTYPE
+		          FROM CUS_ACCT CA, BIZ_FINANCE_BANK BFB
+		          LEFT JOIN SYS_LOOKUP_VAL SLV
+		            ON SLV.PID = BFB.BANK) A,
+		       BIZ_LOAN_OUTPUT BLO,
+		       CUS_ACCT_V CAV,
+		       BIZ_PROJECT BP
+		  LEFT JOIN BIZ_PROJECT_CONTRACT BPC
+		    ON BPC.PROJECT_ID = BP.PID
+		 WHERE BP.PID = BL.PROJECT_ID
+		   AND CAV.ACCT_ID = BP.ACCT_ID
+		   AND BLF.REF_ID = BLO.PID
+		   AND BLO.LOAN_ID = BL.PID
+		   AND A.PID = BLF.FT_BANK_ACCT_ID
+		   AND BP.PID = #{projectId}
+	</select>
+</mapper>

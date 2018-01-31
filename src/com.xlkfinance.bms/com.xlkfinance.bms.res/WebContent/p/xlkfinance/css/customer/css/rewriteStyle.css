@@ -1,0 +1,13 @@
+#cus_content .cus_table,.dueInfoDiv .cus_table{
+	border:none;
+	margin-bottom:5px; 
+	min-width:780px;
+	width:90%;
+	max-width:900px;
+	margin:0 auto;
+	font-size:12px;
+	cellspacing:0 ;
+	cellPadding:0;
+	border-collapse:collapse;}
+
+#cus_content .cus_table2{border:none;margin-bottom:5px; width:780px;margin:0 auto;font-size:12px;cellspacing:0 cellPadding:0;border-collapse:collapse;}

@@ -1,0 +1,54 @@
+
+ 
+/**添加配置*/
+系统管理 》系统配置 
+	参数名：HNBX_PARTNER_RATE
+	参数值：0
+	描述：华安保险接口配置 费率（数字）（不必填）
+	
+	
+	参数名：HNBX_PARTNER_GROSS_RATE
+	参数值：0.075
+	描述：华安保险接口配置 执行利率（数字）
+
+
+/**数据字典*/
+系统管理 》数据字典
+	/**===============修改备注========================*/
+	配置名称：合作机构小科银行账号
+	描述：
+合作机构放款公司接收银行帐号信息 
+1、打款银行（点融）： 银行_支行_开户名_帐号_省code_市_code;
+2、还款银行帐号格式（南粤）：开户名_帐号;
+3、还款银行（华安保险）： 银行_支行_开户名_帐号_省code_市_code;
+4、收款银行（华安保险）： 银行_开户名_帐号;
+	
+	/**===============添加子配置========================*/
+	//还款银行
+	数据字典值：PARTNER_REPAYMENT_BANK_2
+	数据字典描述：中国建设银行_深圳东海支行_深圳前海小科互联网金融服务有限公司_44201533400052532193_440000_440300
+	
+	//收款银行
+	数据字典值：PARTNER_LOAN_BANK_2
+	数据字典描述：平安银行_深圳前海小科互联网金融服务有限公司_15000060227590
+	
+	
+
+bms   web-config.properties  添加华安保险配置	
+	
+#=============================hnbx config ===========================================
+
+#hnbx api url
+hnbx.partner.api.url=http://cgi.sinosafe.com.cn/esb_agent/SULOUApply
+hnbx.partner.accid=P84QF00
+hnbx.partner.type=HAXB0001
+hnbx.partner.md5=6886cba269007b65adb2a1d7d8121dfb
+
+
+#hnbx sftp config
+hnbx.sftp.server.ip=ftp.sinosafe.com.cn
+hnbx.sftp.server.port=21
+hnbx.sftp.server.username=xbqfw
+hnbx.sftp.server.password=xbqfw-2017
+#hnbx file base dir
+hnbx.sftp.dir.base.path=/download/qfang

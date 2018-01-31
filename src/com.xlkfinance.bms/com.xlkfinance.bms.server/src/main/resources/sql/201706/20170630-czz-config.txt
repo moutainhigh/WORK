@@ -1,0 +1,19 @@
+
+
+
+
+/**添加菜单*/
+客户管理  添加菜单
+客户征信报告管理	/cusCreditReportHisController/creditReportHisList_index.action
+
+
+/**添加配置*/
+
+系统管理 》系统配置 
+	参数名：DC_SERVER_URL
+	参数值：http://112.74.51.101:7070/dc/api/openApi
+	描述：数据中心接口地址
+	
+
+
+

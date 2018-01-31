@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<settings>
+		<setting name="callSettersOnNulls" value="true" />
+		<setting name="cacheEnabled" value="true" />
+		<setting name="lazyLoadingEnabled" value="true" />
+		<setting name="aggressiveLazyLoading" value="true" />
+		<setting name="multipleResultSetsEnabled" value="true" />
+		<setting name="useColumnLabel" value="true" />
+		<setting name="useGeneratedKeys" value="false" />
+		<setting name="autoMappingBehavior" value="PARTIAL" />
+		<setting name="defaultExecutorType" value="SIMPLE" />
+		<setting name="defaultStatementTimeout" value="25" />
+		<setting name="safeRowBoundsEnabled" value="false" />
+		<setting name="mapUnderscoreToCamelCase" value="false" />
+		<setting name="localCacheScope" value="SESSION" />
+		<setting name="jdbcTypeForNull" value="OTHER" />
+		<setting name="lazyLoadTriggerMethods" value="equals,clone,hashCode,toString" />
+		<setting name="proxyFactory" value="CGLIB"/>
+	</settings>
+	<typeAliases>
+         <!-- 财务办理模块=========================start -->
+       <typeAlias alias="financeIndexDTO" type="com.xlkfinance.bms.rpc.inloan.FinanceIndexDTO"/>
+       <typeAlias alias="financeHandleDTO" type="com.xlkfinance.bms.rpc.inloan.FinanceHandleDTO"/>
+       <typeAlias alias="applyFinanceHandleDTO" type="com.xlkfinance.bms.rpc.inloan.ApplyFinanceHandleDTO"/>
+       <!-- 财务办理模块=========================end -->
+       <!-- 业务办理模块=========================start -->
+       <!--业务受理列表 -->
+       <typeAlias alias="applyHandleIndexDTO" type="com.xlkfinance.bms.rpc.inloan.ApplyHandleIndexDTO"/>
+       <typeAlias alias="handleDynamicMap" type="com.xlkfinance.bms.rpc.inloan.HandleDynamicMap"/>
+       <!-- 业务处理信息 表：BIZ_LOAN_HANDLE_INFO -->
+       <typeAlias alias="handleInfoDTO" type="com.xlkfinance.bms.rpc.inloan.HandleInfoDTO"/>
+       <!-- 申请业务处理信息 表：APPLY_HANDLE_INFO -->
+       <typeAlias alias="applyHandleInfoDTO" type="com.xlkfinance.bms.rpc.inloan.ApplyHandleInfoDTO"/>
+       <!-- 赎楼及余额回转信息 表：BIZ_LOAN_HOUSE_BALANCE -->
+       <typeAlias alias="houseBalanceDTO" type="com.xlkfinance.bms.rpc.inloan.HouseBalanceDTO"/>
+       <!-- 财务退款明细 表：BIZ_LOAN_REFUND_DETAILS -->
+       <typeAlias alias="refundDetailsDTO" type="com.xlkfinance.bms.rpc.inloan.RefundDetailsDTO"/>
+       <!-- 办理流程条目 表：BIZ_LOAN_HANDLE_FLOW -->
+       <typeAlias alias="handleFlowDTO" type="com.xlkfinance.bms.rpc.inloan.HandleFlowDTO"/>
+       <!-- 办理动态 表：BIZ_LOAN_HANDLE_DYNAMIC -->
+       <typeAlias alias="handleDynamicDTO" type="com.xlkfinance.bms.rpc.inloan.HandleDynamicDTO"/>
+       <!-- 业务办理和任务关联 表：BIZ_HANDLE_WORKFLOW -->
+       <typeAlias alias="bizHandleWorkflowDTO" type="com.xlkfinance.bms.rpc.inloan.BizHandleWorkflowDTO"/>
+       <!-- 差异预警处理表 表：BIZ_LOAN_HANDLE_DIFFER_WARN -->
+       <typeAlias alias="handleDifferWarnDTO" type="com.xlkfinance.bms.rpc.inloan.HandleDifferWarnDTO"/>
+       <typeAlias alias="handleDifferWarnIndexDTO" type="com.xlkfinance.bms.rpc.inloan.HandleDifferWarnIndexDTO"/>
+       <!-- 办理动态文件关联 表：BIZ_LOAN_HANDLE_DYNAMIC_FILE -->
+       <typeAlias alias="handleDynamicFileDTO" type="com.xlkfinance.bms.rpc.inloan.HandleDynamicFileDTO"/>
+       <!-- 赎楼列表 -->
+       <typeAlias alias="foreclosureIndexDTO" type="com.xlkfinance.bms.rpc.inloan.ForeclosureIndexDTO"/>
+       <!-- 收件 表：BIZ_COLLECT_FILES-->
+       <typeAlias alias="collectFileDTO" type="com.xlkfinance.bms.rpc.inloan.CollectFileDTO"/>
+       <!-- 要件打印信息-->
+       <typeAlias alias="collectFilePrintInfo" type="com.xlkfinance.bms.rpc.inloan.CollectFilePrintInfo"/>
+       <!-- 查档 表：BIZ_CHECK_DOCUMENT-->
+       <typeAlias alias="checkDocumentDTO" type="com.xlkfinance.bms.rpc.inloan.CheckDocumentDTO"/>
+       <!-- 查诉讼 表：BIZ_CHECK_LITIGATION-->
+       <typeAlias alias="checkLitigationDTO" type="com.xlkfinance.bms.rpc.inloan.CheckLitigationDTO"/>
+       <!-- 执行岗备注 表：BIZ_LOAN_PERFORM_JOB_REMARK-->
+       <typeAlias alias="performJobRemark" type="com.xlkfinance.bms.rpc.inloan.PerformJobRemark"/>
+       <!-- 查档首页列表-->
+       <typeAlias alias="checkDocumentIndexDTO" type="com.xlkfinance.bms.rpc.inloan.CheckDocumentIndexDTO"/>
+       <!-- 回款首页列表-->
+       <typeAlias alias="repaymentIndexDTO" type="com.xlkfinance.bms.rpc.inloan.RepaymentIndexDTO"/>
+       <!-- 回款表：BIZ_LOAN_REPAYMENT-->
+       <typeAlias alias="repaymentDTO" type="com.xlkfinance.bms.rpc.inloan.RepaymentDTO"/>
+       <!-- 回款记录表：BIZ_LOAN_REPAYMENT_RECORD-->
+       <typeAlias alias="repaymentRecordDTO" type="com.xlkfinance.bms.rpc.inloan.RepaymentRecordDTO"/>
+       <!-- 逾期费表：BIZ_LOAN_OVERDUE_FEE-->
+       <typeAlias alias="overdueFeeDTO" type="com.xlkfinance.bms.rpc.inloan.OverdueFeeDTO"/>
+       <!-- 中途划转：BIZ_INTERMEDIATE_TRANSFER-->
+       <typeAlias alias="intermediateTransferDTO" type="com.xlkfinance.bms.rpc.inloan.IntermediateTransferDTO"/>
+       <!-- 中途划转首页列表-->
+       <typeAlias alias="intermediateTransferIndexDTO" type="com.xlkfinance.bms.rpc.inloan.IntermediateTransferIndexDTO"/>
+       <!-- 业务办理模块=========================end -->
+       <typeAlias alias="refundFeeIndexDTO" type="com.xlkfinance.bms.rpc.inloan.RefundFeeIndexDTO"/>
+       <!-- 退手续费 表：BIZ_LOAN_REFUND_FEE -->
+       <typeAlias alias="refundFeeDTO" type="com.xlkfinance.bms.rpc.inloan.RefundFeeDTO"/>
+       <!-- 预警统计报表  -->
+       <typeAlias alias="handleDifferWarnReport" type="com.xlkfinance.bms.rpc.report.HandleDifferWarnReport"/>
+       <!-- 业务汇总报表 -->
+       <typeAlias alias="businessSummaryReport" type="com.xlkfinance.bms.rpc.report.BusinessSummaryReport"/>
+       <!-- 撤单汇总报表 -->
+       <typeAlias alias="chechanReport" type="com.xlkfinance.bms.rpc.report.ChechanReport"/>
+       <!-- 收费统计报表 -->
+       <typeAlias alias="collectFeeReport" type="com.xlkfinance.bms.rpc.report.CollectFeeReport"/>
+       <!-- 问题反馈 -->
+       <typeAlias alias="problemFeedback" type="com.xlkfinance.bms.rpc.system.ProblemFeedback"/>
+       <!-- 业务动态 表：BIZ_DYNAMIC -->
+       <typeAlias alias="bizDynamic" type="com.xlkfinance.bms.rpc.inloan.BizDynamic"/>
+       <!-- 表： -->
+       <typeAlias alias="orgUserInfo" type="com.qfang.xk.aom.rpc.system.OrgUserInfo"/>
+    </typeAliases>
+	<typeHandlers>
+		<typeHandler handler="com.xlkfinance.bms.common.mybatis.type.DateTypeHandler"
+			javaType="String" jdbcType="DATE" />
+		<typeHandler handler="com.xlkfinance.bms.common.mybatis.type.TimestampTypeHandler"
+			javaType="String" jdbcType="TIMESTAMP" />
+	</typeHandlers>
+</configuration> 

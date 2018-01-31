@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.system.mapper.TemplateFileMapper">
+	<resultMap id="templateFileResultMap" type="com.xlkfinance.bms.rpc.system.TemplateFile">
+		<id column="PID" property="pid" jdbcType="INTEGER" />
+		<result column="FILENAME" property="fileName" jdbcType="VARCHAR" />
+		<result column="FILETYPE" property="fileType" jdbcType="VARCHAR" />
+		<result column="FILEPROPERTYNAME" property="filePropertyName" jdbcType="VARCHAR"/>
+		<result column="FILELOOKUPVAL" property="fileLookupVal" jdbcType="VARCHAR"/>
+		<result column="FILESIZE" property="fileSize" jdbcType="INTEGER" />
+		<result column="UPLOADDTTM" property="uploadDttm" javaType="String" jdbcType="TIMESTAMP"/>
+		<result column="UPLOADUSER" property="uploadUser" jdbcType="VARCHAR" />
+		<result column="FILEURL" property="fileUrl" jdbcType="VARCHAR" />
+		<result column="FILEPROPERTY" property="fileProperty" jdbcType="INTEGER"/>
+	</resultMap>
+	
+	
+	<sql id="padding">
+		where ROWNUM <![CDATA[<=]]>
+		#{page}*#{rows}) d
+		WHERE d.rn <![CDATA[>=]]>
+		((#{page}-1)*#{rows})+1
+	</sql>
+	
+	<select id="listTemplateFile" resultMap="templateFileResultMap" 
+		parameterType="com.xlkfinance.bms.rpc.system.TemplateFileCount">
+		SELECT d.* FROM(
+		select t.*,rownum rn FROM
+		(SELECT A.PID,
+			   SLV.PID FILEPROPERTY,
+		       SLV.LOOKUP_DESC  FILEPROPERTYNAME,
+		       SLV.LOOKUP_VAL   FILELOOKUPVAL,
+		       A.FILE_NAME      FILENAME,
+		       A.FILE_TYPE      FILETYPE,
+		       A.FILE_SIZE      FILESIZE,
+		       A.UPLOAD_DTTM    UPLOADDTTM,
+		       (SELECT SU.REAL_NAME FROM SYS_USER SU WHERE SU.PID = A.UPLOAD_USER_ID) UPLOADUSER,
+		       A.FILE_URL       FILEURL
+		  FROM SYS_LOOKUP SL, SYS_LOOKUP_VAL SLV
+		  LEFT JOIN (SELECT SF.PID,
+		                    SF.TEMPLATE_TYPE,
+		                    BF.FILE_NAME,
+		                    SF.FILE_TYPE,
+		                    BF.FILE_SIZE,
+		                    BF.UPLOAD_DTTM,
+		                    BF.UPLOAD_USER_ID,
+		                    BF.FILE_URL
+		               FROM SYS_EXT_TEMPLATE_FILE SF, BIZ_FILE BF
+		              WHERE SF.FILE_ID = BF.PID AND SF.STATUS = 1) A
+		    ON A.TEMPLATE_TYPE = SLV.PID
+		 WHERE SL.LOOKUP_TYPE = 'TEMPLATE_TYPE'
+		   AND SL.PID = SLV.LOOKUP_ID
+		   
+		   <if test="filePropertyName !=null and filePropertyName !=''">
+		   		AND SLV.LOOKUP_DESC LIKE '%${filePropertyName}%'
+		   </if>
+		    <if test="fileName !=null and fileName !=''">
+		          AND  A.FILE_NAME  LIKE '%${fileName}%'
+		   </if>
+		   <if test="fromUploadDttm !=null and fromUploadDttm !=''">
+		         AND A.UPLOAD_DTTM <![CDATA[>]]>
+						TO_DATE(CONCAT(#{fromUploadDttm},'00:00:00'),'yyyy-mm-dd hh24:mi:ss')
+		   </if>
+		   <if test="endUploadDttm !=null and endUploadDttm !=''">
+		       AND A.UPLOAD_DTTM <![CDATA[<=]]>
+						TO_DATE(CONCAT(#{endUploadDttm},'23:59:59'),'yyyy-mm-dd hh24:mi:ss')
+		   </if>
+		)t
+		<include refid="padding" />
+	</select>
+	
+	
+	<select id="listTemplateFileCount" resultType="java.lang.Integer"
+		parameterType="com.xlkfinance.bms.rpc.system.TemplateFileCount">
+		SELECT count(*)
+      FROM SYS_LOOKUP SL, SYS_LOOKUP_VAL SLV
+      LEFT JOIN (SELECT SF.PID,
+                        SF.TEMPLATE_TYPE,
+                        BF.FILE_NAME,
+                        SF.FILE_TYPE,
+                        BF.FILE_SIZE,
+                        BF.UPLOAD_DTTM,
+                        BF.UPLOAD_USER_ID,
+                        BF.FILE_URL
+                   FROM SYS_EXT_TEMPLATE_FILE SF, BIZ_FILE BF
+                  WHERE SF.FILE_ID = BF.PID AND SF.STATUS = 1) A
+        ON A.TEMPLATE_TYPE = SLV.PID
+     WHERE SL.LOOKUP_TYPE = 'TEMPLATE_TYPE'
+       AND SL.PID = SLV.LOOKUP_ID
+       <if test="filePropertyName !=null and filePropertyName !=''">
+		   		AND SLV.LOOKUP_DESC LIKE '%${filePropertyName}%'
+		   </if>
+		    <if test="fileName !=null and fileName !=''">
+		          AND  A.FILE_NAME  LIKE '%${fileName}%'
+		   </if>
+		   <if test="fromUploadDttm !=null and fromUploadDttm !=''">
+		         AND A.UPLOAD_DTTM <![CDATA[>]]>
+						TO_DATE(CONCAT(#{fromUploadDttm},'00:00:00'),'yyyy-mm-dd hh24:mi:ss')
+		   </if>
+		   <if test="endUploadDttm !=null and endUploadDttm !=''">
+		       AND A.UPLOAD_DTTM <![CDATA[<=]]>
+						TO_DATE(CONCAT(#{endUploadDttm},'23:59:59'),'yyyy-mm-dd hh24:mi:ss')
+		   </if>
+       
+	</select>
+	
+	<insert id="saveTemplateFile" parameterType="com.xlkfinance.bms.rpc.system.TemplateFile">
+		<selectKey keyProperty="pid" resultType="java.lang.Integer" order="BEFORE">
+			SELECT SEQ_SYS_EXT_TEMPLATE_FILE.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO SYS_EXT_TEMPLATE_FILE (
+										PID,
+										TEMPLATE_TYPE,
+										FILE_TYPE,
+										FILE_ID,
+										STATUS
+								   )
+								   VALUES (
+								   		#{pid},
+								   		#{fileProperty,jdbcType=INTEGER},
+								   		#{fileType,jdbcType=INTEGER},
+								   		#{fileId,jdbcType=INTEGER},
+								   		1
+								   )
+	</insert>
+	
+	<update id="updateTemplateFile" parameterType="com.xlkfinance.bms.rpc.system.TemplateFile">
+		UPDATE SYS_EXT_TEMPLATE_FILE
+			<set>
+				FILE_TYPE = #{fileType,jdbcType=INTEGER},
+				FILE_ID = #{fileId,jdbcType=INTEGER}
+			</set>
+		WHERE PID = #{pid}
+	</update>
+	
+	<update id="delTemplateFile" parameterType="java.lang.Integer">
+		UPDATE SYS_EXT_TEMPLATE_FILE SET
+			STATUS = 0
+		WHERE PID = #{pid}
+	</update>
+	
+	<select id="getTemplateFile" resultMap="templateFileResultMap" parameterType="java.lang.String">
+		SELECT A.PID,
+			   SLV.PID FILEPROPERTY,
+		       SLV.LOOKUP_DESC  FILEPROPERTYNAME,
+		       SLV.LOOKUP_VAL   FILELOOKUPVAL,
+		       A.FILE_NAME      FILENAME,
+		       A.FILE_TYPE      FILETYPE,
+		       A.FILE_SIZE      FILESIZE,
+		       A.UPLOAD_DTTM    UPLOADDTTM,
+		       (SELECT SU.REAL_NAME FROM SYS_USER SU WHERE SU.PID = A.UPLOAD_USER_ID) UPLOADUSER,
+		       A.FILE_URL       FILEURL
+		  FROM SYS_LOOKUP SL, SYS_LOOKUP_VAL SLV
+		  LEFT JOIN (SELECT SF.PID,
+		                    SF.TEMPLATE_TYPE,
+		                    BF.FILE_NAME,
+		                    SF.FILE_TYPE,
+		                    BF.FILE_SIZE,
+		                    BF.UPLOAD_DTTM,
+		                    BF.UPLOAD_USER_ID,
+		                    BF.FILE_URL
+		               FROM SYS_EXT_TEMPLATE_FILE SF, BIZ_FILE BF
+		              WHERE SF.FILE_ID = BF.PID AND SF.STATUS = 1) A
+		    ON A.TEMPLATE_TYPE = SLV.PID
+		 WHERE SL.LOOKUP_TYPE = 'TEMPLATE_TYPE'
+		   AND SL.PID = SLV.LOOKUP_ID
+		   AND SLV.LOOKUP_VAL = #{fileLookupVal,jdbcType=VARCHAR}
+	</select>
+</mapper>

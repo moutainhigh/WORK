@@ -1,0 +1,388 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xlkfinance.bms.server.aom.partner.mapper.OrgPartnerInfoMapper">
+	<resultMap id="orgPartnerInfoMap" type="com.qfang.xk.aom.rpc.partner.OrgPartnerInfo">
+		<id property="pid" column="PID" />
+		<id property="userId" column="USER_ID" />
+		<id property="startTime" column="START_TIME" />
+		<id property="endTime" column="END_TIME" />
+		<id property="cardNo" column="CARD_NO" />
+		<id property="rate" column="RATE" />
+		<id property="cooperationStatus" column="COOPERATION_STATUS" />
+		<id property="contractId" column="CONTRACT_ID" />
+		<id property="url" column="URL" />
+		<id property="cooperationDesc" column="COOPERATION_DESC" />
+		<id property="status" column="STATUS" />
+		<id property="bizAdviserId" column="BIZ_ADVISER_ID" />
+		<id property="creatorId" column="CREATOR_ID" />
+		<id property="createDate" column="CREATE_DATE" />
+		<id property="updateId" column="UPDATE_ID" />
+		<id property="updateDate" column="UPDATE_DATE" />
+		<id property="remark" column="REMARK" />
+		<id property="auditDesc" column="AUDIT_DESC" />     
+		
+		<id property="reviewStatus" column="REVIEW_STATUS" />
+		<id property="reviewDesc" column="REVIEW_DESC" />
+		<id property="reviewId" column="REVIEW_ID" />
+		<id property="reviewTime" column="REVIEW_TIME" />
+		<id property="applyTime" column="APPLY_TIME" />
+		<id property="payeeAccount" column="PAYEE_ACCOUNT" />
+	</resultMap>
+	
+	<resultMap id="orgPartnerDTOMap" type="com.qfang.xk.aom.rpc.partner.OrgPartnerDTO">
+		<id property="pid" column="PID" />
+		<id property="userId" column="USER_ID" />
+		<id property="cardNo" column="CARD_NO" />
+		<id property="cooperationStatus" column="COOPERATION_STATUS" />
+		<id property="userStatus" column="USER_STATUS" />
+		<id property="loginName" column="LOGIN_NAME" />
+		<id property="realName" column="REAL_NAME" />
+		<id property="email" column="EMAIL" />
+		<id property="phone" column="PHONE" />
+		<id property="auditStatus" column="AUDIT_STATUS" />
+		<id property="createTime" column="CREATE_TIME" />
+		<id property="reviewStatus" column="REVIEW_STATUS" />
+		<id property="applyTime" column="APPLY_TIME" />
+		<id property="orgNums" column="ORG_NUMS" />
+		<id property="reviewTime" column="REVIEW_TIME" />
+		<id property="startTime" column="START_TIME" />
+		<id property="endTime" column="END_TIME" />
+		<id property="rate" column="RATE" />
+	</resultMap>
+	<sql id="column_list">
+        PID,USER_ID,START_TIME,END_TIME,CARD_NO,RATE,COOPERATION_STATUS,CONTRACT_ID,URL,COOPERATION_DESC,STATUS,BIZ_ADVISER_ID,CREATOR_ID,CREATE_DATE,
+        UPDATE_ID,UPDATE_DATE,REMARK,AUDIT_DESC,REVIEW_STATUS,REVIEW_DESC,REVIEW_ID,REVIEW_TIME,APPLY_TIME,PAYEE_ACCOUNT
+	</sql>
+	<!-- 查询所有 -->
+	<select id="getAll" resultMap="orgPartnerInfoMap" parameterType="com.qfang.xk.aom.rpc.partner.OrgPartnerInfo">
+		SELECT
+		<include refid="column_list" />
+		FROM ORG_PARTNER_INFO
+		<where>
+			<trim>
+		      <if test="pid != null and pid >0">
+	          PID=#{pid}
+	          </if>
+		      <if test="userId != null and userId >0">
+	          AND USER_ID=#{userId}
+	          </if>
+		      <if test="startTime != null and startTime !=''">
+	          AND START_TIME=#{startTime}
+	          </if>
+		      <if test="endTime != null and endTime !=''">
+	          AND END_TIME=#{endTime}
+	          </if>
+		      <if test="cardNo != null and cardNo !=''">
+	          AND CARD_NO=#{cardNo}
+	          </if>
+		      <if test="rate != null and rate >0">
+	          AND RATE=#{rate}
+	          </if>
+		      <if test="cooperationStatus != null and cooperationStatus >0">
+	          AND COOPERATION_STATUS=#{cooperationStatus}
+	          </if>
+		      <if test="contractId != null and contractId >0">
+	          AND CONTRACT_ID=#{contractId}
+	          </if>
+		      <if test="url != null and url !=''">
+	          AND URL=#{url}
+	          </if>
+		      <if test="cooperationDesc != null and cooperationDesc !=''">
+	          AND COOPERATION_DESC=#{cooperationDesc}
+	          </if>
+		      <if test="status != null and status >0">
+	          AND STATUS=#{status}
+	          </if>
+		      <if test="bizAdviserId != null and bizAdviserId >0">
+	          AND BIZ_ADVISER_ID=#{bizAdviserId}
+	          </if>
+		      <if test="creatorId != null and creatorId >0">
+	          AND CREATOR_ID=#{creatorId}
+	          </if>
+		      <if test="createDate != null and createDate !=''">
+	          AND CREATE_DATE=#{createDate}
+	          </if>
+		      <if test="updateId != null and updateId >0">
+	          AND UPDATE_ID=#{updateId}
+	          </if>
+		      <if test="updateDate != null and updateDate !=''">
+	          AND UPDATE_DATE=#{updateDate}  
+	          </if>
+		      <if test="remark != null and remark !=''">
+	          AND REMARK=#{remark}
+	          </if>
+			</trim>
+		</where>
+	</select>
+	<!-- 根据id获取 -->
+	<select id="getById" resultMap="orgPartnerInfoMap">
+		SELECT <include refid="column_list" /> FROM ORG_PARTNER_Info WHERE PID=#{pid}
+	</select>
+	<!-- 根据用户id查询 -->
+	<select id="getByUserId" resultMap="orgPartnerInfoMap">
+		SELECT <include refid="column_list" /> FROM ORG_PARTNER_Info WHERE USER_ID=#{userId}
+	</select>
+	<!-- 插入一条数据 -->
+	<insert id="insert" parameterType="com.qfang.xk.aom.rpc.partner.OrgPartnerInfo">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_ORG_PARTNER_INFO.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO ORG_PARTNER_INFO
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+				PID,
+			</if>
+		    <if test="userId != null and userId >0">
+				USER_ID,
+			</if>
+		    <if test="startTime != null and startTime !=''">
+				START_TIME,
+			</if>
+		    <if test="endTime != null and endTime !=''">
+				END_TIME,
+			</if>
+		    <if test="cardNo != null and cardNo !=''">
+				CARD_NO,
+			</if>
+		    <if test="rate != null and rate !=-1">
+				RATE,
+			</if>
+		    <if test="cooperationStatus != null and cooperationStatus >0">
+				COOPERATION_STATUS,
+			</if>
+		    <if test="contractId != null and contractId >0">
+				CONTRACT_ID,
+			</if>
+		    <if test="url != null and url !=''">
+				URL,
+			</if>
+		    <if test="cooperationDesc != null and cooperationDesc !=''">
+				COOPERATION_DESC,
+			</if>
+		    <if test="status != null and status >0">
+				STATUS,
+			</if>
+		    <if test="bizAdviserId != null and bizAdviserId >0">
+				BIZ_ADVISER_ID,
+			</if>
+		    <if test="creatorId != null and creatorId >0">
+				CREATOR_ID,
+			</if>
+				CREATE_DATE,
+		    <if test="remark != null and remark !=''">
+				REMARK,
+			</if>
+			<if test="auditDesc != null and auditDesc !=''">
+				AUDIT_DESC,
+			</if>
+			<if test="reviewStatus != null and reviewStatus >0">
+			REVIEW_STATUS,
+			</if>
+			<if test="payeeAccount != null and payeeAccount !=''">
+			PAYEE_ACCOUNT,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+		    #{pid},
+			</if>
+		    <if test="userId != null and userId >0">
+		    #{userId},
+			</if>
+		    <if test="startTime != null and startTime !=''">
+		    #{startTime,jdbcType= DATE,javaType= java.lang.String},
+			</if>
+		    <if test="endTime != null and endTime !=''">
+		    #{endTime,jdbcType= DATE,javaType= java.lang.String},
+			</if>
+		    <if test="cardNo != null and cardNo !=''">
+		    #{cardNo},
+			</if>
+		    <if test="rate != null and rate !=-1">
+		    #{rate},
+			</if>
+		    <if test="cooperationStatus != null and cooperationStatus >0">
+		    #{cooperationStatus},
+			</if>
+		    <if test="contractId != null and contractId >0">
+		    #{contractId},
+			</if>
+		    <if test="url != null and url !=''">
+		    #{url},
+			</if>
+		    <if test="cooperationDesc != null and cooperationDesc !=''">
+		    #{cooperationDesc},
+			</if>
+		    <if test="status != null and status >0">
+		    #{status},
+			</if>
+		    <if test="bizAdviserId != null and bizAdviserId >0">
+		    #{bizAdviserId},
+			</if>
+		    <if test="creatorId != null and creatorId >0">
+		    #{creatorId},
+			</if>
+		    SYSDATE,
+		    <if test="remark != null and remark !=''">
+		    #{remark},
+			</if>
+			<if test="auditDesc != null and auditDesc !=''">
+				#{auditDesc},
+			</if>
+			<if test="reviewStatus != null and reviewStatus >0">
+				#{reviewStatus},
+			</if>
+			<if test="payeeAccount != null and payeeAccount !=''">
+			    #{payeeAccount},
+			</if>
+		</trim>
+	</insert>
+
+	<!-- 根据id更新数据 -->
+		<update id="update" parameterType="com.qfang.xk.aom.rpc.partner.OrgPartnerInfo">
+		UPDATE ORG_PARTNER_INFO
+		<set>
+		    <if test="startTime != null and startTime !=''">
+		     START_TIME=#{startTime,jdbcType= DATE,javaType= java.lang.String},
+			</if>
+		    <if test="endTime != null and endTime !=''">
+		     END_TIME=#{endTime,jdbcType= DATE,javaType= java.lang.String},
+			</if>
+		    <if test="cardNo != null and cardNo !=''">
+		     CARD_NO=#{cardNo},
+			</if>
+		    <if test="rate != null and rate !=-1">
+		     RATE=#{rate},
+			</if>
+		    <if test="cooperationStatus != null and cooperationStatus >0">
+		     COOPERATION_STATUS=#{cooperationStatus},
+			</if>
+		    <if test="contractId != null and contractId >0">
+		     CONTRACT_ID=#{contractId},
+			</if>
+		    <if test="url != null and url !=''">
+		     URL=#{url},
+			</if>
+		    <if test="cooperationDesc != null and cooperationDesc !=''">
+		     COOPERATION_DESC=#{cooperationDesc},
+			</if>
+		    <if test="status != null and status >0">
+		     STATUS=#{status},
+			</if>
+		    <if test="bizAdviserId != null and bizAdviserId >0">
+		     BIZ_ADVISER_ID=#{bizAdviserId},
+			</if>
+		    <if test="updateId != null and updateId >0">
+		     UPDATE_ID=#{updateId},
+			</if>
+		     UPDATE_DATE=SYSDATE,
+		    <if test="remark != null and remark !=''">
+		     REMARK=#{remark},
+			</if>
+			<if test="auditDesc != null and auditDesc !=''">
+			 AUDIT_DESC = #{auditDesc},
+			</if>
+			
+			<if test="reviewTime != null and reviewTime !=''">
+		     REVIEW_TIME=#{reviewTime,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		    <if test="applyTime != null and applyTime !=''">
+		     APPLY_TIME=#{applyTime,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+			
+			<if test="reviewStatus != null and reviewStatus >0">
+		     REVIEW_STATUS=#{reviewStatus},
+			</if>
+			<if test="reviewId != null and reviewId >0">
+		     REVIEW_ID=#{reviewId},
+			</if>
+			<if test="reviewDesc != null and reviewDesc !=''">
+			 REVIEW_DESC = #{reviewDesc},
+			</if>
+			<if test="payeeAccount != null and payeeAccount !=''">
+			    PAYEE_ACCOUNT=#{payeeAccount},
+			</if>
+		</set>
+		WHERE PID = #{pid}
+	</update>
+	
+	<select id="getOrgPartnerByPage" resultMap="orgPartnerDTOMap" parameterType="com.qfang.xk.aom.rpc.partner.OrgPartnerDTO">
+		<![CDATA[
+		SELECT D.* FROM (SELECT T.*, ROWNUM RN
+	        	FROM (
+		SELECT OPI.PID,OUI.USER_NAME AS LOGIN_NAME,OUI.REAL_NAME,OUI.EMAIL,OUI.PHONE,
+       TO_CHAR(OUI.CREATE_DATE, 'yyyy-mm-dd hh24:mi:ss') AS CREATE_TIME,
+       OPI.CARD_NO,OPI.STATUS AS AUDIT_STATUS,OPI.COOPERATION_STATUS,OUI.STATUS AS USER_STATUS,
+       OPI.REVIEW_STATUS,TO_CHAR(OPI.REVIEW_TIME, 'yyyy-MM-dd hh24:mi:ss') AS REVIEW_TIME,TO_CHAR(OPI.APPLY_TIME, 'yyyy-MM-dd hh24:mi:ss') AS APPLY_TIME,
+       (SELECT COUNT(*) FROM ORG_ASSETS_COOPERATION_INFO OAC WHERE OAC.PARTNER_ID = OPI.PID)AS ORG_NUMS,
+      TO_CHAR(OPI.START_TIME, 'yyyy-MM-dd') AS START_TIME,OPI.END_TIME,OPI.RATE
+          FROM ORG_PARTNER_INFO OPI
+          LEFT JOIN ORG_USER_INFO OUI
+          ON OPI.USER_ID = OUI.PID
+          WHERE 1=1 
+          ]]>
+			<if test="loginName != null and loginName != ''">
+				AND OUI.USER_NAME LIKE '%${loginName}%'
+			</if>
+			<if test="realName != null and realName != ''">
+				AND OUI.REAL_NAME LIKE '%${realName}%'
+			</if>
+			<if test="phone != null and phone != ''">
+				AND OUI.PHONE LIKE '%${phone}%'
+			</if>
+			<if test="userStatus != null and userStatus>0">
+				AND OUI.STATUS=#{userStatus}
+			</if>
+			<if test="auditStatus != null and auditStatus>0">
+				AND OPI.STATUS=#{auditStatus}
+			</if>
+			<if test="reviewStatus != null and reviewStatus>0">
+				AND OPI.REVIEW_STATUS=#{reviewStatus}
+			</if>
+			<![CDATA[ORDER BY OUI.CREATE_DATE DESC) T
+			WHERE ROWNUM <=#{page}*#{rows}
+			) D
+		WHERE D.RN > ((#{page}-1)*#{rows})]]>
+	</select>
+	
+	<select id="getOrgPartnerInfoCount" parameterType="com.qfang.xk.aom.rpc.partner.OrgPartnerDTO" resultType="Integer">
+		SELECT COUNT(*) FROM (
+			SELECT OPI.PID,OUI.USER_NAME AS LOGIN_NAME,OUI.REAL_NAME,OUI.EMAIL,OUI.PHONE,
+       			TO_CHAR(OUI.CREATE_DATE, 'yyyy-mm-dd hh24:mi:ss') AS CREATE_TIME,
+       			OPI.CARD_NO,OPI.STATUS AS AUDIT_STATUS,OPI.COOPERATION_STATUS,OUI.STATUS AS USER_STATUS
+          FROM ORG_PARTNER_INFO OPI
+          LEFT JOIN ORG_USER_INFO OUI
+          ON OPI.USER_ID = OUI.PID
+          WHERE 1=1
+        <if test="loginName != null and loginName != ''">
+			AND OUI.USER_NAME LIKE '%${loginName}%'
+		</if>
+		<if test="realName != null and realName != ''">
+			AND OUI.REAL_NAME LIKE '%${realName}%'
+		</if>
+		<if test="phone != null and phone != ''">
+			AND OUI.PHONE LIKE '%${phone}%'
+		</if>
+		<if test="userStatus != null and userStatus>0">
+			AND OUI.STATUS=#{userStatus}
+		</if>
+		<if test="auditStatus != null and auditStatus>0">
+			AND OPI.STATUS=#{auditStatus}
+		</if>
+		<if test="reviewStatus != null and reviewStatus>0">
+			AND OPI.REVIEW_STATUS=#{reviewStatus}
+		</if>
+		)DP
+	</select>
+	
+	<!-- 修改认证状态 -->
+	<update id="updateAuditStatus" parameterType="com.qfang.xk.aom.rpc.partner.OrgPartnerInfo">
+		UPDATE ORG_PARTNER_INFO SET STATUS = #{status},UPDATE_DATE = SYSDATE,AUDIT_DESC=#{auditDesc} WHERE PID = #{pid}
+	</update>
+	
+	<!-- 修改合作状态 -->
+	<update id="updateCooperateStatus" parameterType="com.qfang.xk.aom.rpc.partner.OrgPartnerInfo">
+		UPDATE ORG_PARTNER_INFO SET COOPERATION_STATUS = #{cooperationStatus},UPDATE_DATE = SYSDATE WHERE PID = #{pid}
+	</update>
+</mapper>

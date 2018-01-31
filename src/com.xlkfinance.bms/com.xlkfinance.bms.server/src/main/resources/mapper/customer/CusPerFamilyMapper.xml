@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.customer.mapper.CusPerFamilyMapper">
+
+<resultMap id="selectAllResultMap" type="com.xlkfinance.bms.rpc.customer.CusPerFamily" >
+    <id column="PID" property="pid" jdbcType="INTEGER" />
+    <result column="CUS_PER_ID" property="cusPerBase.pid" jdbcType="INTEGER" />
+    <result column="HOUSE_MAIN" property="houseMain" jdbcType="INTEGER" />
+    <result column="CHILD_NUM" property="childNum" jdbcType="INTEGER" />
+    <result column="LIVE_STATUS" property="liveStatus" jdbcType="INTEGER" />
+    <result column="MONTH_RENT" property="monthRent" jdbcType="INTEGER" />
+    <result column="HOUSE_SHAPE" property="houseShape" jdbcType="INTEGER" />
+    <result column="HOUSE_AREA" property="houseArea" jdbcType="INTEGER" />
+    <result column="STATUS" property="status" jdbcType="INTEGER" />
+</resultMap>
+
+<insert id="insert" parameterType="com.xlkfinance.bms.rpc.customer.CusPerFamily">
+   <selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+		SELECT SEQ_CUS_PER_FAMILY.Nextval as PID from DUAL
+	</selectKey>
+    insert into cus_per_family 
+	<trim prefix="(" suffix=")" suffixOverrides=",">
+    	PID,
+    	<if test="cusPerBase.pid != null and cusPerBase.pid !=''"> 
+    	CUS_PER_ID, 
+    	</if>
+    	<if test="houseMain != null and houseMain !=''"> 
+    	HOUSE_MAIN,
+    	</if>
+    	<if test="childNum != null and childNum !=''">  
+    	CHILD_NUM, 
+    	</if>
+    	<if test="liveStatus != null and liveStatus !=''"> 
+    	LIVE_STATUS, 
+    	</if>
+    	<if test="monthRent != null and monthRent !=''"> 
+    	MONTH_RENT, 
+    	</if>
+    	<if test="houseShape != null and houseShape !=''"> 
+    	HOUSE_SHAPE, 
+    	</if>
+    	<if test="houseArea != null and houseArea !=''"> 
+    	HOUSE_AREA,
+    	</if>
+    	STATUS
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+    	#{pid,jdbcType=INTEGER}, 
+    	<if test="cusPerBase.pid != null and cusPerBase.pid !=''">
+    	#{cusPerBase.pid,jdbcType=INTEGER},
+    	</if>
+    	<if test="houseMain != null and houseMain !=''">
+    	#{houseMain,jdbcType=INTEGER},
+    	</if>
+    	<if test="childNum != null and childNum !=''">
+     	#{childNum,jdbcType=INTEGER}, 
+     	</if>
+    	<if test="liveStatus != null and liveStatus !=''">
+     	#{liveStatus,jdbcType=INTEGER},
+     	</if>
+    	<if test="monthRent != null and monthRent !=''">
+     	#{monthRent,jdbcType=INTEGER}, 
+     	</if>
+    	<if test="houseShape != null and houseShape !=''">
+     	#{houseShape,jdbcType=INTEGER},
+     	</if>
+    	<if test="houseArea != null and houseArea !=''">
+     	#{houseArea,jdbcType=INTEGER},
+     	</if>
+     	#{status,jdbcType=INTEGER}
+   	</trim>
+  </insert>
+  <!-- 更新的方法 -->
+	<update id="updateByPrimaryKey" parameterType="com.xlkfinance.bms.rpc.customer.CusPerFamily">
+		update cus_per_family
+		<set>
+		<if test="cusPerBase.pid != null">
+		    CUS_PER_ID = #{cusPerBase.pid,jdbcType=INTEGER},
+		</if>
+		<if test="houseMain != null">
+			HOUSE_MAIN = #{houseMain,jdbcType=INTEGER},
+		</if>
+    	<if test="childNum != null">
+     		CHILD_NUM = #{childNum,jdbcType=INTEGER}, 
+     	</if>
+     	<if test="liveStatus != null">
+     		LIVE_STATUS = #{liveStatus,jdbcType=INTEGER},
+     	</if>
+     	<if test="monthRent != null">
+     		MONTH_RENT = #{monthRent,jdbcType=INTEGER}, 
+     	</if>
+     	<if test="houseShape != null">
+     		HOUSE_SHAPE = #{houseShape,jdbcType=INTEGER},
+     	</if>
+     	<if test="houseArea != null">
+     		HOUSE_AREA = #{houseArea,jdbcType=INTEGER},
+     	</if>
+     	<if test="status != null">
+     		STATUS = #{status,jdbcType=INTEGER},
+     	</if>
+		</set>
+		where pid = #{pid,jdbcType=INTEGER}
+	</update>
+	
+	<select id="selectByPrimaryKey" resultMap="selectAllResultMap" parameterType="java.lang.Integer">
+  		select * from cus_per_family where CUS_PER_ID=#{pid,jdbcType=INTEGER} and status=1
+  	</select>
+  	<select id="selectMarrStatus" resultType="java.lang.String" parameterType="java.lang.Integer">
+  	        select slv.lookup_val from cus_person cpp,
+  	        						  sys_lookup_val slv
+  	        		   where cpp.marr_status=slv.pid 
+  	                   and cpp.acct_id= #{acctId,jdbcType=INTEGER}
+  	                   and cpp.RELATION_TYPE =1
+  	</select>
+</mapper>

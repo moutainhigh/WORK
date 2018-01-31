@@ -1,0 +1,209 @@
+.tableForm {
+	border-collapse: collapse;
+}
+
+.tableForm th {
+	text-align: right;
+	border-bottom: 1px dotted #ccc;
+	padding: 5px;
+}
+
+.tableForm td {
+	text-align: left;
+	border-bottom: 1px dotted #ccc;
+	padding: 5px;
+}
+
+
+
+.info {
+	background: #FFFEE6;
+	color: #8F5700;
+	padding: 12px;
+}
+
+.tip {
+	width: 24px;
+	height: 16px;
+	float: left;
+}
+
+img {
+	cursor: pointer;
+}
+
+#daxiao td {
+	font-size: 12px;
+}
+
+#daxiao th {
+	font-size: 12px;
+}
+
+.homepage-top-banner {
+	width:100%;
+	height:89px;
+	background:url('images/top-bg.png');
+}
+.homepage-top-logo {
+	width:320px;
+	height:89px;
+	float:left;
+	background:url('images/top-logo.png') no-repeat;
+}
+
+/*��Ա����*/
+.icon-user{
+	background:url('images/extjs_icons/user/user.png') no-repeat center center;
+}
+.icon-user-list{
+	background:url('images/extjs_icons/group/group.png') no-repeat center center;
+}
+.icon-user-car{
+	background:url('images/extjs_icons/user/user_suit.png') no-repeat center center;
+}
+.icon-user-user{
+	background:url('images/extjs_icons/user/user_orange.png') no-repeat center center;
+}
+.icon-blacklist{
+	background:url('images/extjs_icons/user/user_gray.png') no-repeat center center;
+}
+
+/*��ȫ����*/
+.icon-security{
+	background:url('images/extjs_icons/application/application_key.png') no-repeat center center;
+}
+.icon-security-dictionary{
+	background:url('images/extjs_icons/book.png') no-repeat center center;
+}
+.icon-security-note{
+	background:url('images/extjs_icons/notes/note.png') no-repeat center center;
+}
+.icon-security-sysuser{
+	background:url('images/extjs_icons/status_online.png') no-repeat center center;
+}
+.icon-security-role{
+	background:url('images/extjs_icons/folder/folder_user.png') no-repeat center center;
+}
+.icon-security-module{
+	background:url('images/extjs_icons/plugin.png') no-repeat center center;
+}
+.icon-security-druid{
+	background:url('images/extjs_icons/page/page_world.png') no-repeat center center;
+}
+.icon-security-organization{
+	background:url('images/extjs_icons/bricks.png') no-repeat center center;
+}
+
+/*�����б�*/
+.icon-manage{
+	background:url('images/extjs_icons/comment_edit.png') no-repeat center center;
+}
+.icon-manage-advert{
+	background:url('images/extjs_icons/newspaper/newspaper.png') no-repeat center center;
+}
+.icon-manage-explain{
+	background:url('images/extjs_icons/text_align_center.png') no-repeat center center;
+}
+.icon-manage-insurance{
+	background:url('images/extjs_icons/page/page_paste.png') no-repeat center center;
+}
+.icon-manage-keyword{
+	background:url('images/extjs_icons/text_smallcaps.png') no-repeat center center;
+}
+.icon-manage-feedbacklist{
+	background:url('images/extjs_icons/text_indent_remove.png') no-repeat center center;
+}
+.icon-manage-illegal{
+	background:url('images/extjs_icons/error.png') no-repeat center center;
+}
+.icon-manage-carcomment{
+	background:url('images/extjs_icons/text_signature.png') no-repeat center center;
+}
+.icon-manage-creditcar{
+	background:url('images/extjs_icons/vcard/vcard.png') no-repeat center center;
+}
+.icon-manage-update{
+	background:url('images/extjs_icons/feed/feed.png') no-repeat center center;
+}
+.icon-manage-yhq{
+	background:url('images/extjs_icons/money.png') no-repeat center center;
+}
+/*�������*/
+.icon-table{
+	background:url('images/extjs_icons/table/table_multiple.png') no-repeat center center;
+}
+.icon-table-report{
+	background:url('images/extjs_icons/chart/chart_pie.png') no-repeat center center;
+}
+.icon-table-new_caruser{
+	background:url('images/extjs_icons/chart/chart_curve_add.png') no-repeat center center;
+}
+.icon-table-new_cartenant{
+	background:url('images/extjs_icons/chart/chart_line_add.png') no-repeat center center;
+}
+.icon-table-cashout{
+	background:url('images/extjs_icons/table/table_refresh.png') no-repeat center center;
+}
+.icon-table-income{
+	background:url('images/extjs_icons/money_add.png') no-repeat center center;
+}
+.icon-table-order{
+	background:url('images/extjs_icons/table/table_relationship.png') no-repeat center center;
+}
+.icon-table-revenue{
+	background:url('images/extjs_icons/coins_add.png') no-repeat center center;
+}
+.icon-table-newcar{
+	background:url('images/extjs_icons/table/table.png') no-repeat center center;
+}
+.icon-table-carfault{
+	background:url('images/extjs_icons/table/table_gear.png') no-repeat center center;
+}
+.icon-table-caraccident{
+	background:url('images/extjs_icons/table/table_error.png') no-repeat center center;
+}
+.icon-table-performance{
+	background:url('images/extjs_icons/rosette.png') no-repeat center center;
+}
+/*֧������*/
+.icon-order{
+	background:url('images/extjs_icons/page/report.png') no-repeat center center;
+}
+.icon-order-list{
+	background:url('images/extjs_icons/page/page_white_stack.png') no-repeat center center;
+}
+.icon-order-rzcheck{
+	background:url('images/extjs_icons/book_key.png') no-repeat center center;
+}
+/*�������*/
+.icon-finance{
+	background:url('images/extjs_icons/money_yen.png') no-repeat center center;
+}
+.icon-manage-tiking{
+	background:url('images/extjs_icons/page/page_white_medal.png') no-repeat center center;
+}
+.icon-finance-billlist{
+	background:url('images/extjs_icons/book_open.png') no-repeat center center;
+}
+
+/*��������*/
+.icon-car{
+	background:url('images/extjs_icons/carAndCartAndBasket/car.png') no-repeat center center;
+}
+.icon-car-carCate{
+	background:url('images/extjs_icons/carAndCartAndBasket/carCate.png') no-repeat center center;
+}
+.icon-car-list{
+	background:url('images/extjs_icons/carAndCartAndBasket/carList1.png') no-repeat center center;
+}
+.icon-car-check{
+	background:url('images/extjs_icons/carAndCartAndBasket/checkCar.png') no-repeat center center;
+}
+.icon-car-advert{
+	background:url('images/extjs_icons/photoAndPic/photos.png') no-repeat center center;
+}
+
+.mask_index{z-index: 9999};	
+
+

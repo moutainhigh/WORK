@@ -1,0 +1,260 @@
+.none{
+	display:none;
+} 
+.clr{
+	clear:both;
+}
+img{border:none;}
+/* 左侧菜单 css */
+.ztree li a.level0 {
+	/* color:#fff;
+	background-color: #0B61A4;  */
+	padding-left:30px;
+	line-height:30px; 
+	height:30px;
+	font-weight:bold;
+	display:block; 
+	border-bottom:1px #DDE3EF solid;}
+	#main_body{padding-top:0;}
+.ztree li span.button{background-image:none;}
+/*	.ztree li a.level0.cur {background-color: #2e619e; }
+	.ztree li a.level0 span {display: block; color: white; padding-top:5px; font-size:14px; font-weight: bold;word-spacing: 2px;}
+	.ztree li a.level0 span.button {float:right; margin-left: 10px; visibility: visible;display:none;}
+	.ztree li span.button.switch.level0 {display:none;} */
+.ztree li a:hover{text-decoration:none;}
+.ztree li span{line-height:26px;}
+.ztree li span.button.level0.center_docu,.ztree li span.button.level0.roots_close,.ztree li span.button.level0.roots_open,.ztree li span.button.level0.center_close,.ztree li span.button.level0.center_open,.ztree li span.button.level0.bottom_close,.ztree li span.button.level0.bottom_open{display:none;}
+.ztree li ul{
+	padding:0px;
+}
+.ztree li ul li a,.ztree li ul li a.curSelectedNode{
+	display:block;
+	line-height:25px;
+	padding-left:35px;
+	height:25px;
+}
+.ztree li ul li ul{
+	padding:0;
+}
+.ztree li ul li ul li a, .ztree li ul li ul li a.curSelectedNode{padding-left:50px;}
+.ztree li ul li,.ztree li ul li span{line-height:20px;}
+.ztree li ul.line{background-position:25px 0; background-image:none;}
+.ztree li a.curSelectedNode{border:none;border-bottom:1px #DDE3EF solid;padding-top:1px;}
+.ztree li ul li a.curSelectedNode{border:none;padding-top:1px;color:#0E2D5F;background:none;}
+.ztree li span.button.ico_close,.ztree li span.button.ico_open,.ztree li span.button.ico_docu{vertical-align:middle;}
+.ztree li span.switch{display:none;}
+.layout-panel-north .l-btn{color:#fff;}
+.layout-panel-north  .m-btn-plain-active{color:#000;}
+.ztree li a.curSelectedNode,.ztree .active > a,.ztree li ul li a.curSelectedNode{background-color:#D6DEEB;opacity: 1;}
+
+.ztree li span.icon1_ico_close,.ztree li span.icon1_ico_open{
+	width:26px;
+	height:26px;
+	float: left;
+	background:url(../images/menuicon/icon1.png) no-repeat left center;
+}
+.ztree li span.icon2_ico_close,.ztree li span.icon2_ico_open{
+	width:26px;
+	height:26px;
+	float: left;
+	background:url(../images/menuicon/icon2.png) no-repeat left center;
+}
+.ztree li span.icon3_ico_close,.ztree li span.icon3_ico_open{
+	width:26px;
+	height:26px;
+	float: left;
+	background:url(../images/menuicon/icon3.png) no-repeat left center;
+}
+.ztree li span.icon4_ico_close,.ztree li span.icon4_ico_open{
+	width:26px;
+	height:26px;
+	float: left;
+	background:url(../images/menuicon/icon4.png) no-repeat left center;
+}
+.ztree li span.icon5_ico_close,.ztree li span.icon5_ico_open{
+	width:26px;
+	height:26px;
+	float: left;
+	background:url(../images/menuicon/icon5.png) no-repeat left center;
+}
+.ztree li span.icon6_ico_close,.ztree li span.icon6_ico_open{
+	width:26px;
+	height:26px;
+	float: left;
+	background:url(../images/menuicon/icon6.png) no-repeat left center;
+}
+.ztree li span.icon7_ico_close,.ztree li span.icon7_ico_open{
+	width:26px;
+	height:26px;
+	float: left;
+	background:url(../images/menuicon/icon7.png) no-repeat left center;
+}
+.ztree li span.icon8_ico_close,.ztree li span.icon8_ico_open{
+	width:26px;
+	height:26px;
+	float: left;
+	background:url(../images/menuicon/icon8.png) no-repeat left center;
+}
+.ztree li span.icon9_ico_close,.ztree li span.icon9_ico_open{
+	width:26px;
+	height:26px;
+	float: left;
+	background:url(../images/menuicon/icon9.png) no-repeat left center;
+}
+.ztree li span.icon10_ico_close,.ztree li span.icon10_ico_open{
+	width:26px;
+	height:26px;
+	float: left;
+	background:url(../images/menuicon/icon10.png) no-repeat left center;
+}
+.ztree li span.icon11_ico_close,.ztree li span.icon11_ico_open{
+	width:26px;
+	height:26px;
+	float: left;
+	background:url(../images/menuicon/icon11.png) no-repeat left center;
+}
+.ztree li span.icon12_ico_close,.ztree li span.icon12_ico_open{
+	width:26px;
+	height:26px;
+	float: left;
+	background:url(../images/menuicon/icon12.png) no-repeat left center;
+}
+.ztree li span.icon13_ico_close,.ztree li span.icon13_ico_open{
+	width:26px;
+	height:26px;
+	float: left;
+	background:url(../images/menuicon/icon13.png) no-repeat left center;
+}
+.ztree li span.icon14_ico_close,.ztree li span.icon14_ico_open{
+	width:26px;
+	height:26px;
+	float: left;
+	background:url(../images/menuicon/icon14.png) no-repeat left center;
+}
+.ztree li span.icon15_ico_close,.ztree li span.icon15_ico_open{
+	width:26px;
+	height:26px;
+	float: left;
+	background:url(../images/menuicon/icon15.png) no-repeat left center;
+}
+.ztree li span.icon16_ico_close,.ztree li span.icon16_ico_open{
+	width:26px;
+	height:26px;
+	float: left;
+	background:url(../images/menuicon/icon16.png) no-repeat left center;
+}
+.ztree li span.icon17_ico_close,.ztree li span.icon17_ico_open{
+	width:26px;
+	height:26px;
+	float: left;
+	background:url(../images/menuicon/icon17.png) no-repeat left center;
+}
+/* panel + text css */
+.layout-panel-west,.layout-panel-west .panel-body{background:#E7EEF6}
+.layout-panel-west .panel-body{
+	overflow-x:hidden;
+	overflow-y:scroll;
+}
+#treeMenu{overflow:hidden;}
+.tabs li a.tabs-inner{font-weight:bold;}
+.text_style,.text2_style {
+	height: 22px;
+	width: 145px;
+	padding-left:5px;
+	border: 1px solid #95b8e7;
+	border-radius: 6px;
+	line-height: 22px;
+	font-size: 12px;
+	color: #666;
+}
+.text2_style{width:250px;}
+.text3_style{
+	height: 22px;
+	width: 55px;
+	padding-left:5px;
+	border: 1px solid #95b8e7;
+	border-radius: 6px;
+	line-height: 22px;
+	font-size: 12px;
+	color: #666;
+}
+.text4_style{
+	height: 22px;
+	width: 78px;
+	padding-left:5px;
+	border: 1px solid #95b8e7;
+	border-radius: 6px;
+	line-height: 22px;
+	font-size: 12px;
+	color: #666;
+}
+.reldiv{position:relative;height: 25px;}
+.reldiv a{
+	position:absolute;
+	right:10px;
+	top:1px;
+}
+.dueInfoDiv .cus_table{width:99%;}
+.mbottom5{margin-bottom:5px;}
+.int_title2{
+	background:#F4F4F4;
+	line-height:25px;
+	padding-left:10px;
+	font-weight:bold;
+	border-bottom:1px solid #ddd;	
+}
+/* 贷前申请  css  */
+.beforeloanTable{color:#000;}
+.label_right,.beforeloanTable .label_right{
+	height:28px; 
+	width:100px;
+	text-align:right;	
+}
+
+.label_right.required:before{
+	content: "*";
+    color: red;
+}
+
+.label_right1{height:28px; 
+	width:120px;
+	text-align:right;}
+	
+.label_right2{height:28px; 
+	width:130px;
+	text-align:right;}
+
+/* zhengxiu css 2015-03-19 */
+.pl9{padding-left:9px;}
+.pt15{padding-top:15px;}
+.pt10{padding-top:10px;}
+.pb10{padding-bottom:10px;}
+.free_info_txt{
+	padding:5px 0 5px 10px;
+}
+.free_info_button{
+	height:30px;
+	text-align:center;
+	margin-top:9px;
+	padding:5px 0;
+}
+.bold{font-weight:bold;}
+.s_title{
+	height:30px;
+	line-height:30px;
+}
+.s_cus_table th{text-align:center;}
+.s_cus_table td{border:1px solid #95B8E7;text-align:center;height:30px;}
+.numberbox .textbox-text {
+
+            text-align: left;
+        }
+        
+
+.border-b-dashed{
+	border-bottom: 1px dashed #999;	
+}        
+
+.table-inline{
+	display: inline-table;
+}

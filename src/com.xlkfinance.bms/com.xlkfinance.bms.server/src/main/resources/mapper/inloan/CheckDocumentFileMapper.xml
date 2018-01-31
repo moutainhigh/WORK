@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.xlkfinance.bms.server.inloan.mapper.CheckDocumentFileMapper">
+	<resultMap id="checkDocumentFileMap"
+		type="com.xlkfinance.bms.rpc.inloan.CheckDocumentFile">
+		<id property="pid" column="PID" />
+		<id property="fileCategory" column="FILE_CATEGORY" />
+		<id property="projectId" column="PROJECT_ID" />
+		<id property="fileId" column="FILE_ID" />
+		<id property="file.status" column="STATUS"/>
+  		<id property="file.uploadUserId" column="UPLOAD_USER_ID"/>
+  		<id property="file.fileName" column="FILE_NAME"/>
+  		<id property="file.fileType" column="FILE_TYPE"/>
+  		<id property="file.fileSize" column="FILE_SIZE"/>
+  		<id property="file.fileUrl" column="FILE_URL"/>
+  		<id property="file.remark" column="REMARK"/>
+  		<id property="file.uploadDttm" column="UPLOAD_DTTM"/>
+	</resultMap>
+	<sql id="column_list">
+		PID,FILE_CATEGORY,PROJECT_ID,FILE_ID
+	</sql>
+	<!-- 查询所有 -->
+	<select id="getAll" resultMap="checkDocumentFileMap"
+		parameterType="com.xlkfinance.bms.rpc.inloan.CheckDocumentFile">
+		SELECT
+		<include refid="column_list" />
+		FROM BIZ_LOAN_CHECK_DOCUMENT_FILE
+		<where>
+			<trim>
+				<if test="pid != null and pid >0">
+					PID=#{pid}
+				</if>
+				<if test="fileCategory != null and fileCategory >0">
+					AND FILE_CATEGORY=#{fileCategory}
+				</if>
+				<if test="projectId != null and projectId >0">
+					AND PROJECT_ID=#{projectId}
+				</if>
+				<if test="fileId != null and fileId >0">
+					AND FILE_ID=#{fileId}
+				</if>
+			</trim>
+		</where>
+	</select>
+	<!-- 根据id获取 -->
+	<select id="getById" resultMap="checkDocumentFileMap">
+		SELECT
+		<include refid="column_list" />
+		FROM BIZ_LOAN_CHECK_DOCUMENT_FILE WHERE PID=#{pid}
+	</select>
+	<!-- 插入一条数据 -->
+	<insert id="insert"
+		parameterType="com.xlkfinance.bms.rpc.inloan.CheckDocumentFile">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_CHECK_DOCUMENT_FILE.Nextval as PID
+			from DUAL
+		</selectKey>
+		INSERT INTO BIZ_LOAN_CHECK_DOCUMENT_FILE
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="pid != null and pid >0">
+				PID,
+			</if>
+			<if test="fileCategory != null and fileCategory >0">
+				FILE_CATEGORY,
+			</if>
+			<if test="projectId != null and projectId >0">
+				PROJECT_ID,
+			</if>
+			<if test="fileId != null and fileId >0">
+				FILE_ID,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="pid != null and pid >0">
+				#{pid},
+			</if>
+			<if test="fileCategory != null and fileCategory >0">
+				#{fileCategory},
+			</if>
+			<if test="projectId != null and projectId >0">
+				#{projectId},
+			</if>
+			<if test="fileId != null and fileId >0">
+				#{fileId},
+			</if>
+		</trim>
+	</insert>
+	<!-- 根据id删除数据 -->
+	<delete id="deleteById"
+		parameterType="com.xlkfinance.bms.rpc.inloan.CheckDocumentFile">
+		<![CDATA[DELETE FROM BIZ_LOAN_CHECK_DOCUMENT_FILE WHERE PID=#{pid}]]>
+	</delete>
+	<!-- 根据id更新数据 -->
+	<update id="update"
+		parameterType="com.xlkfinance.bms.rpc.inloan.CheckDocumentFile">
+		UPDATE BIZ_LOAN_CHECK_DOCUMENT_FILE
+		<set>
+			<if test="pid != null and pid >0">
+				PID=#{pid},
+			</if>
+			<if test="fileCategory != null and fileCategory >0">
+				FILE_CATEGORY=#{fileCategory},
+			</if>
+			<if test="projectId != null and projectId >0">
+				PROJECT_ID=#{projectId},
+			</if>
+			<if test="fileId != null and fileId >0">
+				FILE_ID=#{fileId},
+			</if>
+		</set>
+		WHERE PID = #{pid}
+	</update>
+	<!-- 根据传入多个id删除数据 -->
+	<delete id="deleteByIds" parameterType="java.util.List">
+		DELETE FROM BIZ_LOAN_CHECK_DOCUMENT_FILE WHERE PID in
+		<foreach collection="list" item="item" index="index" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+	<!-- 根据条件查询查档文件关联信息（分页查询） -->
+	<select id="queryCheckDocumentFile" resultMap="checkDocumentFileMap"
+		parameterType="com.xlkfinance.bms.rpc.inloan.CheckDocumentFile">
+		<if test="page!=-1">
+			SELECT D.* FROM (SELECT T.*, ROWNUM RN
+			FROM (
+		</if>
+		SELECT A.PID,A.FILE_CATEGORY,A.PROJECT_ID,A.FILE_ID,B.STATUS,B.REMARK,B.UPLOAD_USER_ID,B.FILE_NAME,B.FILE_TYPE,B.FILE_SIZE,B.FILE_URL,B.UPLOAD_DTTM
+		FROM BIZ_LOAN_CHECK_DOCUMENT_FILE A 		    
+		LEFT JOIN BIZ_FILE B
+		    ON A.FILE_ID = B.PID
+		<where>
+			<trim>
+				<if test="fileCategory !=null and fileCategory >0">
+					AND A.FILE_CATEGORY = #{fileCategory}
+				</if>
+				<if test="projectId !=null and projectId >0">
+					AND A.PROJECT_ID = #{projectId}
+				</if>
+				<if test="pid!=null and pid>0">
+					AND A.PID = #{pid}
+				</if>
+			</trim>
+		</where>
+		<if test="page!=-1">
+	<![CDATA[
+	) T
+	WHERE ROWNUM <=#{page}*#{rows}
+	) D
+	WHERE D.RN > ((#{page}-1)*#{rows})
+	]]>
+		</if>
+	</select>
+	<!-- 根据条件查询查档文件关联信息总数 -->
+	<select id="getCheckDocumentFileTotal" resultType="Integer"
+		parameterType="com.xlkfinance.bms.rpc.inloan.CheckDocumentFile">
+	<![CDATA[
+	SELECT COUNT(1) FROM
+			(SELECT * FROM BIZ_LOAN_CHECK_DOCUMENT_FILE A
+	]]>
+		<where>
+			<trim>
+				<if test="fileCategory !=null and fileCategory >0">
+					AND A.FILE_CATEGORY = #{fileCategory}
+				</if>
+				<if test="projectId !=null and projectId >0">
+					AND A.PROJECT_ID = #{projectId}
+				</if>
+				<if test="pid!=null and pid>0">
+					AND A.PID = #{pid}
+				</if>
+			</trim>
+		</where>
+		) T
+	</select>
+</mapper>

@@ -1,0 +1,1003 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.xlkfinance.bms.server.inloan.mapper.ForeclosureRepaymentMapper">
+	<!-- 回款首页列表 -->
+	<resultMap type="repaymentIndexDTO" id="repaymentIndexMap">
+		<id property="repaymentId" column="REPAYMENT_ID" />
+		<id property="projectId" column="PROJECT_ID" />
+		<id property="projectNumber" column="PROJECT_NUMBER" />
+		<id property="projectName" column="PROJECT_NAME" />
+		<id property="realRepaymentMoney" column="REAL_REPAYMENT_MONEY" />
+		<id property="realRepaymentDate" column="REAL_REPAYMENT_DATE" />
+		<id property="planRepaymentMoney" column="PLAN_REPAYMENT_MONEY" />
+		<id property="planRepaymentDate" column="PLAN_REPAYMENT_DATE" />
+		<id property="repaymentStatus" column="REPAYMENT_STATUS" />
+		<id property="overdueFee" column="OVERDUE_FEE" />
+		<id property="overdueDay" column="OVERDUE_DAY" />
+		<id property="overdueFeeConfirm" column="OVERDUE_FEE_CONFIRM" />
+		<id property="projectSource" column="PROJECT_SOURCE" />
+		<id property="houseName" column="HOUSE_NAME"/>
+  		<id property="buyerName" column="BUYER_NAME"/>
+  		<id property="sellerName" column="SELLER_NAME"/>
+  		<id property="overdueFeePaymentWay" column="OVERDUE_FEE_PAYMENT_WAY"/>
+  		<id property="overdueFeeAccountNo" column="OVERDUE_FEE_ACCOUNTNO"/>
+	</resultMap>
+	<!-- 回款 -->
+	<resultMap type="repaymentDTO" id="repaymentMap">
+		<id property="pid" column="PID" />
+		<id property="projectId" column="PROJECT_ID" />
+		<id property="repaymentMoney" column="REPAYMENT_MONEY" />
+		<id property="newRepaymentDate" column="NEW_REPAYMENT_DATE" />
+		<id property="createrDate" column="CREATER_DATE" />
+		<id property="createrId" column="CREATER_ID" />
+		<id property="updateId" column="UPDATE_ID" />
+		<id property="updateDate" column="UPDATE_DATE" />
+		<id property="status" column="STATUS" />
+		<id property="remark" column="REMARK" />
+	</resultMap>
+	<!-- 回款记录表 -->
+	<resultMap type="repaymentRecordDTO" id="repaymentRecordMap">
+		<id property="pid" column="PID" />
+		<id property="projectId" column="PROJECT_ID" />
+		<id property="repaymentId" column="REPAYMENT_ID" />
+		<id property="repaymentMoney" column="REPAYMENT_MONEY" />
+		<id property="repaymentDate" column="REPAYMENT_DATE" />
+		<id property="createrDate" column="CREATER_DATE" />
+		<id property="createrId" column="CREATER_ID" />
+		<id property="remark" column="REMARK" />
+		<id property="accountNo" column="ACCOUNT_NO" />
+		<id property="repaymentType" column="REPAYMENT_TYPE" />
+		<id property="planCycleNum" column="PLAN_CYCLE_NUM" />
+		<id property="createrName" column="CREATER_NAME" />
+	</resultMap>
+	<!-- 逾期费 -->
+	<resultMap type="overdueFeeDTO" id="overdueFeeMap">
+		<id property="pid" column="PID" />
+		<id property="projectId" column="PROJECT_ID" />
+		<id property="accountName" column="ACCOUNT_NAME" />
+		<id property="bankName" column="BANK_NAME" />
+		<id property="accountNo" column="ACCOUNT_NO" />
+		<id property="overdueFee" column="OVERDUE_FEE" />
+		<id property="overdueRate" column="OVERDUE_RATE" />
+		<id property="overdueDay" column="OVERDUE_DAY" />
+		<id property="paymentWay" column="PAYMENT_WAY" />
+		<id property="createrDate" column="CREATER_DATE" />
+		<id property="createrId" column="CREATER_ID" />
+		<id property="updateId" column="UPDATE_ID" />
+		<id property="updateDate" column="UPDATE_DATE" />
+		<id property="status" column="STATUS" />
+		<id property="remark" column="REMARK" />
+		<id property="isConfirm" column="IS_CONFIRM" />
+	</resultMap>
+	<!-- 抵押贷回款列表展示 -->
+	<resultMap type="repaymentIndexDTO" id="repaymentInfoMap">
+		<id property="repaymentId" column="REPAYMENT_ID" />
+		<id property="projectId" column="PROJECT_ID" />
+		<id property="projectNumber" column="PROJECT_NUMBER" />
+		<id property="projectName" column="PROJECT_NAME" />
+		
+		<id property="acctName" column="ACCT_NAME" />
+		<id property="planRepaymentMoney" column="PLAN_REPAYMENT_MONEY" />
+		<id property="repaymentStatus" column="REPAYMENT_STATUS" />
+		<id property="receDate" column="RECE_DATE" />
+		<id property="applyLoanMoney" column="APPLY_LOAN_MONEY" />
+		
+	</resultMap>
+	
+	<!-- 回款首页列表(分页查询) -->
+	<select id="queryRepaymentIndex" resultMap="repaymentIndexMap"
+		parameterType="repaymentIndexDTO">
+		<if test="page!=-1">
+			SELECT D.* FROM (SELECT T.*, ROWNUM RN
+			FROM (
+		</if>
+		SELECT A.PID AS PROJECT_ID,
+       A.PROJECT_NAME,
+       A.PROJECT_NUMBER,
+       A.PROJECT_SOURCE,
+       B.PID AS REPAYMENT_ID,
+       B.REPAYMENT_MONEY AS REAL_REPAYMENT_MONEY,
+       QA.REPAYMENT_DATE AS REAL_REPAYMENT_DATE,
+<!--        B.NEW_REPAYMENT_DATE AS REAL_REPAYMENT_DATE, -->
+       (CASE
+         WHEN B.STATUS > 0 THEN
+          B.STATUS
+         ELSE
+          1
+       END) AS REPAYMENT_STATUS,
+       H.PLAN_REPAYMENT_MONEY,
+       D.PAYMENT_DATE AS PLAN_REPAYMENT_DATE,
+       (CASE
+         WHEN TO_DATE(TO_CHAR(B.NEW_REPAYMENT_DATE, 'yyyy-MM-dd'),
+                      'yyyy-MM-dd') -
+              TO_DATE(TO_CHAR(D.PAYMENT_DATE, 'yyyy-MM-dd'), 'yyyy-MM-dd') > 0 THEN
+          TO_DATE(TO_CHAR(B.NEW_REPAYMENT_DATE, 'yyyy-MM-dd'), 'yyyy-MM-dd') -
+          TO_DATE(TO_CHAR(D.PAYMENT_DATE, 'yyyy-MM-dd'), 'yyyy-MM-dd')
+         ELSE
+          0
+       END) AS OVERDUE_DAY,
+       E.OVERDUE_FEE,
+       (CASE
+         WHEN E.IS_CONFIRM > 0 THEN
+          E.IS_CONFIRM
+         ELSE
+          1
+       END) AS OVERDUE_FEE_CONFIRM,
+       EH.HOUSE_NAME,
+       F.BUYER_NAME,
+       F.SELLER_NAME,
+       E.PAYMENT_WAY AS OVERDUE_FEE_PAYMENT_WAY,
+       E.ACCOUNT_NO AS OVERDUE_FEE_ACCOUNTNO
+  FROM BIZ_PROJECT A
+  LEFT JOIN BIZ_LOAN_REPAYMENT B
+    ON A.PID = B.PROJECT_ID
+    LEFT JOIN V_HOUSE_NAME EH ON EH.PROJECT_ID = A.PID
+ INNER JOIN BIZ_PROJECT_FORECLOSURE D
+    ON A.PID = D.PROJECT_ID
+  LEFT JOIN BIZ_LOAN_OVERDUE_FEE E
+    ON E.PROJECT_ID = A.PID
+  LEFT JOIN BIZ_PROJECT_PROPERTY F
+    ON F.PROJECT_ID = A.PID
+    LEFT JOIN BIZ_LOAN_FINANCE_HANDLE G
+    ON G.PROJECT_ID = A.PID
+  LEFT JOIN (SELECT AFH.FINANCE_HANDLE_ID,SUM(CASE WHEN AFH.REC_PRO IN(3, 4, 5, 6,9) THEN AFH.REC_MONEY ELSE 0 END) AS PLAN_REPAYMENT_MONEY
+  FROM BIZ_LOAN_APPLY_FINANCE_HANDLE AFH
+  GROUP BY AFH.FINANCE_HANDLE_ID
+  ) H
+  ON H.FINANCE_HANDLE_ID=G.PID
+  LEFT JOIN (SELECT CA.PROJECT_ID, CA.REPAYMENT_DATE, RN
+                               FROM (SELECT ROW_NUMBER() OVER(PARTITION BY PROJECT_ID ORDER BY REPAYMENT_DATE DESC) RN,
+                                            AQ.PROJECT_ID,
+                                            AQ.REPAYMENT_DATE
+                                       FROM BIZ_LOAN_REPAYMENT_RECORD AQ
+                                      ORDER BY AQ.REPAYMENT_DATE DESC) CA
+                              WHERE RN = 1
+                              ORDER BY PROJECT_ID, REPAYMENT_DATE DESC) QA
+                    ON QA.PROJECT_ID = A.PID
+		<where>
+			<trim>
+				<if test="userIds!=null and userIds.size()>0">
+					AND A.PM_USER_ID IN
+					<foreach item="itemId" collection="userIds" open="("
+						separator="," close=")">
+						#{itemId}
+					</foreach>
+				</if>
+				<if test="1==1">
+					AND A.FORECLOSURE_STATUS IN(11,12,13) AND A.PROJECT_TYPE IN(2,6) AND A.IS_CLOSED =2
+				</if>
+				<if test="overdueFeePaymentWay != null and overdueFeePaymentWay >0">
+					AND E.PAYMENT_WAY=#{overdueFeePaymentWay}
+				</if>
+				<if test="repaymentStatus != null and repaymentStatus >0">
+					<if test="repaymentStatus ==1">
+						AND (B.STATUS IS NULL OR B.STATUS=1)
+					</if>
+					<if test="repaymentStatus !=1">
+						AND B.STATUS=#{repaymentStatus}
+					</if>
+				</if>
+				<if test="overdueFeeConfirm != null and overdueFeeConfirm >0">
+					AND E.IS_CONFIRM=#{overdueFeeConfirm}
+				</if>
+				<if test="projectName!=null and projectName!=''">
+					AND A.PROJECT_NAME LIKE '%${projectName}%'
+				</if>
+				<if test="projectNumber!=null and projectNumber!=''">
+					AND A.PROJECT_NUMBER LIKE '%${projectNumber}%'
+				</if>
+				<if test="houseName !=null and houseName !=''">
+				    AND EH.HOUSE_NAME LIKE '%${houseName}%'
+			    </if>
+			    <if test="buyerName !=null and buyerName !=''">
+				    AND F.BUYER_NAME LIKE '%${buyerName}%'
+			    </if>
+			    <if test="sellerName !=null and sellerName !=''">
+				    AND F.SELLER_NAME LIKE '%${sellerName}%'
+			    </if>
+				<if test="projectId!=null and projectId >0">
+					AND A.PID = #{projectId}
+				</if>
+				<if test="repaymentId and repaymentId >0">
+					AND B.PID = #{repaymentId}
+				</if>
+			</trim>
+		</where>
+		ORDER BY A.REQUEST_DTTM DESC
+		<if test="page!=-1">
+	<![CDATA[
+	) T
+	WHERE ROWNUM <=#{page}*#{rows}
+	) D
+	WHERE D.RN > ((#{page}-1)*#{rows})
+	]]>
+		</if>
+	</select>
+	<!--回款首页列表总数 -->
+	<select id="getRepaymentIndexTotal" resultType="Integer"
+		parameterType="repaymentIndexDTO">
+	<![CDATA[
+	SELECT COUNT(1) FROM
+			(		SELECT A.PID
+    FROM BIZ_PROJECT A
+    LEFT JOIN BIZ_LOAN_REPAYMENT B
+    ON A.PID = B.PROJECT_ID
+    LEFT JOIN V_HOUSE_NAME EH ON EH.PROJECT_ID = A.PID
+    INNER JOIN BIZ_PROJECT_FORECLOSURE D
+    ON A.PID = D.PROJECT_ID
+    LEFT JOIN BIZ_LOAN_OVERDUE_FEE E
+    ON E.PROJECT_ID = A.PID
+    LEFT JOIN BIZ_PROJECT_PROPERTY F
+    ON F.PROJECT_ID=A.PID
+    LEFT JOIN (SELECT CA.PROJECT_ID, CA.REPAYMENT_DATE, RN
+                               FROM (SELECT ROW_NUMBER() OVER(PARTITION BY PROJECT_ID ORDER BY REPAYMENT_DATE DESC) RN,
+                                            AQ.PROJECT_ID,
+                                            AQ.REPAYMENT_DATE
+                                       FROM BIZ_LOAN_REPAYMENT_RECORD AQ
+                                      ORDER BY AQ.REPAYMENT_DATE DESC) CA
+                              WHERE RN = 1
+                              ORDER BY PROJECT_ID, REPAYMENT_DATE DESC) QA
+                    ON QA.PROJECT_ID = A.PID
+	]]>
+		<where>
+			<trim>
+			   <if test="userIds!=null and userIds.size()>0">
+					AND A.PM_USER_ID IN
+					<foreach item="itemId" collection="userIds" open="("
+						separator="," close=")">
+						#{itemId}
+					</foreach>
+				</if>
+				<if test="1==1">
+					AND A.FORECLOSURE_STATUS IN(11,12,13) AND A.PROJECT_TYPE IN(2,6) AND A.IS_CLOSED =2
+				</if>
+				<if test="overdueFeePaymentWay != null and overdueFeePaymentWay >0">
+					AND E.PAYMENT_WAY=#{overdueFeePaymentWay}
+				</if>
+				<if test="repaymentStatus != null and repaymentStatus >0">
+					<if test="repaymentStatus ==1">
+						AND (B.STATUS IS NULL OR B.STATUS=1)
+					</if>
+					<if test="repaymentStatus !=1">
+						AND B.STATUS=#{repaymentStatus}
+					</if>
+				</if>
+				<if test="overdueFeeConfirm != null and overdueFeeConfirm >0">
+					AND E.IS_CONFIRM=#{overdueFeeConfirm}
+				</if>
+				<if test="projectName!=null and projectName!=''">
+					AND A.PROJECT_NAME LIKE '%${projectName}%'
+				</if>
+				<if test="projectNumber!=null and projectNumber!=''">
+					AND A.PROJECT_NUMBER LIKE '%${projectNumber}%'
+				</if>
+				<if test="houseName !=null and houseName !=''">
+				    AND EH.HOUSE_NAME LIKE '%${houseName}%'
+			    </if>
+			    <if test="buyerName !=null and buyerName !=''">
+				    AND F.BUYER_NAME LIKE '%${buyerName}%'
+			    </if>
+			    <if test="sellerName !=null and sellerName !=''">
+				    AND F.SELLER_NAME LIKE '%${sellerName}%'
+			    </if>
+				<if test="projectId!=null and projectId >0">
+					AND A.PID = #{projectId}
+				</if>
+				<if test="repaymentId and repaymentId >0">
+					AND B.PID = #{repaymentId}
+				</if>
+			</trim>
+		</where>
+		) T
+	</select>
+	<!-- 添加回款 -->
+	<insert id="addRepayment" parameterType="repaymentDTO">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_REPAYMENT.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_LOAN_REPAYMENT
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			PID,
+			<if test="projectId != null and projectId >0">
+				PROJECT_ID,
+			</if>
+			<if test="status != null and status >0">
+				STATUS,
+			</if>
+			<if test="repaymentMoney != null and repaymentMoney >=0">
+				REPAYMENT_MONEY,
+			</if>
+			<if test="newRepaymentDate != null and newRepaymentDate !=''">
+				NEW_REPAYMENT_DATE,
+			</if>
+			<if test="remark != null and remark !=''">
+				REMARK,
+			</if>
+			<if test="createrId != null and createrId >0">
+				CREATER_ID,
+			</if>
+			<if test="updateId != null and updateId >0">
+				UPDATE_ID,
+			</if>
+			CREATER_DATE,
+			UPDATE_DATE
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{pid},
+			<if test="projectId != null and projectId >0">
+				#{projectId},
+			</if>
+			<if test="status != null and status >0">
+				#{status},
+			</if>
+			<if test="repaymentMoney != null and repaymentMoney >=0">
+				#{repaymentMoney},
+			</if>
+			<if test="newRepaymentDate != null and newRepaymentDate !=''">
+				#{newRepaymentDate,jdbcType=DATE,javaType=String},
+			</if>
+			<if test="remark != null and remark !=''">
+				#{remark},
+			</if>
+			<if test="createrId != null and createrId >0">
+				#{createrId},
+			</if>
+			<if test="updateId != null and updateId >0">
+				#{updateId},
+			</if>
+			SYSDATE,
+			SYSDATE
+
+		</trim>
+	</insert>
+	<!-- 根据ID更新回款 -->
+	<update id="updateRepayment" parameterType="collectfileDTO">
+		UPDATE BIZ_LOAN_REPAYMENT
+		<set>
+			<if test="status != null">
+				STATUS=#{status},
+			</if>
+			<if test="repaymentMoney != null and repaymentMoney >=0">
+				REPAYMENT_MONEY=#{repaymentMoney},
+			</if>
+			<if test="newRepaymentDate != null and newRepaymentDate !=''">
+				NEW_REPAYMENT_DATE=#{newRepaymentDate,jdbcType=DATE,javaType=String},
+			</if>
+			<if test="remark != null and remark !=''">
+				REMARK=#{remark},
+			</if>
+			<if test="createrId != null and createrId >0">
+				CREATER_ID=#{createrId},
+			</if>
+			<if test="updateId != null and updateId >0">
+				UPDATE_ID=#{updateId},
+			</if>
+			UPDATE_DATE=SYSDATE
+		</set>
+		where pid = #{pid}
+	</update>
+	<!-- 回款列表(分页查询) -->
+	<select id="queryRepayment" resultMap="repaymentMap"
+		parameterType="repaymentDTO">
+		<if test="page!=-1">
+			SELECT D.* FROM (SELECT T.*, ROWNUM RN
+			FROM (
+		</if>
+		SELECT * FROM BIZ_LOAN_REPAYMENT
+		<where>
+			<trim>
+				<if test="status != null and status >0">
+					AND STATUS=#{status}
+				</if>
+				<if test="updateId != null and updateId >0">
+					AND UPDATE_ID=#{updateId}
+				</if>
+				<if test="pid != null and pid >0">
+					AND PID=#{pid}
+				</if>
+				<if test="projectId != null and projectId >0">
+					AND PROJECT_ID=#{projectId}
+				</if>
+			</trim>
+		</where>
+		<if test="page!=-1">
+	<![CDATA[
+	) T
+	WHERE ROWNUM <=#{page}*#{rows}
+	) D
+	WHERE D.RN > ((#{page}-1)*#{rows})
+	]]>
+		</if>
+	</select>
+	<!--回款总数 -->
+	<select id="getRepaymentTotal" resultType="Integer"
+		parameterType="collectfileDTO">
+	<![CDATA[
+	SELECT COUNT(1) FROM
+			(SELECT * FROM BIZ_LOAN_REPAYMENT
+	]]>
+		<where>
+			<trim>
+				<if test="status != null and status >0">
+					AND STATUS=#{status}
+				</if>
+				<if test="updateId != null and updateId >0">
+					AND UPDATE_ID=#{updateId}
+				</if>
+				<if test="pid != null and pid >0">
+					AND PID=#{pid}
+				</if>
+				<if test="projectId != null and projectId >0">
+					AND PROJECT_ID=#{projectId}
+				</if>
+			</trim>
+		</where>
+		) T
+	</select>
+	<!-- 根据ID获取回款 -->
+	<select id="getRepaymentById" resultMap="repaymentMap"
+		parameterType="int">
+		SELECT * FROM BIZ_LOAN_REPAYMENT
+		WHERE PID=#{pid}
+	</select>
+	<!-- 根据项目ID获取回款 -->
+	<select id="getRepaymentByProjectId" resultMap="repaymentMap"
+		parameterType="int">
+		SELECT * FROM BIZ_LOAN_REPAYMENT
+		WHERE PROJECT_ID=#{projectId}
+	</select>
+
+	<!-- 添加回款记录 -->
+	<insert id="addRepaymentRecord" parameterType="repaymentRecordDTO">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_REPAYMENT_RECORD.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_LOAN_REPAYMENT_RECORD
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			PID,
+			<if test="projectId != null and projectId >0">
+				PROJECT_ID,
+			</if>
+			<if test="repaymentId != null and repaymentId >0">
+				REPAYMENT_ID,
+			</if>
+			<if test="repaymentMoney != null and repaymentMoney >=0">
+				REPAYMENT_MONEY,
+			</if>
+			<if test="repaymentDate != null and repaymentDate !=''">
+				REPAYMENT_DATE,
+			</if>
+			<if test="accountNo != null and accountNo !=''">
+				ACCOUNT_NO,
+			</if>
+			<if test="remark != null and remark !=''">
+				REMARK,
+			</if>
+			<if test="createrId != null and createrId >0">
+				CREATER_ID,
+			</if>
+			CREATER_DATE
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{pid},
+			<if test="projectId != null and projectId >0">
+				#{projectId},
+			</if>
+			<if test="repaymentId != null and repaymentId >0">
+				#{repaymentId},
+			</if>
+			<if test="repaymentMoney != null and repaymentMoney >=0">
+				#{repaymentMoney},
+			</if>
+			<if test="repaymentDate != null and repaymentDate !=''">
+				#{repaymentDate,jdbcType=DATE,javaType=String},
+			</if>
+			<if test="accountNo != null and accountNo !=''">
+				#{accountNo},
+			</if>
+			<if test="remark != null and remark !=''">
+				#{remark},
+			</if>
+			<if test="createrId != null and createrId >0">
+				#{createrId},
+			</if>
+			SYSDATE
+
+		</trim>
+	</insert>
+	<!-- 根据ID更新回款记录 -->
+	<update id="updateRepaymentRecord" parameterType="collectfileDTO">
+		UPDATE BIZ_LOAN_REPAYMENT_RECORD
+		<set>
+			<if test="repaymentMoney != null and repaymentMoney >=0">
+				REPAYMENTRECORD_MONEY=#{repaymentMoney},
+			</if>
+			<if test="repaymentDate != null and repaymentDate !=''">
+				REPAYMENT_DATE=#{repaymentDate,jdbcType=DATE,javaType=String},
+			</if>
+			<if test="accountNo != null and accountNo !=''">
+				ACCOUNT_NO=#{accountNo},
+			</if>
+			<if test="remark != null and remark !=''">
+				REMARK=#{remark},
+			</if>
+		</set>
+		where pid = #{pid}
+	</update>
+	<!-- 回款记录列表(分页查询) -->
+	<select id="queryRepaymentRecord" resultMap="repaymentRecordMap"
+		parameterType="repaymentRecordDTO">
+		<if test="page!=-1">
+			SELECT D.* FROM (SELECT T.*, ROWNUM RN
+			FROM (
+		</if>
+		SELECT A.PID,
+		A.PROJECT_ID,
+		A.REPAYMENT_ID,
+		A.REPAYMENT_MONEY,
+		TO_CHAR(A.REPAYMENT_DATE, 'yyyy-MM-dd') AS REPAYMENT_DATE,
+		A.REMARK,
+		TO_CHAR(A.CREATER_DATE, 'yyyy-MM-dd  hh24:mi:ss') AS CREATER_DATE,
+		A.CREATER_ID,
+		A.ACCOUNT_NO,
+		A.REPAYMENT_TYPE,
+		A.PLAN_CYCLE_NUM,
+		B.REAL_NAME AS CREATER_NAME
+		FROM BIZ_LOAN_REPAYMENT_RECORD A
+		LEFT JOIN SYS_USER B
+        ON A.CREATER_ID = B.PID
+		<where>
+			<trim>
+				<if test="pid != null and pid >0">
+					AND PID=#{pid}
+				</if>
+				<!-- <if test="orgId != null and orgId >0">
+					AND EXISTS(SELECT P.PID FROM BIZ_PROJECT P WHERE P.PID=A.PROJECT_ID AND P.ORG_ID=#{orgId})
+				</if> -->
+				<if test="projectId != null and projectId >0">
+					AND PROJECT_ID=#{projectId}
+				</if>
+				<if test="repaymentId != null and repaymentId >0">
+					AND REPAYMENT_ID=#{repaymentId}
+				</if>
+				<if test="planCycleNum != null and planCycleNum >0">
+					AND A.PLAN_CYCLE_NUM=#{planCycleNum}
+				</if>
+			</trim>
+		</where>
+		<if test="page!=-1">
+	<![CDATA[
+	ORDER BY A.PLAN_CYCLE_NUM DESC,A.REPAYMENT_DATE DESC,A.PID DESC
+	) T
+	WHERE ROWNUM <=#{page}*#{rows}
+	) D
+	WHERE D.RN > ((#{page}-1)*#{rows})
+	]]>
+		</if>
+	</select>
+	<!--回款记录总数 -->
+	<select id="getRepaymentRecordTotal" resultType="Integer"
+		parameterType="collectfileDTO">
+	<![CDATA[
+	SELECT COUNT(1) FROM
+			(SELECT * FROM BIZ_LOAN_REPAYMENT_RECORD
+	]]>
+		<where>
+			<trim>
+				<if test="pid != null and pid >0">
+					AND PID=#{pid}
+				</if>
+				<if test="projectId != null and projectId >0">
+					AND PROJECT_ID=#{projectId}
+				</if>
+				<if test="repaymentId != null and repaymentId >0">
+					AND REPAYMENT_ID=#{repaymentId}
+				</if>
+				<if test="planCycleNum != null and planCycleNum >0">
+					AND PLAN_CYCLE_NUM=#{planCycleNum}
+				</if>
+			</trim>
+		</where>
+		) T
+	</select>
+	<!-- 根据ID获取回款记录 -->
+	<select id="getRepaymentRecordById" resultMap="repaymentRecordMap"
+		parameterType="int">
+		SELECT * FROM BIZ_LOAN_REPAYMENT_RECORD
+		WHERE PID=#{pid}
+	</select>
+
+	<!-- 添加逾期费 -->
+	<insert id="addOverdueFee" parameterType="overdueFeeDTO">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_OVERDUE_FEE.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_LOAN_OVERDUE_FEE
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			PID,
+			<if test="projectId != null and projectId >0">
+				PROJECT_ID,
+			</if>
+			<if test="accountName != null and accountName !=''">
+				ACCOUNT_NAME,
+			</if>
+			<if test="bankName != null and bankName !=''">
+				BANK_NAME,
+			</if>
+			<if test="accountNo != null and accountNo !=''">
+				ACCOUNT_NO,
+			</if>
+			<if test="overdueFee != null and overdueFee >=0">
+				OVERDUE_FEE,
+			</if>
+			<if test="isConfirm != null and isConfirm >=0">
+				IS_CONFIRM,
+			</if>
+			<if test="overdueRate != null and overdueRate >=0">
+				OVERDUE_RATE,
+			</if>
+			<if test="overdueDay != null and overdueDay >=0">
+				OVERDUE_DAY,
+			</if>
+			<if test="paymentWay != null and paymentWay >=0">
+				PAYMENT_WAY,
+			</if>
+			<if test="status != null">
+				STATUS,
+			</if>
+			<if test="remark != null and remark !=''">
+				REMARK,
+			</if>
+			<if test="createrId != null and createrId >0">
+				CREATER_ID,
+			</if>
+			<if test="updateId != null and updateId >0">
+				UPDATE_ID,
+			</if>
+			CREATER_DATE,
+			UPDATE_DATE
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{pid},
+			<if test="projectId != null and projectId >0">
+				#{projectId},
+			</if>
+			<if test="accountName != null and accountName !=''">
+				#{accountName},
+			</if>
+			<if test="bankName != null and bankName !=''">
+				#{bankName},
+			</if>
+			<if test="accountNo != null and accountNo !=''">
+				#{accountNo},
+			</if>
+			<if test="overdueFee != null and overdueFee >=0">
+				#{overdueFee},
+			</if>
+			<if test="isConfirm != null and isConfirm >=0">
+				#{isConfirm},
+			</if>
+			<if test="overdueRate != null and overdueRate >=0">
+				#{overdueRate},
+			</if>
+			<if test="overdueDay != null and overdueDay >=0">
+				#{overdueDay},
+			</if>
+			<if test="paymentWay != null and paymentWay >=0">
+				#{paymentWay},
+			</if>
+			<if test="status != null">
+				#{status},
+			</if>
+			<if test="remark != null and remark !=''">
+				#{remark},
+			</if>
+			<if test="createrId != null and createrId >0">
+				#{createrId},
+			</if>
+			<if test="updateId != null and updateId >0">
+				#{updateId},
+			</if>
+			SYSDATE,
+			SYSDATE
+
+		</trim>
+	</insert>
+	<!-- 根据ID更新逾期费 -->
+	<update id="updateOverdueFee" parameterType="collectfileDTO">
+		UPDATE BIZ_LOAN_OVERDUE_FEE
+		<set>
+			<if test="accountName != null and accountName !=''">
+				ACCOUNT_NAME=#{accountName},
+			</if>
+			<if test="bankName != null and bankName !=''">
+				BANK_NAME=#{bankName},
+			</if>
+			<if test="accountNo != null and accountNo !=''">
+				ACCOUNT_NO=#{accountNo},
+			</if>
+			<if test="overdueFee != null and overdueFee >=0">
+				OVERDUE_FEE=#{overdueFee},
+			</if>
+			<if test="isConfirm != null and isConfirm >=0">
+				IS_CONFIRM=#{isConfirm},
+			</if>
+			<if test="overdueRate != null and overdueRate >=0">
+				OVERDUE_RATE=#{overdueRate},
+			</if>
+			<if test="overdueDay != null and overdueDay >=0">
+				OVERDUE_DAY=#{overdueDay},
+			</if>
+			<if test="paymentWay != null and paymentWay >=0">
+				PAYMENT_WAY=#{paymentWay},
+			</if>
+			<if test="status != null">
+				STATUS=#{status},
+			</if>
+			<if test="remark != null and remark !=''">
+				REMARK=#{remark},
+			</if>
+			<if test="createrId != null and createrId >0">
+				CREATER_ID=#{createrId},
+			</if>
+			<if test="updateId != null and updateId >0">
+				UPDATE_ID=#{updateId},
+			</if>
+			UPDATE_DATE=SYSDATE
+		</set>
+		where pid = #{pid}
+	</update>
+	<!-- 逾期费列表(分页查询) -->
+	<select id="queryOverdueFee" resultMap="overdueFeeMap"
+		parameterType="overdueFeeDTO">
+		<if test="page!=-1">
+			SELECT D.* FROM (SELECT T.*, ROWNUM RN
+			FROM (
+		</if>
+		SELECT * FROM BIZ_LOAN_OVERDUE_FEE
+		<where>
+			<trim>
+				<if test="status != null and status >0">
+					AND STATUS=#{status}
+				</if>
+				<if test="updateId != null and updateId >0">
+					AND UPDATE_ID=#{updateId}
+				</if>
+				<if test="pid != null and pid >0">
+					AND PID=#{pid}
+				</if>
+				<if test="projectId != null and projectId >0">
+					AND PROJECT_ID=#{projectId}
+				</if>
+			</trim>
+		</where>
+		<if test="page!=-1">
+	<![CDATA[
+	) T
+	WHERE ROWNUM <=#{page}*#{rows}
+	) D
+	WHERE D.RN > ((#{page}-1)*#{rows})
+	]]>
+		</if>
+	</select>
+	<!--逾期费总数 -->
+	<select id="getOverdueFeeTotal" resultType="Integer"
+		parameterType="collectfileDTO">
+	<![CDATA[
+	SELECT COUNT(1) FROM
+			(SELECT * FROM BIZ_LOAN_OVERDUE_FEE
+	]]>
+		<where>
+			<trim>
+				<if test="status != null and status >0">
+					AND STATUS=#{status}
+				</if>
+				<if test="updateId != null and updateId >0">
+					AND UPDATE_ID=#{updateId}
+				</if>
+				<if test="pid != null and pid >0">
+					AND PID=#{pid}
+				</if>
+				<if test="projectId != null and projectId >0">
+					AND PROJECT_ID=#{projectId}
+				</if>
+			</trim>
+		</where>
+		) T
+	</select>
+	<!-- 根据ID获取逾期费 -->
+	<select id="getOverdueFeeById" resultMap="overdueFeeMap"
+		parameterType="int">
+		SELECT * FROM BIZ_LOAN_OVERDUE_FEE
+		WHERE PID=#{pid}
+	</select>
+	<!-- 根据项目ID获取逾期费 -->
+	<select id="getOverdueFeeByProjectId" resultMap="overdueFeeMap"
+		parameterType="int">
+		SELECT * FROM BIZ_LOAN_OVERDUE_FEE
+		WHERE PROJECT_ID=#{projectId}
+	</select>
+	<!--  -->
+	<select id="getOverdueFeeByParams" statementType="CALLABLE" parameterType="java.util.Map">
+        {#{overdueFee,mode=OUT,jdbcType=DOUBLE} = call GET_OVERDUE_FEE(#{projectId,mode=IN,jdbcType=INTEGER},#{newRepaymentMoney,mode=IN,jdbcType=DOUBLE})}
+	</select>
+	<!-- 抵押贷回款列表分页 -->
+	<select id="queryRepaymentInfo"  resultMap="repaymentInfoMap" parameterType="repaymentIndexDTO">
+		<if test="page!=-1">
+			SELECT D.* FROM (SELECT T.*, ROWNUM RN
+			FROM (
+		</if>
+			SELECT A.PID AS PROJECT_ID,
+			       B.PID AS REPAYMENT_ID,
+			       A.PROJECT_NAME,
+			       A.PROJECT_NUMBER,
+			       E.CHINA_NAME AS ACCT_NAME,
+			       D.REC_MONEY AS PLAN_REPAYMENT_MONEY,
+			       F.LOAN_MONEY AS APPLY_LOAN_MONEY,
+			       TO_CHAR(D.REC_DATE,'yyyy-MM-dd') AS RECE_DATE,
+			       (CASE WHEN B.STATUS IS NULL THEN 1 ELSE B.STATUS END) AS REPAYMENT_STATUS
+			  FROM (SELECT * FROM BIZ_PROJECT
+			        WHERE IS_CHECHAN = 0 
+			        AND STATUS = 1
+			        AND PROJECT_TYPE=8
+			    ) A
+			  LEFT JOIN BIZ_LOAN_REPAYMENT B
+			    ON A.PID = B.PROJECT_ID
+			  LEFT JOIN BIZ_LOAN_FINANCE_HANDLE C
+			    ON A.PID = C.PROJECT_ID
+			  LEFT JOIN BIZ_LOAN_APPLY_FINANCE_HANDLE D
+			    ON C.PID = D.FINANCE_HANDLE_ID
+			   AND D.REC_PRO = 3
+			  LEFT JOIN CUS_PERSON E
+			    ON A.ACCT_ID = E.ACCT_ID
+			   AND E.RELATION_TYPE = 1
+			  LEFT JOIN BIZ_PROJECT_GUARANTEE F
+			  ON A.PID = F.PROJECT_ID
+				<where>
+					<trim>
+						<if test="userIds!=null and userIds.size()>0">
+							AND A.PM_USER_ID IN
+							<foreach item="itemId" collection="userIds" open="("
+								separator="," close=")">
+								#{itemId}
+							</foreach>
+						</if>
+						<if test="1==1">
+							AND A.FORECLOSURE_STATUS IN(11,12)
+						</if>
+						<if test="repaymentStatus != null and repaymentStatus >0">
+							<if test="repaymentStatus ==1">
+								AND (B.STATUS IS NULL OR B.STATUS=1)
+							</if>
+							<if test="repaymentStatus !=1">
+								AND B.STATUS=#{repaymentStatus}
+							</if>
+						</if>
+						<if test="projectName!=null and projectName!=''">
+							AND A.PROJECT_NAME LIKE '%${projectName}%'
+						</if>
+						<if test="projectNumber!=null and projectNumber!=''">
+							AND A.PROJECT_NUMBER LIKE '%${projectNumber}%'
+						</if>
+						<if test="acctName!=null and acctName!=''">
+							AND E.CHINA_NAME LIKE '%${acctName}%'
+						</if>
+						<if test="receDateStart !=null and receDateStart !=''" >
+						 	AND D.REC_DATE <![CDATA[>=]]>
+						 	#{receDateStart,jdbcType=TIMESTAMP,javaType=String}
+						</if>
+						<if test="receDateEnd !=null and receDateEnd !=''" >
+							AND D.REC_DATE <![CDATA[<=]]>
+							 #{receDateEnd,jdbcType=TIMESTAMP,javaType=String}
+						</if>
+					</trim>
+				</where>
+				ORDER BY D.REC_DATE DESC
+				<if test="page!=-1">
+			<![CDATA[
+			) T
+			WHERE ROWNUM <=#{page}*#{rows}
+			) D
+			WHERE D.RN > ((#{page}-1)*#{rows})
+			]]>
+		</if>
+	</select>
+	<!-- 抵押贷回款列表总数 -->
+	<select id="getRepaymentInfoTotal" resultType="Integer" parameterType="repaymentIndexDTO">
+		<![CDATA[
+	SELECT COUNT(1) FROM
+			(SELECT A.PID 
+			  FROM (SELECT * FROM BIZ_PROJECT
+			        WHERE IS_CHECHAN = 0 
+			        AND STATUS = 1
+			        AND PROJECT_TYPE=8
+			    ) A
+			  LEFT JOIN BIZ_LOAN_REPAYMENT B
+			    ON A.PID = B.PROJECT_ID
+			  LEFT JOIN BIZ_LOAN_FINANCE_HANDLE C
+			    ON A.PID = C.PROJECT_ID
+			  LEFT JOIN BIZ_LOAN_APPLY_FINANCE_HANDLE D
+			    ON C.PID = D.FINANCE_HANDLE_ID
+			   AND D.REC_PRO = 3
+			  LEFT JOIN CUS_PERSON E
+			    ON A.ACCT_ID = E.ACCT_ID
+			   AND E.RELATION_TYPE = 1
+		]]>
+		<where>
+			<trim>
+				<if test="userIds!=null and userIds.size()>0">
+					AND A.PM_USER_ID IN
+					<foreach item="itemId" collection="userIds" open="("
+						separator="," close=")">
+						#{itemId}
+					</foreach>
+				</if>
+				<if test="1==1">
+					AND A.FORECLOSURE_STATUS IN(11,12)
+				</if>
+				<if test="repaymentStatus != null and repaymentStatus >0">
+					<if test="repaymentStatus ==1">
+						AND (B.STATUS IS NULL OR B.STATUS=1)
+					</if>
+					<if test="repaymentStatus !=1">
+						AND B.STATUS=#{repaymentStatus}
+					</if>
+				</if>
+				<if test="projectName!=null and projectName!=''">
+					AND A.PROJECT_NAME LIKE '%${projectName}%'
+				</if>
+				<if test="projectNumber!=null and projectNumber!=''">
+					AND A.PROJECT_NUMBER LIKE '%${projectNumber}%'
+				</if>
+				<if test="acctName!=null and acctName!=''">
+					AND E.CHINA_NAME LIKE '%${acctName}%'
+				</if>
+				<if test="receDateStart !=null and receDateStart !=''" >
+				 	AND D.REC_DATE <![CDATA[>=]]>
+				 	#{receDateStart,jdbcType=TIMESTAMP,javaType=String}
+				</if>
+				<if test="receDateEnd !=null and receDateEnd !=''" >
+					AND D.REC_DATE <![CDATA[<=]]>
+					 #{receDateEnd,jdbcType=TIMESTAMP,javaType=String}
+				</if>
+			</trim>
+		</where>
+		) T
+	</select>
+	
+	<!-- 批量新增还款记录 -->
+	<insert id="insertPaymentRecords" parameterType="java.util.List">
+	INSERT INTO BIZ_LOAN_REPAYMENT_RECORD(
+		 PID,
+       PROJECT_ID,
+       REPAYMENT_ID,
+       REPAYMENT_MONEY,
+       REPAYMENT_DATE,
+       ACCOUNT_NO,
+       REPAYMENT_TYPE,
+       PLAN_CYCLE_NUM,
+       CREATER_DATE,
+       CREATER_ID)
+	SELECT SEQ_REPAYMENT_RECORD.Nextval,A.* from(
+        <foreach collection="list" item="item" index="index"
+            separator="UNION">
+            SELECT
+            #{item.projectId,jdbcType=INTEGER},
+            #{item.repaymentId,jdbcType=INTEGER},
+		    #{item.repaymentMoney},
+		    #{item.repaymentDate,jdbcType=DATE,javaType=String},
+		    #{item.accountNo},
+		    #{item.repaymentType},
+		    #{item.planCycleNum},
+	     	SYSDATE,
+	     	#{item.createrId,jdbcType=INTEGER}
+            from dual 
+             </foreach>
+        ) A
+</insert>
+	
+</mapper>

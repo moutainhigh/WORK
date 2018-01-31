@@ -1,0 +1,1110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.customer.mapper.CusPerBaseMapper">
+
+  <resultMap id="selectAllResultMap" type="com.xlkfinance.bms.rpc.customer.CusPerBase" >
+    <id column="PID" property="pid" jdbcType="INTEGER" />
+    <result column="ACCT_ID" property="cusAcct.pid" jdbcType="INTEGER" />
+    <result column="PICTURE_URL" property="pictureUrl" jdbcType="VARCHAR" />
+    <result column="TO_LOCAL_DATE" property="toLocalDate" jdbcType="DATE" javaType="String" />
+    <result column="CUS_LEVEL" property="cusLevel" jdbcType="INTEGER" />
+    <result column="STATUS" property="status" jdbcType="INTEGER" />
+    <result column="CREDIT_SITUATION" property="creditSituation" jdbcType="VARCHAR" />
+    <result column="CUS_ACCT_MANAGER_NAME" property="cusAcctManagerName" jdbcType="VARCHAR" />
+  </resultMap>
+  		 
+
+<resultMap id="BaseResultMap" type="com.xlkfinance.bms.rpc.common.GridViewDTO">
+    <id property="pid" column="pid" />
+    <result property="value1" column="PER_ID" />
+    <result property="value2" column="CHINA_NAME" />
+    <result property="value3" column="sex" />
+    <result property="value4" column="cert_type" />
+    <result property="value5" column="cert_NUMBER" />
+    <result property="value6" column="work_unit" />
+    <result property="value7" column="CUS_STATUS_VAL" />
+    <result property="value8" column="real_name" />
+    <result property="value9" column="CUS_STATUS" />
+    <result property="value10" column="CUS_TYPE" />
+    <result property="value11" column="TELEPHONE" />
+    <result property="value12" column="COMM_ADDR" />
+    <result property="value13" column="LIVE_ADDR" />
+    <result property="value14" column="PICTURE_URL" />
+    <result property="value15" column="MARR_STATUS" />
+</resultMap>
+<resultMap id="BusinessResultMap" type="com.xlkfinance.bms.rpc.common.GridViewDTO">
+    <id property="pid" column="PROJECT_ID" />
+    <result property="value1" column="PROJECT_NAME" />
+    <result property="value2" column="CREDIT_AMT" />
+    <result property="value3" column="ASS_WAY" />
+    <result property="value4" column="CREDIT_AMT" />
+    <result property="value5" column="Day_Loan_Interest" />
+    <result property="value6" column="REPAY_CYCLE" />
+    <result property="value7" column="CREDTI_START_DT" jdbcType="DATE" javaType="String"/>
+    <result property="value8" column="CREDTI_END_DT" jdbcType="DATE" javaType="String" />
+    <result property="value9" column="PLAN_OUT_LOAN_DT"  jdbcType="DATE" javaType="String"/>
+    <result property="value10" column="PLAN_REPAY_LOAN_DT"  jdbcType="DATE" javaType="String"/>
+    <result property="value11" column="IS_COMPLETE" />
+    <result property="value12" column="CERT_NUMBER" />
+    <result property="value13" column="TELEPHONE" />
+    <result property="value14" column="PM_USER_ID" />
+</resultMap>
+
+<resultMap id="xzCusResultMap" type="com.xlkfinance.bms.rpc.customer.CusDTO">
+    <id property="acctId" column="pid" />
+    <result property="chinaName" column="CHINA_NAME" />
+    <result property="sexName" column="SEX" />
+    <result property="certTypeName" column="CERT_TYPE" />
+    <result property="certNumber" column="CERT_NUMBER" />
+    <result property="workUnit" column="WORK_UNIT" />
+    <result property="cusStatusVal" column="CUS_STATUS_VAL" />
+    <result property="realName" column="REAL_NAME" />
+    <result property="cusStatus" column="CUS_STATUS" />
+</resultMap>
+
+	<resultMap id="CusPerBaseResultMap" type="com.xlkfinance.bms.rpc.customer.CusDTO">
+    	<id property="pid" column="PID"/>
+        <result column="ACCT_ID" property="acctId"/>
+        <result column="perTelephone" property="perTelephone"/>
+        <result column="COMM_ADDR" property="commAddr"/>
+        <result column="CHINA_NAME" property="chinaName"/>
+        <result column="sexName" property="sexName"/>
+        <result column="SEX" property="sex"/>
+        <result column="CERT_TYPE" property="certType"/>
+        <result column="certTypeName" property="certTypeName"/>
+        <result column="CERT_NUMBER" property="certNumber"/>
+        <result column="MAIL" property="mail"/>
+        <result column="STATUS" property="cusStatus"/>
+        <result column="CUS_STATUS_VAL" property="cusStatusVal"/>
+        <result column="REAL_NAME" property="realName"/>
+        <result column="marrName" property="marrName"/>
+        <result column="relationText" property="relationText"/>
+        <result column="RELATION_TYPE" property="relationVal"/>
+        <result column="WORK_SERVICE" property="workService"/>
+        <result column="MONTH_INCOME" property="monthIncome"/>
+        <result column="UNIT_CODE" property="commCode"/>
+        <result column="WORK_UNIT" property="workUnit" />
+        <result column="projectPublicManId" property="projectPublicManId" />
+        <result column="mobile_phone" property="cusTelephone" />
+        <result column="PROPORTION_PROPERTY" property="proportionProperty"/>
+        <result column="LIVE_ADDR" property="liveAddr"/>
+        <result column="CENSUS_ADDR" property="censusAddr"/>
+    </resultMap>
+    
+    <resultMap id="ExportResultMap" type="com.xlkfinance.bms.rpc.common.GridViewDTO">
+    <id property="pid" column="pid" />
+    <result property="value1" column="CHINA_NAME" />
+    <result property="value2" column="CERT_TYPE" />
+    <result property="value3" column="CERT_NUMBER" />
+    <result property="value4" column="SEX" />
+    <result property="value5" column="BIRTH_DATE"  jdbcType="DATE" javaType="String"/>
+    <result property="value6" column="MARR_STATUS" />
+    <result property="value7" column="EDUCATION" />
+    <result property="value8" column="DEGREE" />
+    <result property="value9" column="TELEPHONE" />
+    <result property="value10" column="COMM_ADDR" />
+    <result property="value11" column="CENSUS_ADDR" />
+    <result property="value12" column="" />
+    <result property="value13" column="OCCUPATION" />
+    <result property="value14" column="WORK_SERVICE" />
+    <result property="value15" column="OCC_NAME" />
+    <result property="value16" column="LIVE_ADDR" />
+</resultMap>
+<resultMap id="listUnderExcelExportListMap" type="com.xlkfinance.bms.rpc.common.GridViewDTO">
+	  	 <id property="pid" column="pid" />
+	    <result property="value1" column="CPY_NAME" />
+	    <result property="value2" column="LOAN_NO" />
+	    <result property="value3" column="ORG_CODE" />
+	    <result property="value4" column="LAND_CERT" />
+	    <result property="value5" column="" />
+	    <result property="value6" column="" />
+	    <result property="value7" column="REG_ADDR" />
+	    <result property="value8" column="FOUND_DATE" />
+	    <result property="value9" column=""/>
+	    <result property="value10" column=""/>
+	    <result property="value11" column="REG_CURRENCY"/>
+	    <result property="value12" column="REG_MONEY"/>
+	    <result property="value13" column="CPY_SCALE" />
+	    <result property="value14" column="ACT_BIZ_ADD" />
+	    <result property="value15" column="COM_OWN_ID" />
+	    <result property="value16" column="cert_Type" />
+	    <result property="value17" column="CERT_NUMBER" />
+	    <result property="value18" column="" />
+	    <result property="value19" column="" />
+	    <result property="value20" column="" />
+	    <result property="value21" column="" />
+	    <result property="value22" column="work_service" />
+	    <result property="value23" column="" />
+	    <result property="value24" column="" />
+	</resultMap>
+    
+<insert id="insert" parameterType="com.xlkfinance.bms.rpc.customer.CusPerBase">
+   <selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+		SELECT SEQ_CUS_PER_BASE.Nextval as PID from DUAL
+	</selectKey>
+    INSERT INTO CUS_PER_BASE
+	  (PID,
+	   <if test="cusAcct.pid !=null">
+	   	ACCT_ID,
+	   </if>
+	   <if test="pictureUrl !=null and pictureUrl!=''">
+	   PICTURE_URL,
+	   </if>
+	   <if test="toLocalDate !=null and toLocalDate !=''">
+	   TO_LOCAL_DATE,
+	   </if>
+	   <if test="cusLevel !=null">
+	   CUS_LEVEL,
+	   </if>
+	  
+	   <if test="creditSituation !=null and creditSituation!=''">
+	   CREDIT_SITUATION,
+	   </if>
+	   STATUS)
+	   
+	  values(
+	  	#{pid,jdbcType=INTEGER},
+	  	<if test="cusAcct.pid !=null">
+	   	 #{cusAcct.pid,jdbcType=INTEGER},
+	   </if>
+	   <if test="pictureUrl !=null and pictureUrl!=''">
+	    #{pictureUrl,jdbcType=VARCHAR},
+	   </if>
+	   <if test="toLocalDate !=null and toLocalDate !=''">
+	    #{toLocalDate,jdbcType=DATE,javaType=String},
+	   </if>
+	   <if test="cusLevel !=null">
+	   #{cusLevel,jdbcType=INTEGER},
+	   </if>
+	   <if test="creditSituation !=null and creditSituation!=''">
+	   #{creditSituation,jdbcType=VARCHAR},
+	   </if>
+	   1
+	  )
+  </insert>
+  <!-- 更新的方法 -->
+	<update id="updateByPrimaryKey" parameterType="com.xlkfinance.bms.rpc.customer.CusPerBase">
+		update cus_per_base
+		<set>
+		<if test="cusAcct.pid != null">
+		   ACCT_ID = #{cusAcct.pid,jdbcType=INTEGER},
+		</if>
+		<if test="pictureUrl != null">
+		   PICTURE_URL = #{pictureUrl,jdbcType=VARCHAR},
+		</if>
+    	<if test="toLocalDate != null">
+      		TO_LOCAL_DATE = #{toLocalDate,jdbcType=DATE,javaType=String},
+      	</if>
+      	<if test="cusLevel != null">
+      		CUS_LEVEL = #{cusLevel,jdbcType=INTEGER},
+      	</if>
+      	<if test="status != null">
+      		STATUS = #{status,jdbcType=INTEGER},
+      	</if>
+      	<if test="cusAcctManagerName != null">
+      		CUS_ACCT_MANAGER_NAME = #{cusAcctManagerName,jdbcType=VARCHAR},
+      	</if>
+      	<if test="creditSituation != null"> 
+      		CREDIT_SITUATION = #{creditSituation,jdbcType=VARCHAR},
+      	</if>
+		</set>
+		where pid = #{pid,jdbcType=INTEGER}
+	</update>
+<!--   查询个人列表页面 -->
+  <select id="getCusPerBases" resultMap="BaseResultMap" parameterType="com.xlkfinance.bms.rpc.customer.CusPerBaseDTO" >        
+          	SELECT D.* FROM (SELECT T.*, ROWNUM RN
+	        FROM (
+          SELECT 
+          		DISTINCT CA.PID,
+                 CPB.PID PER_ID,
+                 CP.CHINA_NAME,
+                 (SELECT LK.LOOKUP_VAL
+                    FROM SYS_LOOKUP_VAL LK
+                   WHERE LK.PID = CP.SEX) SEX,
+                 (SELECT LK.LOOKUP_VAL
+                    FROM SYS_LOOKUP_VAL LK
+                   WHERE LK.PID = CP.CERT_TYPE) CERT_TYPE,
+                 CP.CERT_NUMBER,
+                 CP.WORK_UNIT,
+                 CASE CA.CUS_STATUS
+                   WHEN 1 THEN
+                    '普通'
+                   WHEN 2 THEN
+                    '黑名单'
+                   WHEN 3 THEN
+                    '拒贷'
+                   WHEN 4 THEN
+                    '借贷'
+                   WHEN 5 THEN
+                    '黑名单、拒贷'
+                   WHEN 6 THEN
+                    '借贷、黑名单'
+                   WHEN 7 THEN
+                    '借贷、拒贷'
+                   WHEN 9 THEN
+                    '借贷、黑名单、拒贷'
+                 END CUS_STATUS_VAL,
+                 (CASE WHEN SU.REAL_NAME IS NULL THEN '机构' ELSE SU.REAL_NAME END) AS REAL_NAME,
+                 CA.CUS_STATUS CUS_STATUS,
+                 CA.CUS_TYPE,
+                 CP.TELEPHONE,
+                 CP.COMM_ADDR,
+                 CP.LIVE_ADDR,
+                 CPB.PICTURE_URL
+            FROM CUS_ACCT     CA,
+                 CUS_PERSON   CP,
+                 SYS_USER     SU,
+                 CUS_PER_BASE CPB,
+                 CUS_RELATION CR
+                 WHERE 1 = 1
+                   AND CA.PID = CP.ACCT_ID
+                   AND CA.PM_USER_ID = SU.PID(+)
+                   AND CPB.ACCT_ID = CA.PID
+                   AND CA.STATUS = 1
+                   AND CA.CUS_TYPE = 1
+                   AND CP.RELATION_TYPE = 1	
+                   AND CA.PID = CR.ACCT_ID
+                   AND CR.ORG_TYPE = 1	
+	   <!-- 数据权限 -->
+		<if test="userIds!=null and userIds.size()>0">
+			AND	CR.PM_USER_ID in
+		<foreach item="itemId" collection="userIds" open="(" separator="," close=")">
+		          #{itemId}
+		</foreach>
+		</if>
+	   <if test="cusName != null and cusName !=''">
+	   	AND CP.CHINA_NAME LIKE '%${cusName}%'
+	   </if>
+	   <if test="sexId != 0">
+	   	AND CP.SEX =#{sexId,jdbcType=INTEGER}
+	   </if>
+	   <if test="certTypeId != 0">
+	   	AND CP.CERT_TYPE=#{certTypeId,jdbcType=INTEGER}
+	   </if>
+	   <if test="certNumber != null and certNumber !=''">
+	   	AND CP.CERT_NUMBER  like '%${certNumber}%'
+	   </if>
+	   <if test="cusStatus != null and cusStatus !=0">
+	       <if test="cusStatus ==1" >
+	         AND CA.CUS_STATUS=1
+	      </if>
+	      <if test="cusStatus  ==2">
+	         AND CA.CUS_STATUS  in (2,5,6,9)
+	      </if>
+	      <if test="cusStatus  ==3">
+	         AND CA.CUS_STATUS  in (3,5,7,9)
+	      </if>
+	       <if test="cusStatus  ==4">
+	         AND CA.CUS_STATUS  in (4,6,7,9)
+	      </if>
+	       <if test="cusStatus ==5" >
+	         AND CA.CUS_STATUS  in (5,2,9)
+	      </if>
+	      <if test="cusStatus ==6" >
+	         AND CA.CUS_STATUS  in (2,4,6,9)
+	      </if>
+	       <if test="cusStatus ==7" >
+	         AND CA.CUS_STATUS  in (3,4,7,9)
+	      </if>
+	       <if test="cusStatus ==9" >
+	         AND CA.CUS_STATUS=9
+	      </if>
+	   </if>
+	    <![CDATA[ORDER BY CA.PID DESC) T
+		WHERE ROWNUM <=#{page}*#{rows}
+		) D
+	WHERE D.RN > ((#{page}-1)*#{rows})]]>
+  </select>
+<!--   查询Aom个人列表页面 -->
+  <select id="getAomCusPerBases" resultMap="BaseResultMap" parameterType="com.xlkfinance.bms.rpc.customer.CusPerBaseDTO" >        
+          	SELECT D.* FROM (SELECT T.*, ROWNUM RN
+          FROM (
+          SELECT 
+              DISTINCT CA.PID,
+              	 CA.CUS_STATUS,
+                 CPB.PID PER_ID,
+                 CP.CHINA_NAME,
+                 (SELECT LK.LOOKUP_VAL
+                    FROM SYS_LOOKUP_VAL LK
+                   WHERE LK.PID = CP.SEX) SEX,
+                 (SELECT LK.LOOKUP_VAL
+                    FROM SYS_LOOKUP_VAL LK
+                   WHERE LK.PID = CP.CERT_TYPE) CERT_TYPE,
+                 CP.CERT_NUMBER,
+                 CP.TELEPHONE,
+                 (SELECT LK.LOOKUP_DESC
+                    FROM SYS_LOOKUP_VAL LK
+                   WHERE LK.PID = CP.MARR_STATUS) MARR_STATUS,
+                   CP.LIVE_ADDR AS LIVE_ADDR
+            FROM CUS_ACCT     CA,
+                 CUS_PERSON   CP,
+                 ORG_USER_INFO  SU,
+                 CUS_PER_BASE CPB
+                 WHERE 1 = 1
+                   AND CA.PID = CP.ACCT_ID
+                   AND CA.PM_USER_ID = SU.PID(+)
+                   AND CPB.ACCT_ID = CA.PID
+                   AND CA.STATUS = 1
+                   AND CA.CUS_SOURCE = 1
+                   AND CA.CUS_TYPE = 1
+                   AND CP.RELATION_TYPE = 1  
+                   AND CA.ORG_ID = #{cusAcct.orgId,jdbcType=INTEGER}
+	   <if test="cusName != null and cusName !=''">
+	   	AND CP.CHINA_NAME LIKE '%${cusName}%'
+	   </if>
+	   <if test="sexId != 0 and sexId != -1">
+	   	AND CP.SEX =#{sexId,jdbcType=INTEGER}
+	   </if>
+	   <if test="certTypeId != 0">
+	   	AND CP.CERT_TYPE=#{certTypeId,jdbcType=INTEGER}
+	   </if>
+	   <if test="certNumber != null and certNumber !=''">
+	   	AND CP.CERT_NUMBER  like '%${certNumber}%'
+	   </if>
+	    <![CDATA[ORDER BY CA.PID DESC) T
+		WHERE ROWNUM <=#{page}*#{rows}
+		) D
+	WHERE D.RN > ((#{page}-1)*#{rows})]]>
+  </select>
+<!--   查询导出的数据 -->
+  <select id="searchPerExportByPid" resultMap="ExportResultMap" parameterType="java.util.List">
+      	SELECT rownum rn,
+               CA.PID,
+                 CPB.PID PER_ID,
+                 CP.CHINA_NAME,
+                 (SELECT LK.LOOKUP_VAL
+                    FROM SYS_LOOKUP_VAL LK
+                   WHERE LK.PID = CP.SEX) SEX,
+                 (SELECT LK.LOOKUP_VAL
+                    FROM SYS_LOOKUP_VAL LK
+                   WHERE LK.PID = CP.CERT_TYPE) CERT_TYPE,
+                 CP.CERT_NUMBER,
+                 CP.WORK_UNIT,
+                 CA.CUS_TYPE,
+                 CASE CA.CUS_STATUS
+                   WHEN 1 THEN
+                    '普通'
+                   WHEN 2 THEN
+                    '黑名单'
+                   WHEN 3 THEN
+                    '拒贷'
+                   WHEN 4 THEN
+                    '借贷'
+                   WHEN 5 THEN
+                    '黑名单、拒贷'
+                   WHEN 6 THEN
+                    '借贷、黑名单'
+                   WHEN 7 THEN
+                    '借贷、拒贷'
+                   WHEN 9 THEN
+                    '借贷、黑名单、拒贷'
+                 END CUS_STATUS_VAL,
+                 SU.real_name,
+                 CP.BIRTH_DATE,
+                 (select slv.lookup_desc from sys_lookup_val slv where cp.marr_status=slv.pid) MARR_STATUS,
+                 (select slv.lookup_desc from sys_lookup_val slv where cp.education=slv.pid) EDUCATION,
+                 (select slv.lookup_desc from sys_lookup_val slv where cp.DEGREE=slv.pid) DEGREE,
+                 CP.TELEPHONE,
+                 CP.COMM_ADDR,
+                 CP.CENSUS_ADDR,
+                 CP.OCCUPATION,
+                 CP.WORK_SERVICE,
+                 (select slv.lookup_desc from sys_lookup_val slv where cp.OCC_NAME=slv.pid) OCC_NAME,
+                 CP.LIVE_ADDR,
+                 CA.CUS_STATUS CUS_STATUS
+            FROM CUS_ACCT     CA,
+                 CUS_PERSON   CP,
+                 SYS_USER     SU,
+                 CUS_PER_BASE CPB
+                 WHERE 1 = 1
+                   AND CA.PID = CP.ACCT_ID
+                   AND CA.PM_USER_ID = SU.PID(+)
+                   AND CPB.ACCT_ID = CA.PID
+                   AND CA.STATUS = 1
+                   AND CA.CUS_TYPE = 1
+                   AND CP.RELATION_TYPE = 1
+                   AND CA.PID IN
+       <foreach item="itemId" collection="list" open="(" separator="," close=")">
+		          #{itemId}
+	   </foreach>
+  </select> 
+<!--   导出旗下公司 -->
+  <select id="listUnderExcelExportList" resultMap="listUnderExcelExportListMap" parameterType="java.util.List">
+          	SELECT   rownum rn,
+  	   			CCB.PID,
+		        CCB.CPY_NAME,
+		        CCB.LOAN_NO,
+		        CCB.ORG_CODE,
+		        CCB.LAND_CERT,
+		        CCB.REG_ADDR,
+		        CCB.FOUND_DATE,
+		        CCB.REG_MONEY,
+		        (select slv.lookup_desc from sys_lookup_val slv where slv.pid=CCB.cpy_scale) CPY_SCALE,
+		        CCB.ACT_BIZ_ADD,
+		        (SELECT CP.CHINA_NAME
+		           FROM CUS_PERSON CP
+		          WHERE CP.PID = CCB.COM_OWN_ID) COM_OWN_ID,
+		        (select slv.lookup_desc from sys_lookup_val slv where slv.pid=CCB.reg_currency) REG_CURRENCY,
+		        CCB.BUS_LIC_CERT,
+		        (SELECT SLV.LOOKUP_DESC
+		           FROM SYS_LOOKUP_VAL SLV
+		          WHERE SLV.PID = CCB.COM_ALL_NATURE) COM_ALL_NATURE,
+		       (select slv.lookup_desc from cus_person cp,sys_lookup_val slv where cp.acct_id=CCB.acct_id and slv.pid=cp.cert_type and cp.iscomown=1 ) cert_Type,
+               (select cp.CERT_NUMBER from cus_person cp where cp.acct_id=CCB.acct_id and cp.iscomown=1 ) CERT_NUMBER,
+               (select cp.work_service from cus_person cp where cp.acct_id=CCB.acct_id and cp.iscomown=1 )work_service,
+		        CCB.TELEPHONE
+		   FROM CUS_COM_BASE CCB
+		   WHERE 1 = 1
+		    AND STATUS = 1
+		    AND (SELECT CA.STATUS FROM CUS_ACCT CA WHERE CA.PID=CCB.ACCT_ID)=1
+		    AND CCB.PID IN
+		        (SELECT CPC.COM_ID
+		           FROM CUS_PER_COM CPC
+		          WHERE CPC.STATUS = 1)
+		    AND  CCB.PID IN
+	  <foreach item="itemId" collection="list" open="(" separator="," close=")">
+		          #{itemId}
+	   </foreach>
+  
+  </select>
+  <select id="getTotal" resultType="java.lang.Integer" parameterType="com.xlkfinance.bms.rpc.customer.CusPerBaseDTO" >
+     SELECT COUNT(PID) FROM (
+        SELECT  DISTINCT  CA.PID,
+                 CPB.PID PER_ID,
+                 CP.CHINA_NAME,
+                 (SELECT LK.LOOKUP_VAL
+                    FROM SYS_LOOKUP_VAL LK
+                   WHERE LK.PID = CP.SEX) SEX,
+                 (SELECT LK.LOOKUP_VAL
+                    FROM SYS_LOOKUP_VAL LK
+                   WHERE LK.PID = CP.CERT_TYPE) CERT_TYPE,
+                 CP.CERT_NUMBER,
+                 CP.WORK_UNIT,
+                 CASE CA.CUS_STATUS
+                   WHEN 1 THEN
+                    '普通'
+                   WHEN 2 THEN
+                    '黑名单'
+                   WHEN 3 THEN
+                    '拒贷'
+                   WHEN 4 THEN
+                    '借贷'
+                   WHEN 5 THEN
+                    '黑名单、拒贷'
+                   WHEN 6 THEN
+                    '借贷、黑名单'
+                   WHEN 7 THEN
+                    '借贷、拒贷'
+                   WHEN 9 THEN
+                    '借贷、黑名单、拒贷'
+                 END CUS_STATUS_VAL,
+                 SU.REAL_NAME,
+                 CA.CUS_STATUS CUS_STATUS
+            FROM CUS_ACCT     CA,
+                 CUS_PERSON   CP,
+                 SYS_USER     SU,
+                 CUS_PER_BASE CPB,
+                 CUS_RELATION CR
+                 WHERE 1 = 1
+                   AND CA.PID = CP.ACCT_ID
+                   AND CA.PM_USER_ID = SU.PID(+)
+                   AND CPB.ACCT_ID = CA.PID
+                   AND CA.STATUS = 1
+                   AND CA.CUS_TYPE = 1
+                   AND CP.RELATION_TYPE = 1
+                   AND CA.PID = CR.ACCT_ID
+                   AND CR.ORG_TYPE = 1	
+                   <!-- 数据权限 -->
+		<if test="userIds!=null and userIds.size()>0">
+			AND	CR.PM_USER_ID in
+		<foreach item="itemId" collection="userIds" open="(" separator="," close=")">
+		          #{itemId}
+		</foreach>
+		</if>
+	   <if test="cusName != null and cusName !=''">
+	   	AND CP.CHINA_NAME LIKE '%${cusName}%'
+	   </if>
+	   <if test="sexId != 0">
+	   	AND CP.SEX =#{sexId,jdbcType=INTEGER}
+	   </if>
+	   <if test="certTypeId != 0">
+	   	AND CP.CERT_TYPE=#{certTypeId,jdbcType=INTEGER}
+	   </if>
+	   <if test="certNumber != null and certNumber !=''">
+	   	AND CP.CERT_NUMBER  like '%${certNumber}%'
+	   </if>
+	   <if test="cusStatus != null and cusStatus !=0">
+	   	AND CA.CUS_STATUS  = #{cusStatus,jdbcType=INTEGER}
+	   </if>)
+  </select>
+  <select id="getAomTotal" resultType="java.lang.Integer" parameterType="com.xlkfinance.bms.rpc.customer.CusPerBaseDTO" >
+     SELECT COUNT(PID) FROM (
+        SELECT  DISTINCT  CA.PID,
+                 CPB.PID PER_ID,
+                 CP.CHINA_NAME,
+                 (SELECT LK.LOOKUP_VAL
+                    FROM SYS_LOOKUP_VAL LK
+                   WHERE LK.PID = CP.SEX) SEX,
+                 (SELECT LK.LOOKUP_VAL
+                    FROM SYS_LOOKUP_VAL LK
+                   WHERE LK.PID = CP.CERT_TYPE) CERT_TYPE,
+                 CP.CERT_NUMBER,
+                 CP.TELEPHONE
+            FROM CUS_ACCT     CA,
+                 CUS_PERSON   CP,
+                 ORG_USER_INFO  SU,
+                 CUS_PER_BASE CPB
+                 WHERE 1 = 1
+                   AND CA.PID = CP.ACCT_ID
+                   AND CA.PM_USER_ID = SU.PID(+)
+                   AND CPB.ACCT_ID = CA.PID
+                   AND CA.STATUS = 1
+                   AND CA.CUS_SOURCE = 1
+                   AND CA.CUS_TYPE = 1
+                   AND CP.RELATION_TYPE = 1  
+                   AND CA.ORG_ID = #{cusAcct.orgId,jdbcType=INTEGER}
+	   <if test="cusName != null and cusName !=''">
+	   	AND CP.CHINA_NAME LIKE '%${cusName}%'
+	   </if>
+	   <if test="sexId != 0 and sexId != -1">
+	   	AND CP.SEX =#{sexId,jdbcType=INTEGER}
+	   </if>
+	   <if test="certTypeId != 0">
+	   	AND CP.CERT_TYPE=#{certTypeId,jdbcType=INTEGER}
+	   </if>
+	   <if test="certNumber != null and certNumber !=''">
+	   	AND CP.CERT_NUMBER  like '%${certNumber}%'
+	   </if>
+	   <if test="cusStatus != null and cusStatus !=0">
+	   	AND CA.CUS_STATUS  = #{cusStatus,jdbcType=INTEGER}
+	   </if>)
+  </select>
+  
+  <select id="getPersonalList" resultMap="xzCusResultMap" parameterType="com.xlkfinance.bms.rpc.customer.CusDTO" >        
+        SELECT * FROM(
+          SELECT rownum rn,
+          		 CA.PID,
+                 CPB.PID PER_ID,
+                 CP.CHINA_NAME,
+                 (SELECT LK.LOOKUP_VAL
+                    FROM SYS_LOOKUP_VAL LK
+                   WHERE LK.PID = CP.SEX) SEX,
+                 (SELECT LK.LOOKUP_VAL
+                    FROM SYS_LOOKUP_VAL LK
+                   WHERE LK.PID = CP.CERT_TYPE) CERT_TYPE,
+                 CP.CERT_NUMBER,
+                 CP.WORK_UNIT,
+                 CASE CA.CUS_STATUS
+                   WHEN 1 THEN
+                    '普通'
+                   WHEN 2 THEN
+                    '黑名单'
+                   WHEN 3 THEN
+                    '拒贷'
+                   WHEN 4 THEN
+                    '借贷'
+                   WHEN 5 THEN
+                    '黑名单、拒贷'
+                   WHEN 6 THEN
+                    '借贷、黑名单'
+                   WHEN 7 THEN
+                    '借贷、拒贷'
+                   WHEN 9 THEN
+                    '借贷、黑名单、拒贷'
+                 END CUS_STATUS_VAL,
+                 SU.real_name,
+                 CA.CUS_STATUS CUS_STATUS,
+                 CP.PROPORTION_PROPERTY
+            FROM CUS_ACCT     CA,
+                 CUS_PERSON   CP,
+                 SYS_USER     SU,
+                 CUS_PER_BASE CPB
+                 WHERE 1 = 1
+                   AND CA.PID = CP.ACCT_ID
+                   AND CA.PM_USER_ID = SU.PID
+                   AND CPB.ACCT_ID = CA.PID
+                   AND CA.STATUS = 1
+                   AND CA.CUS_TYPE = 1
+                   AND CP.RELATION_TYPE = 1
+	   <if test="chinaName != null and chinaName !=''">
+	   	AND CP.CHINA_NAME LIKE '%${chinaName}%'
+	   </if>
+	   <if test="sex != 0">
+	   	AND CP.SEX =#{sex,jdbcType=INTEGER}
+	   </if>
+	   <if test="certType != 0">
+	   	AND CP.CERT_TYPE=#{certType,jdbcType=INTEGER}
+	   </if>
+	   <if test="certNumber != null and certNumber !=''">
+	   	AND CP.CERT_NUMBER  like '%${certNumber}%'
+	   </if>
+	   <if test="userIds!=null and userIds.size()>0">
+			AND	CA.PM_USER_ID in
+		<foreach item="itemId" collection="userIds" open="(" separator="," close=")">
+		          #{itemId}
+		</foreach>
+		</if>
+	   AND rownum<![CDATA[<=]]>#{page}*#{rows})
+	    WHERE rn>=((#{page}-1)*#{rows})+1
+  </select>
+<!--   查询资信评估模板信息个人列表的总数 -->
+   <select id="getPersonalListCount" resultType="java.lang.Integer" parameterType="com.xlkfinance.bms.rpc.customer.CusDTO">
+        SELECT COUNT(PID) FROM (
+         SELECT CA.PID,
+                 CPB.PID PER_ID,
+                 CP.CHINA_NAME,
+                 (SELECT LK.LOOKUP_VAL
+                    FROM SYS_LOOKUP_VAL LK
+                   WHERE LK.PID = CP.SEX) SEX,
+                 (SELECT LK.LOOKUP_VAL
+                    FROM SYS_LOOKUP_VAL LK
+                   WHERE LK.PID = CP.CERT_TYPE) CERT_TYPE,
+                 CP.CERT_NUMBER,
+                 CP.WORK_UNIT,
+                 CASE CA.CUS_STATUS
+                   WHEN 1 THEN
+                    '普通'
+                   WHEN 2 THEN
+                    '黑名单'
+                   WHEN 3 THEN
+                    '拒贷'
+                   WHEN 4 THEN
+                    '借贷'
+                   WHEN 5 THEN
+                    '黑名单、拒贷'
+                   WHEN 6 THEN
+                    '借贷、黑名单'
+                   WHEN 7 THEN
+                    '借贷、拒贷'
+                   WHEN 9 THEN
+                    '借贷、黑名单、拒贷'
+                 END CUS_STATUS_VAL,
+                 SU.real_name,
+                 CA.CUS_STATUS CUS_STATUS
+            FROM CUS_ACCT     CA,
+                 CUS_PERSON   CP,
+                 SYS_USER     SU,
+                 CUS_PER_BASE CPB
+                 WHERE 1 = 1
+                   AND CA.PID = CP.ACCT_ID
+                   AND CA.PM_USER_ID = SU.PID
+                   AND CPB.ACCT_ID = CA.PID
+                   AND CA.STATUS = 1
+                   AND CA.CUS_TYPE = 1
+                   AND CP.RELATION_TYPE = 1
+         <if test="userIds!=null and userIds.size()>0">
+			AND	CA.PM_USER_ID in
+		<foreach item="itemId" collection="userIds" open="(" separator="," close=")">
+		          #{itemId}
+		</foreach>
+		</if>
+	   <if test="chinaName != null and chinaName !=''">
+	   	AND CP.CHINA_NAME LIKE '%${chinaName}%'
+	   </if>
+	   <if test="sex != 0">
+	   	AND CP.SEX =#{sex,jdbcType=INTEGER}
+	   </if>
+	   <if test="certType != 0">
+	   	AND CP.CERT_TYPE=#{certType,jdbcType=INTEGER}
+	   </if>
+	   <if test="certNumber != null and certNumber !=''">
+	   	AND CP.CERT_NUMBER  like '%${certNumber}%'
+	   </if>)
+   </select>
+   
+  <select id="selectByPrimaryKey" resultMap="selectAllResultMap" parameterType="java.lang.Integer">
+  		SELECT * FROM CUS_PER_BASE WHERE PID=#{pid,jdbcType=INTEGER}
+  </select>
+  
+  <select id="selectPerIdByAcctId" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+  		SELECT PID FROM CUS_PER_BASE WHERE ACCT_ID=#{acctId,jdbcType=INTEGER} AND STATUS=1
+  	</select>
+  	
+  	<update id="updateCusLevel" parameterType="com.xlkfinance.bms.rpc.customer.CusPerBase">
+		UPDATE CUS_PER_BASE
+		SET
+      		CUS_LEVEL = #{cusLevel,jdbcType=INTEGER}
+		WHERE  ACCT_ID = #{cusAcct.pid,jdbcType=INTEGER}
+	</update>
+	
+	<!-- 批量修改客户级别 -->
+	<update id="updateBatchCusLevel" parameterType="java.util.List">
+		begin
+		<foreach collection="list" item="item" index="index" open="" close="" separator=";">
+		update 
+			cus_per_base
+		set
+			CUS_LEVEL = #{item.cusLevel,jdbcType=INTEGER}
+		where 
+			ACCT_ID = #{item.cusAcct.pid,jdbcType=INTEGER}
+		</foreach>
+        ;end;
+	</update>
+
+	<!-- 查询个人用户信息所需的列 -->
+	<sql id="queryColumnList_personalListTwo">
+		DISTINCT CP.PID,CP.Acct_Id,CP.CHINA_NAME,CP.SEX,CP.Mail,SU.REAL_NAME,CP.TELEPHONE AS perTelephone,
+        (SELECT LK.LOOKUP_VAL FROM SYS_LOOKUP_VAL LK WHERE LK.PID = CP.SEX) AS sexName,CA.CUS_TYPE,
+        (SELECT LK.LOOKUP_VAL FROM SYS_LOOKUP_VAL LK WHERE LK.PID = CP.CERT_TYPE) AS certTypeName, 
+        CP.CERT_TYPE,CP.CERT_NUMBER,CP.WORK_UNIT,CP.UNIT_CODE,CA.CUS_STATUS,CP.COMM_ADDR,CP.CENSUS_ADDR,
+        CASE CA.CUS_STATUS  WHEN 1 THEN '普通' WHEN 2 THEN '黑名单' WHEN 3 THEN '拒贷' 
+        WHEN 4 THEN '借贷' WHEN 5 THEN '黑名单、拒贷' WHEN 6 THEN '借贷、黑名单' WHEN 7 THEN '借贷、拒贷' 
+        WHEN 9 THEN '借贷、黑名单、拒贷' END CUS_STATUS_VAL,
+        (SELECT LK.lookup_desc FROM SYS_LOOKUP_VAL LK WHERE LK.PID = CP.MARR_STATUS) AS marrName,CP.PROPORTION_PROPERTY,((SELECT AREA_NAME FROM SYS_AREA_INFO WHERE AREA_CODE=LIVE_PROVINCE_CODE) || 
+              (SELECT AREA_NAME FROM SYS_AREA_INFO WHERE AREA_CODE=LIVE_CITY_CODE) ||
+              (SELECT AREA_NAME FROM SYS_AREA_INFO WHERE AREA_CODE=LIVE_DISTRICT_CODE) ||
+              CP.LIVE_ADDR) LIVE_ADDR
+	</sql>
+
+	<!-- 查询个人用户信息查询的条件 -->
+	<sql id="queryCondition_personalListTwo">
+		FROM CUS_ACCT CA,CUS_PERSON CP,SYS_USER SU,CUS_PER_BASE CPB,
+                 CUS_RELATION CR
+        WHERE 1 = 1 AND CA.PID = CP.ACCT_ID(+) AND CA.PM_USER_ID = SU.PID(+) 
+        AND CPB.ACCT_ID(+) = CA.PID AND CA.STATUS = 1 AND CA.CUS_TYPE = 1 
+        AND CP.RELATION_TYPE = 1 AND CA.CUS_STATUS NOT IN('2','3','5')
+        AND CP.ACCT_ID NOT IN(SELECT distinct abr.ACCT_ID FROM CUS_ACCT_BLACKLIST_REFUSE abr WHERE abr.status = 1)
+        AND CA.PID = CR.ACCT_ID
+        AND CR.ORG_TYPE = 1
+         <!-- 数据权限 -->
+		<if test="userIds!=null and userIds.size()>0">
+			AND	CR.PM_USER_ID in
+		<foreach item="itemId" collection="userIds" open="(" separator="," close=")">
+		          #{itemId}
+		</foreach>
+		</if>
+		<if test="chinaName != null and chinaName !='' ">
+	   		AND CP.CHINA_NAME LIKE '%${chinaName}%'
+	   	</if>
+	   	<if test="sex != null and sex != -1">
+	   		AND CP.SEX =#{sex,jdbcType=INTEGER}
+	   	</if>
+	   	<if test="certType != null and certType != -1">
+	   		AND CP.CERT_TYPE=#{certType,jdbcType=INTEGER}
+	   	</if>
+	   	<if test="certNumber != null and certNumber !='' ">
+	   		AND CP.CERT_NUMBER  like '%${certNumber}%'
+	   	</if>
+	</sql>
+	
+	<!-- 查询个人客户列表 -->
+	<select id="getPersonalListTwo" resultMap="CusPerBaseResultMap" parameterType="com.xlkfinance.bms.rpc.customer.CusDTO" >        
+    	SELECT * FROM (
+		SELECT rownum rnum ,aa.* FROM (  
+		SELECT  
+        <include refid="queryColumnList_personalListTwo" /> 
+        <include refid="queryCondition_personalListTwo" /> 
+        ORDER BY CP.PID DESC ) aa
+		) bb 
+		WHERE 1=1 
+		<if test="page != null and page !=0 and rows!=null and rows!=0">
+			and rnum<![CDATA[<=]]>#{page}*#{rows}
+			and rnum>=((#{page}-1)*#{rows})+1
+		</if>
+  	</select>
+  	
+  	<!-- 查询个人客户列表的总数 -->
+  	<select id="getPersonalListTwoCount" resultType="java.lang.Integer" parameterType="com.xlkfinance.bms.rpc.customer.CusDTO">
+  		SELECT  count(DISTINCT CP.PID)
+		<include refid="queryCondition_personalListTwo" /> 
+  	</select>
+  	
+  	<!-- 查询个人非配偶关系人 -->
+	<select id="getNoSpouseList" resultMap="CusPerBaseResultMap" parameterType="java.lang.Integer" >
+    		SELECT CP.PID,
+             CP.CHINA_NAME,
+             (SELECT LK.LOOKUP_VAL FROM SYS_LOOKUP_VAL LK WHERE LK.PID = CP.SEX) SEXNAME,
+             (SELECT LK.LOOKUP_VAL
+                FROM SYS_LOOKUP_VAL LK
+               WHERE LK.PID = CP.CERT_TYPE) CERTTYPENAME,
+             CP.CERT_NUMBER,
+             (SELECT LV.LOOKUP_DESC
+                FROM SYS_LOOKUP SL, SYS_LOOKUP_VAL LV
+               WHERE SL.LOOKUP_TYPE = 'RELATION'
+                 AND LV.LOOKUP_ID = SL.PID
+                 AND LV.LOOKUP_VAL = TO_CHAR(CP.RELATION_TYPE)) RELATIONTEXT,
+             CP.RELATION_TYPE,
+             CP.TELEPHONE AS PERTELEPHONE,
+             CP.WORK_SERVICE,
+             CP.MONTH_INCOME,
+              CP.MOBILE_PHONE,
+              CP.COMM_ADDR,
+              CP.CENSUS_ADDR,
+              CP.PROPORTION_PROPERTY,
+              ((SELECT AREA_NAME FROM SYS_AREA_INFO WHERE AREA_CODE=LIVE_PROVINCE_CODE) || 
+              (SELECT AREA_NAME FROM SYS_AREA_INFO WHERE AREA_CODE=LIVE_CITY_CODE) ||
+              (SELECT AREA_NAME FROM SYS_AREA_INFO WHERE AREA_CODE=LIVE_DISTRICT_CODE) ||
+              CP.LIVE_ADDR) LIVE_ADDR,
+              CP.CERT_TYPE
+        FROM CUS_PERSON CP
+       WHERE CP.ACCT_ID = #{acctId,jdbcType=INTEGER}
+         AND CP.STATUS=1
+         AND (CP.RELATION_TYPE > 2)
+         UNION
+SELECT CP.PID,
+             CP.CHINA_NAME,
+             (SELECT LK.LOOKUP_VAL FROM SYS_LOOKUP_VAL LK WHERE LK.PID = CP.SEX) SEXNAME,
+             (SELECT LK.LOOKUP_VAL
+                FROM SYS_LOOKUP_VAL LK
+               WHERE LK.PID = CP.CERT_TYPE) CERTTYPENAME,
+             CP.CERT_NUMBER,
+             (SELECT LV.LOOKUP_DESC
+                FROM SYS_LOOKUP SL, SYS_LOOKUP_VAL LV
+               WHERE SL.LOOKUP_TYPE = 'RELATION'
+                 AND LV.LOOKUP_ID = SL.PID
+                 AND LV.LOOKUP_VAL = TO_CHAR(CP.RELATION_TYPE)) RELATIONTEXT,
+             CP.RELATION_TYPE,
+             CP.TELEPHONE AS PERTELEPHONE,
+             CP.WORK_SERVICE,
+             CP.MONTH_INCOME,
+             cp.MOBILE_PHONE,
+             cp.COMM_ADDR,
+             CP.CENSUS_ADDR,
+             CP.PROPORTION_PROPERTY,
+             ((SELECT AREA_NAME FROM SYS_AREA_INFO WHERE AREA_CODE=LIVE_PROVINCE_CODE) || 
+              (SELECT AREA_NAME FROM SYS_AREA_INFO WHERE AREA_CODE=LIVE_CITY_CODE) ||
+              (SELECT AREA_NAME FROM SYS_AREA_INFO WHERE AREA_CODE=LIVE_DISTRICT_CODE) ||
+              CP.LIVE_ADDR) LIVE_ADDR,
+			 CP.CERT_TYPE
+        FROM CUS_PERSON CP
+       WHERE CP.ACCT_ID = #{acctId,jdbcType=INTEGER}
+         AND CP.STATUS=1
+         AND (SELECT SLV.LOOKUP_VAL FROM CUS_PERSON CPP,
+                          SYS_LOOKUP_VAL SLV
+                   WHERE CPP.MARR_STATUS=SLV.PID 
+                       AND CPP.ACCT_ID= #{acctId,jdbcType=INTEGER} AND CPP.RELATION_TYPE=1)='MARRIED'
+         AND (CP.RELATION_TYPE = 2)
+	</select>
+	<!-- 查询个人非配偶关系人 -->
+	<select id="getNoSpouseLists" resultMap="CusPerBaseResultMap" parameterType="java.lang.Integer" >
+	       select CP.PID,CM.PID projectPublicManId,
+			       CP.CHINA_NAME,
+			       (SELECT LK.LOOKUP_VAL FROM SYS_LOOKUP_VAL LK WHERE LK.PID = CP.SEX) SEXNAME,
+			       (SELECT LK.LOOKUP_VAL
+			          FROM SYS_LOOKUP_VAL LK
+			         WHERE LK.PID = CP.CERT_TYPE) CERTTYPENAME,
+			       CP.CERT_NUMBER,
+			       (SELECT LV.LOOKUP_DESC
+			          FROM SYS_LOOKUP SL, SYS_LOOKUP_VAL LV
+			         WHERE SL.LOOKUP_TYPE = 'RELATION'
+			           AND LV.LOOKUP_ID = SL.PID
+			           AND LV.LOOKUP_VAL = TO_CHAR(CP.RELATION_TYPE)) RELATIONTEXT,
+			       CP.RELATION_TYPE,
+			       CP.TELEPHONE AS PERTELEPHONE,
+			       CP.WORK_SERVICE,
+			       CP.MONTH_INCOME,
+			       bp.pid,
+			       CP.PROPORTION_PROPERTY,
+			       ((SELECT AREA_NAME FROM SYS_AREA_INFO WHERE AREA_CODE=LIVE_PROVINCE_CODE) || 
+              (SELECT AREA_NAME FROM SYS_AREA_INFO WHERE AREA_CODE=LIVE_CITY_CODE) ||
+              (SELECT AREA_NAME FROM SYS_AREA_INFO WHERE AREA_CODE=LIVE_DISTRICT_CODE) ||
+              CP.LIVE_ADDR) LIVE_ADDR,
+			       CP.CENSUS_ADDR,CP.CERT_TYPE
+ 			 FROM BIZ_PROJECT BP, CUS_PERSON CP,BIZ_PROJECT_PUBLIC_MAN CM
+		       WHERE BP.ACCT_ID = CP.ACCT_ID
+		         AND CP.PID = CM.PERSON_ID
+		         AND BP.PID = CM.PROJECT_ID
+		         AND CM.STATUS=1 AND 
+             		CP.STATUS=1
+			   AND BP.PID = #{projectId,jdbcType=INTEGER}
+	</select>
+		<!-- 查询是否是客户经理-->
+	<select id="selectIsAcctManager" resultType="java.lang.Integer" parameterType="java.lang.Integer" >
+		  select count(*)
+               from sys_user su
+              where  su.superior_user_id = #{currUserPid}						
+	</select>
+<!-- 	查询客户总监下面的客户经理 -->
+	<select id="getUserName" resultType="com.xlkfinance.bms.rpc.customer.CusAcct" parameterType="java.lang.Integer" >
+		SELECT SU.PID AS PIDS, SU.Real_Name AS userName
+          FROM SYS_USER SU
+         WHERE SU.SUPERIOR_USER_ID IN (
+               SELECT t.pid FROM SYS_USER t START WITH t.pid = (
+                      SELECT A.PM_USER_ID FROM BIZ_PROJECT A WHERE A.PID = #{projectId}
+               )
+	           CONNECT BY T.SUPERIOR_USER_ID = PRIOR T.PID 
+         )
+         OR SU.PID = ( SELECT A.PM_USER_ID FROM BIZ_PROJECT A WHERE A.PID = #{projectId})
+	</select>
+	<!-- 	查询客户总监下面的客户经理(区分贷前公用的) -->
+	<select id="getUserNames" resultType="com.xlkfinance.bms.rpc.customer.CusAcct" parameterType="java.lang.Integer" >
+		SELECT SU.PID AS PIDS, SU.Real_Name AS userName
+          FROM SYS_USER SU
+         WHERE SU.SUPERIOR_USER_ID= #{cusAcctManagerId} 
+         OR SU.PID= #{cusAcctManagerId}
+	</select>
+	 <update id="updatePmUserId" parameterType="com.xlkfinance.bms.rpc.customer.CusAcct">
+	     UPDATE CUS_ACCT CA SET CA.PM_USER_ID =#{pmUserId} WHERE CA.PID=#{pid}
+	</update>
+	
+	
+	  <!-- 根据项目ID 查询个人客户 -->
+	<select id="getPersonalListKeyPid" resultMap="CusPerBaseResultMap" parameterType="java.lang.Integer" >        
+          SELECT CP.PID,CP.Acct_Id,
+                 CP.CHINA_NAME,
+                 (SELECT LK.LOOKUP_VAL
+                    FROM SYS_LOOKUP_VAL LK
+                   WHERE LK.PID = CP.SEX) AS sexName,CP.SEX,
+                 (SELECT LK.LOOKUP_VAL
+                    FROM SYS_LOOKUP_VAL LK
+                   WHERE LK.PID = CP.CERT_TYPE) AS certTypeName, CP.CERT_TYPE,
+                 CP.CERT_NUMBER,
+                 CP.WORK_UNIT,
+                 CP.UNIT_CODE,
+                 CASE CA.CUS_STATUS
+                   WHEN 1 THEN
+                    '普通'
+                   WHEN 2 THEN
+                    '黑名单'
+                   WHEN 3 THEN
+                    '拒贷'
+                   WHEN 4 THEN
+                    '借贷'
+                   WHEN 5 THEN
+                    '黑名单、拒贷'
+                   WHEN 6 THEN
+                    '借贷、黑名单'
+                   WHEN 7 THEN
+                    '借贷、拒贷'
+                   WHEN 9 THEN
+                    '借贷、黑名单、拒贷'
+                 END CUS_STATUS_VAL,CA.CUS_STATUS,
+                 SU.real_name,
+                 CA.CUS_STATUS CUS_STATUS,
+                 (SELECT LK.LOOKUP_DESC
+                    FROM SYS_LOOKUP_VAL LK
+                   WHERE LK.PID = CP.MARR_STATUS) AS marrName,CP.Mail,
+                 CP.TELEPHONE AS perTelephone,CP.COMM_ADDR,CP.CENSUS_ADDR,((SELECT AREA_NAME FROM SYS_AREA_INFO WHERE AREA_CODE=LIVE_PROVINCE_CODE) || 
+              (SELECT AREA_NAME FROM SYS_AREA_INFO WHERE AREA_CODE=LIVE_CITY_CODE) ||
+              (SELECT AREA_NAME FROM SYS_AREA_INFO WHERE AREA_CODE=LIVE_DISTRICT_CODE) ||
+              CP.LIVE_ADDR) LIVE_ADDR
+            FROM CUS_ACCT     CA,
+                 CUS_PERSON   CP,
+                 SYS_USER     SU,
+                 CUS_PER_BASE CPB
+                 WHERE 1 = 1
+                   AND CA.PID = CP.ACCT_ID(+)
+                   AND CA.PM_USER_ID = SU.PID(+)
+                   AND CPB.ACCT_ID(+) = CA.PID
+                   AND CA.STATUS = 1
+                   AND CA.CUS_TYPE = 1
+                   AND CP.RELATION_TYPE = 1
+	   	AND CP.ACCT_ID IN (SELECT ACCT_ID FROM BIZ_PROJECT  PT WHERE  PID=#{pid,jdbcType=INTEGER}) 
+  </select>
+  
+  <!-- 根据客户ID查询个人详细信息 -->
+  <select id="getPersonalListByAcctId" resultMap="CusPerBaseResultMap" parameterType="java.lang.Integer" >        
+          SELECT CP.PID,CP.Acct_Id,
+                 CP.CHINA_NAME,
+                 (SELECT LK.LOOKUP_VAL
+                    FROM SYS_LOOKUP_VAL LK
+                   WHERE LK.PID = CP.SEX) AS sexName,CP.SEX,
+                 (SELECT LK.LOOKUP_VAL
+                    FROM SYS_LOOKUP_VAL LK
+                   WHERE LK.PID = CP.CERT_TYPE) AS certTypeName, CP.CERT_TYPE,
+                 CP.CERT_NUMBER,
+                 CP.WORK_UNIT,
+                 CP.UNIT_CODE,
+                 CASE CA.CUS_STATUS
+                   WHEN 1 THEN
+                    '普通'
+                   WHEN 2 THEN
+                    '黑名单'
+                   WHEN 3 THEN
+                    '拒贷'
+                   WHEN 4 THEN
+                    '借贷'
+                   WHEN 5 THEN
+                    '黑名单、拒贷'
+                   WHEN 6 THEN
+                    '借贷、黑名单'
+                   WHEN 7 THEN
+                    '借贷、拒贷'
+                   WHEN 9 THEN
+                    '借贷、黑名单、拒贷'
+                 END CUS_STATUS_VAL,CA.CUS_STATUS,
+                 SU.REAL_NAME,
+                 CA.CUS_STATUS CUS_STATUS,
+                 (SELECT LK.lookup_desc
+                    FROM SYS_LOOKUP_VAL LK
+                   WHERE LK.PID = CP.MARR_STATUS) AS marrName,CP.Mail,
+                 CP.TELEPHONE AS perTelephone,CP.COMM_ADDR,
+			     ((SELECT AREA_NAME FROM SYS_AREA_INFO WHERE AREA_CODE=LIVE_PROVINCE_CODE) || 
+              (SELECT AREA_NAME FROM SYS_AREA_INFO WHERE AREA_CODE=LIVE_CITY_CODE) ||
+              (SELECT AREA_NAME FROM SYS_AREA_INFO WHERE AREA_CODE=LIVE_DISTRICT_CODE) ||
+              CP.LIVE_ADDR) LIVE_ADDR,
+			     CP.CENSUS_ADDR
+            FROM CUS_ACCT     CA,
+                 CUS_PERSON   CP,
+                 SYS_USER     SU,
+                 CUS_PER_BASE CPB
+                 WHERE 1 = 1
+                   AND CA.PID = CP.ACCT_ID(+)
+                   AND CA.PM_USER_ID = SU.PID(+)
+                   AND CPB.ACCT_ID(+) = CA.PID
+                   AND CA.STATUS = 1
+                   AND CA.CUS_TYPE = 1
+                   AND CP.RELATION_TYPE = 1
+	   	AND CP.ACCT_ID = #{acctId} 
+  </select>
+  
+  <select id="getByAcctTypeKeyPid" resultType="java.lang.Integer" parameterType="java.lang.Integer" >  
+  	SELECT CUS_TYPE FROM CUS_ACCT  WHERE PID=(SELECT acct_id FROM biz_project WHERE  pid=#{pid,jdbcType=INTEGER}) 
+  </select>
+  
+  <select id="getPerBusiness" statementType="CALLABLE" resultMap="BusinessResultMap" parameterType="com.xlkfinance.bms.rpc.customer.QueryPersonDTO" >  
+		<![CDATA[ 
+			{ call PKG_BUSSINESS.PRO_SELECT_BUSINESS(
+				#{results,mode=OUT,jdbcType=CURSOR,javaType=ResultSet,resultMap=BusinessResultMap}, 
+				#{acctId, mode=IN, jdbcType=INTEGER},
+				#{cusName, mode=IN, jdbcType=VARCHAR},
+				#{certNumber, mode=IN, jdbcType=VARCHAR},
+				#{acctType, mode=IN, jdbcType=INTEGER},
+				#{businessVariet, mode=IN, jdbcType=INTEGER},
+				#{currLoginId, mode=IN, jdbcType=INTEGER},
+				#{page, mode=IN, jdbcType=INTEGER},
+				#{rows, mode=IN, jdbcType=INTEGER})} 
+			  ]]>    
+  </select>
+  <select id="selectCredit" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+      SELECT COUNT(*) FROM BIZ_PROJECT BP WHERE BP.PROJECT_TYPE=3 AND BP.PID= #{projectId,jdbcType=INTEGER}
+  </select>
+<!--查询借贷客户项目是否已删除 -->
+  <select id="selectProjectStatus" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+        SELECT COUNT(*) FROM BIZ_PROJECT BP WHERE BP.STATUS=1 AND  BP.ACCT_ID=#{acctID}
+  </select>
+  
+  <select id="getNoSpouseListByPid"  resultMap="CusPerBaseResultMap" parameterType="java.util.List">
+  	SELECT CP.PID,
+             CP.CHINA_NAME,
+             (SELECT LK.LOOKUP_VAL FROM SYS_LOOKUP_VAL LK WHERE LK.PID = CP.SEX) SEXNAME,
+             (SELECT LK.LOOKUP_VAL
+                FROM SYS_LOOKUP_VAL LK
+               WHERE LK.PID = CP.CERT_TYPE) CERTTYPENAME,
+             CP.CERT_NUMBER,
+             (SELECT LV.LOOKUP_DESC
+                FROM SYS_LOOKUP SL, SYS_LOOKUP_VAL LV
+               WHERE SL.LOOKUP_TYPE = 'RELATION'
+                 AND LV.LOOKUP_ID = SL.PID
+                 AND LV.LOOKUP_VAL = TO_CHAR(CP.RELATION_TYPE)) RELATIONTEXT,
+             CP.RELATION_TYPE,
+             CP.TELEPHONE AS PERTELEPHONE,
+             CP.WORK_SERVICE,
+             CP.MONTH_INCOME,
+              CP.MOBILE_PHONE,
+              CP.COMM_ADDR,
+              CP.CENSUS_ADDR,
+              CP.PROPORTION_PROPERTY,
+              ((SELECT AREA_NAME FROM SYS_AREA_INFO WHERE AREA_CODE=LIVE_PROVINCE_CODE) || 
+              (SELECT AREA_NAME FROM SYS_AREA_INFO WHERE AREA_CODE=LIVE_CITY_CODE) ||
+              (SELECT AREA_NAME FROM SYS_AREA_INFO WHERE AREA_CODE=LIVE_DISTRICT_CODE) ||
+              CP.LIVE_ADDR) LIVE_ADDR,
+              CP.CERT_TYPE
+        FROM CUS_PERSON CP
+       WHERE CP.PID IN
+		<foreach item="itemId" collection="list" open="(" separator="," close=")">
+		          #{itemId}
+	    </foreach>
+         AND CP.STATUS=1
+  </select>
+</mapper>

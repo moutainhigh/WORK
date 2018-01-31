@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.beforeloan.mapper.CreditLimitRecordMapper">
+	<resultMap id="BaseResultMap" type="com.xlkfinance.bms.rpc.beforeloan.CreditsDTO">
+        <id property="limitId" column="limit_id"/>
+        <result property="acctId" column="acct_id" />
+        <result property="proId" column="pro_id" />
+        <result property="projectName" column="project_name" />
+        <result property="projectId" column="project_id" />
+        <result property="isHoopVal" column="is_hoop_val" />
+        <result property="creditAmt" column="credit_amt" />
+        <result property="useLimit" column="use_limit" />
+        <result property="freezeLimit" column="freeze_limit" />
+        <result property="usableLimit" column="usable_limit" />
+        <result property="startDt" column="credti_start_dt" />
+        <result property="endDt" column="credti_end_dt"/>
+	</resultMap>
+    
+    
+   	<select id="queryLoanProjectbyId" resultType="com.xlkfinance.bms.rpc.beforeloan.CreditsDTO" 
+	   parameterType="com.xlkfinance.bms.rpc.beforeloan.CreditsDTO">
+		SELECT 
+		REQUEST_STATUS AS requestStatus
+		  FROM BIZ_PROJECT PROJEC
+		 WHERE PROJEC.PROJECT_NUMBER = #{projectId}
+	</select>
+
+	<update id="delLoanAppProject" parameterType="com.xlkfinance.bms.rpc.beforeloan.CreditsDTO">
+		update BIZ_PROJECT  PROJEC
+		set 
+			STATUS = 0
+		where PROJEC.PROJECT_NUMBER = #{projectId}
+	</update>
+	    
+	<insert id="insert" parameterType="com.xlkfinance.bms.rpc.beforeloan.CreditLimitRecord">
+		<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+			SELECT SEQ_BIZ_CREDIT_LIMIT_RECORD.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_CREDIT_LIMIT_RECORD(
+		   PID,
+		   LIMIT_ID,
+		   CREDIT_USE_TYPE,
+		   AMT,
+		   REQUEST_AMT,
+		   REASON,
+		   CRE_DTTM,
+		   STATUS)
+		values (
+		    #{pid,jdbcType=INTEGER},
+		    #{limitId,jdbcType=INTEGER},
+		    #{creditUseType,jdbcType=INTEGER},
+		    #{amt,jdbcType=DOUBLE},
+		    #{requestAmt,jdbcType=DOUBLE},
+		    #{reason,jdbcType=VARCHAR},
+		    #{creDttm,jdbcType=TIMESTAMP,javaType=String},
+		    #{status,jdbcType=INTEGER})
+	</insert>
+	
+ 	<!-- 更新的方法 -->
+	<update id="updateByPrimaryKey" parameterType="com.xlkfinance.bms.rpc.beforeloan.CreditLimitRecord">
+	update BIZ_CREDIT_LIMIT_RECORD 
+	set 
+  <if test="limitId != null">
+		LIMIT_ID = #{limitId,jdbcType=INTEGER},
+  </if>
+  <if test="creditUseType != null">
+		CREDIT_USE_TYPE = #{creditUseType,jdbcType=INTEGER},
+  </if>
+  <if test="amt != null">
+		AMT = #{amt,jdbcType=DOUBLE},
+  </if>
+  <if test="requestAmt != null">
+		REQUEST_AMT = #{requestAmt,jdbcType=DOUBLE},
+  </if>
+  <if test="reason != null and reason !=''">
+		REASON = #{reason,jdbcType=VARCHAR},
+  </if>
+  <if test="creDttm != null and creDttm != ''">
+		CRE_DTTM = #{creDttm,jdbcType=TIMESTAMP,javaType=String},
+  </if>
+  <if test="status != null">
+		STATUS = #{status,jdbcType=INTEGER},
+  </if>
+    PID=#{pid,jdbcType=INTEGER} 
+	where pid = #{pid,jdbcType=INTEGER}
+</update>
+  	
+<select id="selectByPrimaryKey" resultType="com.xlkfinance.bms.rpc.beforeloan.CreditLimitRecord" parameterType="java.lang.Integer">
+	SELECT CLR.PID,
+	       CLR.LIMIT_ID LIMITID,
+	       CLR.CREDIT_USE_TYPE CREDITUSETYPE,
+	       CASE CLR.CREDIT_USE_TYPE
+	         WHEN 1 THEN
+	          '授信'
+	         WHEN 2 THEN
+	          '使用'
+	         WHEN 3 THEN
+	          '冻结'
+	         WHEN 4 THEN
+	          '解冻'
+	       END CREDITUSETYPETEXT,
+	       CLR.AMT,
+	       CLR.REQUEST_AMT REQUESTAMT,
+	       CLR.REASON,
+	       CLR.CRE_DTTM CREDTTM,
+	       CLR.STATUS
+	  FROM BIZ_CREDIT_LIMIT_RECORD CLR
+	 WHERE CLR.PID = #{pid,jdbcType=INTEGER}
+</select>
+</mapper>

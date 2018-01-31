@@ -1,0 +1,103 @@
+body {
+	color:#000;
+	background-color:white;
+	letter-spacing:0.01em;
+	margin:0px;
+	margin-top: 0px;
+}
+#controlPanel,#resultPanel{
+	width:660px;
+	margin:0px auto;
+}
+#errorArea{
+	width:400px;
+	margin:20px auto;
+	padding:25px;
+	border:3px solid gray;
+	-moz-border-radius:10px;
+	background:red;
+}
+#normalMessageArea{
+	width:400px;
+	margin:20px auto;
+	padding:25px;
+	border:3px solid gray;
+	-moz-border-radius:10px;
+	background:yellow;
+}
+#progressBar { padding-top: 5px; }
+#totalProgressBarBox { 
+   	width: 350px; 
+   	height: 20px; 
+   	border: 1px inset; 
+   	background: #eee;
+}
+#totalProgressBarBoxContent { 
+   	width: 0; 
+   	height: 20px; 
+   	border-right: 1px solid #444; 
+   	background: #9ACB34; 
+}
+#progressBarText
+{
+	font-family: Arial;
+	font-weight: bold;
+	color: navy;
+	
+}
+#progressStatusText
+{
+	font-family: Arial;
+	font-weight: bold;
+	color: navy; 
+}
+
+.uploadfile2
+{
+	
+	background-image:url(../images/btn_off.gif);
+	background-repeat:no-repeat;
+	border:0px;
+	width:82px;
+	height:23px;
+	cursor:pointer;
+	margin-left: -83px;
+	padding-top: 1px;
+	padding-left: 30px;
+	
+}
+.uploadfile2:hover
+{
+	background-image:url(../images/btn_on.gif);
+}
+.up_btn
+{
+	background-image:url(../images/btn_off.gif);
+	background-repeat:no-repeat;
+	border:0px;
+	width:82px;
+	height:23px;
+	cursor:pointer;
+	margin-left:10px;
+	padding:0px;
+	
+}
+.up_btn:hover
+{
+	background-image:url(../images/btn_on.gif);
+}
+.input_text
+{
+   border:1px solid #CDEE79;
+   height:23px;
+}
+.input_file
+{
+     margin-left:-230px; filter:alpha(opacity=0); opacity:0;
+    
+}
+.imgstyle
+{
+	margin-left: 10px;
+	margin-bottom: -5px;
+}

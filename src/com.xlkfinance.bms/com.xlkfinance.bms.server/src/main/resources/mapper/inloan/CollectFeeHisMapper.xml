@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xlkfinance.bms.server.inloan.mapper.CollectFeeHisMapper">
+	<resultMap id="collectFeeHisMap" type="com.xlkfinance.bms.rpc.inloan.CollectFeeHis">
+		<id property="pid" column="PID" />
+		<id property="financeHandleId" column="FINANCE_HANDLE_ID" />
+		<id property="projectId" column="PROJECT_ID" />
+		<id property="consultingFee" column="CONSULTING_FEE" />
+		<id property="poundage" column="POUNDAGE" />
+		<id property="brokerage" column="BROKERAGE" />
+		<id property="recDate" column="REC_DATE" />
+		<id property="proResource" column="PRO_RESOURCE" />
+		<id property="createrId" column="CREATER_ID" />
+		<id property="createrDate" column="CREATER_DATE" />
+		<id property="createrName" column="CREATER_NAME" />
+		<id property="recAccount" column="REC_ACCOUNT" />
+		<id property="recPro" column="REC_PRO" />
+		<id property="recProStr" column="REC_PRO_STR" />
+	</resultMap>
+	<sql id="column_list">
+        PID,FINANCE_HANDLE_ID,PROJECT_ID,CONSULTING_FEE,POUNDAGE,BROKERAGE,REC_DATE,PRO_RESOURCE,CREATER_ID,CREATER_DATE,REC_ACCOUNT,REC_PRO
+	</sql>
+	<!-- 查询所有 -->
+	<select id="getAll" resultMap="collectFeeHisMap" parameterType="com.xlkfinance.bms.rpc.inloan.CollectFeeHis">
+		SELECT
+		<include refid="column_list" />
+		FROM BIZ_LOAN_COLLECT_FEE_HIS
+		<where>
+			<trim>
+		      <if test="pid != null and pid >0">
+	          PID=#{pid}
+	          </if>
+		      <if test="financeHandleId != null and financeHandleId >0">
+	          AND FINANCE_HANDLE_ID=#{financeHandleId}
+	          </if>
+		      <if test="projectId != null and projectId >0">
+	          AND PROJECT_ID=#{projectId}
+	          </if>
+		      <if test="consultingFee != null and consultingFee >0">
+	          AND CONSULTING_FEE=#{consultingFee}
+	          </if>
+		      <if test="poundage != null and poundage >0">
+	          AND POUNDAGE=#{poundage}
+	          </if>
+		      <if test="brokerage != null and brokerage >0">
+	          AND BROKERAGE=#{brokerage}
+	          </if>
+		      <if test="recDate != null and recDate !=''">
+	          AND REC_DATE=#{recDate}
+	          </if>
+		      <if test="proResource != null and proResource !=''">
+	          AND PRO_RESOURCE=#{proResource}
+	          </if>
+		      <if test="createrId != null and createrId >0">
+	          AND CREATER_ID=#{createrId}
+	          </if>
+		      <if test="createrDate != null and createrDate !=''">
+	          AND CREATER_DATE=#{createrDate}
+	          </if>
+		      <if test="recAccount != null and recAccount !=''">
+	          AND REC_ACCOUNT=#{recAccount}
+	          </if>
+		      <if test="recPro != null and recPro >0">
+	          AND REC_PRO=#{recPro}
+	          </if>
+			</trim>
+		</where>
+	</select>
+	<!-- 根据id获取 -->
+	<select id="getById" resultMap="collectFeeHisMap">
+		SELECT <include refid="column_list" /> FROM BIZ_LOAN_COLLECT_FEE_HIS WHERE PID=#{pid}
+	</select>
+	<!-- 插入一条数据 -->
+	<insert id="insert" parameterType="com.xlkfinance.bms.rpc.inloan.CollectFeeHis">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_COLLECT_FEE_HIS.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_LOAN_COLLECT_FEE_HIS
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+				PID,
+			</if>
+		    <if test="financeHandleId != null and financeHandleId >0">
+				FINANCE_HANDLE_ID,
+			</if>
+		    <if test="projectId != null and projectId >0">
+				PROJECT_ID,
+			</if>
+		    <if test="consultingFee != null and consultingFee >0">
+				CONSULTING_FEE,
+			</if>
+		    <if test="poundage != null and poundage >0">
+				POUNDAGE,
+			</if>
+		    <if test="brokerage != null and brokerage >0">
+				BROKERAGE,
+			</if>
+		    <if test="recDate != null and recDate !=''">
+				REC_DATE,
+			</if>
+		    <if test="proResource != null and proResource !=''">
+				PRO_RESOURCE,
+			</if>
+		    <if test="recAccount != null and recAccount !=''">
+				REC_ACCOUNT,
+			</if>
+		    <if test="createrId != null and createrId >0">
+				CREATER_ID,
+			</if>
+			<if test="recPro != null and recPro >0">
+	            REC_PRO,
+	        </if>
+				CREATER_DATE
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+		    #{pid},
+			</if>
+		    <if test="financeHandleId != null and financeHandleId >0">
+		    #{financeHandleId},
+			</if>
+		    <if test="projectId != null and projectId >0">
+		    #{projectId},
+			</if>
+		    <if test="consultingFee != null and consultingFee >0">
+		    #{consultingFee},
+			</if>
+		    <if test="poundage != null and poundage >0">
+		    #{poundage},
+			</if>
+		    <if test="brokerage != null and brokerage >0">
+		    #{brokerage},
+			</if>
+		    <if test="recDate != null and recDate !=''">
+		    #{recDate,jdbcType=DATE,javaType= java.lang.String},
+			</if>
+		    <if test="proResource != null and proResource !=''">
+		    #{proResource},
+			</if>
+			<if test="recAccount != null and recAccount !=''">
+			#{recAccount},
+			</if>
+		    <if test="createrId != null and createrId >0">
+		    #{createrId},
+			</if>
+			<if test="recPro != null and recPro >0">
+	         #{recPro},
+	        </if>
+		    SYSDATE
+		</trim>
+	</insert>
+	<!-- 根据id删除数据 -->
+	<delete id="deleteById" parameterType="com.xlkfinance.bms.rpc.inloan.CollectFeeHis">
+		<![CDATA[DELETE FROM BIZ_LOAN_COLLECT_FEE_HIS WHERE PID=#{pid}]]>
+	</delete>
+	<!-- 根据id更新数据 -->
+		<update id="update" parameterType="com.xlkfinance.bms.rpc.inloan.CollectFeeHis">
+		UPDATE BIZ_LOAN_COLLECT_FEE_HIS
+		<set>
+		    <if test="pid != null and pid >0">
+		     PID=#{pid},
+			</if>
+		    <if test="financeHandleId != null and financeHandleId >0">
+		     FINANCE_HANDLE_ID=#{financeHandleId},
+			</if>
+		    <if test="projectId != null and projectId >0">
+		     PROJECT_ID=#{projectId},
+			</if>
+		    <if test="consultingFee != null and consultingFee >0">
+		     CONSULTING_FEE=#{consultingFee},
+			</if>
+		    <if test="poundage != null and poundage >0">
+		     POUNDAGE=#{poundage},
+			</if>
+		    <if test="brokerage != null and brokerage >0">
+		     BROKERAGE=#{brokerage},
+			</if>
+		    <if test="recDate != null and recDate !=''">
+		     REC_DATE=#{recDate,jdbcType= DATE,javaType= java.lang.String},
+			</if>
+		    <if test="proResource != null and proResource !=''">
+		     PRO_RESOURCE=#{proResource},
+			</if>
+			<if test="recAccount != null and recAccount !=''">
+			 REC_ACCOUNT=#{recAccount},
+			</if>
+		    <if test="createrId != null and createrId >0">
+		     CREATER_ID=#{createrId},
+			</if>
+		    <if test="createrDate != null and createrDate !=''">
+		     CREATER_DATE=#{createrDate,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+			<if test="recPro != null and recPro >0">
+	         REC_PRO=#{recPro},
+	        </if>
+		</set>
+		WHERE PID = #{pid}
+	</update>
+	<!-- 根据传入多个id删除数据 -->
+	<delete id="deleteByIds" parameterType="java.util.List">
+		DELETE FROM BIZ_LOAN_COLLECT_FEE_HIS WHERE PID in
+		<foreach collection="list" item="item" index="index" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+	<!-- 财务收费历史列表(分页查询) -->
+	<select id="queryCollectFeeHis" resultMap="collectFeeHisMap"
+		parameterType="com.xlkfinance.bms.rpc.inloan.CollectFeeHis">
+		<if test="page!=-1">
+			SELECT D.* FROM (SELECT T.*, ROWNUM RN
+			FROM (
+		</if>
+			SELECT A.PID,
+			       A.PROJECT_ID,
+			       A.FINANCE_HANDLE_ID,
+			       A.CONSULTING_FEE,
+			       A.POUNDAGE,
+			       A.BROKERAGE,
+			       A.REC_DATE,
+			       A.REC_ACCOUNT,
+			       A.REC_PRO,
+			       (SELECT L.LOOKUP_DESC
+          FROM SYS_LOOKUP_VAL L LEFT JOIN SYS_LOOKUP LK ON LK.PID=L.LOOKUP_ID
+         WHERE LK.LOOKUP_TYPE='FDD_COLLECT_FEE_PRO' AND L.LOOKUP_VAL = TO_CHAR(A.REC_PRO) ) AS REC_PRO_STR,
+			       C.LOOKUP_DESC AS PRO_RESOURCE,
+			       A.CREATER_ID,
+			       B.REAL_NAME AS CREATER_NAME,
+			       TO_CHAR(A.CREATER_DATE, 'YYYY-MM-DD HH24:MI:SS') AS CREATER_DATE
+			  FROM BIZ_LOAN_COLLECT_FEE_HIS A
+			  LEFT JOIN SYS_USER B
+			    ON A.CREATER_ID = B.PID
+			  LEFT JOIN (SELECT LOOKUP_VAL,lv.LOOKUP_DESC 
+					FROM SYS_LOOKUP L,SYS_LOOKUP_VAL LV
+					WHERE LV.STATUS = 1  AND L.PID = LV.LOOKUP_ID  
+					AND L.LOOKUP_TYPE = #{proResourcelookupVal}) C
+			    ON C.LOOKUP_VAL=A.PRO_RESOURCE
+
+		<where>
+			<trim>
+				<if test="projectId != null and projectId >0">
+					AND A.PROJECT_ID=#{projectId}
+				</if>
+				<if test="financeHandleId != null and financeHandleId >0">
+					AND A.FINANCE_HANDLE_ID=#{financeHandleId}
+				</if>
+			</trim>
+		</where>
+		<if test="page!=-1">
+	<![CDATA[
+	ORDER BY A.REC_DATE DESC
+	) T
+	WHERE ROWNUM <=#{page}*#{rows}
+	) D
+	WHERE D.RN > ((#{page}-1)*#{rows})
+	]]>
+		</if>
+	</select>
+	<!--财务收费历史列表总数 -->
+	<select id="getCollectFeeHisTotal" resultType="Integer"
+		parameterType="com.xlkfinance.bms.rpc.inloan.CollectFeeHis">
+	<![CDATA[
+	SELECT COUNT(1) FROM
+			(SELECT * FROM BIZ_LOAN_COLLECT_FEE_HIS A
+	]]>
+		<where>
+			<trim>
+				<if test="projectId != null and projectId >0">
+					AND A.PROJECT_ID=#{projectId}
+				</if>
+				<if test="financeHandleId != null and financeHandleId >0">
+					AND A.FINANCE_HANDLE_ID=#{financeHandleId}
+				</if>
+			</trim>
+		</where>
+		) T
+	</select>
+</mapper>

@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.xlkfinance.com/bms/businessApplyRequestProcess">
+  <process id="businessApplyRequestProcess" name="业务申请工作流" isExecutable="true">
+    <startEvent id="startevent" name="开始">
+      <extensionElements>
+        <activiti:formProperty id="nextRole" name="下一节点角色" type="string" default="JUNIOR_ACCOUNT_MANAGER" required="true"></activiti:formProperty>
+        <activiti:formProperty id="flow" name="流程走向标志" type="string" default="next" required="true"></activiti:formProperty>
+        <activiti:formProperty id="allowTurnDown" name="是否允许驳回？" type="string" default="no" required="true"></activiti:formProperty>
+      </extensionElements>
+    </startEvent>
+    <userTask id="task_BusinessRequest" name="业务申请" activiti:candidateUsers="${candidateUsers}">
+      <extensionElements>
+        <activiti:formProperty id="nextRole" name="下一节点角色" type="string" default="RISK_ONE" required="true"></activiti:formProperty>
+        <activiti:formProperty id="flow" name="流程走向标志" type="string" default="next" required="true"></activiti:formProperty>
+        <activiti:formProperty id="allowTurnDown" name="是否允许驳回？" type="string" default="no" required="true"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <userTask id="task_RiskOneCheck" name="风控初审" activiti:candidateUsers="${candidateUsers}">
+      <extensionElements>
+        <activiti:formProperty id="nextRole" name="下一节点角色" type="string" default="COMPLIANCE_REVIEW" required="true"></activiti:formProperty>
+        <activiti:formProperty id="flow" name="流程走向标志" type="string" default="next" required="true"></activiti:formProperty>
+        <activiti:formProperty id="allowTurnDown" name="是否允许驳回？" type="string" default="yes" required="true"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <userTask id="task_RiskTwoCheck" name="风控复审" activiti:candidateUsers="${candidateUsers}">
+      <extensionElements>
+        <activiti:formProperty id="nextRole" name="下一节点角色" type="string" default="RISK_OVER" required="true"></activiti:formProperty>
+        <activiti:formProperty id="flow" name="流程走向标志" type="string" default="next" required="true"></activiti:formProperty>
+        <activiti:formProperty id="allowTurnDown" name="是否允许驳回？" type="string" default="yes" required="true"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <userTask id="task_RiskOverCheck" name="风控终审" activiti:candidateUsers="${candidateUsers}">
+      <extensionElements>
+        <activiti:formProperty id="nextRole" name="下一节点角色" type="string" default="GENERAL_MANAGER" required="true"></activiti:formProperty>
+        <activiti:formProperty id="flow" name="流程走向标志" type="string" default="next" required="true"></activiti:formProperty>
+        <activiti:formProperty id="allowTurnDown" name="是否允许驳回？" type="string" default="yes" required="true"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow1" sourceRef="startevent" targetRef="task_BusinessRequest"></sequenceFlow>
+    <sequenceFlow id="flow2" sourceRef="task_BusinessRequest" targetRef="task_RiskOneCheck"></sequenceFlow>
+    <exclusiveGateway id="exMoneyLarger" name="贷款金额是否大于1000万？"></exclusiveGateway>
+    <sequenceFlow id="flow5" sourceRef="task_RiskOverCheck" targetRef="exMoneyLarger"></sequenceFlow>
+    <userTask id="task_GeneralCheck" name="总经理审批" activiti:candidateUsers="${candidateUsers}">
+      <extensionElements>
+        <activiti:formProperty id="flow" name="流程走向标志" type="string" default="next" required="true"></activiti:formProperty>
+        <activiti:formProperty id="allowTurnDown" name="是否允许驳回？" type="string" default="yes" required="true"></activiti:formProperty>
+        <activiti:formProperty id="nextRole" name="下一个节点角色" type="string" default="TASK_GENERAL_MANAGER" required="true"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow6" name="大于1000万" sourceRef="exMoneyLarger" targetRef="task_GeneralCheck">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${money >10000000}]]></conditionExpression>
+    </sequenceFlow>
+    <endEvent id="endevent" name="结束"></endEvent>
+    <sequenceFlow id="flow7" sourceRef="task_GeneralCheck" targetRef="endevent"></sequenceFlow>
+    <sequenceFlow id="flow8" name="不大于1000万" sourceRef="exMoneyLarger" targetRef="endevent">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${money <=10000000}]]></conditionExpression>
+    </sequenceFlow>
+    <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway"></exclusiveGateway>
+    <sequenceFlow id="flow9" sourceRef="task_RiskTwoCheck" targetRef="exclusivegateway1"></sequenceFlow>
+    <sequenceFlow id="flow10" name="大于500万" sourceRef="exclusivegateway1" targetRef="task_RiskOverCheck">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${money >5000000}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow11" name="不大于500万" sourceRef="exclusivegateway1" targetRef="endevent">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${money <=5000000}]]></conditionExpression>
+    </sequenceFlow>
+    <userTask id="task_ComplianceReview" name="合规复审" activiti:candidateUsers="${candidateUsers}">
+      <extensionElements>
+        <activiti:formProperty id="nextRole" name="下一节点角色" type="string" default="RISK_TWO" required="true"></activiti:formProperty>
+        <activiti:formProperty id="flow" name="流程走向标志" type="string" default="next" required="true"></activiti:formProperty>
+        <activiti:formProperty id="allowTurnDown" name="是否允许驳回？" type="string" default="yes" required="true"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow12" sourceRef="task_RiskOneCheck" targetRef="task_ComplianceReview"></sequenceFlow>
+    <sequenceFlow id="flow13" sourceRef="task_ComplianceReview" targetRef="task_RiskTwoCheck"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_businessApplyRequestProcess">
+    <bpmndi:BPMNPlane bpmnElement="businessApplyRequestProcess" id="BPMNPlane_businessApplyRequestProcess">
+      <bpmndi:BPMNShape bpmnElement="startevent" id="BPMNShape_startevent">
+        <omgdc:Bounds height="35.0" width="35.0" x="13.0" y="40.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="task_BusinessRequest" id="BPMNShape_task_BusinessRequest">
+        <omgdc:Bounds height="55.0" width="105.0" x="101.0" y="50.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="task_RiskOneCheck" id="BPMNShape_task_RiskOneCheck">
+        <omgdc:Bounds height="55.0" width="105.0" x="241.0" y="40.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="task_RiskTwoCheck" id="BPMNShape_task_RiskTwoCheck">
+        <omgdc:Bounds height="55.0" width="105.0" x="393.0" y="140.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="task_RiskOverCheck" id="BPMNShape_task_RiskOverCheck">
+        <omgdc:Bounds height="55.0" width="105.0" x="392.0" y="345.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exMoneyLarger" id="BPMNShape_exMoneyLarger">
+        <omgdc:Bounds height="40.0" width="40.0" x="577.0" y="352.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="task_GeneralCheck" id="BPMNShape_task_GeneralCheck">
+        <omgdc:Bounds height="55.0" width="105.0" x="713.0" y="345.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent" id="BPMNShape_endevent">
+        <omgdc:Bounds height="35.0" width="35.0" x="580.0" y="241.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway1" id="BPMNShape_exclusivegateway1">
+        <omgdc:Bounds height="40.0" width="40.0" x="427.0" y="238.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="task_ComplianceReview" id="BPMNShape_task_ComplianceReview">
+        <omgdc:Bounds height="55.0" width="105.0" x="393.0" y="30.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="48.0" y="57.0"></omgdi:waypoint>
+        <omgdi:waypoint x="101.0" y="77.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="153.0" y="105.0"></omgdi:waypoint>
+        <omgdi:waypoint x="182.0" y="195.0"></omgdi:waypoint>
+        <omgdi:waypoint x="293.0" y="95.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
+        <omgdi:waypoint x="497.0" y="372.0"></omgdi:waypoint>
+        <omgdi:waypoint x="577.0" y="372.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow6" id="BPMNEdge_flow6">
+        <omgdi:waypoint x="617.0" y="372.0"></omgdi:waypoint>
+        <omgdi:waypoint x="713.0" y="372.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="60.0" x="617.0" y="372.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow7" id="BPMNEdge_flow7">
+        <omgdi:waypoint x="765.0" y="345.0"></omgdi:waypoint>
+        <omgdi:waypoint x="597.0" y="276.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow8" id="BPMNEdge_flow8">
+        <omgdi:waypoint x="597.0" y="352.0"></omgdi:waypoint>
+        <omgdi:waypoint x="597.0" y="276.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="72.0" x="537.0" y="303.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow9" id="BPMNEdge_flow9">
+        <omgdi:waypoint x="445.0" y="195.0"></omgdi:waypoint>
+        <omgdi:waypoint x="447.0" y="238.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow10" id="BPMNEdge_flow10">
+        <omgdi:waypoint x="447.0" y="278.0"></omgdi:waypoint>
+        <omgdi:waypoint x="444.0" y="345.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="100.0" x="386.0" y="292.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow11" id="BPMNEdge_flow11">
+        <omgdi:waypoint x="467.0" y="258.0"></omgdi:waypoint>
+        <omgdi:waypoint x="580.0" y="258.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="100.0" x="476.0" y="239.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow12" id="BPMNEdge_flow12">
+        <omgdi:waypoint x="293.0" y="95.0"></omgdi:waypoint>
+        <omgdi:waypoint x="295.0" y="218.0"></omgdi:waypoint>
+        <omgdi:waypoint x="445.0" y="85.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow13" id="BPMNEdge_flow13">
+        <omgdi:waypoint x="445.0" y="85.0"></omgdi:waypoint>
+        <omgdi:waypoint x="445.0" y="140.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

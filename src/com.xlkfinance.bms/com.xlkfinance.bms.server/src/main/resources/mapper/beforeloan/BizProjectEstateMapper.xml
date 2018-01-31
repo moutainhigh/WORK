@@ -1,0 +1,431 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xlkfinance.bms.server.beforeloan.mapper.BizProjectEstateMapper">
+	<resultMap id="bizProjectEstateMap" type="com.xlkfinance.bms.rpc.beforeloan.BizProjectEstate">
+		<id property="houseId" column="PID" />
+		<id property="projectId" column="PROJECT_ID" />
+		<id property="houseName" column="HOUSE_NAME" />
+		<id property="costMoney" column="COST_MONEY" />
+		<id property="area" column="AREA" />
+		<id property="housePropertyCard" column="HOUSE_PROPERTY_CARD" />
+		<id property="purpose" column="PURPOSE" />
+		<id property="tranasctionMoney" column="TRANASCTION_MONEY" />
+		<id property="evaluationPrice" column="EVALUATION_PRICE" />
+		<id property="houseProvinceCode" column="HOUSE_PROVINCE_CODE" />
+		<id property="houseCityCode" column="HOUSE_CITY_CODE" />
+		<id property="houseDistrictCode" column="HOUSE_DISTRICT_CODE" />
+		<id property="status" column="STATUS" />
+		<id property="createrDate" column="CREATER_DATE" />
+		<id property="createrId" column="CREATER_ID" />
+		<id property="updateId" column="UPDATE_ID" />
+		<id property="updateDate" column="UPDATE_DATE" />
+		<id property="houseAddress" column="HOUSE_ADDRESS" />
+		<id property="evaluationNet" column="EVALUATION_NET" />
+		<id property="propertyRatio" column="PROPERTY_RATIO" />
+		<id property="downPayment" column="DOWN_PAYMENT" />
+		<id property="purchaseDeposit" column="PURCHASE_DEPOSIT" />
+		<id property="purchaseBalance" column="PURCHASE_BALANCE" />
+		
+		<id property="landUse" column="LAND_USE" />
+		<id property="estateUse" column="ESTATE_USE" />
+		<id property="houseAge" column="HOUSE_AGE" />
+		<id property="propertyLife" column="PROPERTY_LIFE" />
+		<id property="landSurplusLife" column="LAND_SURPLUS_LIFE" />
+		<id property="useArea" column="USE_AREA" />
+		<id property="houseRent" column="HOUSE_RENT" />
+		
+	</resultMap>
+	<resultMap id="bizProjectEstateSpotInfoMap" type="com.xlkfinance.bms.rpc.beforeloan.BizProjectEstate">
+		<id property="houseId" column="PID" />
+		<id property="projectId" column="PROJECT_ID" />
+		<id property="houseName" column="HOUSE_NAME" />
+		<id property="costMoney" column="COST_MONEY" />
+		<id property="area" column="AREA" />
+		<id property="housePropertyCard" column="HOUSE_PROPERTY_CARD" />
+		<id property="purpose" column="PURPOSE" />
+		<id property="tranasctionMoney" column="TRANASCTION_MONEY" />
+		<id property="evaluationPrice" column="EVALUATION_PRICE" />
+		<id property="houseProvinceCode" column="HOUSE_PROVINCE_CODE" />
+		<id property="houseCityCode" column="HOUSE_CITY_CODE" />
+		<id property="houseDistrictCode" column="HOUSE_DISTRICT_CODE" />
+		<id property="status" column="STATUS" />
+		<id property="createrDate" column="CREATER_DATE" />
+		<id property="createrId" column="CREATER_ID" />
+		<id property="updateId" column="UPDATE_ID" />
+		<id property="updateDate" column="UPDATE_DATE" />
+		<id property="houseAddress" column="HOUSE_ADDRESS" />
+		<id property="evaluationNet" column="EVALUATION_NET" />
+		<id property="propertyRatio" column="PROPERTY_RATIO" />
+		<id property="downPayment" column="DOWN_PAYMENT" />
+		<id property="purchaseDeposit" column="PURCHASE_DEPOSIT" />
+		<id property="purchaseBalance" column="PURCHASE_BALANCE" />
+		
+		<id property="landUse" column="LAND_USE" />
+		<id property="estateUse" column="ESTATE_USE" />
+		<id property="houseAge" column="HOUSE_AGE" />
+		<id property="propertyLife" column="PROPERTY_LIFE" />
+		<id property="landSurplusLife" column="LAND_SURPLUS_LIFE" />
+		<id property="useArea" column="USE_AREA" />
+		<association property="bizSpotInfo" column="PID"
+		select="com.xlkfinance.bms.server.beforeloan.mapper.BizSpotInfoMapper.getByEstateId"></association>
+	</resultMap>
+	<sql id="column_list">
+        E.PID,E.PROJECT_ID,E.HOUSE_NAME,E.COST_MONEY,E.AREA,E.HOUSE_PROPERTY_CARD,E.PURPOSE,
+        E.LAND_USE,E.ESTATE_USE,E.HOUSE_AGE,E.PROPERTY_LIFE,E.LAND_SURPLUS_LIFE,E.USE_AREA,
+        E.TRANASCTION_MONEY,E.EVALUATION_PRICE,E.HOUSE_PROVINCE_CODE,E.HOUSE_CITY_CODE,E.EVALUATION_NET,
+        E.HOUSE_DISTRICT_CODE,E.STATUS,E.CREATER_DATE,E.CREATER_ID,E.UPDATE_ID,E.UPDATE_DATE,V.HOUSE_ADDRESS,
+        E.PROPERTY_RATIO,E.DOWN_PAYMENT,E.PURCHASE_DEPOSIT,E.PURCHASE_BALANCE,E.HOUSE_RENT
+	</sql>
+	<!-- 查询所有 -->
+	<select id="getAll" resultMap="bizProjectEstateMap" parameterType="com.xlkfinance.bms.rpc.beforeloan.BizProjectEstate">
+		SELECT
+		<include refid="column_list" />
+		FROM BIZ_PROJECT_ESTATE E,V_HOUSE_ADDRESS V
+		<where>
+			<trim>
+			  <if test="1==1">
+			  	E.PID = V.PID
+			  </if>
+		      <if test="houseId != null and houseId >0">
+	          AND E.PID=#{houseId}
+	          </if>
+		      <if test="projectId != null and projectId >0">
+	          AND E.PROJECT_ID=#{projectId}
+	          </if>
+		      <if test="houseName != null and houseName !=''">
+	          AND E.HOUSE_NAME=#{houseName}
+	          </if>
+		      <if test="costMoney != null and costMoney >0">
+	          AND E.COST_MONEY=#{costMoney}
+	          </if>
+		      <if test="area != null and area >0">
+	          AND E.AREA=#{area}
+	          </if>
+		      <if test="housePropertyCard != null and housePropertyCard !=''">
+	          AND E.HOUSE_PROPERTY_CARD=#{housePropertyCard}
+	          </if>
+		      <if test="purpose != null and purpose !=''">
+	          AND E.PURPOSE=#{purpose}
+	          </if>
+		      <if test="tranasctionMoney != null and tranasctionMoney >0">
+	          AND E.TRANASCTION_MONEY=#{tranasctionMoney}
+	          </if>
+		      <if test="evaluationPrice != null and evaluationPrice >0">
+	          AND E.EVALUATION_PRICE=#{evaluationPrice}
+	          </if>
+		      <if test="houseProvinceCode != null and houseProvinceCode !=''">
+	          AND E.HOUSE_PROVINCE_CODE=#{houseProvinceCode}
+	          </if>
+		      <if test="houseCityCode != null and houseCityCode !=''">
+	          AND E.HOUSE_CITY_CODE=#{houseCityCode}
+	          </if>
+		      <if test="houseDistrictCode != null and houseDistrictCode !=''">
+	          AND E.HOUSE_DISTRICT_CODE=#{houseDistrictCode}
+	          </if>
+		      <if test="status != null and status >0">
+	          AND E.STATUS=#{status}
+	          </if>
+		      <if test="createrDate != null and createrDate !=''">
+	          AND E.CREATER_DATE=#{createrDate}
+	          </if>
+		      <if test="createrId != null and createrId >0">
+	          AND E.CREATER_ID=#{createrId}
+	          </if>
+		      <if test="updateId != null and updateId >0">
+	          AND E.UPDATE_ID=#{updateId}
+	          </if>
+		      <if test="updateDate != null and updateDate !=''">
+	          AND E.UPDATE_DATE=#{updateDate}
+	          </if>
+	          <if test="houseIds!=null and houseIds.size()>0">
+			  AND E.PID IN
+			  	<foreach item="itemId" collection="houseIds" open="(" separator="," close=")">
+			          #{itemId}
+			  	</foreach>
+			  </if>
+			</trim>
+		</where>
+	</select>
+	<!-- 根据id获取 -->
+	<select id="getById" resultMap="bizProjectEstateMap">
+		SELECT <include refid="column_list" /> FROM BIZ_PROJECT_ESTATE E,V_HOUSE_ADDRESS V WHERE E.PID = V.PID AND E.PID=#{houseId}
+	</select>
+	<!-- 插入一条数据 -->
+	<insert id="insert" parameterType="com.xlkfinance.bms.rpc.beforeloan.BizProjectEstate">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="houseId">
+			SELECT SEQ_BIZ_PROJECT_ESTATE.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_PROJECT_ESTATE
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+		    <if test="houseId != null and houseId >0">
+				PID,
+			</if>
+		    <if test="projectId != null and projectId >0">
+				PROJECT_ID,
+			</if>
+		    <if test="houseName != null and houseName !=''">
+				HOUSE_NAME,
+			</if>
+		    <if test="costMoney != null and costMoney >0">
+				COST_MONEY,
+			</if>
+		    <if test="area != null and area >0">
+				AREA,
+			</if>
+		    <if test="housePropertyCard != null and housePropertyCard !=''">
+				HOUSE_PROPERTY_CARD,
+			</if>
+		    <if test="purpose != null and purpose !=''">
+				PURPOSE,
+			</if>
+		    <if test="tranasctionMoney != null and tranasctionMoney >0">
+				TRANASCTION_MONEY,
+			</if>
+		    <if test="evaluationPrice != null and evaluationPrice >0">
+				EVALUATION_PRICE,
+			</if>
+		    <if test="houseProvinceCode != null and houseProvinceCode !=''">
+				HOUSE_PROVINCE_CODE,
+			</if>
+		    <if test="houseCityCode != null and houseCityCode !=''">
+				HOUSE_CITY_CODE,
+			</if>
+		    <if test="houseDistrictCode != null and houseDistrictCode !=''">
+				HOUSE_DISTRICT_CODE,
+			</if>
+				STATUS,
+				CREATER_DATE,
+		    <if test="createrId != null and createrId >0">
+				CREATER_ID,
+			</if>
+			<if test="evaluationNet != null and evaluationNet != -1">
+				EVALUATION_NET,
+			</if>
+		    <if test="propertyRatio != null and propertyRatio !=''">
+				PROPERTY_RATIO,
+			</if>
+		    <if test="landUse != null and landUse !=''">
+				LAND_USE,
+			</if>
+		    <if test="estateUse != null and estateUse !=''">
+				ESTATE_USE,
+			</if>
+		    <if test="houseAge != null and houseAge !=''">
+				HOUSE_AGE,
+			</if>
+		    <if test="propertyLife != null and propertyLife !=''">
+				PROPERTY_LIFE,
+			</if>
+		    <if test="landSurplusLife != null and landSurplusLife !=''">
+				LAND_SURPLUS_LIFE,
+			</if>
+		    <if test="useArea != null and useArea >0">
+				USE_AREA,
+			</if>
+			<if test="houseRent != null and houseRent != -1">
+				HOUSE_RENT,
+			</if>
+			
+			
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+		    <if test="houseId != null and houseId >0">
+		    #{houseId},
+			</if>
+		    <if test="projectId != null and projectId >0">
+		    #{projectId},
+			</if>
+		    <if test="houseName != null and houseName !=''">
+		    #{houseName},
+			</if>
+		    <if test="costMoney != null and costMoney >0">
+		    #{costMoney},
+			</if>
+		    <if test="area != null and area >0">
+		    #{area},
+			</if>
+		    <if test="housePropertyCard != null and housePropertyCard !=''">
+		    #{housePropertyCard},
+			</if>
+		    <if test="purpose != null and purpose !=''">
+		    #{purpose},
+			</if>
+		    <if test="tranasctionMoney != null and tranasctionMoney >0">
+		    #{tranasctionMoney},
+			</if>
+		    <if test="evaluationPrice != null and evaluationPrice >0">
+		    #{evaluationPrice},
+			</if>
+		    <if test="houseProvinceCode != null and houseProvinceCode !=''">
+		    #{houseProvinceCode},
+			</if>
+		    <if test="houseCityCode != null and houseCityCode !=''">
+		    #{houseCityCode},
+			</if>
+		    <if test="houseDistrictCode != null and houseDistrictCode !=''">
+		    #{houseDistrictCode},
+			</if>
+		    1,
+		    SYSDATE,
+		    <if test="createrId != null and createrId >0">
+		    #{createrId},
+			</if>
+			<if test="evaluationNet != null and evaluationNet != -1">
+				#{evaluationNet},
+			</if>
+		    <if test="propertyRatio != null and propertyRatio !=''">
+				#{propertyRatio},
+			</if>
+			<if test="landUse != null and landUse !=''">
+				#{landUse},
+			</if>
+		    <if test="estateUse != null and estateUse !=''">
+				#{estateUse},
+			</if>
+		    <if test="houseAge != null and houseAge !=''">
+				#{houseAge},
+			</if>
+		    <if test="propertyLife != null and propertyLife !=''">
+				#{propertyLife},
+			</if>
+		    <if test="landSurplusLife != null and landSurplusLife !=''">
+				#{landSurplusLife},
+			</if>
+		    <if test="useArea != null and useArea >0">
+				#{useArea},
+			</if>
+			<if test="houseRent != null and houseRent != -1">
+				#{houseRent},
+			</if>
+		</trim>
+	</insert>
+
+	<!-- 根据id更新数据 -->
+		<update id="update" parameterType="com.xlkfinance.bms.rpc.beforeloan.BizProjectEstate">
+		UPDATE BIZ_PROJECT_ESTATE
+		<set>
+		    <if test="projectId != null and projectId >0">
+		     PROJECT_ID=#{projectId},
+			</if>
+		    <if test="houseName != null and houseName !=''">
+		     HOUSE_NAME=#{houseName},
+			</if>
+		    <if test="costMoney != null and costMoney >0">
+		     COST_MONEY=#{costMoney},
+			</if>
+		    <if test="area != null and area !=-1">
+		     AREA=#{area},
+			</if>
+		    <if test="housePropertyCard != null and housePropertyCard !=''">
+		     HOUSE_PROPERTY_CARD=#{housePropertyCard},
+			</if>
+		    <if test="purpose != null and purpose !=''">
+		     PURPOSE=#{purpose},
+			</if>
+		    <if test="tranasctionMoney != null and tranasctionMoney !=-1">
+		     TRANASCTION_MONEY=#{tranasctionMoney},
+			</if>
+		    <if test="evaluationPrice != null and evaluationPrice !=-1">
+		     EVALUATION_PRICE=#{evaluationPrice},
+			</if>
+		    <if test="houseProvinceCode != null and houseProvinceCode !=''">
+		     HOUSE_PROVINCE_CODE=#{houseProvinceCode},
+			</if>
+		    <if test="houseCityCode != null and houseCityCode !=''">
+		     HOUSE_CITY_CODE=#{houseCityCode},
+			</if>
+		    <if test="houseDistrictCode != null and houseDistrictCode !=''">
+		     HOUSE_DISTRICT_CODE=#{houseDistrictCode},
+			</if>
+		    <if test="status != null and status >0">
+		     STATUS=#{status},
+			</if>
+		    <if test="updateId != null and updateId >0">
+		     UPDATE_ID=#{updateId},
+			</if>
+			<if test="evaluationNet != null and evaluationNet != -1">
+				evaluation_Net = #{evaluationNet},
+			</if>
+		    <if test="propertyRatio != null and propertyRatio !=''">
+		    	 PROPERTY_RATIO=#{propertyRatio},
+			</if>
+		    <if test="downPayment != null and downPayment >0">
+		     	DOWN_PAYMENT=#{downPayment},
+			</if>
+		    <if test="downPayment != null and downPayment == -2">
+		     	DOWN_PAYMENT= 0 ,
+			</if>
+		    <if test="purchaseDeposit != null and purchaseDeposit >0">
+		     	PURCHASE_DEPOSIT=#{purchaseDeposit},
+			</if>
+		    <if test="purchaseDeposit != null and purchaseDeposit == -2">
+		     	PURCHASE_DEPOSIT=0,
+			</if>
+		    <if test="purchaseBalance != null and purchaseBalance >0">
+		     	PURCHASE_BALANCE=#{purchaseBalance},
+			</if>
+		    <if test="purchaseBalance != null and purchaseBalance == -2">
+		     	PURCHASE_BALANCE=0,
+			</if>
+			<if test="landUse != null and landUse !=''">
+				LAND_USE = #{landUse},
+			</if>
+		    <if test="estateUse != null and estateUse !=''">
+				ESTATE_USE = #{estateUse},
+			</if>
+		    <if test="houseAge != null and houseAge !=''">
+				HOUSE_AGE = #{houseAge},
+			</if>
+		    <if test="propertyLife != null and propertyLife !=''">
+				PROPERTY_LIFE = #{propertyLife},
+			</if>
+		    <if test="landSurplusLife != null and landSurplusLife !=''">
+				LAND_SURPLUS_LIFE = #{landSurplusLife},
+			</if>
+		    <if test="useArea != null and useArea >0">
+				USE_AREA = #{useArea},
+			</if>
+			<if test="houseRent != null and houseRent != -1">
+				HOUSE_RENT=#{houseRent},
+			</if>
+		     UPDATE_DATE=SYSDATE,
+		</set>
+		WHERE PID = #{houseId}
+	</update>
+
+
+	<!-- 根据项目ID查询所有 -->
+	<select id="getAllByProjectId" resultMap="bizProjectEstateMap" parameterType="java.lang.Integer">
+		SELECT
+		<include refid="column_list" />
+		FROM BIZ_PROJECT_ESTATE E,V_HOUSE_ADDRESS V WHERE E.PID = V.PID AND E.STATUS = 1 AND PROJECT_ID=#{projectId}
+	</select>
+	
+	<!-- 根据项目ID查询没有下户报告的物业 -->
+	<select id="getNoSpotInfoByProjectId" resultMap="bizProjectEstateMap" parameterType="java.lang.Integer">
+		SELECT
+		E.PID
+        FROM BIZ_PROJECT_ESTATE  E WHERE E.PROJECT_ID=#{projectId}
+       AND E.PID NOT IN (SELECT EASTATE_ID FROM BIZ_SPOT_INFO S WHERE S.PROJECT_ID=#{projectId})
+ 	</select>
+	
+	
+	
+	
+	<!-- 根据项目ID查询所有物业和下户信息 -->
+	<select id="getAllCascadeSpotInfoByProjectId" resultMap="bizProjectEstateSpotInfoMap" parameterType="java.lang.Integer">
+		SELECT
+		<include refid="column_list" />
+		FROM BIZ_PROJECT_ESTATE E,V_HOUSE_ADDRESS V WHERE E.PID = V.PID AND E.STATUS = 1 AND PROJECT_ID=#{projectId}
+	</select>
+	
+	<!-- 批量删除物业信息，此处做假删除 -->
+	<update id="delProjectEstate"  parameterType="java.util.List">
+		UPDATE BIZ_PROJECT_ESTATE SET STATUS = 2 WHERE PID IN
+	  		<foreach item="itemId" collection="list" open="(" separator=","
+			close=")">
+				#{itemId}
+			</foreach>
+	</update>
+</mapper>

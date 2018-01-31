@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.customer.mapper.CusComIncomeReportMapper">
+  <resultMap id="CusComIncomeReportMap" type="com.xlkfinance.bms.rpc.customer.CusComIncomeReport">
+        <id property="pid" column="PID"/>
+        <result property="reportId" column="REPORT_ID" />
+        <result property="incomeItemId" column="INCOME_ITEM_ID" />
+        <result property="thisMonthVal" column="THIS_MONTH_VAL" />
+        <result property="thisYearVal" column="THIS_YEAR_VAL" />
+        <result property="status" column="STATUS" />
+    </resultMap>
+    
+    <resultMap id="CusComIncomeReportEditDTOMap" type="com.xlkfinance.bms.rpc.customer.CusComIncomeReportEditDTO">
+        <id property="irPid" column="PID"/>
+         <result property="irReportId" column="REPORT_ID" />
+        <result property="itemPrefix" column="ITEM_PREFIX" />
+        <result property="itemName" column="ITEM_NAME" />
+        <result property="thisMonthVal" column="THIS_MONTH_VAL" />
+        <result property="thisYearVal" column="THIS_YEAR_VAL" />
+    </resultMap>
+    
+    
+<insert id="saveCusComIncomeReport" parameterType="com.xlkfinance.bms.rpc.customer.CusComIncomeReport">
+   <selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+		SELECT SEQ_CUS_COM_INCOME_REPORT.Nextval as PID from DUAL
+	</selectKey>
+    INSERT INTO CUS_COM_INCOME_REPORT(
+    	PID, 
+    	REPORT_ID, 
+    	INCOME_ITEM_ID, 
+    	THIS_MONTH_VAL, 
+    	THIS_YEAR_VAL, 
+    	STATUS)
+    values (
+    	#{pid,jdbcType=INTEGER}, 
+     	#{reportId,jdbcType=INTEGER},
+     	#{incomeItemId,jdbcType=INTEGER},
+     	#{thisMonthVal,jdbcType=DECIMAL},
+     	#{thisYearVal,jdbcType=DECIMAL},
+     	#{status,jdbcType=INTEGER})
+  </insert>
+  
+   <select id="selectCusComIncomeReportByReportId" resultMap="CusComIncomeReportMap" parameterType="java.lang.Integer">
+		SELECT PID,
+		       REPORT_ID,
+		       INCOME_ITEM_ID,
+		       THIS_MONTH_VAL,
+		       THIS_YEAR_VAL,
+		       STATUS
+		  FROM CUS_COM_INCOME_REPORT
+		 WHERE 1 = 1
+		   AND REPORT_ID = #{reportId,jdbcType=INTEGER}
+		   ORDER BY PID ASC
+  	</select> 
+  	
+  	 <update id="updateCusComIncomeReport" parameterType="com.xlkfinance.bms.rpc.customer.CusComIncomeReport">
+	    UPDATE CUS_COM_INCOME_REPORT
+	    SET
+	     	THIS_MONTH_VAL = #{thisMonthVal,jdbcType=DECIMAL},
+	     	THIS_YEAR_VAL = #{thisYearVal,jdbcType=DECIMAL}
+	    WHERE 
+	    	PID = #{pid,jdbcType=INTEGER}
+  </update>
+  
+  <delete id="deleteCusComIncomeReportByReportID" parameterType="java.lang.Integer">  
+        DELETE FROM CUS_COM_INCOME_REPORT WHERE REPORT_ID = #{reportId,jdbcType=INTEGER}
+  </delete> 
+  
+   <delete id = "deleteCusComIncomeReportByReportIDUseBatch" parameterType = "java.util.List">  
+      <![CDATA[  
+         DELETE FROM CUS_COM_INCOME_REPORT WHERE REPORT_ID IN
+      ]]>  
+      <foreach collection="list" item = "model" open="(" separator="," close=")">#{model.pid}</foreach>  
+  </delete> 
+  
+  <select id="initCusComIncomeReportByReportId" resultMap="CusComIncomeReportEditDTOMap" parameterType="java.lang.Integer">
+	   SELECT T1.PID,
+	  	  T1.REPORT_ID,
+          T2.ITEM_PREFIX,
+          CONCAT(T2.ITEM_PREFIX, T2.ITEM_NAME) ITEM_NAME,
+          T1.THIS_MONTH_VAL,
+          T1.THIS_YEAR_VAL
+	    FROM CUS_COM_INCOME_REPORT T1
+	    INNER JOIN CUS_COM_INCOME_REPORT_META T2
+	      ON T1.INCOME_ITEM_ID = T2.PID
+	   WHERE T1.REPORT_ID = #{reportId,jdbcType=INTEGER}
+	   ORDER BY T2.PID ASC
+  </select> 
+  
+  
+    <resultMap id="excelCusComIncomeReportMap" type="com.xlkfinance.bms.rpc.customer.ExcelCusComIncomeReport">
+        <id property="pid" column="PID"/>
+        <result property="reportId" column="REPORT_ID" />
+        <result property="incomeItemId" column="INCOME_ITEM_ID" />
+        <result property="thisMonthVal" column="THIS_MONTH_VAL" />
+        <result property="thisYearVal" column="THIS_YEAR_VAL" />
+        <result property="status" column="STATUS" />
+    </resultMap>
+  
+    <select id="excelCusComIncomeReportByReportId" resultMap="excelCusComIncomeReportMap" parameterType="java.lang.Integer">
+		SELECT A.LINE_NUM,
+		       A.ITEM_NAME,
+		       A.ITEM_PREFIX,
+		       B.THIS_MONTH_VAL,
+		       B.THIS_YEAR_VAL
+		  FROM CUS_COM_INCOME_REPORT_META A, CUS_COM_INCOME_REPORT B
+		 WHERE A.PID = B.INCOME_ITEM_ID
+	     AND REPORT_ID IN 
+        <foreach item="itemId" collection="list" open="(" separator="," close=")">
+		          #{itemId}
+		</foreach>
+		 ORDER BY A.LINE_NUM 
+  	</select> 
+<!--   	现金流量表导出查出来的数据 -->
+  	<select id="excelCashFlowByReportId" parameterType="java.lang.Integer" resultMap="excelCusComIncomeReportMap">
+ 	      SELECT CCCF.THIS_MONTH_VAL, CCCF.THIS_YEAR_VAL
+		  FROM CUS_COM_CASH_FLOW CCCF
+		  WHERE CCCF.IS_MAIN = 0
+		  AND PID IN 
+        <foreach item="itemId" collection="list" open="(" separator="," close=")">
+		          #{itemId}
+		</foreach>
+  	</select>
+<!--   	现金流量表资料导出 -->
+ 	<select id="exportCashFlowMaterialByReportId" parameterType="java.lang.Integer" resultMap="excelCusComIncomeReportMap">
+ 	      SELECT CCCF.THIS_MONTH_VAL, CCCF.THIS_YEAR_VAL
+		  FROM CUS_COM_CASH_FLOW CCCF
+		  WHERE CCCF.IS_MAIN = 1
+		  AND PID IN 
+        <foreach item="itemId" collection="list" open="(" separator="," close=")">
+		          #{itemId}
+		</foreach>
+ 	</select>
+</mapper>

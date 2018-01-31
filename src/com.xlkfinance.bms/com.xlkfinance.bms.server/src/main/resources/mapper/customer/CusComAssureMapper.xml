@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.customer.mapper.CusComAssureMapper">
+
+	<!-- <resultMap id="lookupResultMap" type="com.xlkfinance.bms.rpc.system.SysLookupVal">
+        <id property="pid" column="ASS_WAY_ID"  />
+        <result property="lookupVal" column="ASS_WAY_VAL"  />
+    </resultMap> -->
+    
+    <resultMap id="assureResultMap" type="com.xlkfinance.bms.rpc.common.GridViewDTO">
+        <id property="pid" column="pid" />
+        <result property="value1" column="ASS_OBJ" />
+        <result property="value2" column="ASS_WAY" />
+        <result property="value3" column="ASS_MONEY" />
+        <result property="value4" column="ASS_END_DATE" jdbcType="DATE" javaType="String"/>
+        <result property="value5" column="DUTY_RATIO" />
+        <result property="value6" column="ASS_PAY_MONEY" />
+    </resultMap>
+    
+    <resultMap id="searchAssureResultMap"  type="com.xlkfinance.bms.rpc.customer.CusComAssure" >
+    	<id property="pid" column="pid" />
+        <result property="assObj" column="ASS_OBJ" />
+        <result property="assWay" column="ASS_WAY" />
+        <result property="assContent" column="ASS_CONTENT" />
+        <result property="assMoney" column="ASS_MONEY" />
+        <result property="assStartDate" column="ASS_START_DATE" jdbcType="DATE" javaType="String" />
+        <result property="assDeadline" column="ASS_DEADLINE" />
+        <result property="assEndDate" column="ASS_END_DATE" jdbcType="DATE" javaType="String"/>
+        <result property="dutyRatio" column="DUTY_RATIO" />
+        <result property="assRelCon" column="ASS_REL_CON" />
+        <result property="dutyBalance" column="DUTY_BALANCE" />
+        <result property="assPayMoney" column="ASS_PAY_MONEY" />
+        <result property="assOptn" column="ASS_OPTN" />
+        <result property="remark" column="REMARK" />
+    </resultMap>
+
+<insert id="insert" parameterType="com.xlkfinance.bms.rpc.customer.CusComAssure">
+   <selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+		SELECT SEQ_CUS_COM_ASSURE.Nextval as PID from DUAL
+	</selectKey>
+    insert into cus_com_assure (
+	    PID, 
+	    CUS_COM_ID, 
+	    ASS_OBJ, 
+	    ASS_CONTENT, 
+	    ASS_MONEY, 
+	    ASS_START_DATE, 
+	    ASS_DEADLINE,
+	    ASS_END_DATE, 
+	    DUTY_RATIO, 
+	    ASS_REL_CON, 
+	    DUTY_BALANCE, 
+	    ASS_PAY_MONEY, 
+	    ASS_OPTN, 
+	    REMARK,
+	    STATUS)
+    values (
+    	#{pid,jdbcType=INTEGER}, 
+    	#{cusComBase.pid,jdbcType=INTEGER}, 
+    	#{assObj,jdbcType=VARCHAR}, 
+     	#{assContent,jdbcType=VARCHAR}, 
+     	#{assMoney,jdbcType=DOUBLE},
+     	#{assStartDate,jdbcType=DATE,javaType=String},
+      	#{assDeadline,jdbcType=INTEGER}, 
+     	#{assEndDate,jdbcType=DATE,javaType=String},
+      	#{dutyRatio,jdbcType=DOUBLE},
+     	#{assRelCon,jdbcType=VARCHAR}, 
+     	#{dutyBalance,jdbcType=DOUBLE},
+     	#{assPayMoney,jdbcType=DOUBLE},
+     	#{assOptn,jdbcType=VARCHAR},
+     	#{remark,jdbcType=VARCHAR},
+     	#{status,jdbcType=INTEGER})
+  </insert>
+<!--   插入担保方式表 -->
+  <insert id="insertCusComGuarantee" parameterType="java.util.HashMap">
+      <selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+		SELECT SEQ_CUS_COM_GUARANTEE_TYPE.Nextval as PID from DUAL
+	</selectKey>
+	     insert into CUS_COM_GUARANTEE_TYPE
+		     (pid,
+		     COM_ASSURE_ID,
+		     GUARANTEE_TYPE,
+		     STATUS) 
+	     values
+	     (
+	       #{pid,jdbcType=INTEGER}, 
+	       #{cusComAssurePid,jdbcType=INTEGER}, 
+	       #{assWay,jdbcType=INTEGER}, 
+	       1
+	     ) 
+  </insert>
+  
+  <select id="getCusComAssures" resultMap="assureResultMap" parameterType="com.xlkfinance.bms.rpc.customer.CusComAssure">
+  	  select * from(	
+  	     SELECT rownum rn,
+		  		C.PID,
+		  		C.ASS_OBJ,
+		  		C.ASS_MONEY,
+		  		C.ASS_END_DATE,
+		  		C.DUTY_RATIO,
+		  		C.ASS_PAY_MONEY,
+		  		(SELECT SLV.LOOKUP_DESC FROM SYS_LOOKUP_VAL SLV WHERE SLV.PID=CCGT.GUARANTEE_TYPE) ASS_WAY
+  FROM  CUS_COM_ASSURE C,CUS_COM_GUARANTEE_TYPE CCGT
+  WHERE C.STATUS=1 
+  AND   C.PID=CCGT.COM_ASSURE_ID
+	AND   c.cus_com_id=#{cusComBase.pid,jdbcType=INTEGER}
+	AND rownum<![CDATA[<=]]>#{page}*#{rows})zA
+    WHERE rn>=((#{page}-1)*#{rows})+1
+  </select> 
+  <select id="getTotalAssure" parameterType="com.xlkfinance.bms.rpc.customer.CusComAssure" resultType="java.lang.Integer">
+      SELECT COUNT(PID) FROM (
+	      SELECT 
+	  		C.PID,
+	  		C.ASS_OBJ,
+	  		C.ASS_MONEY,
+	  		C.ASS_END_DATE,
+	  		C.DUTY_RATIO,
+	  		C.ASS_PAY_MONEY,
+	  		 (SELECT SLV.LOOKUP_DESC FROM SYS_LOOKUP_VAL SLV WHERE SLV.PID=CCGT.GUARANTEE_TYPE) ASS_WAY
+  FROM  CUS_COM_ASSURE C,CUS_COM_GUARANTEE_TYPE CCGT
+  WHERE C.STATUS=1 
+  AND   C.PID=CCGT.COM_ASSURE_ID
+  AND   c.cus_com_id=#{cusComBase.pid,jdbcType=INTEGER})
+  </select>
+  
+  
+  
+<!--   根据ID查询 -->
+  <select id="selectByPrimaryKey" resultMap="searchAssureResultMap" parameterType="java.lang.Integer">
+	  	SELECT 
+	      C.PID,
+	      C.ASS_OBJ,
+	      C.ASS_MONEY,
+	      C.ASS_END_DATE,
+	      C.DUTY_RATIO,
+	      C.ASS_PAY_MONEY,
+	      C.ASS_CONTENT,
+	      C.ASS_START_DATE,
+	      C.ASS_REL_CON,
+	      C.REMARK,
+	      C.ASS_OPTN,
+	      C.ASS_DEADLINE,
+       	  C.DUTY_BALANCE,
+	      CCGT.GUARANTEE_TYPE ASS_WAY
+  		FROM  CUS_COM_ASSURE C,CUS_COM_GUARANTEE_TYPE CCGT
+  		WHERE C.STATUS=1 
+ 		 AND   C.PID=CCGT.COM_ASSURE_ID
+		and  c.pid= #{pid,jdbcType=INTEGER}
+  </select>
+  
+  
+    <!-- 更新的方法 -->
+	<update id="updateByPrimaryKey" parameterType="com.xlkfinance.bms.rpc.customer.CusComAssure">
+		update cus_com_assure
+		<set>
+		<if test="assObj != null">
+    	   ASS_OBJ = #{assObj,jdbcType=VARCHAR}, 
+    	</if>
+    	<if test="assContent != null">
+     	   ASS_CONTENT = #{assContent,jdbcType=VARCHAR}, 
+     	</if>
+     	<if test="assMoney != null">
+     	  ASS_MONEY = #{assMoney,jdbcType=DOUBLE},
+     	</if>
+     	<if test="assStartDate != null">
+     	  ASS_START_DATE = #{assStartDate,jdbcType=DATE},
+     	</if>
+     	<if test="assDeadline != null">
+      	  ASS_DEADLINE = #{assDeadline,jdbcType=INTEGER},
+      	</if> 
+      	<if test="assEndDate != null">
+      	  ASS_END_DATE = #{assEndDate,jdbcType=DATE},
+      	</if>
+      	<if test="dutyRatio != null">
+      	  DUTY_RATIO = #{dutyRatio,jdbcType=DOUBLE},
+      	</if>
+      	<if test="assRelCon != null">
+     	  ASS_REL_CON = #{assRelCon,jdbcType=VARCHAR}, 
+     	</if>
+     	<if test="dutyBalance != null">
+     	  DUTY_BALANCE = #{dutyBalance,jdbcType=DOUBLE},
+     	</if>
+     	<if test="assPayMoney != null">
+     	  ASS_PAY_MONEY = #{assPayMoney,jdbcType=DOUBLE},
+     	</if>
+     	<if test="assOptn != null">
+     	  ASS_OPTN = #{assOptn,jdbcType=VARCHAR},
+     	</if>
+     	<if test="remark != null">
+     	  REMARK = #{remark,jdbcType=VARCHAR},
+     	</if>
+     	<if test="status != null">
+     	  STATUS = #{status,jdbcType=INTEGER},
+     	</if>
+		</set>
+		where pid = #{pid,jdbcType=INTEGER}
+	</update>
+	
+<!-- 	修改担保方式表内容 -->
+    	<update id="updateComGuaranteeType" parameterType="java.util.HashMap">
+	     update CUS_COM_GUARANTEE_TYPE
+	     <set>
+	       <if test="assWay != null">
+    	  	 	GUARANTEE_TYPE = #{assWay,jdbcType=INTEGER}, 
+    	   </if>
+    	   <if test="status != null">
+     	  		STATUS =#{status,jdbcType=INTEGER},
+     	   </if>
+	     </set>
+	     where COM_ASSURE_ID = #{pid,jdbcType=INTEGER}
+	</update>
+	
+	<delete id="delete" parameterType="java.util.List">
+		update cus_com_assure
+		set
+		status=0
+		where pid in 
+		<foreach item="itemId" collection="list" open="(" separator="," close=")">
+		          #{itemId}
+		</foreach>
+	</delete>
+</mapper>

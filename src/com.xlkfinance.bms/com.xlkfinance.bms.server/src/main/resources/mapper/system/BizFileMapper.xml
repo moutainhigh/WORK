@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.system.mapper.BizFileMapper">
+	<resultMap id="BizFileMap" type="com.xlkfinance.bms.rpc.system.BizFile">
+		<id property="pid" column="PID"/>
+        <result property="fileName" column="FILE_NAME" />
+        <result property="fileType" column="FILE_TYPE" />
+        <result property="fileSize" column="FILE_SIZE" />
+        <result property="uploadDttm" column="UPLOAD_DTTM" />
+        <result property="uploadUserId" column="UPLOAD_USER_ID" />
+        <result property="fileUrl" column="FILE_URL" />
+        <result property="status" column="STATUS" />
+	</resultMap>
+	
+	<insert id="saveBizFile" parameterType="com.xlkfinance.bms.rpc.system.BizFile">
+	   <selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+			SELECT SEQ_BIZ_FILE.Nextval as PID from DUAL
+		</selectKey>
+		    INSERT INTO BIZ_FILE(
+		    	PID, 
+		    	FILE_NAME, 
+		    	FILE_TYPE, 
+		    	FILE_SIZE, 
+		    	UPLOAD_DTTM, 
+		    	UPLOAD_USER_ID,
+		    	FILE_URL,
+		    	remark,
+		    	STATUS)
+		    values (
+		    	#{pid,jdbcType=INTEGER}, 
+		     	#{fileName,jdbcType=VARCHAR},
+		     	#{fileType,jdbcType=VARCHAR},
+		     	#{fileSize,jdbcType=INTEGER},
+		     	#{uploadDttm,jdbcType=TIMESTAMP},
+		     	#{uploadUserId,jdbcType=INTEGER},
+		     	#{fileUrl,jdbcType=VARCHAR},
+		     	#{remark,jdbcType=VARCHAR},
+		     	#{status,jdbcType=INTEGER})
+  	</insert>
+  	
+  	<delete id="deleteBizFileByPid"  parameterType="java.lang.Integer">
+  		DELETE FROM BIZ_FILE BF
+  		WHERE BF.PID=#{pid,jdbcType=INTEGER}
+  	</delete>
+	
+	<update id="updateBizFile" parameterType="com.xlkfinance.bms.rpc.system.BizFile">
+	    	update BIZ_FILE
+				<trim prefix="set" suffixOverrides=",">
+					<if test="fileName != null">
+						FILE_NAME = #{fileName,jdbcType=VARCHAR},
+					</if>
+					<if test="fileType != null and fileType!=''">
+						FILE_TYPE = #{fileType,jdbcType=VARCHAR},
+					</if>
+					<if test="fileSize != null and fileSize!=''">
+						FILE_SIZE = #{fileSize,jdbcType=INTEGER},
+					</if>
+					<if test="uploadDttm != null  and uploadDttm!=''">
+						UPLOAD_DTTM = #{uploadDttm,jdbcType=DATE,javaType=String},
+					</if>
+					<if test="uploadUserId != null">
+						UPLOAD_USER_ID = #{uploadUserId,jdbcType=INTEGER},
+					</if>
+					<if test="fileUrl != null and fileUrl!=''">
+						FILE_URL = #{fileUrl,jdbcType=VARCHAR},
+					</if>
+					<if test="remark != null and remark!=''">
+						remark = #{remark,jdbcType=VARCHAR},
+					</if>
+					<if test="status != null and status != 0">
+						status = #{status,jdbcType=INTEGER}
+					</if>
+				</trim>
+				WHERE PID = #{pid,jdbcType=INTEGER}
+  	</update>
+<select id="findAllBizFile" resultMap="BizFileMap"
+	parameterType="com.xlkfinance.bms.rpc.system.BizFile">
+	<![CDATA[
+	SELECT D.* FROM (SELECT T.*, ROWNUM RN
+	        FROM (SELECT A.PID,A.FILE_NAME,A.FILE_TYPE,A.FILE_SIZE,A.UPLOAD_DTTM,A.UPLOAD_USER_ID,A.FILE_URL,A.STATUS,A.REMARK 
+            FROM BIZ_FILE A 
+	]]>
+	<where>
+		<trim>
+			<if test="pid != null and pid > 0">
+				 A.PID = #{pid}
+			</if>
+			<if test="fileUrl != null and fileUrl !=''">
+				 A.FILE_URL = #{fileUrl}
+			</if>
+		</trim>
+	</where>
+	<![CDATA[
+	) T
+	WHERE ROWNUM <=#{page}*#{rows}
+	) D
+	WHERE D.RN > ((#{page}-1)*#{rows})
+	]]>
+</select>
+</mapper>

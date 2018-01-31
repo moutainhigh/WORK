@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xlkfinance.bms.server.partner.mapper.CusCreditInfoMapper">
+	<resultMap id="cusCreditInfoMap" type="com.xlkfinance.bms.rpc.partner.CusCreditInfo">
+		<id property="pid" column="PID" />
+		<id property="partnerNo" column="PARTNER_NO" />
+		<id property="businessType" column="BUSINESS_TYPE" />
+		<id property="acctId" column="ACCT_ID" />
+		<id property="creditDealId" column="CREDIT_DEAL_ID" />
+		<id property="record" column="RECORD" />
+		<id property="overdue" column="OVERDUE" />
+		<id property="result1" column="RESULT1" />
+		<id property="result2" column="RESULT2" />
+		<id property="result3" column="RESULT3" />
+		<id property="result4" column="RESULT4" />
+		<id property="result5" column="RESULT5" />
+		<id property="result6" column="RESULT6" />
+		<id property="result7" column="RESULT7" />
+		<id property="createTime" column="CREATE_TIME" jdbcType="TIMESTAMP" javaType="String"/>
+		<id property="updateTime" column="UPDATE_TIME" jdbcType="TIMESTAMP" javaType="String"/>
+		<!-- 客户信息 -->
+		<id property="chinaName" column="CHINA_NAME" />
+		<id property="certType" column="CERT_TYPE" />
+		<id property="certNumber" column="CERT_NUMBER" />
+	</resultMap>
+	<sql id="column_list">
+        PID,PARTNER_NO,BUSINESS_TYPE,ACCT_ID,CREDIT_DEAL_ID,RECORD,OVERDUE,RESULT1,RESULT2,RESULT3,RESULT4,RESULT5,RESULT6,RESULT7,CREATE_TIME,UPDATE_TIME
+	</sql>
+	<!-- 查询所有 -->
+	<select id="getAll" resultMap="cusCreditInfoMap" parameterType="com.xlkfinance.bms.rpc.partner.CusCreditInfo">
+		SELECT
+		<include refid="column_list" />
+		FROM CUS_CREDIT_INFO
+		<where>
+			<trim>
+		      <if test="pid != null and pid >0">
+	          PID=#{pid}
+	          </if>
+		      <if test="partnerNo != null and partnerNo !=''">
+	          AND PARTNER_NO=#{partnerNo}
+	          </if>
+		      <if test="businessType != null and businessType >0">
+	          AND BUSINESS_TYPE=#{businessType}
+	          </if>
+		      <if test="acctId != null and acctId >0">
+	          AND ACCT_ID=#{acctId}
+	          </if>
+		      <if test="creditDealId != null and creditDealId !=''">
+	          AND CREDIT_DEAL_ID=#{creditDealId}
+	          </if>
+		      <if test="record != null and record !=''">
+	          AND RECORD=#{record}
+	          </if>
+		      <if test="overdue != null and overdue !=''">
+	          AND OVERDUE=#{overdue}
+	          </if>
+		      <if test="result1 != null and result1 !=''">
+	          AND RESULT1=#{result1}
+	          </if>
+		      <if test="result2 != null and result2 !=''">
+	          AND RESULT2=#{result2}
+	          </if>
+		      <if test="result3 != null and result3 !=''">
+	          AND RESULT3=#{result3}
+	          </if>
+		      <if test="result4 != null and result4 !=''">
+	          AND RESULT4=#{result4}
+	          </if>
+		      <if test="result5 != null and result5 !=''">
+	          AND RESULT5=#{result5}
+	          </if>
+		      <if test="result6 != null and result6 !=''">
+	          AND RESULT6=#{result6}
+	          </if>
+		      <if test="result7 != null and result7 !=''">
+	          AND RESULT7=#{result7}
+	          </if>
+		      <if test="createTime != null and createTime !=''">
+	          AND CREATE_TIME=#{createTime}
+	          </if>
+		      <if test="updateTime != null and updateTime !=''">
+	          AND UPDATE_TIME=#{updateTime}
+	          </if>
+			</trim>
+		</where>
+	</select>
+	<!-- 根据id获取 -->
+	<select id="getById" resultMap="cusCreditInfoMap">
+		SELECT <include refid="column_list" /> FROM CUS_CREDIT_INFO WHERE PID=#{pid}
+	</select>
+	<!-- 插入一条数据 -->
+	<insert id="insert" parameterType="com.xlkfinance.bms.rpc.partner.CusCreditInfo">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_CUS_CREDIT_INFO.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO CUS_CREDIT_INFO
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+				PID,
+			</if>
+		    <if test="partnerNo != null and partnerNo !=''">
+				PARTNER_NO,
+			</if>
+		    <if test="businessType != null and businessType >0 ">
+				BUSINESS_TYPE,
+			</if>
+		    <if test="acctId != null and acctId >0">
+				ACCT_ID,
+			</if>
+		    <if test="creditDealId != null and creditDealId !=''">
+				CREDIT_DEAL_ID,
+			</if>
+		    <if test="record != null and record !=''">
+				RECORD,
+			</if>
+		    <if test="overdue != null and overdue !=''">
+				OVERDUE,
+			</if>
+		    <if test="result1 != null and result1 !=''">
+				RESULT1,
+			</if>
+		    <if test="result2 != null and result2 !=''">
+				RESULT2,
+			</if>
+		    <if test="result3 != null and result3 !=''">
+				RESULT3,
+			</if>
+		    <if test="result4 != null and result4 !=''">
+				RESULT4,
+			</if>
+		    <if test="result5 != null and result5 !=''">
+				RESULT5,
+			</if>
+		    <if test="result6 != null and result6 !=''">
+				RESULT6,
+			</if>
+		    <if test="result7 != null and result7 !=''">
+				RESULT7,
+			</if>
+				CREATE_TIME,
+		    <if test="updateTime != null and updateTime !=''">
+				UPDATE_TIME,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+		    #{pid},
+			</if>
+		    <if test="partnerNo != null and partnerNo !=''">
+		    #{partnerNo},
+			</if>
+		    <if test="businessType != null and businessType >0 ">
+			#{businessType},
+			</if>
+		    <if test="acctId != null and acctId >0">
+		    #{acctId},
+			</if>
+		    <if test="creditDealId != null and creditDealId !=''">
+		    #{creditDealId},
+			</if>
+		    <if test="record != null and record !=''">
+		    #{record},
+			</if>
+		    <if test="overdue != null and overdue !=''">
+		    #{overdue},
+			</if>
+		    <if test="result1 != null and result1 !=''">
+		    #{result1},
+			</if>
+		    <if test="result2 != null and result2 !=''">
+		    #{result2},
+			</if>
+		    <if test="result3 != null and result3 !=''">
+		    #{result3},
+			</if>
+		    <if test="result4 != null and result4 !=''">
+		    #{result4},
+			</if>
+		    <if test="result5 != null and result5 !=''">
+		    #{result5},
+			</if>
+		    <if test="result6 != null and result6 !=''">
+		    #{result6},
+			</if>
+		    <if test="result7 != null and result7 !=''">
+		    #{result7},
+			</if>
+		    	SYSDATE,
+		    <if test="updateTime != null and updateTime !=''">
+		    	#{updateTime,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		</trim>
+	</insert>
+	<!-- 根据id删除数据 -->
+	<delete id="deleteById" parameterType="com.xlkfinance.bms.rpc.partner.CusCreditInfo">
+		<![CDATA[DELETE FROM CUS_CREDIT_INFO WHERE PID=#{pid}]]>
+	</delete>
+	<!-- 根据id更新数据 -->
+		<update id="update" parameterType="com.xlkfinance.bms.rpc.partner.CusCreditInfo">
+		UPDATE CUS_CREDIT_INFO
+		<set>
+		    <if test="pid != null and pid >0">
+		     PID=#{pid},
+			</if>
+		    <if test="partnerNo != null and partnerNo !=''">
+		     PARTNER_NO=#{partnerNo},
+			</if>
+		    <if test="businessType != null and businessType >0">
+		     BUSINESS_TYPE=#{businessType},
+			</if>
+		    <if test="acctId != null and acctId >0">
+		     ACCT_ID=#{acctId},
+			</if>
+		    <if test="creditDealId != null and creditDealId !=''">
+		     CREDIT_DEAL_ID=#{creditDealId},
+			</if>
+		    <if test="record != null and record !=''">
+		     RECORD=#{record},
+			</if>
+		    <if test="overdue != null and overdue !=''">
+		     OVERDUE=#{overdue},
+			</if>
+		    <if test="result1 != null and result1 !=''">
+		     RESULT1=#{result1},
+			</if>
+		    <if test="result2 != null and result2 !=''">
+		     RESULT2=#{result2},
+			</if>
+		    <if test="result3 != null and result3 !=''">
+		     RESULT3=#{result3},
+			</if>
+		    <if test="result4 != null and result4 !=''">
+		     RESULT4=#{result4},
+			</if>
+		    <if test="result5 != null and result5 !=''">
+		     RESULT5=#{result5},
+			</if>
+		    <if test="result6 != null and result6 !=''">
+		     RESULT6=#{result6},
+			</if>
+		    <if test="result7 != null and result7 !=''">
+		     RESULT7=#{result7},
+			</if>
+		    <if test="createTime != null and createTime !=''">
+		     CREATE_TIME=#{createTime,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		      UPDATE_TIME  = SYSDATE
+		</set>
+		WHERE PID = #{pid}
+	</update>
+	<!-- 根据传入多个id删除数据 -->
+	<delete id="deleteByIds" parameterType="java.util.List">
+		DELETE FROM CUS_CREDIT_INFO WHERE PID in
+		<foreach collection="list" item="item" index="index" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+	
+	<!-- 查询客户征信列表(可分页) -->
+	<select id="selectCusCreditList" resultMap="cusCreditInfoMap" parameterType="com.xlkfinance.bms.rpc.partner.CusCreditInfo">
+		<if test="page!=-1">
+			SELECT D.* FROM (SELECT T.*, ROWNUM RN FROM (
+		</if>
+				SELECT C.PID,C.PARTNER_NO,C.BUSINESS_TYPE,C.ACCT_ID,C.CREDIT_DEAL_ID,C.RECORD,C.OVERDUE,
+					C.RESULT1,C.RESULT2,C.RESULT3,C.RESULT4,C.RESULT5,C.RESULT6,C.RESULT7,
+					C.CREATE_TIME,C.UPDATE_TIME , 
+					CUS.CHINA_NAME ,  CUS.CERT_TYPE , CUS.CERT_NUMBER
+					
+				FROM CUS_CREDIT_INFO C
+					LEFT JOIN CUS_PERSON CUS ON C.ACCT_ID = CUS.ACCT_ID AND CUS.RELATION_TYPE = 1
+					
+				<where>
+					<trim>
+				      <if test="partnerNo != null and partnerNo !=''">
+			         	 AND C.PARTNER_NO=#{partnerNo}
+			          </if>
+				      <if test="businessType != null and businessType >0">
+			         	 AND C.BUSINESS_TYPE=#{businessType}
+			          </if>
+				      <if test="acctId != null and acctId >0">
+			         	 AND C.ACCT_ID=#{acctId}
+			          </if>
+				      <if test="creditDealId != null and creditDealId !=''">
+			         	 AND C.CREDIT_DEAL_ID=#{creditDealId}
+			          </if>
+				      <if test="record != null and record !=''">
+			         	 AND C.RECORD=#{record}
+			          </if>
+				      <if test="overdue != null and overdue !=''">
+			        	  AND C.OVERDUE=#{overdue}
+			          </if>
+				      <if test="result1 != null and result1 !=''">
+			         	 AND C.RESULT1=#{result1}
+			          </if>
+				      <if test="result2 != null and result2 !=''">
+			        	  AND C.RESULT2=#{result2}
+			          </if>
+				      <if test="result3 != null and result3 !=''">
+			         	 AND C.RESULT3=#{result3}
+			          </if>
+				      <if test="result4 != null and result4 !=''">
+			        	  AND C.RESULT4=#{result4}
+			          </if>
+				      <if test="result5 != null and result5 !=''">
+			         	 AND C.RESULT5=#{result5}
+			          </if>
+				      <if test="result6 != null and result6 !=''">
+			        	  AND C.RESULT6=#{result6}
+			          </if>
+				      <if test="result7 != null and result7 !=''">
+			        	  AND C.RESULT7=#{result7}
+			          </if>
+				      <if test="chinaName != null and chinaName !=''">
+			        	  AND CUS.CHINA_NAME like '%${chinaName}%'
+			          </if>
+					</trim>
+				</where>
+					
+					
+		<if test="page!=-1">
+			<![CDATA[
+			ORDER BY C.CREATE_TIME DESC
+			) T
+			WHERE ROWNUM <=#{page}*#{rows}
+			) D
+			WHERE D.RN > ((#{page}-1)*#{rows})
+			]]>
+		</if>
+	</select>
+	
+	<!-- 查询客户征信总数 -->
+	<select id="selectCusCreditTotal" resultType="Integer" parameterType="com.xlkfinance.bms.rpc.partner.CusCreditInfo">
+		SELECT COUNT(1) FROM CUS_CREDIT_INFO 
+		<where>
+			<trim>
+		      <if test="pid != null and pid >0">
+	         	 PID=#{pid}
+	          </if>
+		      <if test="partnerNo != null and partnerNo !=''">
+	        	  AND PARTNER_NO=#{partnerNo}
+	          </if>
+		      <if test="businessType != null and businessType >0">
+	         	 AND C.BUSINESS_TYPE=#{businessType}
+	          </if>
+		      <if test="acctId != null and acctId >0">
+	          	AND ACCT_ID=#{acctId}
+	          </if>
+		      <if test="creditDealId != null and creditDealId !=''">
+	         	 AND CREDIT_DEAL_ID=#{creditDealId}
+	          </if>
+		      <if test="record != null and record !=''">
+	          	AND RECORD=#{record}
+	          </if>
+		      <if test="overdue != null and overdue !=''">
+	          	AND OVERDUE=#{overdue}
+	          </if>
+		      <if test="result1 != null and result1 !=''">
+	         	 AND RESULT1=#{result1}
+	          </if>
+		      <if test="result2 != null and result2 !=''">
+	         	 AND RESULT2=#{result2}
+	          </if>
+		      <if test="result3 != null and result3 !=''">
+	          	AND RESULT3=#{result3}
+	          </if>
+		      <if test="result4 != null and result4 !=''">
+	         	 AND RESULT4=#{result4}
+	          </if>
+		      <if test="result5 != null and result5 !=''">
+	          	AND RESULT5=#{result5}
+	          </if>
+		      <if test="result6 != null and result6 !=''">
+	         	AND RESULT6=#{result6}
+	          </if>
+		      <if test="result7 != null and result7 !=''">
+	          	AND RESULT7=#{result7}
+	          </if>
+		      <if test="createTime != null and createTime !=''">
+	         	 AND CREATE_TIME=#{createTime}
+	          </if>
+		      <if test="updateTime != null and updateTime !=''">
+	          	AND UPDATE_TIME=#{updateTime}
+	          </if>
+		      <if test="chinaName != null and chinaName !=''">
+	        	  AND CUS.CHINA_NAME like '%${chinaName}%'
+	          </if>
+			</trim>
+		</where>
+	</select>
+	
+</mapper>

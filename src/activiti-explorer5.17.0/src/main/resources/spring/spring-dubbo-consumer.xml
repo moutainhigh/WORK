@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd   
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd   
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd   
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+       http://code.alibabatech.com/schema/dubbo
+       http://code.alibabatech.com/schema/dubbo/dubbo.xsd"
+       default-autowire="default" default-lazy-init="default">
+	
+	<context:property-placeholder location="classpath:db.properties" />
+	
+	<!-- dubbo应用消费方信息 -->
+	<dubbo:application name="com.xk.hlc.activity"/>
+	<!-- 多个地址以,分隔 -->
+	<dubbo:registry protocol="zookeeper" address="${dubbo.registry.zookeeper.service.ip}" check="false"/>
+	
+	<!-- 系统管理 -->
+	<import resource="classpath:spring/sys-dubbo-consumer.xml"/>
+	<!-- 工作流接口 -->
+	<import resource="classpath:spring/workflow-dubbo-consumer.xml"/>
+ 	
+</beans>

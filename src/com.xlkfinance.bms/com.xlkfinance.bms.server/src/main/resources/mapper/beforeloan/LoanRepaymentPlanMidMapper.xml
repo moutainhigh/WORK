@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.beforeloan.mapper.LoanRepaymentPlanMidMapper">
+  
+    <resultMap type="com.xlkfinance.bms.rpc.repayment.RepaymentPlanBaseDTO" id="getRepaymentsResultMap">
+    	<id property="pId" column="pid"/>
+        <result property="loanInfoId" column="LOAN_INFO_ID" />
+        <result property="planRepayDt" column="PLAN_REPAY_DT" javaType="String" jdbcType="DATE" />
+        <result property="planCycleNum" column="PLAN_CYCLE_NUM" />
+        <result property="shouldPrincipal" column="SHOULD_PRINCIPAL" />
+        <result property="shouldMangCost" column="SHOULD_MANG_COST" />
+        <result property="shouldOtherCost" column="SHOULD_OTHER_COST" />
+        <result property="shouldOtherCostName" column="SHOULD_OTHER_COST_NAME" />
+        <result property="shouldInterest" column="SHOULD_INTEREST" />
+        <result property="total" column="TOTAL" />
+        <result property="principalBalance" column="PRINCIPAL_BALANCE" />
+    </resultMap>
+    
+    <resultMap type="com.xlkfinance.bms.rpc.beforeloan.RepaymentLoanInfo" id="getLoanInfoResultMap">
+        <result property="acctName" column="acct_name" />
+        <result property="contractNo" column="contract_no" />
+        <result property="loanOutDt" column="plan_out_loan_dt" javaType="String" jdbcType="DATE"/>
+        <result property="loanRepayDt" column="plan_repay_loan_dt" javaType="String" jdbcType="DATE"/>
+        <result property="repayCycle" column="repay_cycle" />
+        <result property="creditAmt" column="credit_amt" />
+        <result property="loanInterest" column="month_loan_interest" />
+        <result property="repaymentAmt" column="repayment_amt" />
+        <result property="repayFun" column="repay_fun" />
+        <result property="repayFunVal" column="REPAY_FUN_VAL" />
+        <result property="otherCostName" column="SHOULD_OTHER_COST_NAME" />
+    </resultMap>
+	
+	<sql id="repayment_Column_List">
+  	   pid  pId,
+       LOAN_INFO_ID loanInfoId,
+       to_char(GEN_DTTM,'yyyy-MM-DD HH24-mi-ss') genDttm,
+       GEN_USER_ID genUserId,
+       to_char(PLAN_REPAY_DT,'yyyy-MM-dd') planRepayDt,
+       PLAN_CYCLE_NUM planCycleNum,
+       PLAN_TYPE planType,
+       EX_TARGET exTarget,
+       EX_TYPE exType,
+       SHOULD_PRINCIPAL shouldPrincipal,
+       SHOULD_MANG_COST shouldMangCost,
+       SHOULD_OTHER_COST shouldOtherCost,
+       SHOULD_OTHER_COST_NAME shouldOtherCostName,
+       SHOULD_INTEREST shouldInterest,
+       TOTAL total,
+       PRINCIPAL_BALANCE principalBalance,
+       THIS_STATUS thisStatus,
+       PLAN_VERSION planVersion,
+       STATUS status,
+       IS_RECONCILIATION isReconciliation,
+       FREEZE_STATUS freezeStatus
+    </sql>
+       
+  	
+  	<insert id="insertRepayments" parameterType="java.util.List">
+	INSERT INTO BIZ_LOAN_REPAYMENT_PLAN_MID(
+		PID,
+	    LOAN_INFO_ID,
+	    GEN_DTTM,
+	    GEN_USER_ID,
+	    PLAN_REPAY_DT,
+	    PLAN_CYCLE_NUM,
+	    PLAN_TYPE,
+	    EX_TARGET,
+	    EX_TYPE,
+	    SHOULD_PRINCIPAL,
+	    SHOULD_MANG_COST,
+	    SHOULD_OTHER_COST,
+	    SHOULD_OTHER_COST_NAME,
+	    SHOULD_INTEREST,
+	    TOTAL,
+	    PRINCIPAL_BALANCE,
+	    THIS_STATUS,
+	    PLAN_VERSION,
+	    STATUS,
+	    IS_RECONCILIATION,
+	    FREEZE_STATUS)
+	select SEQ_BIZ_LOAN_REPAYMENT_PLAN_M.Nextval,A.* from(
+        <foreach collection="list" item="item" index="index"
+            separator="UNION">
+            SELECT
+            #{item.loanInfoId,jdbcType=INTEGER},
+	    	#{item.genDttm,jdbcType=TIMESTAMP,javaType=String},
+	    	#{item.genUserId,jdbcType=INTEGER},
+	     	#{item.planRepayDt,jdbcType=DATE,javaType=String}, 
+	     	#{item.planCycleNum,jdbcType=INTEGER},
+	     	#{item.planType,jdbcType=INTEGER},
+	     	#{item.exTarget,jdbcType=INTEGER}, 
+	     	#{item.exType,jdbcType=INTEGER},
+	     	#{item.shouldPrincipal,jdbcType=DOUBLE},
+	     	#{item.shouldMangCost,jdbcType=DOUBLE},
+	     	#{item.shouldOtherCost,jdbcType=DOUBLE},
+	     	#{item.shouldOtherCostName,jdbcType=VARCHAR},
+	     	#{item.shouldInterest,jdbcType=DOUBLE},
+	     	#{item.total,jdbcType=DOUBLE},
+	     	#{item.principalBalance,jdbcType=DOUBLE},
+	     	#{item.thisStatus,jdbcType=INTEGER},
+	     	#{item.planVersion,jdbcType=INTEGER},
+	     	#{item.status,jdbcType=INTEGER},
+	     	#{item.isReconciliation,jdbcType=INTEGER},
+	     	#{item.freezeStatus,jdbcType=INTEGER}
+            from dual 
+             </foreach>
+        ) A
+</insert>
+
+<select id="selectRepaymentByCycleNum" resultType="com.xlkfinance.bms.rpc.repayment.RepaymentPlanBaseDTO" parameterType="com.xlkfinance.bms.rpc.repayment.RepaymentPlanBaseDTO">
+	SELECT 
+       <include refid="repayment_Column_List" />
+  	FROM BIZ_LOAN_REPAYMENT_PLAN_MID 
+  	WHERE PLAN_VERSION =(SELECT MAX(PLAN_VERSION) FROM BIZ_LOAN_REPAYMENT_PLAN_MID  WHERE LOAN_INFO_ID=#{loanInfoId} AND FREEZE_STATUS = 1 )
+  	  AND LOAN_INFO_ID=#{loanInfoId,jdbcType=INTEGER}
+  	  AND PLAN_CYCLE_NUM=#{planCycleNum,jdbcType=INTEGER}
+  
+  </select>
+  
+  <select id="selectNoFreezeRepaymentByLoanId" resultType="com.xlkfinance.bms.rpc.repayment.RepaymentPlanBaseDTO" parameterType="java.lang.Integer">
+	SELECT 
+       <include refid="repayment_Column_List" />
+  	FROM BIZ_LOAN_REPAYMENT_PLAN_MID
+ WHERE LOAN_INFO_ID =#{loanId}
+   AND PLAN_VERSION = (SELECT MAX(PLAN_VERSION) FROM BIZ_LOAN_REPAYMENT_PLAN_MID  WHERE LOAN_INFO_ID=#{loanId} AND FREEZE_STATUS = 1 )
+   AND FREEZE_STATUS = 1
+  
+  </select>
+  
+  <select id="getMaxVersionMid" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+	       SELECT NVL(PKG_FINANCE.FUN_MAX_VERSION_MID(#{loanId,jdbcType=INTEGER}),0)  FROM dual
+  </select> 
+  	
+</mapper>

@@ -1,0 +1,1175 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xlkfinance.bms.server.aom.project.mapper.BizProjectMapper">
+	<resultMap id="bizProjectMap" type="com.qfang.xk.aom.rpc.project.BizProject">
+		<id property="pid" column="PID" />
+		<id property="acctId" column="ACCT_ID" />
+		<id property="projectType" column="PROJECT_TYPE" />
+		<id property="projectName" column="PROJECT_NAME" />
+		<id property="projectNumber" column="PROJECT_NUMBER" />
+		<id property="pmUserId" column="PM_USER_ID" />
+		<id property="businessCatelog" column="BUSINESS_CATELOG" />
+		<id property="businessType" column="BUSINESS_TYPE" />
+		<id property="flowCatelog" column="FLOW_CATELOG" />
+		<id property="myType" column="MY_TYPE" />
+		<id property="myMain" column="MY_MAIN" />
+		<id property="loanInterestRecord" column="LOAN_INTEREST_RECORD" />
+		<id property="loanMgrRecord" column="LOAN_MGR_RECORD" />
+		<id property="isAllowPrepay" column="IS_ALLOW_PREPAY" />
+		<id property="isReturnInterest" column="IS_RETURN_INTEREST" />
+		<id property="loanOtherFee" column="LOAN_OTHER_FEE" />
+		<id property="requestStatus" column="REQUEST_STATUS" />
+		<id property="requestDttm" column="REQUEST_DTTM" />
+		<id property="completeDttm" column="COMPLETE_DTTM" />
+		<id property="status" column="STATUS" />
+		<id property="circulateType" column="CIRCULATE_TYPE" />
+		<id property="surveyResult" column="SURVEY_RESULT" />
+		<id property="comments" column="COMMENTS" />
+		<id property="isRejected" column="IS_REJECTED" />
+		<id property="productId" column="PRODUCT_ID" />
+		<id property="businessSource" column="BUSINESS_SOURCE" />
+		<id property="address" column="ADDRESS" />
+		<id property="businessContacts" column="BUSINESS_CONTACTS" />
+		<id property="contactsPhone" column="CONTACTS_PHONE" />
+		<id property="innerOrOut" column="INNER_OR_OUT" />
+		<id property="businessCategory" column="BUSINESS_CATEGORY" />
+		<id property="isNotarization" column="IS_NOTARIZATION" />
+		<id property="isDelete" column="IS_DELETE" />
+		<id property="isChechan" column="IS_CHECHAN" />
+		<id property="managers" column="MANAGERS" />
+		<id property="managersPhone" column="MANAGERS_PHONE" />
+		<id property="foreclosureStatus" column="FORECLOSURE_STATUS" />
+		<id property="businessSourceNo" column="BUSINESS_SOURCE_NO" />
+		<id property="collectFileStatus" column="COLLECT_FILE_STATUS" />
+		<id property="foreAfterMonitorStatus" column="FORE_AFTER_MONITOR_STATUS" />
+		<id property="projectSource" column="PROJECT_SOURCE" />
+		<id property="auditorOpinion" column="AUDITOR_OPINION" />
+		<id property="isSeller" column="IS_SELLER" />
+		<id property="declaration" column="DECLARATION" />
+		<id property="refundFileStatus" column="REFUND_FILE_STATUS" />
+		<id property="chechanDate" column="CHECHAN_DATE" />
+		<id property="chechanUserId" column="CHECHAN_USER_ID" />
+		<id property="chechanCause" column="CHECHAN_CAUSE" />
+		<id property="orgId" column="ORG_ID" />
+		<id property="orgCustomerName" column="ORG_CUSTOMER_NAME" />
+		<id property="orgCustomerPhone" column="ORG_CUSTOMER_PHONE" />
+		<id property="orgCustomerCard" column="ORG_CUSTOMER_CARD" />
+		<id property="planLoanDate" column="PLAN_LOAN_DATE" />
+		<id property="planLoanMoney" column="PLAN_LOAN_MONEY" />
+		<id property="loanRate" column="LOAN_RATE" />
+		<id property="maxLoanRate" column="MAX_LOAN_RATE" />
+		<id property="isClosed" column="IS_CLOSED" />
+		<id property="areaCode" column="AREA_CODE" />
+		<id property="applyUserId" column="APPLY_USER_ID" />
+		
+		<id property="isNeedHandle"  column="IS_NEED_HANDLE"/>
+		<id property="isReject" column="IS_REJECT" />
+		<id property="isAssigned" column="IS_ASSIGNED" />
+	</resultMap>
+	<!-- 列表展示 -->
+	<resultMap type="com.qfang.xk.aom.rpc.project.BizProjectDTO" id="bizProjectDTOMap">
+		<id property="pid" column="PID" />
+		<id property="projectType" column="PROJECT_TYPE" />
+		<id property="projectName" column="PROJECT_NAME" />
+		<id property="projectNumber" column="PROJECT_NUMBER" />
+		<id property="orgName" column="ORG_NAME" />
+		<id property="pmUserId" column="PM_USER_ID" />
+		<id property="pmUserName" column="PM_USER_NAME" />
+		<id property="orgId" column="ORG_ID" />
+		<id property="orgCustomerName" column="ORG_CUSTOMER_NAME" />
+		<id property="orgCustomerPhone" column="ORG_CUSTOMER_PHONE" />
+		<id property="orgCustomerCard" column="ORG_CUSTOMER_CARD" />
+		<id property="requestStatus" column="REQUEST_STATUS" />
+		<id property="requestDttm" column="REQUEST_DTTM" />
+		<id property="foreclosureStatus" column="FORECLOSURE_STATUS" />
+		
+		<id property="planLoanDate" column="PLAN_LOAN_DATE" />
+		<id property="planLoanMoney" column="PLAN_LOAN_MONEY" />
+		<id property="loanRate" column="LOAN_RATE" />
+		<id property="maxLoanRate" column="MAX_LOAN_RATE" />
+		<id property="isClosed" column="IS_CLOSED" />
+		<id property="businessCategory" column="BUSINESS_CATEGORY" />
+		<id property="areaCode" column="AREA_CODE" />
+		<id property="applyUserId" column="APPLY_USER_ID" />
+		<id property="isNeedHandle"  column="IS_NEED_HANDLE"/>
+		<id property="isReject" column="IS_REJECT" />
+		<id property="isAssigned" column="IS_ASSIGNED" />
+		<id property="applyUserName" column="APPLY_USER_NAME" />
+		<id property="loanDays" column="LOAN_DAYS" />
+		<id property="productName" column="PRODUCT_NAME" />
+		
+	</resultMap>
+	
+	<sql id="column_list">
+        PID,ACCT_ID,PROJECT_TYPE,PROJECT_NAME,PROJECT_NUMBER,PM_USER_ID,BUSINESS_CATELOG,BUSINESS_TYPE,FLOW_CATELOG,
+        MY_TYPE,MY_MAIN,LOAN_INTEREST_RECORD,LOAN_MGR_RECORD,IS_ALLOW_PREPAY,IS_RETURN_INTEREST,LOAN_OTHER_FEE,
+        REQUEST_STATUS,REQUEST_DTTM,COMPLETE_DTTM,STATUS,CIRCULATE_TYPE,SURVEY_RESULT,COMMENTS,IS_REJECTED,PRODUCT_ID,
+        BUSINESS_SOURCE,ADDRESS,BUSINESS_CONTACTS,CONTACTS_PHONE,INNER_OR_OUT,BUSINESS_CATEGORY,IS_NOTARIZATION,IS_DELETE,
+        IS_CHECHAN,MANAGERS,MANAGERS_PHONE,FORECLOSURE_STATUS,BUSINESS_SOURCE_NO,COLLECT_FILE_STATUS,PROJECT_SOURCE,
+        AUDITOR_OPINION,IS_SELLER,DECLARATION,REFUND_FILE_STATUS,CHECHAN_DATE,CHECHAN_USER_ID,CHECHAN_CAUSE,ORG_ID,
+        ORG_CUSTOMER_NAME,ORG_CUSTOMER_PHONE,ORG_CUSTOMER_CARD,TO_CHAR(PLAN_LOAN_DATE,'yyyy-mm-dd') AS PLAN_LOAN_DATE,
+        PLAN_LOAN_MONEY,LOAN_RATE,MAX_LOAN_RATE,IS_CLOSED,AREA_CODE,APPLY_USER_ID,IS_NEED_HANDLE,IS_REJECT,IS_ASSIGNED,FORE_AFTER_MONITOR_STATUS
+	</sql>
+	<!-- 查询所有 -->
+	<select id="getAll" resultMap="bizProjectMap" parameterType="com.qfang.xk.aom.rpc.project.BizProject">
+		SELECT
+		<include refid="column_list" />
+		FROM BIZ_PROJECT
+		<where>
+			<trim>
+		      <if test="pid != null and pid >0">
+	          PID=#{pid}
+	          </if>
+		      <if test="acctId != null and acctId >0">
+	          AND ACCT_ID=#{acctId}
+	          </if>
+		      <if test="projectType != null and projectType >0">
+	          AND PROJECT_TYPE=#{projectType}
+	          </if>
+		      <if test="projectName != null and projectName !=''">
+	          AND PROJECT_NAME=#{projectName}
+	          </if>
+		      <if test="projectNumber != null and projectNumber !=''">
+	          AND PROJECT_NUMBER=#{projectNumber}
+	          </if>
+		      <if test="pmUserId != null and pmUserId >0">
+	          AND PM_USER_ID=#{pmUserId}
+	          </if>
+		      <if test="businessCatelog != null and businessCatelog !=''">
+	          AND BUSINESS_CATELOG=#{businessCatelog}
+	          </if>
+		      <if test="businessType != null and businessType !=''">
+	          AND BUSINESS_TYPE=#{businessType}
+	          </if>
+		      <if test="flowCatelog != null and flowCatelog !=''">
+	          AND FLOW_CATELOG=#{flowCatelog}
+	          </if>
+		      <if test="myType != null and myType !=''">
+	          AND MY_TYPE=#{myType}
+	          </if>
+		      <if test="myMain != null and myMain !=''">
+	          AND MY_MAIN=#{myMain}
+	          </if>
+		      <if test="loanInterestRecord != null and loanInterestRecord >0">
+	          AND LOAN_INTEREST_RECORD=#{loanInterestRecord}
+	          </if>
+		      <if test="loanMgrRecord != null and loanMgrRecord >0">
+	          AND LOAN_MGR_RECORD=#{loanMgrRecord}
+	          </if>
+		      <if test="isAllowPrepay != null and isAllowPrepay >0">
+	          AND IS_ALLOW_PREPAY=#{isAllowPrepay}
+	          </if>
+		      <if test="isReturnInterest != null and isReturnInterest >0">
+	          AND IS_RETURN_INTEREST=#{isReturnInterest}
+	          </if>
+		      <if test="loanOtherFee != null and loanOtherFee >0">
+	          AND LOAN_OTHER_FEE=#{loanOtherFee}
+	          </if>
+		      <if test="requestStatus != null and requestStatus >0">
+	          AND REQUEST_STATUS=#{requestStatus}
+	          </if>
+		      <if test="requestDttm != null and requestDttm !=''">
+	          AND REQUEST_DTTM=#{requestDttm,jdbcType= TIMESTAMP,javaType= java.lang.String}
+	          </if>
+		      <if test="completeDttm != null and completeDttm !=''">
+	          AND COMPLETE_DTTM=#{completeDttm}
+	          </if>
+		      <if test="status != null and status >0">
+	          AND STATUS=#{status}
+	          </if>
+		      <if test="circulateType != null and circulateType >0">
+	          AND CIRCULATE_TYPE=#{circulateType}
+	          </if>
+		      <if test="surveyResult != null and surveyResult !=''">
+	          AND SURVEY_RESULT=#{surveyResult}
+	          </if>
+		      <if test="comments != null and comments !=''">
+	          AND COMMENTS=#{comments}
+	          </if>
+		      <if test="isRejected != null and isRejected >0">
+	          AND IS_REJECTED=#{isRejected}
+	          </if>
+		      <if test="productId != null and productId >0">
+	          AND PRODUCT_ID=#{productId}
+	          </if>
+		      <if test="businessSource != null and businessSource >0">
+	          AND BUSINESS_SOURCE=#{businessSource}
+	          </if>
+		      <if test="address != null and address !=''">
+	          AND ADDRESS=#{address}
+	          </if>
+		      <if test="businessContacts != null and businessContacts !=''">
+	          AND BUSINESS_CONTACTS=#{businessContacts}
+	          </if>
+		      <if test="contactsPhone != null and contactsPhone !=''">
+	          AND CONTACTS_PHONE=#{contactsPhone}
+	          </if>
+		      <if test="innerOrOut != null and innerOrOut >0">
+	          AND INNER_OR_OUT=#{innerOrOut}
+	          </if>
+		      <if test="businessCategory != null and businessCategory >0">
+	          AND BUSINESS_CATEGORY=#{businessCategory}
+	          </if>
+		      <if test="isNotarization != null and isNotarization >0">
+	          AND IS_NOTARIZATION=#{isNotarization}
+	          </if>
+		      <if test="isDelete != null and isDelete >0">
+	          AND IS_DELETE=#{isDelete}
+	          </if>
+		      <if test="isChechan != null and isChechan >0">
+	          AND IS_CHECHAN=#{isChechan}
+	          </if>
+		      <if test="managers != null and managers !=''">
+	          AND MANAGERS=#{managers}
+	          </if>
+		      <if test="managersPhone != null and managersPhone !=''">
+	          AND MANAGERS_PHONE=#{managersPhone}
+	          </if>
+		      <if test="foreclosureStatus != null and foreclosureStatus >0">
+	          AND FORECLOSURE_STATUS=#{foreclosureStatus}
+	          </if>
+		      <if test="businessSourceNo != null and businessSourceNo >0">
+	          AND BUSINESS_SOURCE_NO=#{businessSourceNo}
+	          </if>
+		      <if test="collectFileStatus != null and collectFileStatus >0">
+	          AND COLLECT_FILE_STATUS=#{collectFileStatus}
+	          </if>
+		      <if test="foreAfterMonitorStatus != null and foreAfterMonitorStatus >0">
+	          AND FORE_AFTER_MONITOR_STATUS=#{foreAfterMonitorStatus}
+	          </if>
+		      <if test="projectSource != null and projectSource >0">
+	          AND PROJECT_SOURCE=#{projectSource}
+	          </if>
+		      <if test="auditorOpinion != null and auditorOpinion !=''">
+	          AND AUDITOR_OPINION=#{auditorOpinion}
+	          </if>
+		      <if test="isSeller != null and isSeller >0">
+	          AND IS_SELLER=#{isSeller}
+	          </if>
+		      <if test="declaration != null and declaration !=''">
+	          AND DECLARATION=#{declaration}
+	          </if>
+		      <if test="refundFileStatus != null and refundFileStatus >0">
+	          AND REFUND_FILE_STATUS=#{refundFileStatus}
+	          </if>
+		      <if test="chechanDate != null and chechanDate !=''">
+	          AND CHECHAN_DATE=#{chechanDate,jdbcType= TIMESTAMP,javaType= java.lang.String}
+	          </if>
+		      <if test="chechanUserId != null and chechanUserId >0">
+	          AND CHECHAN_USER_ID=#{chechanUserId}
+	          </if>
+		      <if test="chechanCause != null and chechanCause !=''">
+	          AND CHECHAN_CAUSE=#{chechanCause}
+	          </if>
+		      <if test="orgId != null and orgId >0">
+	          AND ORG_ID=#{orgId}
+	          </if>
+		      <if test="orgCustomerName != null and orgCustomerName !=''">
+	          AND ORG_CUSTOMER_NAME=#{orgCustomerName}
+	          </if>
+		      <if test="orgCustomerPhone != null and orgCustomerPhone !=''">
+	          AND ORG_CUSTOMER_PHONE=#{orgCustomerPhone}
+	          </if>
+		      <if test="orgCustomerCard != null and orgCustomerCard !=''">
+	          AND ORG_CUSTOMER_CARD=#{orgCustomerCard}
+	          </if>
+		      <if test="planLoanDate != null and planLoanDate !=''">
+	          AND PLAN_LOAN_DATE=#{planLoanDate,jdbcType= DATE,javaType= java.lang.String}
+	          </if>
+		      <if test="planLoanMoney != null and planLoanMoney >0">
+	          AND PLAN_LOAN_MONEY=#{planLoanMoney}
+	          </if>
+		      <if test="loanRate != null and loanRate >0">
+	          AND LOAN_RATE=#{loanRate}
+	          </if>
+		      <if test="maxLoanRate != null and maxLoanRate >0">
+	          AND MAX_LOAN_RATE=#{maxLoanRate}
+	          </if>
+		      <if test="isClosed != null and isClosed >0">
+	          AND IS_CLOSED=#{isClosed}
+	          </if>
+	          <if test="areaCode != null and areaCode !=''">
+	          AND AREA_CODE=#{areaCode}
+	          </if>
+	          <if test="applyUserId != null and applyUserId >0">
+	          AND APPLY_USER_ID=#{applyUserId}
+	          </if>
+	          <if test="isNeedHandle != null and isNeedHandle >0">
+	          AND IS_NEED_HANDLE=#{isNeedHandle}
+	          </if>
+	          <if test="isReject != null and isReject >0">
+	          AND IS_REJECT=#{isReject}
+	          </if>
+			</trim>
+		</where>
+	</select>
+	<!-- 根据id获取 -->
+	<select id="getById" resultMap="bizProjectMap">
+		SELECT <include refid="column_list" /> FROM BIZ_PROJECT WHERE PID=#{pid}
+	</select>
+	<!-- 插入一条数据 -->
+	<insert id="insert" parameterType="com.qfang.xk.aom.rpc.project.BizProject">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_BIZ_PROJECT.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_PROJECT
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+				PID,
+			</if>
+		    <if test="acctId != null and acctId >0">
+				ACCT_ID,
+			</if>
+		    <if test="projectType != null and projectType >0">
+				PROJECT_TYPE,
+			</if>
+		    <if test="projectName != null and projectName !=''">
+				PROJECT_NAME,
+			</if>
+		    <if test="projectNumber != null and projectNumber !=''">
+				PROJECT_NUMBER,
+			</if>
+		    <if test="pmUserId != null and pmUserId >0">
+				PM_USER_ID,
+			</if>
+		    <if test="businessCatelog != null and businessCatelog !=''">
+				BUSINESS_CATELOG,
+			</if>
+		    <if test="businessType != null and businessType !=''">
+				BUSINESS_TYPE,
+			</if>
+		    <if test="flowCatelog != null and flowCatelog !=''">
+				FLOW_CATELOG,
+			</if>
+		    <if test="myType != null and myType !=''">
+				MY_TYPE,
+			</if>
+		    <if test="myMain != null and myMain !=''">
+				MY_MAIN,
+			</if>
+		    <if test="loanInterestRecord != null and loanInterestRecord >0">
+				LOAN_INTEREST_RECORD,
+			</if>
+		    <if test="loanMgrRecord != null and loanMgrRecord >0">
+				LOAN_MGR_RECORD,
+			</if>
+		    <if test="isAllowPrepay != null and isAllowPrepay >0">
+				IS_ALLOW_PREPAY,
+			</if>
+		    <if test="isReturnInterest != null and isReturnInterest >0">
+				IS_RETURN_INTEREST,
+			</if>
+		    <if test="loanOtherFee != null and loanOtherFee >0">
+				LOAN_OTHER_FEE,
+			</if>
+		    <if test="requestStatus != null and requestStatus >0">
+				REQUEST_STATUS,
+			</if>
+				REQUEST_DTTM,
+		    <if test="completeDttm != null and completeDttm !=''">
+				COMPLETE_DTTM,
+			</if>
+		    <if test="status != null and status >0">
+				STATUS,
+			</if>
+		    <if test="circulateType != null and circulateType >0">
+				CIRCULATE_TYPE,
+			</if>
+		    <if test="surveyResult != null and surveyResult !=''">
+				SURVEY_RESULT,
+			</if>
+		    <if test="comments != null and comments !=''">
+				COMMENTS,
+			</if>
+		    <if test="isRejected != null and isRejected >0">
+				IS_REJECTED,
+			</if>
+		    <if test="productId != null and productId >0">
+				PRODUCT_ID,
+			</if>
+		    <if test="businessSource != null and businessSource >0">
+				BUSINESS_SOURCE,
+			</if>
+		    <if test="address != null and address !=''">
+				ADDRESS,
+			</if>
+		    <if test="businessContacts != null and businessContacts !=''">
+				BUSINESS_CONTACTS,
+			</if>
+		    <if test="contactsPhone != null and contactsPhone !=''">
+				CONTACTS_PHONE,
+			</if>
+		    <if test="innerOrOut != null and innerOrOut >0">
+				INNER_OR_OUT,
+			</if>
+		    <if test="businessCategory != null and businessCategory >0">
+				BUSINESS_CATEGORY,
+			</if>
+		    <if test="isNotarization != null and isNotarization >0">
+				IS_NOTARIZATION,
+			</if>
+		    <if test="isDelete != null and isDelete >0">
+				IS_DELETE,
+			</if>
+		    <if test="isChechan != null and isChechan >0">
+				IS_CHECHAN,
+			</if>
+		    <if test="managers != null and managers !=''">
+				MANAGERS,
+			</if>
+		    <if test="managersPhone != null and managersPhone !=''">
+				MANAGERS_PHONE,
+			</if>
+		    <if test="foreclosureStatus != null and foreclosureStatus >0">
+				FORECLOSURE_STATUS,
+			</if>
+		    <if test="businessSourceNo != null and businessSourceNo >0">
+				BUSINESS_SOURCE_NO,
+			</if>
+		    <if test="collectFileStatus != null and collectFileStatus >0">
+				COLLECT_FILE_STATUS,
+			</if>
+			<if test="foreAfterMonitorStatus != null and foreAfterMonitorStatus >0">
+	            FORE_AFTER_MONITOR_STATUS,
+	         </if>
+		    <if test="projectSource != null and projectSource >0">
+				PROJECT_SOURCE,
+			</if>
+		    <if test="auditorOpinion != null and auditorOpinion !=''">
+				AUDITOR_OPINION,
+			</if>
+		    <if test="isSeller != null and isSeller >0">
+				IS_SELLER,
+			</if>
+		    <if test="declaration != null and declaration !=''">
+				DECLARATION,
+			</if>
+		    <if test="refundFileStatus != null and refundFileStatus >0">
+				REFUND_FILE_STATUS,
+			</if>
+		    <if test="chechanDate != null and chechanDate !=''">
+				CHECHAN_DATE,
+			</if>
+		    <if test="chechanUserId != null and chechanUserId >0">
+				CHECHAN_USER_ID,
+			</if>
+		    <if test="chechanCause != null and chechanCause !=''">
+				CHECHAN_CAUSE,
+			</if>
+		    <if test="orgId != null and orgId >0">
+				ORG_ID,
+			</if>
+		    <if test="orgCustomerName != null and orgCustomerName !=''">
+				ORG_CUSTOMER_NAME,
+			</if>
+		    <if test="orgCustomerPhone != null and orgCustomerPhone !=''">
+				ORG_CUSTOMER_PHONE,
+			</if>
+		    <if test="orgCustomerCard != null and orgCustomerCard !=''">
+				ORG_CUSTOMER_CARD,
+			</if>
+		    <if test="planLoanDate != null and planLoanDate !=''">
+				PLAN_LOAN_DATE,
+			</if>
+		    <if test="planLoanMoney != null and planLoanMoney >0">
+				PLAN_LOAN_MONEY,
+			</if>
+		    <if test="loanRate != null and loanRate >0">
+				LOAN_RATE,
+			</if>
+		    <if test="maxLoanRate != null and maxLoanRate >0">
+				MAX_LOAN_RATE,
+			</if>
+		    <if test="isClosed != null and isClosed >0">
+				IS_CLOSED,
+			</if>
+	        <if test="areaCode != null and areaCode !=''">
+	          AREA_CODE,
+	        </if>
+	        <if test="applyUserId != null and applyUserId >0">
+          	APPLY_USER_ID,
+          	</if>
+          	<if test="isNeedHandle != null and isNeedHandle >0">
+          	IS_NEED_HANDLE,
+          	</if>
+          	<if test="isReject != null and isReject >0">
+	         IS_REJECT,
+	        </if>
+	        <if test="isAssigned != null and isAssigned >0">
+	         IS_ASSIGNED,
+	        </if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+		    #{pid},
+			</if>
+		    <if test="acctId != null and acctId >0">
+		    #{acctId},
+			</if>
+		    <if test="projectType != null and projectType >0">
+		    #{projectType},
+			</if>
+		    <if test="projectName != null and projectName !=''">
+		    #{projectName},
+			</if>
+		    <if test="projectNumber != null and projectNumber !=''">
+		    #{projectNumber},
+			</if>
+		    <if test="pmUserId != null and pmUserId >0">
+		    #{pmUserId},
+			</if>
+		    <if test="businessCatelog != null and businessCatelog !=''">
+		    #{businessCatelog},
+			</if>
+		    <if test="businessType != null and businessType !=''">
+		    #{businessType},
+			</if>
+		    <if test="flowCatelog != null and flowCatelog !=''">
+		    #{flowCatelog},
+			</if>
+		    <if test="myType != null and myType !=''">
+		    #{myType},
+			</if>
+		    <if test="myMain != null and myMain !=''">
+		    #{myMain},
+			</if>
+		    <if test="loanInterestRecord != null and loanInterestRecord >0">
+		    #{loanInterestRecord},
+			</if>
+		    <if test="loanMgrRecord != null and loanMgrRecord >0">
+		    #{loanMgrRecord},
+			</if>
+		    <if test="isAllowPrepay != null and isAllowPrepay >0">
+		    #{isAllowPrepay},
+			</if>
+		    <if test="isReturnInterest != null and isReturnInterest >0">
+		    #{isReturnInterest},
+			</if>
+		    <if test="loanOtherFee != null and loanOtherFee >0">
+		    #{loanOtherFee},
+			</if>
+		    <if test="requestStatus != null and requestStatus >0">
+		    #{requestStatus},
+			</if>
+		    SYSDATE,
+		    <if test="completeDttm != null and completeDttm !=''">
+		    #{completeDttm,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		    <if test="status != null and status >0">
+		    #{status},
+			</if>
+		    <if test="circulateType != null and circulateType >0">
+		    #{circulateType},
+			</if>
+		    <if test="surveyResult != null and surveyResult !=''">
+		    #{surveyResult},
+			</if>
+		    <if test="comments != null and comments !=''">
+		    #{comments},
+			</if>
+		    <if test="isRejected != null and isRejected >0">
+		    #{isRejected},
+			</if>
+		    <if test="productId != null and productId >0">
+		    #{productId},
+			</if>
+		    <if test="businessSource != null and businessSource >0">
+		    #{businessSource},
+			</if>
+		    <if test="address != null and address !=''">
+		    #{address},
+			</if>
+		    <if test="businessContacts != null and businessContacts !=''">
+		    #{businessContacts},
+			</if>
+		    <if test="contactsPhone != null and contactsPhone !=''">
+		    #{contactsPhone},
+			</if>
+		    <if test="innerOrOut != null and innerOrOut >0">
+		    #{innerOrOut},
+			</if>
+		    <if test="businessCategory != null and businessCategory >0">
+		    #{businessCategory},
+			</if>
+		    <if test="isNotarization != null and isNotarization >0">
+		    #{isNotarization},
+			</if>
+		    <if test="isDelete != null and isDelete >0">
+		    #{isDelete},
+			</if>
+		    <if test="isChechan != null and isChechan >0">
+		    #{isChechan},
+			</if>
+		    <if test="managers != null and managers !=''">
+		    #{managers},
+			</if>
+		    <if test="managersPhone != null and managersPhone !=''">
+		    #{managersPhone},
+			</if>
+		    <if test="foreclosureStatus != null and foreclosureStatus >0">
+		    #{foreclosureStatus},
+			</if>
+		    <if test="businessSourceNo != null and businessSourceNo >0">
+		    #{businessSourceNo},
+			</if>
+		    <if test="collectFileStatus != null and collectFileStatus >0">
+		    #{collectFileStatus},
+			</if>
+		    <if test="projectSource != null and projectSource >0">
+		    #{projectSource},
+			</if>
+		    <if test="auditorOpinion != null and auditorOpinion !=''">
+		    #{auditorOpinion},
+			</if>
+		    <if test="isSeller != null and isSeller >0">
+		    #{isSeller},
+			</if>
+		    <if test="declaration != null and declaration !=''">
+		    #{declaration},
+			</if>
+		    <if test="refundFileStatus != null and refundFileStatus >0">
+		    #{refundFileStatus},
+			</if>
+		    <if test="chechanDate != null and chechanDate !=''">
+		    #{chechanDate,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		    <if test="chechanUserId != null and chechanUserId >0">
+		    #{chechanUserId},
+			</if>
+		    <if test="chechanCause != null and chechanCause !=''">
+		    #{chechanCause},
+			</if>
+		    <if test="orgId != null and orgId >0">
+		    #{orgId},
+			</if>
+		    <if test="orgCustomerName != null and orgCustomerName !=''">
+		    #{orgCustomerName},
+			</if>
+		    <if test="orgCustomerPhone != null and orgCustomerPhone !=''">
+		    #{orgCustomerPhone},
+			</if>
+		    <if test="orgCustomerCard != null and orgCustomerCard !=''">
+		    #{orgCustomerCard},
+			</if>
+		    <if test="planLoanDate != null and planLoanDate !=''">
+		    #{planLoanDate,jdbcType= DATE,javaType= java.lang.String},
+			</if>
+		    <if test="planLoanMoney != null and planLoanMoney >0">
+		    #{planLoanMoney},
+			</if>
+		    <if test="loanRate != null and loanRate >0">
+		    #{loanRate},
+			</if>
+		    <if test="maxLoanRate != null and maxLoanRate >0">
+		    #{maxLoanRate},
+			</if>
+		    <if test="isClosed != null and isClosed >0">
+		    #{isClosed},
+			</if>
+         	<if test="areaCode != null and areaCode !=''">
+          		#{areaCode},
+            </if>
+            <if test="applyUserId != null and applyUserId >0">
+	          #{applyUserId},
+	        </if>
+	        <if test="isNeedHandle != null and isNeedHandle >0">
+	        #{isNeedHandle},
+	        </if>
+	        <if test="isReject != null and isReject >0">
+	          #{isReject},
+	        </if>
+	        <if test="isAssigned != null and isAssigned >0">
+	         #{isAssigned},
+	        </if>
+		</trim>
+	</insert>
+
+	<!-- 根据id更新数据 -->
+		<update id="update" parameterType="com.qfang.xk.aom.rpc.project.BizProject">
+		UPDATE BIZ_PROJECT
+		<set>
+			<if test="acctId != null and acctId >0">
+	          ACCT_ID=#{acctId},
+	         </if>
+		    <if test="businessCatelog != null and businessCatelog !=''">
+		     BUSINESS_CATELOG=#{businessCatelog},
+			</if>
+		    <if test="businessType != null and businessType !=''">
+		     BUSINESS_TYPE=#{businessType},
+			</if>
+		    <if test="flowCatelog != null and flowCatelog !=''">
+		     FLOW_CATELOG=#{flowCatelog},
+			</if>
+		    <if test="myType != null and myType !=''">
+		     MY_TYPE=#{myType},
+			</if>
+		    <if test="myMain != null and myMain !=''">
+		     MY_MAIN=#{myMain},
+			</if>
+		    <if test="loanInterestRecord != null and loanInterestRecord >0">
+		     LOAN_INTEREST_RECORD=#{loanInterestRecord},
+			</if>
+		    <if test="loanMgrRecord != null and loanMgrRecord >0">
+		     LOAN_MGR_RECORD=#{loanMgrRecord},
+			</if>
+		    <if test="isAllowPrepay != null and isAllowPrepay >0">
+		     IS_ALLOW_PREPAY=#{isAllowPrepay},
+			</if>
+		    <if test="isReturnInterest != null and isReturnInterest >0">
+		     IS_RETURN_INTEREST=#{isReturnInterest},
+			</if>
+		    <if test="loanOtherFee != null and loanOtherFee >0">
+		     LOAN_OTHER_FEE=#{loanOtherFee},
+			</if>
+		    <if test="requestStatus != null and requestStatus >0">
+		     REQUEST_STATUS=#{requestStatus},
+			</if>
+		    <if test="requestDttm != null and requestDttm !=''">
+		     REQUEST_DTTM=#{requestDttm,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		    <if test="completeDttm != null and completeDttm !=''">
+		     COMPLETE_DTTM=#{completeDttm,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		    <if test="status != null and status >0">
+		     STATUS=#{status},
+			</if>
+		    <if test="circulateType != null and circulateType >0">
+		     CIRCULATE_TYPE=#{circulateType},
+			</if>
+		    <if test="surveyResult != null and surveyResult !=''">
+		     SURVEY_RESULT=#{surveyResult},
+			</if>
+		    <if test="comments != null and comments !=''">
+		     COMMENTS=#{comments},
+			</if>
+		    <if test="isRejected != null and isRejected >0">
+		     IS_REJECTED=#{isRejected},
+			</if>
+		    <if test="productId != null and productId >0">
+		     PRODUCT_ID=#{productId},
+			</if>
+		    <if test="businessSource != null and businessSource >0">
+		     BUSINESS_SOURCE=#{businessSource},
+			</if>
+		    <if test="address != null and address !=''">
+		     ADDRESS=#{address},
+			</if>
+		    <if test="businessContacts != null and businessContacts !=''">
+		     BUSINESS_CONTACTS=#{businessContacts},
+			</if>
+		    <if test="contactsPhone != null and contactsPhone !=''">
+		     CONTACTS_PHONE=#{contactsPhone},
+			</if>
+		    <if test="innerOrOut != null and innerOrOut >0">
+		     INNER_OR_OUT=#{innerOrOut},
+			</if>
+		    <if test="businessCategory != null and businessCategory >0">
+		     BUSINESS_CATEGORY=#{businessCategory},
+			</if>
+		    <if test="isNotarization != null and isNotarization >0">
+		     IS_NOTARIZATION=#{isNotarization},
+			</if>
+		    <if test="isDelete != null and isDelete >0">
+		     IS_DELETE=#{isDelete},
+			</if>
+		    <if test="isChechan != null and isChechan >0">
+		     IS_CHECHAN=#{isChechan},
+			</if>
+		    <if test="managers != null and managers !=''">
+		     MANAGERS=#{managers},
+			</if>
+		    <if test="managersPhone != null and managersPhone !=''">
+		     MANAGERS_PHONE=#{managersPhone},
+			</if>
+		    <if test="foreclosureStatus != null and foreclosureStatus >0">
+		     FORECLOSURE_STATUS=#{foreclosureStatus},
+			</if>
+		    <if test="businessSourceNo != null and businessSourceNo >0">
+		     BUSINESS_SOURCE_NO=#{businessSourceNo},
+			</if>
+		    <if test="collectFileStatus != null and collectFileStatus >0">
+		     COLLECT_FILE_STATUS=#{collectFileStatus},
+			</if>
+			<if test="foreAfterMonitorStatus != null and foreAfterMonitorStatus >0">
+	         FORE_AFTER_MONITOR_STATUS=#{foreAfterMonitorStatus}
+	        </if>
+		    <if test="projectSource != null and projectSource >0">
+		     PROJECT_SOURCE=#{projectSource},
+			</if>
+		    <if test="auditorOpinion != null and auditorOpinion !=''">
+		     AUDITOR_OPINION=#{auditorOpinion},
+			</if>
+		    <if test="isSeller != null and isSeller >0">
+		     IS_SELLER=#{isSeller},
+			</if>
+		    <if test="declaration != null and declaration !=''">
+		     DECLARATION=#{declaration},
+			</if>
+		    <if test="refundFileStatus != null and refundFileStatus >0">
+		     REFUND_FILE_STATUS=#{refundFileStatus},
+			</if>
+		    <if test="chechanDate != null and chechanDate !=''">
+		     CHECHAN_DATE=#{chechanDate,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		    <if test="chechanUserId != null and chechanUserId >0">
+		     CHECHAN_USER_ID=#{chechanUserId},
+			</if>
+		    <if test="chechanCause != null and chechanCause !=''">
+		     CHECHAN_CAUSE=#{chechanCause},
+			</if>
+		    <if test="orgCustomerName != null and orgCustomerName !=''">
+		     ORG_CUSTOMER_NAME=#{orgCustomerName},
+			</if>
+		    <if test="orgCustomerPhone != null and orgCustomerPhone !=''">
+		     ORG_CUSTOMER_PHONE=#{orgCustomerPhone},
+			</if>
+		    <if test="orgCustomerCard != null and orgCustomerCard !=''">
+		     ORG_CUSTOMER_CARD=#{orgCustomerCard},
+			</if>
+		    <if test="planLoanDate != null and planLoanDate !=''">
+		     PLAN_LOAN_DATE=#{planLoanDate,jdbcType= DATE,javaType= java.lang.String},
+			</if>
+		    <if test="planLoanMoney != null and planLoanMoney >0">
+		     PLAN_LOAN_MONEY=#{planLoanMoney},
+			</if>
+		    <if test="loanRate != null and loanRate >0">
+		     LOAN_RATE=#{loanRate},
+			</if>
+		    <if test="maxLoanRate != null and maxLoanRate >0">
+		     MAX_LOAN_RATE=#{maxLoanRate},
+			</if>
+		    <if test="isClosed != null and isClosed >0">
+		     IS_CLOSED=#{isClosed},
+			</if>
+			<if test="pmUserId != null and pmUserId >0">
+	          PM_USER_ID=#{pmUserId},
+	        </if>
+	        <if test="areaCode != null and areaCode !=''">
+	          AREA_CODE=#{areaCode},
+	        </if>
+	        <if test="applyUserId != null and applyUserId >0">
+	          APPLY_USER_ID=#{applyUserId},
+	        </if>
+	        <if test="isNeedHandle != null and isNeedHandle >0">
+	          IS_NEED_HANDLE=#{isNeedHandle},
+	        </if>
+	        <if test="isReject != null and isReject >0">
+	          IS_REJECT=#{isReject},
+	        </if>
+	        <if test="isAssigned != null and isAssigned >0">
+	         IS_ASSIGNED = #{isAssigned},
+	        </if>
+		</set>
+		WHERE PID = #{pid}
+	</update>
+	<!-- 分页查询业务信息 -->
+	<select id="getBizProjectByPage" resultMap="bizProjectDTOMap" parameterType="com.qfang.xk.aom.rpc.project.BizProjectDTO">
+		<![CDATA[SELECT D.* FROM (SELECT T.*, ROWNUM RN
+	        FROM (
+	        	SELECT BP.PID,BP.PROJECT_NAME,BP.PROJECT_NUMBER,BP.PROJECT_TYPE,BP.REQUEST_STATUS,BP.FORECLOSURE_STATUS,
+					BP.BUSINESS_CATEGORY,BP.ORG_ID,BP.ORG_CUSTOMER_NAME,BP.ORG_CUSTOMER_PHONE,
+					BP.ORG_CUSTOMER_CARD,TO_CHAR(BF.RECE_DATE,'yyyy-mm-dd') AS PLAN_LOAN_DATE,BP.AREA_CODE,
+					BG.LOAN_MONEY AS PLAN_LOAN_MONEY,BG.FEE_RATE AS LOAN_RATE,
+					TO_CHAR(BP.REQUEST_DTTM,'yyyy-mm-dd hh24:mi:ss') AS REQUEST_DTTM,
+					BP.MAX_LOAN_RATE,OC.ORG_NAME AS APPLY_USER_NAME,BP.IS_CLOSED,
+					BP.APPLY_USER_ID,BP.IS_NEED_HANDLE,BP.IS_REJECT,BP.IS_ASSIGNED,
+ 					SU.REAL_NAME AS PM_USER_NAME,BP.PM_USER_ID,PT.PRODUCT_NAME AS PRODUCT_NAME
+ 				FROM BIZ_PROJECT BP 
+		        LEFT JOIN ORG_USER_INFO OUI  ON BP.APPLY_USER_ID = OUI.PID
+		        LEFT JOIN SYS_USER SU ON SU.PID = BP.PM_USER_ID
+		        LEFT JOIN ORG_ASSETS_COOPERATION_INFO OC ON OC.PID = BP.ORG_ID
+		        LEFT JOIN BIZ_PROJECT_FORECLOSURE BF ON BP.PID = BF.PROJECT_ID
+		        LEFT JOIN BIZ_PROJECT_GUARANTEE BG  ON BP.PID = BG.PROJECT_ID
+		        LEFT JOIN BIZ_PRODUCT PT ON BP.PRODUCT_ID = PT.PID
+        		WHERE BP.PROJECT_TYPE = 6 AND BP.STATUS =1
+	        ]]>
+	        <if test="projectName != null and projectName != ''">
+				AND BP.PROJECT_NAME LIKE '%${projectName}%'
+			</if>
+			<if test="projectNumber != null and projectNumber != ''">
+				AND BP.PROJECT_NUMBER LIKE '%${projectNumber}%'
+			</if>
+			<if test="pmUserName != null and pmUserName != ''">
+				AND SU.REAL_NAME LIKE '%${pmUserName}%'
+			</if>
+	        <if test="orgId != null and orgId >0">
+		     	AND BP.ORG_ID =#{orgId}
+			</if>
+			<if test="productId != null and productId >0">
+		     	AND BP.PRODUCT_ID =#{productId}
+			</if>
+			<if test="isClosed != null and isClosed >0">
+		     	AND BP.IS_CLOSED =#{isClosed}
+			</if>
+	        <if test="orgCustomerName != null and orgCustomerName !=''">
+		     	AND BP.ORG_CUSTOMER_NAME LIKE '%${orgCustomerName}%'
+			</if>
+	        <if test="requestStatus != null and requestStatus >0">
+		     	AND BP.REQUEST_STATUS=#{requestStatus}
+			</if>
+			<if test="productId != null and productId >0">
+		     	AND BP.PRODUCT_ID=#{productId}
+			</if>
+			<if test="foreclosureStatus != null and foreclosureStatus >0">
+	          AND BP.FORECLOSURE_STATUS=#{foreclosureStatus}
+	        </if>
+			<if test="applyUserId != null and applyUserId >0">
+		     	AND BP.APPLY_USER_ID=#{applyUserId}
+			</if>
+			<if test="isNeedHandle != null and isNeedHandle >0">
+		     	AND BP.IS_NEED_HANDLE=#{isNeedHandle}
+			</if>
+			<if test="businessCategory != null and businessCategory >0">
+	          AND BUSINESS_CATEGORY=#{businessCategory}
+	        </if>
+	        <if test="requestStatuList!=null and requestStatuList.size()>0">
+				AND	BP.REQUEST_STATUS in
+			<foreach item="itemId" collection="requestStatuList" open="(" separator="," close=")">
+			          #{itemId}
+			</foreach>
+			</if>
+			<if test="isReject != null and isReject >0">
+	          AND BP.IS_REJECT=#{isReject}
+	        </if>
+	        <if test=" isAssigned != null and isAssigned >0">
+	          AND BP.IS_ASSIGNED=#{isAssigned}
+	        </if>
+	        <!-- 数据权限 -->
+			<if test="userIds!=null and userIds.size()>0">
+				AND	BP.PM_USER_ID IN
+			<foreach item="itemId" collection="userIds" open="(" separator="," close=")">
+			          #{itemId}
+			</foreach>
+			</if>
+	        <![CDATA[ORDER BY BP.REQUEST_DTTM DESC) T
+			WHERE ROWNUM <=#{page}*#{rows}
+			) D
+		WHERE D.RN > ((#{page}-1)*#{rows})]]>
+	</select>
+	
+	<select id="getBizProjectCount" resultType="Integer" parameterType="com.qfang.xk.aom.rpc.project.BizProjectDTO">
+		SELECT COUNT(*) FROM (
+			SELECT BP.PID
+ 				FROM BIZ_PROJECT BP 
+		        LEFT JOIN ORG_USER_INFO OUI  ON BP.APPLY_USER_ID = OUI.PID
+		        LEFT JOIN SYS_USER SU ON SU.PID = BP.PM_USER_ID
+		        LEFT JOIN ORG_ASSETS_COOPERATION_INFO OC ON OC.PID = BP.ORG_ID
+		        LEFT JOIN BIZ_PROJECT_FORECLOSURE BF ON BP.PID = BF.PROJECT_ID
+		        LEFT JOIN BIZ_PROJECT_GUARANTEE BG  ON BP.PID = BG.PROJECT_ID
+		        LEFT JOIN BIZ_PRODUCT PT ON BP.PRODUCT_ID = PT.PID
+        		WHERE BP.PROJECT_TYPE = 6 AND BP.STATUS =1
+        		
+	      <if test="projectName != null and projectName != ''">
+				AND BP.PROJECT_NAME LIKE '%${projectName}%'
+			</if>
+			<if test="projectNumber != null and projectNumber != ''">
+				AND BP.PROJECT_NUMBER LIKE '%${projectNumber}%'
+			</if>
+			<if test="pmUserName != null and pmUserName != ''">
+				AND SU.REAL_NAME LIKE '%${pmUserName}%'
+			</if>
+	        <if test="orgId != null and orgId >0">
+		     	AND BP.ORG_ID =#{orgId}
+			</if>
+			<if test="productId != null and productId >0">
+		     	AND BP.PRODUCT_ID =#{productId}
+			</if>
+			<if test="isClosed != null and isClosed >0">
+		     	AND BP.IS_CLOSED =#{isClosed}
+			</if>
+	        <if test="orgCustomerName != null and orgCustomerName !=''">
+		     	AND BP.ORG_CUSTOMER_NAME LIKE '%${orgCustomerName}%'
+			</if>
+	        <if test="requestStatus != null and requestStatus >0">
+		     	AND BP.REQUEST_STATUS=#{requestStatus}
+			</if>
+			<if test="productId != null and productId >0">
+		     	AND BP.PRODUCT_ID=#{productId}
+			</if>
+			<if test="foreclosureStatus != null and foreclosureStatus >0">
+	          AND BP.FORECLOSURE_STATUS=#{foreclosureStatus}
+	        </if>
+			<if test="applyUserId != null and applyUserId >0">
+		     	AND BP.APPLY_USER_ID=#{applyUserId}
+			</if>
+			<if test="isNeedHandle != null and isNeedHandle >0">
+		     	AND BP.IS_NEED_HANDLE=#{isNeedHandle}
+			</if>
+			<if test="businessCategory != null and businessCategory >0">
+	          AND BUSINESS_CATEGORY=#{businessCategory}
+	        </if>
+	        <if test="requestStatuList!=null and requestStatuList.size()>0">
+				AND	BP.REQUEST_STATUS in
+			<foreach item="itemId" collection="requestStatuList" open="(" separator="," close=")">
+			          #{itemId}
+			</foreach>
+			</if>
+			<if test="isReject != null and isReject >0">
+	          AND BP.IS_REJECT=#{isReject}
+	        </if>
+	        <if test=" isAssigned != null and isAssigned >0">
+	          AND BP.IS_ASSIGNED=#{isAssigned}
+	        </if>
+	        <!-- 数据权限 -->
+			<if test="userIds!=null and userIds.size()>0">
+				AND	BP.PM_USER_ID IN
+			<foreach item="itemId" collection="userIds" open="(" separator="," close=")">
+			          #{itemId}
+			</foreach>
+			</if>
+	        ) DP
+	</select>
+	
+	<!-- 查询当前日期的项目名称最大的最后2位自然数 -->
+	<select id="getMaxProjectName" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+		SELECT CASE WHEN COUNT(ORG_ID)+1 IS NULL THEN  1 ELSE COUNT(ORG_ID)+1 END AS MAXNUMBER 
+      	FROM BIZ_PROJECT 
+      	WHERE (SELECT TO_CHAR(REQUEST_DTTM,'YYYY-MM-DD') FROM DUAL) = 
+        (SELECT TO_CHAR(SYSDATE,'YYYY-MM-DD') FROM DUAL)
+        AND ORG_ID = #{orgId} 
+	</select>
+	
+	<!-- 查询当前年份的项目编号的最后5位自然数 -->
+	<select id="getMaxProjectNumber" resultType="java.lang.String" >
+		SELECT MAX(SUBSTR(PROJECT_NUMBER,-5,5)) FROM BIZ_PROJECT
+		WHERE (SELECT TO_CHAR(REQUEST_DTTM,'YYYY') FROM DUAL) = 
+			  (SELECT TO_CHAR(SYSDATE,'YYYY') FROM DUAL)
+	</select>
+	<!-- 修改关闭状态 -->
+	<update id="updateProjectClosed"  parameterType="com.qfang.xk.aom.rpc.project.BizProject">
+		UPDATE BIZ_PROJECT SET IS_CLOSED=#{isClosed},COMPLETE_DTTM=SYSDATE WHERE PID = #{pid}
+	</update>
+	
+	<!-- 修改驳回状态 -->
+	<update id="updateProjectReject"  parameterType="com.qfang.xk.aom.rpc.project.BizProject">
+		UPDATE BIZ_PROJECT 
+		<set> 
+			<if test="isReject != null and isReject >0">
+	          IS_REJECT=#{isReject},
+	        </if>
+			COMPLETE_DTTM=SYSDATE,
+			<if test="rejectType != null and rejectType >0">
+	          REJECT_TYPE=#{rejectType},
+	        </if>
+	        <if test="isChechan != null and isChechan >0">
+		     IS_CHECHAN=#{isChechan},
+			</if>
+			<if test="isClosed != null and isClosed >0">
+		     IS_CLOSED=#{isClosed},
+			</if>
+		</set>
+		WHERE PID = #{pid}
+	</update>
+	
+	<!-- 修改分配状态 -->
+	<update id="updateProjectAssigned"  parameterType="com.qfang.xk.aom.rpc.project.BizProject">
+		UPDATE BIZ_PROJECT SET IS_ASSIGNED=#{isAssigned},PM_USER_ID=#{pmUserId},MANAGERS=#{managers},MANAGERS_PHONE=#{managersPhone},BUSINESS_CONTACTS=#{managers},CONTACTS_PHONE=#{managersPhone}
+		WHERE <!-- 修改PId集合 -->
+		<if test="projectIds!=null and projectIds.size()>0">
+			PID IN
+		<foreach item="itemId" collection="projectIds" open="(" separator="," close=")">
+		          #{itemId}
+		</foreach>
+		</if>
+	</update>
+	<!-- 项目经理查看自已维护机构订单分页-->
+	<select id="getProjectListByPage" resultMap="bizProjectDTOMap" parameterType="com.qfang.xk.aom.rpc.project.BizProjectDTO">
+		<![CDATA[SELECT D.* FROM (SELECT T.*, ROWNUM RN
+	        FROM (
+		SELECT A.PID,A.PROJECT_NAME,A.PROJECT_NUMBER,B.ORG_NAME,CP.CHINA_NAME AS ORG_CUSTOMER_NAME,
+	    CP.TELEPHONE AS ORG_CUSTOMER_PHONE,CP.CERT_NUMBER AS ORG_CUSTOMER_CARD,
+	    TO_CHAR(A.REQUEST_DTTM,'yyyy-mm-dd hh24:mi:ss') AS REQUEST_DTTM,
+	    BPG.LOAN_MONEY AS PLAN_LOAN_MONEY,BPF.LOAN_DAYS ,A.FORECLOSURE_STATUS,A.IS_CLOSED,A.IS_REJECT,PT.PRODUCT_NAME
+	    FROM BIZ_PROJECT A 
+	    LEFT JOIN ORG_ASSETS_COOPERATION_INFO B 
+	    ON A.BUSINESS_SOURCE_NO = B.PID
+	    LEFT JOIN CUS_PERSON CP
+	    ON A.ACCT_ID = CP.ACCT_ID
+	    LEFT JOIN BIZ_PROJECT_GUARANTEE BPG
+	    ON BPG.PROJECT_ID = A.PID
+	    LEFT JOIN BIZ_PROJECT_FORECLOSURE BPF
+	    ON BPF.PROJECT_ID = A.PID
+	    LEFT JOIN ORG_BIZ_ADVISER_ALLOCATION_INF OBA
+	    ON  OBA.SERVICE_OBJ_ID = B.PID
+	    LEFT JOIN BIZ_PRODUCT PT
+	    ON A.PRODUCT_ID = PT.PID
+	    WHERE OBA.TYPE =1 AND A.STATUS = 1
+	     AND A.IS_CLOSED = 2 AND CP.RELATION_TYPE = 1
+		]]>
+		<if test="projectName != null and projectName != ''">
+			AND A.PROJECT_NAME LIKE '%${projectName}%'
+		</if>
+		<if test="projectNumber != null and projectNumber != ''">
+			AND A.PROJECT_NUMBER LIKE '%${projectNumber}%'
+		</if>
+		<if test="orgName != null and orgName != ''">
+			AND B.ORG_NAME LIKE '%${orgName}%'
+		</if>
+        <if test="orgCustomerName != null and orgCustomerName !=''">
+	     	AND CP.CHINA_NAME LIKE '%${orgCustomerName}%'
+		</if>
+		<!-- 数据权限 -->
+		<if test="userIds!=null and userIds.size()>0">
+			AND OBA.BIZ_ADVISER_ID IN 
+		<foreach item="itemId" collection="userIds" open="(" separator="," close=")">
+		          #{itemId}
+		</foreach>
+		</if>
+		<if test="requestDttm != null and requestDttm !=''">
+			 AND A.REQUEST_DTTM <![CDATA[>= ]]> #{requestDttm,jdbcType=TIMESTAMP,javaType=String}
+		</if>
+		<if test="endRequestDttm != null and endRequestDttm !=''">
+			 AND A.REQUEST_DTTM <![CDATA[<= ]]> #{endRequestDttm,jdbcType=TIMESTAMP,javaType=String}
+		</if>
+        <![CDATA[ORDER BY A.REQUEST_DTTM DESC) T
+		WHERE ROWNUM <=#{page}*#{rows}
+		) D
+	WHERE D.RN > ((#{page}-1)*#{rows})]]>
+	</select>
+	<!-- 项目经理查看自已维护机构订单总数-->
+	<select id="getProjectListCount"  resultType="Integer" parameterType="com.qfang.xk.aom.rpc.project.BizProjectDTO">
+		SELECT COUNT(*)
+	    FROM BIZ_PROJECT A 
+	    LEFT JOIN ORG_ASSETS_COOPERATION_INFO B 
+	    ON A.BUSINESS_SOURCE_NO = B.PID
+	    LEFT JOIN CUS_PERSON CP
+	    ON A.ACCT_ID = CP.ACCT_ID
+	    LEFT JOIN BIZ_PROJECT_GUARANTEE BPG
+	    ON BPG.PROJECT_ID = A.PID
+	    LEFT JOIN BIZ_PROJECT_FORECLOSURE BPF
+	    ON BPF.PROJECT_ID = A.PID
+	    LEFT JOIN ORG_BIZ_ADVISER_ALLOCATION_INF OBA
+	    ON  OBA.SERVICE_OBJ_ID = B.PID
+	    LEFT JOIN BIZ_PRODUCT PT
+	    ON A.PRODUCT_ID = PT.PID
+	    WHERE OBA.TYPE =1 AND A.STATUS = 1
+	    AND A.IS_CLOSED = 2 AND CP.RELATION_TYPE = 1
+		<if test="projectName != null and projectName != ''">
+			AND A.PROJECT_NAME LIKE '%${projectName}%'
+		</if>
+		<if test="projectNumber != null and projectNumber != ''">
+			AND A.PROJECT_NUMBER LIKE '%${projectNumber}%'
+		</if>
+		<if test="orgName != null and orgName != ''">
+			AND B.ORG_NAME LIKE '%${orgName}%'
+		</if>
+        <if test="orgCustomerName != null and orgCustomerName !=''">
+	     	AND CP.CHINA_NAME LIKE '%${orgCustomerName}%'
+		</if>
+		<!-- 数据权限 -->
+		<if test="userIds!=null and userIds.size()>0">
+			AND OBA.BIZ_ADVISER_ID IN 
+		<foreach item="itemId" collection="userIds" open="(" separator="," close=")">
+		          #{itemId}
+		</foreach>
+		</if>
+		<if test="requestDttm != null and requestDttm !=''">
+			 AND A.REQUEST_DTTM <![CDATA[>= ]]> #{requestDttm,jdbcType=TIMESTAMP,javaType=String}
+		</if>
+		<if test="endRequestDttm != null and endRequestDttm !=''">
+			 AND A.REQUEST_DTTM <![CDATA[<= ]]> #{endRequestDttm,jdbcType=TIMESTAMP,javaType=String}
+		</if>
+	</select>
+	
+</mapper>

@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.system.mapper.SysUserOrgInfoMapper">
+	<resultMap id="SysUserOrgInfoResultMap" type="com.xlkfinance.bms.rpc.system.SysUserOrgInfo">
+		<result column="id" property="id" jdbcType="INTEGER" />
+		<result column="org_id" property="orgId" jdbcType="INTEGER" />
+		<result column="user_id" property="userId" jdbcType="INTEGER" />
+		<result column="data_scope" property="dataScope" jdbcType="INTEGER" />
+		<result column="category" property="category" jdbcType="INTEGER" />
+	</resultMap>
+	<!-- 数据权限展示工具类 -->
+	<resultMap id="SysDataAuthViewResultMap" type="com.xlkfinance.bms.rpc.system.SysDataAuthView">
+		<result column="id" property="id" jdbcType="INTEGER" />
+		<result column="org_name" property="orgName" jdbcType="VARCHAR" />
+		<result column="user_id" property="userId" jdbcType="INTEGER" />
+		<result column="data_scope" property="dataScope" jdbcType="VARCHAR" />
+		<result column="category" property="category" jdbcType="VARCHAR" />
+		<result column="user_name" property="userName" jdbcType="VARCHAR" />
+		<result column="data_name" property="dataName" jdbcType="VARCHAR" />
+	</resultMap>
+	<!-- 保存用户数据权限(用户与机构关联信息)信息 -->
+	<insert id="saveSysUserOrgInfo" parameterType="com.xlkfinance.bms.rpc.system.SysUserOrgInfo">
+		<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="id">
+			SELECT SEQ_SYS_USER_ORG_INFO.Nextval as ID from DUAL
+		</selectKey>
+		INSERT INTO sys_user_org_info(id,org_id,user_id,data_scope,category)
+			VALUES(#{id},#{orgId},#{userId},#{dataScope},#{category})
+	</insert>
+	
+	<!-- 删除数据权限 -->
+	<delete id="deleteSysUserOrgInfo" parameterType="com.xlkfinance.bms.rpc.system.SysUserOrgInfo">
+	
+		DELETE sys_user_org_info u  
+		
+		<trim prefix="where" prefixOverrides="and |or">
+			<if test="id != null and id != 0 ">
+				u.id=#{id}
+			</if>
+			<if test="orgId != null and orgId != 0">
+				and u.org_id=#{orgId}
+			</if>
+			<if test="userId != null and userId != 0">
+				and u.user_id=#{userId}
+			</if>
+		</trim>
+	
+	</delete>
+	<!-- 批量删除数据权限信息 -->
+	<delete id="batchDeleteDataAuth" parameterType="Integer">
+		DELETE sys_user_org_info u  where u.id in
+		<foreach item="dataId" collection="array" open="(" close=")" separator=",">
+			#{dataId}
+		</foreach>
+	</delete>
+	
+	<!-- 根据机构编号获取其数据权限列表 -->
+	<select id="listUserOrgInfoByOrgId" resultMap="SysUserOrgInfoResultMap" parameterType="Integer">
+		SELECT
+			id,
+			org_id,
+			user_id,
+			data_scope,
+			category
+		FROM sys_user_org_info WHERE org_id in
+		<foreach item="orgId" collection="array" open="(" close=")" separator=",">
+			#{orgId}
+		</foreach>
+	</select>
+	
+	<!-- 根据用户id获取数据权限列表 -->
+	<select id="listOrgByUserId" resultMap="SysUserOrgInfoResultMap" parameterType="Integer">
+		SELECT
+			id,
+			org_id,
+			user_id,
+			data_scope,
+			category
+		FROM sys_user_org_info WHERE user_id = #{_parameter}
+	</select>
+	<!-- 根据指定条件获取用户与机构关系信息(用户数据权限) -->
+	<select id="getUserOrgInfo"  resultMap="SysUserOrgInfoResultMap" parameterType="com.xlkfinance.bms.rpc.system.SysUserOrgInfo">
+		SELECT
+			id,
+			org_id,
+			user_id,
+			data_scope,
+			category
+		FROM sys_user_org_info WHERE  rownum = 1 and user_id = #{userId} and org_id=#{orgId}
+	</select>
+	
+	<!-- 修改用户数据权限 -->
+	<update id="updateUserOrgInfo" parameterType="com.xlkfinance.bms.rpc.system.SysUserOrgInfo">
+		update sys_user_org_info 
+		<trim prefix="set" suffixOverrides=",">
+			<if test="userId != null and userId != 0">
+				user_id=#{userId},
+			</if>
+			<if test="orgId != null and orgId != 0">
+				org_id=#{orgId},
+			</if>
+			<if test="dataScope != null and dataScope != 0">
+				data_scope=#{dataScope},
+			</if>
+			<if test="category != null and category != 0">
+				category=#{category}
+			</if>
+		</trim>	
+		where id=#{id}
+	</update>
+	
+	<!-- 数据权限列表 -->
+	<select id="listDataAuth" parameterType="com.xlkfinance.bms.rpc.system.SysDataAuthView" resultMap="SysDataAuthViewResultMap">
+		
+		SELECT    
+		   a.id,
+		   a.user_id,
+		   a.user_name,
+		   a.org_name,
+		   a.data_name,
+		   a.category,
+		   a.data_scope  
+		FROM  
+		 (SELECT
+		 	   ROWNUM RN,
+		       ug.id id,
+		       u.pid user_id,
+		       u.real_name user_name,
+		       FUN_GET_ORG_NAME(u.org_id) org_name,
+		       FUN_GET_ORG_NAME(ug.org_id) data_name,
+		       DECODE(ug.category, 1, '业务', 2, '风控', 3, '财务') category,
+		       DECODE(ug.data_scope, 1, '私有数据', 2, '集体数据') data_scope
+		  FROM sys_user u, sys_user_org_info ug
+		 WHERE u.pid = ug.user_id
+		 <if test="userName != null and userName != ''">
+			AND u.real_name like '%${userName}%'
+		 </if>
+		 <if test="dataScope != null and dataScope != 0">
+			AND ug.data_scope = #{dataScope}
+		 </if> 
+		 ORDER BY id ASC) a
+		 WHERE  RN BETWEEN (((#{page}-1) * #{rows})+1) AND (#{page} * #{rows})
+		
+	</select>
+	<!-- 数据权限列表 记录数统计-->
+	<select id="listDataAuthCount" parameterType="com.xlkfinance.bms.rpc.system.SysDataAuthView" resultType="java.lang.Integer">
+		SELECT 
+		       COUNT(ug.id)
+		FROM 
+		    sys_user u,
+		    sys_user_org_info ug
+		WHERE u.pid = ug.user_id
+		<if test="userName != null and userName!=''">
+			AND u.real_name like '%${userName}%'
+		</if>
+		<if test="dataScope != null and dataScope != 0">
+			AND ug.data_scope = #{dataScope}
+		</if>
+		order by id asc
+	</select>
+	
+</mapper>

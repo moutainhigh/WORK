@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.xlkfinance.com/bms/loanRequestProcess">
+  <process id="refundInterestFeeProcess" name="退咨询费申请工作流" isExecutable="true">
+    <startEvent id="startevent" name="开始">
+      <extensionElements>
+        <activiti:formProperty id="flow" name="流程走向标志" type="string" default="next" required="true"></activiti:formProperty>
+        <activiti:formProperty id="allowTurnDown" name="是否允许驳回？" type="string" default="no" required="true"></activiti:formProperty>
+      </extensionElements>
+    </startEvent>
+    <userTask id="task_Request" name="退咨询费申请" activiti:candidateUsers="${candidateUsers}">
+      <extensionElements>
+        <activiti:formProperty id="nextRole" name="下一节点角色" type="string" default="DEPARTMENT_MANAGER,OPERATE_DEPARTMENT" required="true"></activiti:formProperty>
+        <activiti:formProperty id="flow" name="流程走向标志" type="string" default="next" required="true"></activiti:formProperty>
+        <activiti:formProperty id="allowTurnDown" name="是否允许驳回？" type="string" default="no" required="true"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <userTask id="task_RiskDirectorCheck" name="风控总监审核" activiti:candidateUsers="${candidateUsers}">
+      <extensionElements>
+        <activiti:formProperty id="nextRole" name="下一节点角色" type="string" default="FINANCE_CHECK_ROLE" required="true"></activiti:formProperty>
+        <activiti:formProperty id="flow" name="流程走向标志" type="string" default="next" required="true"></activiti:formProperty>
+        <activiti:formProperty id="allowTurnDown" name="是否允许驳回？" type="string" default="yes" required="true"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <userTask id="task_FinanceSupervisorCheck" name="财务审核" activiti:candidateUsers="${candidateUsers}">
+      <extensionElements>
+        <activiti:formProperty id="nextRole" name="下一节点角色" type="string" default="next" required="true"></activiti:formProperty>
+        <activiti:formProperty id="flow" name="流程走向标志" type="string" default="next" required="true"></activiti:formProperty>
+        <activiti:formProperty id="allowTurnDown" name="是否允许驳回？" type="string" default="yes" required="true"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <userTask id="task_DepartmentManagerCheck" name="部门经理审核" activiti:candidateUsers="${candidateUsers}">
+      <extensionElements>
+        <activiti:formProperty id="nextRole" name="下一节点角色" type="string" default="RISK_DIRECTOR" required="true"></activiti:formProperty>
+        <activiti:formProperty id="flow" name="流程走向标志" type="string" default="next" required="true"></activiti:formProperty>
+        <activiti:formProperty id="allowTurnDown" name="是否允许驳回？" type="string" default="yes" required="true"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow1" sourceRef="startevent" targetRef="task_Request"></sequenceFlow>
+    <sequenceFlow id="flow3" sourceRef="task_OperateDepartmentCheck" targetRef="task_FinanceSupervisorCheck"></sequenceFlow>
+    <endEvent id="endevent1" name="End"></endEvent>
+    <sequenceFlow id="flow6" sourceRef="task_FinanceSupervisorCheck" targetRef="endevent1"></sequenceFlow>
+    <userTask id="task_OperateDepartmentCheck" name="运营经理审核" activiti:candidateUsers="${candidateUsers}">
+      <extensionElements>
+        <activiti:formProperty id="nextRole" name="下一节点角色" type="string" default="FINANCE_CHECK_ROLE" required="true"></activiti:formProperty>
+        <activiti:formProperty id="flow" name="流程走向标志" type="string" default="next" required="true"></activiti:formProperty>
+        <activiti:formProperty id="allowTurnDown" name="是否允许驳回？" type="string" default="yes" required="true"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway"></exclusiveGateway>
+    <sequenceFlow id="flow8" sourceRef="task_Request" targetRef="exclusivegateway1"></sequenceFlow>
+    <sequenceFlow id="flow9" name="万通" sourceRef="exclusivegateway1" targetRef="task_DepartmentManagerCheck">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${ projectSource==1}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow10" name="小科" sourceRef="exclusivegateway1" targetRef="task_OperateDepartmentCheck">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${ projectSource==2||projectSource==3}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow12" sourceRef="task_DepartmentManagerCheck" targetRef="task_RiskDirectorCheck"></sequenceFlow>
+    <sequenceFlow id="flow13" sourceRef="task_RiskDirectorCheck" targetRef="task_FinanceSupervisorCheck"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_refundInterestFeeProcess">
+    <bpmndi:BPMNPlane bpmnElement="refundInterestFeeProcess" id="BPMNPlane_refundInterestFeeProcess">
+      <bpmndi:BPMNShape bpmnElement="startevent" id="BPMNShape_startevent">
+        <omgdc:Bounds height="35.0" width="35.0" x="39.0" y="40.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="task_Request" id="BPMNShape_task_Request">
+        <omgdc:Bounds height="55.0" width="105.0" x="208.0" y="30.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="task_RiskDirectorCheck" id="BPMNShape_task_RiskDirectorCheck">
+        <omgdc:Bounds height="55.0" width="105.0" x="100.0" y="282.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="task_FinanceSupervisorCheck" id="BPMNShape_task_FinanceSupervisorCheck">
+        <omgdc:Bounds height="55.0" width="105.0" x="352.0" y="282.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="task_DepartmentManagerCheck" id="BPMNShape_task_DepartmentManagerCheck">
+        <omgdc:Bounds height="55.0" width="105.0" x="100.0" y="170.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="560.0" y="292.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="task_OperateDepartmentCheck" id="BPMNShape_task_OperateDepartmentCheck">
+        <omgdc:Bounds height="55.0" width="105.0" x="352.0" y="170.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway1" id="BPMNShape_exclusivegateway1">
+        <omgdc:Bounds height="40.0" width="40.0" x="240.0" y="100.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="74.0" y="57.0"></omgdi:waypoint>
+        <omgdi:waypoint x="208.0" y="57.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+        <omgdi:waypoint x="404.0" y="225.0"></omgdi:waypoint>
+        <omgdi:waypoint x="404.0" y="282.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow6" id="BPMNEdge_flow6">
+        <omgdi:waypoint x="457.0" y="309.0"></omgdi:waypoint>
+        <omgdi:waypoint x="560.0" y="309.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow8" id="BPMNEdge_flow8">
+        <omgdi:waypoint x="260.0" y="85.0"></omgdi:waypoint>
+        <omgdi:waypoint x="260.0" y="100.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow9" id="BPMNEdge_flow9">
+        <omgdi:waypoint x="260.0" y="140.0"></omgdi:waypoint>
+        <omgdi:waypoint x="152.0" y="170.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="100.0" x="260.0" y="140.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow10" id="BPMNEdge_flow10">
+        <omgdi:waypoint x="260.0" y="140.0"></omgdi:waypoint>
+        <omgdi:waypoint x="404.0" y="170.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="100.0" x="260.0" y="140.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow12" id="BPMNEdge_flow12">
+        <omgdi:waypoint x="152.0" y="225.0"></omgdi:waypoint>
+        <omgdi:waypoint x="152.0" y="282.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow13" id="BPMNEdge_flow13">
+        <omgdi:waypoint x="205.0" y="309.0"></omgdi:waypoint>
+        <omgdi:waypoint x="352.0" y="309.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.customer.mapper.CusPerCreditAddressMapper">
+
+    <resultMap id="selectAllResultMap" type="com.xlkfinance.bms.rpc.customer.CusPerCreditAddress" >
+        <id column="PID" property="pid" jdbcType="INTEGER" />
+        <result column="CREDIT_ID" property="cusPerCredit.pid" jdbcType="INTEGER" /> 
+    	<result column="ADDR_TYPE" property="addrType" jdbcType="VARCHAR" /> 
+    	<result column="PROVINCE" property="province" jdbcType="VARCHAR" /> 
+    	<result column="CITY" property="city" jdbcType="VARCHAR" /> 
+    	<result column="COUNTY" property="county" jdbcType="INTEGER" /> 
+    	<result column="ROAD_NAME" property="roadName" jdbcType="VARCHAR" /> 
+    	<result column="ROAD_NO" property="roadNo" jdbcType="VARCHAR" /> 
+    	<result column="CMT_NAME" property="cmtName" jdbcType="VARCHAR" /> 
+    	<result column="ZIP_CODE" property="zipCode" jdbcType="VARCHAR" /> 
+    	<result column="LIVE_DATE" property="liveDate" jdbcType="DATE" javaType="String" />
+    	<result column="STATUS" property="status" jdbcType="INTEGER" />
+	</resultMap>	   
+<insert id="insertCreditAddrs" parameterType="java.util.List">
+
+insert into cus_per_credit_address (
+    	PID, 
+    	CREDIT_ID, 
+    	ADDR_TYPE,
+    	PROVINCE, 
+    	CITY, 
+    	COUNTY, 
+    	ROAD_NAME, 
+    	ROAD_NO, 
+    	CMT_NAME, 
+    	ZIP_CODE, 
+    	LIVE_DATE,
+    	STATUS) 
+select SEQ_CUS_PER_CREDIT_ADDRESS.Nextval,A.* from(
+        <foreach collection="list" item="item" index="index"
+            separator="UNION">
+            SELECT
+            #{item.cusPerCredit.pid,jdbcType=INTEGER},
+	    	#{item.addrType,jdbcType=VARCHAR},
+	    	#{item.province,jdbcType=VARCHAR},
+	     	#{item.city,jdbcType=VARCHAR}, 
+	     	#{item.county,jdbcType=VARCHAR},
+	     	#{item.roadName,jdbcType=VARCHAR},
+	     	#{item.roadNo,jdbcType=VARCHAR}, 
+	     	#{item.cmtName,jdbcType=VARCHAR},
+	     	#{item.zipCode,jdbcType=VARCHAR},
+	     	#{item.liveDate,jdbcType=DATE,javaType=String},
+	     	#{item.status,jdbcType=INTEGER}
+            from dual 
+             </foreach>
+        ) A
+</insert>
+  <!-- 更新的方法 -->
+<update id="updateCreditAddrs" parameterType="java.util.List">
+	begin
+	 <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+		update cus_per_credit_address
+		<set>
+		<if test="item.cusPerCredit.pid != null">
+		    CREDIT_ID = #{item.cusPerCredit.pid,jdbcType=INTEGER},
+		</if>
+		<if test="item.addrType != null">
+		   ADDR_TYPE = #{item.addrType,jdbcType=VARCHAR},
+		</if>
+    	<if test="item.province != null">
+      		PROVINCE = #{item.province,jdbcType=VARCHAR},
+      	</if>
+      	<if test="item.city != null">
+      		CITY = #{item.city,jdbcType=VARCHAR}, 
+      	</if>
+      	<if test="item.county != null">
+      		COUNTY = #{item.county,jdbcType=VARCHAR},
+      	</if>
+      	<if test="item.roadNo != null">
+      		ROAD_NO = #{item.roadNo,jdbcType=VARCHAR},
+      	</if>
+      	<if test="item.roadName != null">
+      		ROAD_NAME = #{item.roadName,jdbcType=VARCHAR},
+      	</if>
+      	<if test="item.cmtName != null">
+      		CMT_NAME = #{item.cmtName,jdbcType=VARCHAR},
+      	</if>
+      	<if test="item.zipCode != null">
+      		ZIP_CODE = #{item.zipCode,jdbcType=VARCHAR},
+      	</if>
+      	 <if test="item.liveDate != null">
+      		LIVE_DATE = #{item.liveDate,jdbcType=DATE,javaType=String},
+      	</if> 
+      	<if test="item.status != null">
+      		STATUS = #{item.status,jdbcType=INTEGER},
+      	</if>
+		</set> 
+		where pid = #{item.pid,jdbcType=INTEGER}
+	 </foreach>
+	 ;end;
+</update>
+	
+	<select id="selectAddrByCreditId" resultMap="selectAllResultMap" parameterType="java.lang.Integer">
+  		select * from cus_per_credit_address where credit_id=#{pid,jdbcType=INTEGER} order by addr_type asc
+  	</select>
+</mapper>

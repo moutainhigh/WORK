@@ -1,0 +1,554 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.mortgage.mapper.ProjectAssBaseMapper">
+	<resultMap id="ProjectAssBaseResultMap" type="com.xlkfinance.bms.rpc.mortgage.ProjectAssBase">
+		<id column="PID" property="pid" jdbcType="INTEGER"/>
+		<result column="PROJECT_ID" property="projectId"  />
+		<result column="PROJECT_NUMBER" property="projectNumber"  />
+		<result column="LOOKUP_VAL" property="ownTypeText"  />
+		<result column="MORTGAGE_TYPE" property="mortgageType" />
+		<result column="mortgageTypeText" property="mortgageTypeText" />
+		<result column="mortgageGuaranteeTypeText" property="mortgageGuaranteeTypeText" />
+		<result column="OWN_TYPE" property="ownType" />
+		<result column="ownTypeText" property="ownTypeText" />
+		<result column="OWN_NAME" property="ownName" />
+		<result column="ownNameText" property="ownNameText" />
+		<result column="WARRANTS_NUMBER" property="warrantsNumber"  />
+		<result column="ADDRESS_PROVINCE" property="addressProvince"  />
+		<result column="ADDRESS_CITY" property="addressCity"  />
+		<result column="ADDRESS_AREA" property="addressArea"  />
+		<result column="ADDRESS_DETAIL" property="addressDetail"  />
+		<result column="ITEM_NAME" property="itemName"  />
+		<result column="ITEM_NAME" property="dataObject"  />
+		<result column="PURPOSE" property="purpose"  />
+		<result column="REG_DT" property="regDt" javaType="String" jdbcType="TIMESTAMP"/>
+		<result column="REG_PRICE" property="regPrice"  />
+		<result column="ASSESS_VALUE" property="assessValue"  />
+		<result column="MORTGAGE_VALUE" property="mortgageValue"  />
+		<result column="MORTGAGE_RATE" property="mortgageRate"  />
+		<result column="FAIR_VALUE" property="fairValue"  />
+		<result column="FAIR_VALUE_GET_METHOD" property="fairValueGetMethod"  />
+		<result column="SAVE_DTTM" property="saveDttm" javaType="String" jdbcType="TIMESTAMP"/>
+		<result column="SAVE_REMARK" property="saveRemark"  />
+		<result column="REG_NUMBER" property="regNumber"  />
+		<result column="EXT_REQUEST_REASON" property="extRequestReason"  />
+		<result column="EXT_DTTM" property="extDttm" javaType="String" jdbcType="TIMESTAMP"/>
+		<result column="EXT_REMARK" property="extRemark"  />
+		<result column="REMOVE_DTTM" property="removeDttm" javaType="String" jdbcType="DATE"/>
+		<result column="REMOVE_REMARK" property="removeRemark"  />
+		<result column="STATUS" property="status"  />
+		<result column="REMARK" property="remark"  />
+		<result column="PROJECT_NAME" property="projectName"  />
+		<result column="MORTGAGE_GUARANTEE_TYPE" property="mortgageGuaranteeType"  />
+		<result column="OPERATOR" property="operator"  />
+		<result column="operatorText" property="operatorText"  />
+		<result column="REG_ORG_NAME" property="regOrgName"  />
+		<result column="TRANSACT_EXPLAIN" property="transactExplain"  />
+		<result column="PROCESS_DTTM" property="processDt"  />
+		<result column="PROCESS_REMARK" property="processRemark"  />
+		<result column="constructionArea" property="constructionArea"  />
+		<result column="proposerText" property="proposerText"  />
+		<result column="PROPOSER" property="proposer"  />
+	</resultMap>
+	
+	<!-- 查询所需列 -->
+	<sql id="projectAssBase_Column_List">
+		p.PROJECT_NAME,p.PROJECT_NUMBER,ab.*,
+      	CASE WHEN ab.mortgage_type = '' THEN '' WHEN ab.mortgage_type IS NULL THEN '' ELSE
+      	(SELECT LOOK.LOOKUP_DESC FROM SYS_LOOKUP_VAL LOOK WHERE LOOK.PID = ab.mortgage_type) END AS mortgageTypeText,
+      	CASE WHEN ab.mortgage_guarantee_type = 1 THEN '抵押' ELSE '质押' END AS mortgageGuaranteeTypeText,
+        (SELECT pad.info_val FROM biz_project_ass_dtl pad  WHERE pad.lookup_val = 'constructionArea' AND pad.base_id = ab.pid) constructionArea,
+      	(SELECT v.ACCT_NAME FROM cus_acct_v v WHERE v.ACCT_ID = ab.own_name) ownNameText,
+        (SELECT u.real_name FROM Sys_User u WHERE u.pid = AB.PROPOSER) proposerText
+	</sql>
+	
+	<!-- 查询条件 -->
+	<sql id="QueryCondition">
+		FROM BIZ_PROJECT_ASS_BASE ab,BIZ_PROJECT p
+		WHERE p.PID = ab.PROJECT_ID 
+		AND ab.STATUS != 0
+		<if test="projectName != null and projectName != '' ">
+			AND p.PROJECT_NAME like '%${projectName}%' 
+		</if>
+		<if test="projectNumber != null and projectNumber != '' ">
+			AND p.PROJECT_NUMBER like '%${projectNumber}%' 
+		</if>
+		<if test="itemName != null and itemName != '' ">
+			AND ab.ITEM_NAME like '%${itemName}%' 
+		</if>
+		<if test="mortgageType != null and mortgageType != -1 ">
+			AND ab.MORTGAGE_TYPE = #{mortgageType} 
+		</if>
+		<if test="mortgageGuaranteeType != null and mortgageGuaranteeType != -1 ">
+			AND ab.MORTGAGE_GUARANTEE_TYPE = #{mortgageGuaranteeType} 
+		</if>
+		<if test="warrantsNumber != null and warrantsNumber != '' ">
+			AND ab.WARRANTS_NUMBER like '%${warrantsNumber}%' 
+		</if>
+		<if test="status != null and status != -1 ">
+			AND ab.STATUS = #{status} 
+		</if>
+		<if test="beginMoney != null and beginMoney != '' ">
+			AND ab.ASSESS_VALUE <![CDATA[>=]]> #{beginMoney} 
+		</if>
+		<if test="endMoney != null and endMoney != '' ">
+			AND ab.ASSESS_VALUE <![CDATA[<=]]> #{endMoney} 
+		</if>
+	</sql>
+
+	<!-- 查询抵质押物 根据条件查询 -->
+	<select id="getAllProjectAssBase" resultMap="ProjectAssBaseResultMap" parameterType="com.xlkfinance.bms.rpc.mortgage.ProjectAssBase">
+		SELECT * FROM (
+		SELECT rownum rnum ,aa.* FROM (  
+		SELECT  rownum rid, 
+		<include refid="projectAssBase_Column_List" /> 
+	    <include refid="QueryCondition" />
+	    <if test="projectId != null and projectId != 0 ">
+			AND ab.PROJECT_ID=#{projectId}
+		</if>
+		AND  P.STATUS=1
+	    ORDER BY ab.pid DESC ) aa
+		) bb 
+		where 1=1 
+		<if test="page != null and page !=0 and rows!=null and rows!=0">
+			and rnum<![CDATA[<=]]>#{page}*#{rows}
+			and rnum>=((#{page}-1)*#{rows})+1
+		</if>
+	</select>
+	
+	<!-- 查询抵质押物的数量 条件查询 -->
+	<select id="getAllProjectAssBaseCount" resultType="java.lang.Integer" parameterType="com.xlkfinance.bms.rpc.mortgage.ProjectAssBase">
+		SELECT  count(*)
+		<include refid="QueryCondition" /> 
+		AND P.STATUS=1
+	</select>
+	
+	<!-- 查询项目下的抵质押物根据抵押类型 -->
+	<select id="getProjectAssBaseByMortgageGuaranteeType" resultMap="ProjectAssBaseResultMap" >
+		SELECT p.PID,PROJECT_ID,MORTGAGE_TYPE,k.lookup_val AS mortgageGuaranteeTypeText,OWN_TYPE,OWN_NAME,WARRANTS_NUMBER,ADDRESS_PROVINCE,ADDRESS_CITY, 
+       	ADDRESS_AREA,ADDRESS_DETAIL,ITEM_NAME,PURPOSE,REG_DT,REG_PRICE,ASSESS_VALUE,MORTGAGE_VALUE, 
+       	MORTGAGE_RATE,FAIR_VALUE,FAIR_VALUE_GET_METHOD,REMARK,p.STATUS,MORTGAGE_GUARANTEE_TYPE, 
+       	OPERATOR,REG_ORG_NAME,TRANSACT_EXPLAIN,p.mortgage_type,p.reg_number,
+        (SELECT LOOKUP_DESC FROM sys_lookup_val val WHERE val.pid = p.mortgage_type) AS mortgageTypeText,
+        (SELECT v.ACCT_NAME FROM cus_acct_v v WHERE v.ACCT_ID = p.own_name) ownNameText,
+        (SELECT pad.info_val FROM biz_project_ass_dtl pad  WHERE pad.lookup_val = 'constructionArea' AND pad.base_id = p.pid) constructionArea
+    	FROM BIZ_PROJECT_ASS_BASE p,sys_lookup_val k
+    	WHERE 1 = 1 AND  p.mortgage_type=k.pid
+    	AND p.status != 0 
+		AND PROJECT_ID IN 
+		<foreach item="item" collection="projectIds" open="(" separator="," close=")">  
+			#{item}  
+		</foreach> 
+		<if test="mortgageGuaranteeType != null and mortgageGuaranteeType != -1 ">
+			AND MORTGAGE_GUARANTEE_TYPE = #{mortgageGuaranteeType}
+		</if>
+	</select>
+	
+	<!-- 根据项目ID查询抵质押物 -->
+	<select id="getProjectAssBaseByProjectId" resultMap="ProjectAssBaseResultMap" parameterType="java.lang.Integer">
+		SELECT p.PID,PROJECT_ID,MORTGAGE_TYPE,OWN_TYPE,OWN_NAME,WARRANTS_NUMBER,ADDRESS_PROVINCE,ADDRESS_CITY, 
+       	ADDRESS_AREA,ADDRESS_DETAIL,ITEM_NAME,PURPOSE,REG_DT,REG_PRICE,ASSESS_VALUE,MORTGAGE_VALUE, 
+       	MORTGAGE_RATE,FAIR_VALUE,FAIR_VALUE_GET_METHOD,REMARK,p.STATUS,MORTGAGE_GUARANTEE_TYPE, 
+       	OPERATOR,REG_ORG_NAME,TRANSACT_EXPLAIN,u.REAL_NAME as operatorText ,p.mortgage_type,
+        (SELECT LOOKUP_DESC FROM sys_lookup_val val WHERE val.pid = p.mortgage_type) AS mortgageTypeText
+    	FROM BIZ_PROJECT_ASS_BASE p,Sys_User u 
+    	WHERE p.operator = u.pid(+) 
+    	AND p.status != 0 
+		AND PROJECT_ID = #{projectId}
+	</select>
+	
+	<!-- 删除抵质押物 -->
+	<update id="batchDelete" parameterType="java.lang.String">
+        UPDATE BIZ_PROJECT_ASS_BASE SET
+       	STATUS = 0 
+        WHERE PID in 
+        <foreach item="idItem" collection="array" open="(" separator="," close=")">
+			#{idItem}
+		</foreach>
+	</update>
+	
+	<!-- 根据项目ID和担保类型删除抵质押物 -->
+	<delete id="deleteProjectAssBaseByProjectId" parameterType="java.lang.Integer">
+		DELETE BIZ_PROJECT_ASS_BASE 
+		WHERE PROJECT_ID = #{projectId}
+		AND MORTGAGE_GUARANTEE_TYPE = #{mortgageGuaranteeType}
+	</delete>
+	
+	<!-- 添加抵质押物 -->
+	<insert id="insert" parameterType="com.xlkfinance.bms.rpc.mortgage.ProjectAssBase">
+		<!-- 获取序列号 -->
+		<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+			SELECT SEQ_BIZ_PROJECT_ASS_BASE.Nextval as PID from DUAL
+		</selectKey>
+		
+		INSERT INTO BIZ_PROJECT_ASS_BASE
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			PID,
+			<if test="projectId != null and projectId != -1 ">
+				PROJECT_ID,
+			</if>
+			<if test="mortgageGuaranteeType != null and mortgageGuaranteeType != -1 ">
+				MORTGAGE_GUARANTEE_TYPE,
+			</if>
+			<if test="mortgageType != null and mortgageType != -1 ">
+				MORTGAGE_TYPE,
+			</if>
+			<if test="ownType != null and ownType != -1 ">
+				OWN_TYPE,
+			</if>
+			<if test="ownName != null and ownName != -1 ">
+				OWN_NAME,
+			</if>
+			<if test="warrantsNumber != null and warrantsNumber != '' ">
+				WARRANTS_NUMBER,
+			</if>
+			<if test="addressProvince != null and addressProvince != '' ">
+				ADDRESS_PROVINCE,
+			</if>
+			<if test="addressCity != null and addressCity != '' ">
+				ADDRESS_CITY,
+			</if>
+			<if test="addressArea != null and addressArea != '' ">
+				ADDRESS_AREA,
+			</if>
+			<if test="addressDetail != null and addressDetail != '' ">
+				ADDRESS_DETAIL,
+			</if>
+			<if test="itemName != null and itemName != '' ">
+				ITEM_NAME,
+			</if>
+			<if test="purpose != null and purpose != '' ">
+				PURPOSE,
+			</if>
+			<if test="regDt != null and regDt != '' ">
+				REG_DT,
+			</if>
+			<if test="regPrice != null and regPrice != -1 ">
+				REG_PRICE,
+			</if>
+			<if test="assessValue != null and assessValue != -1 ">
+				ASSESS_VALUE,
+			</if>
+			<if test="mortgageValue != null and mortgageValue != -1 ">
+				MORTGAGE_VALUE,
+			</if>
+			<if test="mortgageRate != null and mortgageRate != -1 ">
+				MORTGAGE_RATE,
+			</if>
+			<if test="fairValue != null and fairValue != -1 ">
+				FAIR_VALUE,
+			</if>
+			<if test="fairValueGetMethod != null and fairValueGetMethod != '' ">
+				FAIR_VALUE_GET_METHOD,
+			</if>
+			<if test="remark != null and remark != '' ">
+				REMARK,
+			</if>
+			<if test="status != null and status != -1 ">
+				STATUS,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+				#{pid},
+			<if test="projectId != null and projectId != -1 ">
+				#{projectId},
+			</if>
+			<if test="mortgageGuaranteeType != null and mortgageGuaranteeType != -1 ">
+				#{mortgageGuaranteeType},
+			</if>
+			<if test="mortgageType != null and mortgageType != -1 ">
+				#{mortgageType},
+			</if>
+			<if test="ownType != null and ownType != -1 ">
+				#{ownType},
+			</if>
+			<if test="ownName != null and ownName != -1 ">
+				#{ownName},
+			</if>
+			<if test="warrantsNumber != null and warrantsNumber != '' ">
+				#{warrantsNumber},
+			</if>
+			<if test="addressProvince != null and addressProvince != '' ">
+				#{addressProvince},
+			</if>
+			<if test="addressCity != null and addressCity != '' ">
+				#{addressCity},
+			</if>
+			<if test="addressArea != null and addressArea != '' ">
+				#{addressArea},
+			</if>
+			<if test="addressDetail != null and addressDetail != '' ">
+				#{addressDetail},
+			</if>
+			<if test="itemName != null and itemName != '' ">
+				#{itemName},
+			</if>
+			<if test="purpose != null and purpose != '' ">
+				#{purpose},
+			</if>
+			<if test="regDt != null and regDt != '' ">
+				#{regDt,javaType=String, jdbcType=DATE},
+			</if>
+			<if test="regPrice != null and regPrice != -1 ">
+				#{regPrice},
+			</if>
+			<if test="assessValue != null and assessValue != -1 ">
+				#{assessValue},
+			</if>
+			<if test="mortgageValue != null and mortgageValue != -1 ">
+				#{mortgageValue},
+			</if>
+			<if test="mortgageRate != null and mortgageRate != -1 ">
+				#{mortgageRate},
+			</if>
+			<if test="fairValue != null and fairValue != -1 ">
+				#{fairValue},
+			</if>
+			<if test="fairValueGetMethod != null and fairValueGetMethod != '' ">
+				#{fairValueGetMethod},
+			</if>
+			<if test="remark != null and remark != '' ">
+				#{remark},
+			</if>
+			<if test="status != null and status != -1 ">
+				#{status},
+			</if>
+		</trim>
+	</insert>
+	
+	<!-- 修改抵质押物 -->
+	<update id="updateTransitApplyReportIndex" parameterType="com.xlkfinance.bms.rpc.mortgage.ProjectAssBase">
+		UPDATE BIZ_PROJECT_ASS_BASE
+		<trim prefix="set" suffixOverrides=",">
+			<if test="mortgageGuaranteeType != null and mortgageGuaranteeType != -1 ">
+				MORTGAGE_GUARANTEE_TYPE = #{mortgageGuaranteeType},
+			</if>
+			<if test="mortgageType != null and mortgageType != -1 ">
+				MORTGAGE_TYPE = #{mortgageType},
+			</if>
+			<if test="ownType != null and ownType != -1 ">
+				OWN_TYPE = #{ownType},
+			</if>
+			<if test="ownName != null and ownName != -1 ">
+				OWN_NAME = #{ownName},
+			</if>
+			<if test="warrantsNumber != null and warrantsNumber != '' ">
+				WARRANTS_NUMBER = #{warrantsNumber},
+			</if>
+			<if test="addressProvince != null and addressProvince != '' ">
+				ADDRESS_PROVINCE = #{addressProvince},
+			</if>
+			<if test="addressCity != null and addressCity != '' ">
+				ADDRESS_CITY = #{addressCity},
+			</if>
+			<if test="addressArea != null and addressArea != '' ">
+				ADDRESS_AREA = #{addressArea},
+			</if>
+			<if test="addressDetail != null and addressDetail != '' ">
+				ADDRESS_DETAIL = #{addressDetail},
+			</if>
+			<if test="itemName != null and itemName != '' ">
+				ITEM_NAME = #{itemName},
+			</if>
+			<if test="purpose != null and purpose != '' ">
+				PURPOSE = #{purpose},
+			</if>
+			<if test="regDt != null and regDt != '' ">
+				REG_DT = #{regDt,javaType=String, jdbcType=DATE},
+			</if>
+			<if test="regPrice != null and regPrice != -1 ">
+				REG_PRICE = #{regPrice},
+			</if>
+			<if test="assessValue != null and assessValue != -1 ">
+				ASSESS_VALUE = #{assessValue},
+			</if>
+			<if test="mortgageValue != null and mortgageValue != -1 ">
+				MORTGAGE_VALUE = #{mortgageValue},
+			</if>
+			<if test="mortgageRate != null and mortgageRate != -1 ">
+				MORTGAGE_RATE = #{mortgageRate},
+			</if>
+			<if test="fairValue != null and fairValue != -1 ">
+				FAIR_VALUE = #{fairValue},
+			</if>
+			<if test="fairValueGetMethod != null and fairValueGetMethod != '' ">
+				FAIR_VALUE_GET_METHOD = #{fairValueGetMethod},
+			</if>
+			<if test="remark != null and remark != '' ">
+				REMARK = #{remark}
+			</if>
+		</trim>
+		WHERE PID = #{pid}
+	</update>
+	
+	<!-- 办理抵质押物处理 -->
+	<update id="transactProjectAssBase" parameterType="com.xlkfinance.bms.rpc.mortgage.ProjectAssBase">
+		UPDATE BIZ_PROJECT_ASS_BASE
+		<trim prefix="set" suffixOverrides=",">
+			<if test="regPrice != null and regPrice != -1 ">
+				REG_PRICE = #{regPrice},
+			</if>
+			<if test="regNumber != null and regNumber != '' ">
+				REG_NUMBER = #{regNumber},
+			</if>
+			<if test="regDt != null and regDt != '' ">
+				REG_DT = #{regDt,javaType=String, jdbcType=DATE},
+			</if>
+			<if test="regOrgName != null and regOrgName != '' ">
+				REG_ORG_NAME = #{regOrgName},
+			</if>
+			<if test="transactExplain != null and transactExplain != '' ">
+				TRANSACT_EXPLAIN = #{transactExplain},
+			</if>
+			<if test="operator != null and operator != '' ">
+				OPERATOR = #{operator},
+			</if>
+			STATUS = 2,
+		</trim>
+		WHERE PID = #{pid}
+	</update>
+	
+	<!-- 抵质押物保管处理 -->
+	<update id="safekeepingProjectAssBase" parameterType="com.xlkfinance.bms.rpc.mortgage.ProjectAssBase">
+		UPDATE BIZ_PROJECT_ASS_BASE  
+		SET STATUS = 3 
+		WHERE PID = #{pid} 
+	</update>
+	
+	<!-- 抵质押物提取申请 -->
+	<update id="applyExtractionProjectAssBase" parameterType="com.xlkfinance.bms.rpc.mortgage.ProjectAssBase">
+		UPDATE BIZ_PROJECT_ASS_BASE
+		SET STATUS = 4
+		WHERE PID = #{pid}
+	</update>
+	
+	<!-- 抵质押物提取处理 -->
+	<update id="applyManagetransactProjectAssBase" parameterType="com.xlkfinance.bms.rpc.mortgage.ProjectAssBase">
+		UPDATE BIZ_PROJECT_ASS_BASE
+		SET	STATUS = 5
+		WHERE PID = #{pid}
+	</update>
+	
+	<!-- 解除抵质押物 -->
+	<update id="relieveProjectAssBase" parameterType="com.xlkfinance.bms.rpc.mortgage.ProjectAssBase">
+		UPDATE BIZ_PROJECT_ASS_BASE
+		<trim prefix="set" suffixOverrides=",">
+			<if test="removeDttm != null and removeDttm != '' ">
+				REMOVE_DTTM = #{removeDttm,javaType=String, jdbcType=TIMESTAMP},
+			</if>
+			<if test="removeRemark != null and removeRemark != '' ">
+				REMOVE_REMARK = #{removeRemark},
+			</if>
+			<if test="proposer != null and proposer != -1 ">
+				PROPOSER = #{proposer},
+			</if>
+			STATUS = 6,
+		</trim>
+		WHERE PID = #{pid}
+	</update>
+	
+	<!-- 根据主键获取对象 -->
+	<select id="getProjectAssBaseByPid" parameterType="java.lang.Integer" resultMap="ProjectAssBaseResultMap">
+		  SELECT P.PID,
+		         PROJECT_ID,
+		         MORTGAGE_TYPE,
+		         K.LOOKUP_VAL AS MORTGAGEGUARANTEETYPETEXT,
+		         OWN_TYPE,
+		         OWN_NAME,
+		         WARRANTS_NUMBER,
+		         ADDRESS_PROVINCE,
+		         ADDRESS_CITY,
+		         ADDRESS_AREA,
+		         ADDRESS_DETAIL,
+		         ITEM_NAME,
+		         PURPOSE,
+		         REG_DT,
+		         REG_PRICE,
+		         ASSESS_VALUE,
+		         MORTGAGE_VALUE,
+		         MORTGAGE_RATE,
+		         FAIR_VALUE,
+		         FAIR_VALUE_GET_METHOD,
+		         REMARK,
+		         P.STATUS,
+		         MORTGAGE_GUARANTEE_TYPE,
+		         OPERATOR,
+		         REG_ORG_NAME,
+		         TRANSACT_EXPLAIN,
+		         P.MORTGAGE_TYPE,
+		         P.REG_NUMBER,
+		         (SELECT LOOKUP_DESC
+		            FROM SYS_LOOKUP_VAL VAL
+		           WHERE VAL.PID = P.MORTGAGE_TYPE) AS MORTGAGETYPETEXT,
+		         (SELECT V.ACCT_NAME FROM CUS_ACCT_V V WHERE V.ACCT_ID = P.OWN_NAME) OWNNAMETEXT,
+		         (SELECT PAD.INFO_VAL
+		            FROM BIZ_PROJECT_ASS_DTL PAD
+		           WHERE PAD.LOOKUP_VAL = 'constructionArea'
+		             AND PAD.BASE_ID = P.PID) CONSTRUCTIONAREA
+		    FROM BIZ_PROJECT_ASS_BASE P, SYS_LOOKUP_VAL K
+		   WHERE P.MORTGAGE_TYPE = K.PID
+		   AND P.PID = #{pid}
+	</select>
+	
+	<!-- 根据主键获取对象 -->
+	<select id="getCommonProjectAssBaseByPid" parameterType="java.lang.Integer" resultMap="ProjectAssBaseResultMap">
+		  SELECT P.PID,
+		         PROJECT_ID,
+		         MORTGAGE_TYPE,
+		         K.LOOKUP_VAL AS MORTGAGEGUARANTEETYPETEXT,
+		         OWN_TYPE,
+		         OWN_NAME,
+		         WARRANTS_NUMBER,
+		         ADDRESS_PROVINCE,
+		         ADDRESS_CITY,
+		         ADDRESS_AREA,
+		         ADDRESS_DETAIL,
+		         ITEM_NAME,
+		         PURPOSE,
+		         REG_DT,
+		         REG_PRICE,
+		         ASSESS_VALUE,
+		         MORTGAGE_VALUE,
+		         MORTGAGE_RATE,
+		         FAIR_VALUE,
+		         FAIR_VALUE_GET_METHOD,
+		         REMARK,
+		         P.STATUS,
+		         MORTGAGE_GUARANTEE_TYPE,
+		         OPERATOR,
+		         REG_ORG_NAME,
+		         TRANSACT_EXPLAIN,
+		         P.MORTGAGE_TYPE,
+		         P.REG_NUMBER,
+		         (SELECT LOOKUP_DESC
+		            FROM SYS_LOOKUP_VAL VAL
+		           WHERE VAL.PID = P.MORTGAGE_TYPE) AS MORTGAGETYPETEXT,
+		         (SELECT V.ACCT_NAME FROM CUS_ACCT_V V WHERE V.ACCT_ID = P.OWN_NAME) OWNNAMETEXT,
+		         (SELECT PAD.INFO_VAL
+		            FROM BIZ_PROJECT_ASS_DTL PAD
+		           WHERE PAD.LOOKUP_VAL = 'constructionArea'
+		             AND PAD.BASE_ID = P.PID) CONSTRUCTIONAREA
+		    FROM BIZ_PROJECT_ASS_BASE P, SYS_LOOKUP_VAL K
+		   WHERE P.PID in (SELECT b.pid FROM biz_project_ass_base p ,biz_project_ass_base b WHERE p.pid=#{pid}
+              AND b.project_id=p.project_id AND b.own_name=p.own_name AND  p.mortgage_guarantee_type=b.mortgage_guarantee_type)
+		     AND P.MORTGAGE_TYPE = K.PID
+	</select>
+	
+	<!-- 更新处理备注和时间 -->
+	<update id="updateProjectAssBaseProcessing" parameterType="com.xlkfinance.bms.rpc.mortgage.ProjectAssBase" >
+	    update BIZ_PROJECT_ASS_BASE set
+	       PROCESS_DTTM= #{processDt,javaType=String, jdbcType=DATE},
+	       PROCESS_REMARK=  #{processRemark}
+	       where pid= #{pid}
+	</update>
+	
+	<!-- 批量撤销抵质押物状态(把状态修改为 等待抵质押物办理 状态) -->
+	<update id="revokeProjectAssBase" parameterType="java.lang.String" >
+	 	UPDATE BIZ_PROJECT_ASS_BASE SET
+       	STATUS = 1 
+        WHERE PID in 
+        <foreach item="idItem" collection="array" open="(" separator="," close=")">
+			#{idItem}
+		</foreach>
+	</update>
+</mapper>

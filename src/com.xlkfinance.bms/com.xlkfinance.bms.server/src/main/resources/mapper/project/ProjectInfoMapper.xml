@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.project.mapper.ProjectInfoMapper">
+	<resultMap id="ProjectResultMap" type="com.xlkfinance.bms.rpc.project.ProjectDTO">
+		<id column="PID" property="pid"/>
+		<result column="ACCT_ID" property="acctId"/>
+		<result column="PROJECT_TYPE" property="projectType"/>
+		<result column="PROJECT_NAME" property="projectName"/>
+		<result column="PROJECT_NUMBER" property="projectNumber"/>
+		<result column="PM_USER_ID" property="pmUserId"/>
+		<result column="REAL_NAME" property="realName"/>
+		<result column="ACCT_NAME" property="acctName" />
+		<result column="APPLY_LOAN_MONEY" property="applyLoanMoney" />
+        <result column="LOAN_MONEY" property="loanMoney" />
+		<result column="REQUEST_DTTM" property="requestDttm" javaType="String" jdbcType="TIMESTAMP"/>
+		<result column="PRODUCT_ID" property="productId" />
+		<result column="PRODUCT_TYPE" property="productType" />
+		<result column="PRODUCT_NAME" property="productName" />
+		<result column="FORECLOSURE_STATUS" property="foreclosureStatus" />
+        <result column="NEXT_USERS" property="nextUsers" />
+		<result column="BUSINESS_SOURCE_STR" property="businessSourceStr" />
+		<result column="LOAN_TYPE" property="loanType" />
+		<result column="DECLARATION" property="declaration" />
+		<result column="RECORD_CLERK_ID" property="recordClerkId" />
+		<result column="CAPITAL_NAME" property="capitalName" />
+		<result column="REQUEST_DTTM" property="requestDttm" />
+		<result column="LOAN_WORK_PROCESS" property="loanWorkProcess" />
+		<result column="NEXT_USER_NAME" property="nextUserName" />
+		
+	</resultMap>
+   
+   <resultMap id="PaymentResultMap" type="com.xlkfinance.bms.rpc.repayment.RepaymentDetailIndexDTO">
+		<id column="PID" property="pid"/>
+		<result column="PLAN_REPAY_DT" property="planRepayDt"/>
+		<result column="PLAN_CYCLE_NUM" property="planCycleNum"/>
+		<result column="THIS_STATUS" property="thisStatus"/>
+		<result column="PLAN_TYPE" property="planType"/>
+		<result column="SHOULD_PRINCIPAL" property="shouldPrincipal"/>
+		<result column="SHOULD_INTEREST" property="shouldInterest"/>
+		<result column="PRODUCT_INTEREST" property="productInterest" />
+		<result column="REBATE_FEE" property="rebateFee" />
+        <result column="MONTH_MAID_RATE" property="monthMaidRate" />
+		<result column="TOTAL" property="total"/>
+		<result column="ACTUAL_PRINCIPAL" property="actualPrincipal" />
+		<result column="ACTUAL_INTEREST" property="actualInterest" />
+		<result column="ACTUAL_TOTAL" property="actualTotal" />
+		<result column="ACTUAL_REPAY_DT" property="actualRepayDt" />
+        <result column="OVERDUE_DAYS" property="overdueDays" />
+		<result column="OVERDUE_MONEY" property="overdueMoney" />
+		<result column="ACTUAL_OVERDUE_MONEY" property="actualOverdueMoney" />
+		<result column="SHOULD_OVERDUE_MONEY" property="shouldOverdueMoney" />
+		<result column="ACTUAL_PENALTY" property="actualPenalty" />
+		<result column="ACTUAL_OVERDUE_DT" property="actualOverdueDt" />
+		<result column="PRINCIPAL_BALANCE" property="principalBalance" />
+		<result column="SHOULD_PREPAYMENT_FEE" property="shouldPrepaymentFee" />
+		<result column="PRE_REPAY_AMT" property="preRepayAmt" />
+		<result column="FINE" property="fine" />
+		<result column="REPAY_DATE" property="repayDate" />
+		<result column="FINE_RATES" property="fineRates" />
+		<result column="PAYMENT_ID" property="paymentId" />
+		<result column="OVERDUE_ID" property="overdueId" />
+		<result column="OVERDUE_RATE" property="overdueRate" />
+		<result column="PRE_REPAY_ID" property="preRepayId" />
+		<result column="OVERDUE_CYCLE_NUM" property="overdueCycleNum" />
+		
+		<result column="SHOULD_PENALTY" property="shouldPenalty" />
+		<result column="SHOULD_PENALTY_TOTAL" property="shouldPenaltyTotal" />
+	</resultMap>
+   
+	<!--房抵贷项目列表查询 -->
+	<select id="getProjectByPage" resultMap="ProjectResultMap" parameterType="com.xlkfinance.bms.rpc.project.ProjectDTO">
+	<![CDATA[
+	SELECT D.* FROM (SELECT T.*, ROWNUM RN
+          FROM (
+    SELECT TO_CHAR(A.REQUEST_DTTM, 'yyyy-MM-dd hh24:mi:ss') REQUEST_DTTM,
+       A.PID,
+       A.PROJECT_NUMBER,
+       A.PROJECT_TYPE,
+       A.PROJECT_NAME,
+       F.CHINA_NAME AS ACCT_NAME,
+       B.PRODUCT_NAME,
+       C.LOAN_MONEY,
+       A.FORECLOSURE_STATUS,
+       A.PM_USER_ID,
+       D.REAL_NAME,
+       A.DECLARATION,
+       A.RECORD_CLERK_ID,
+       I.LOOKUP_DESC AS LOAN_TYPE,
+       H.ORG_NAME AS CAPITAL_NAME,
+       C.GUARANTEE_MONEY AS APPLY_LOAN_MONEY,
+       B.LOAN_WORK_PROCESS_ID AS LOAN_WORK_PROCESS,
+       K.BUSINESS_SOURCE_STR AS BUSINESS_SOURCE_STR,
+       A.NEXT_USER_ID AS NEXT_USER_NAME
+	  FROM (SELECT *
+	          FROM BIZ_PROJECT
+	         WHERE STATUS = 1
+	           ) A
+	  LEFT JOIN BIZ_PRODUCT B
+	    ON A.PRODUCT_ID = B.PID
+	  LEFT JOIN BIZ_PROJECT_GUARANTEE C
+	    ON A.PID = C.PROJECT_ID
+	  LEFT JOIN SYS_USER D
+	    ON A.PM_USER_ID = D.PID
+	  LEFT JOIN (SELECT ACCT_ID, CHINA_NAME
+	               FROM CUS_PERSON
+	              WHERE RELATION_TYPE = 1) F
+	    ON F.ACCT_ID = A.ACCT_ID
+	  LEFT JOIN CAPITAL_ORG_INFO H
+	    ON A.CAPITAL_NAME = H.ORG_CODE
+	  LEFT JOIN (SELECT SLV.LOOKUP_VAL, SLV.LOOKUP_DESC
+	               FROM SYS_LOOKUP SL, SYS_LOOKUP_VAL SLV
+	              WHERE SL.PID = SLV.LOOKUP_ID
+	                AND SL.LOOKUP_TYPE = 'FDD_LOAN_TYPE') I
+	   ON I.LOOKUP_VAL = A.LOAN_TYPE
+	   LEFT JOIN BUSINESS_SOURCE_V K
+	   ON A.PID = K.PID
+	   
+    WHERE 1=1
+	]]>
+		<!-- 数据权限 -->
+		<if test="userIds!=null and userIds.size()>0">
+			AND (
+			<if test="recordClerkId != null and recordClerkId >0">
+		  		A.RECORD_CLERK_ID =#{recordClerkId} OR  
+			</if>
+		   A.PM_USER_ID IN
+		<foreach item="itemId" collection="userIds" open="(" separator="," close=")">
+		          #{itemId}
+		</foreach>
+		)
+		</if>
+		<if test="projectName != null and projectName != '' ">
+			AND A.PROJECT_NAME LIKE '%${projectName}%'
+		</if>
+		<if test="projectNumber != null and projectNumber != '' ">
+			AND A.PROJECT_NUMBER LIKE '%${projectNumber}%'
+		</if>
+		<if test="productId != null and productId >0">
+			AND	A.PRODUCT_ID =#{productId}
+		</if>
+		<if test="isChechan != null">
+			AND	A.IS_CHECHAN =#{isChechan}
+		</if>
+		<if test="projectType != null and projectType >0">
+			AND	A.PROJECT_TYPE =#{projectType}
+		</if>
+		<if test="businessSourceStr != null and businessSourceStr!=''">
+			AND	K.BUSINESS_SOURCE_STR LIKE '%${businessSourceStr}%'
+		</if>
+		<if test="foreclosureStatus != null and foreclosureStatus >0">
+			AND	A.FORECLOSURE_STATUS =#{foreclosureStatus}
+		</if>
+		<if test="beginRequestDttm != null and beginRequestDttm !=''">
+			 AND A.REQUEST_DTTM <![CDATA[>= ]]> #{beginRequestDttm,jdbcType=TIMESTAMP,javaType=String}
+		</if>
+		<if test="endRequestDttm != null and endRequestDttm !=''">
+			 AND A.REQUEST_DTTM <![CDATA[<= ]]> #{endRequestDttm,jdbcType=TIMESTAMP,javaType=String}
+		</if>
+		<if test="declaration != null and declaration !='' ">
+			AND A.DECLARATION LIKE '%${declaration}%'
+		</if>
+		<if test="realName != null and realName !='' ">
+			AND D.REAL_NAME LIKE '%${realName}%'
+		</if>
+		<![CDATA[ORDER BY A.REQUEST_DTTM desc) T
+		WHERE ROWNUM <=#{page}*#{rows}
+		) D
+	WHERE D.RN > ((#{page}-1)*#{rows})]]>
+	</select>
+	
+	
+	<!-- 房抵贷项目列表查询 -->
+	<select id="getProjectCount" resultType="Integer" parameterType="com.xlkfinance.bms.rpc.beforeloan.Project">
+	SELECT COUNT(*) FROM (
+		SELECT 
+       A.PID
+    FROM (SELECT * FROM BIZ_PROJECT
+        WHERE STATUS = 1) A
+    LEFT JOIN  BIZ_PRODUCT B
+    ON A.PRODUCT_ID = B.PID 
+    LEFT JOIN BIZ_PROJECT_GUARANTEE C
+    ON A.PID = C.PROJECT_ID
+    LEFT JOIN SYS_USER D
+    ON A.PM_USER_ID = D.PID
+    LEFT JOIN BUSINESS_SOURCE_V E
+    ON E.PID = A.PID
+    LEFT JOIN 
+       (SELECT ACCT_ID,
+                  CHINA_NAME
+             FROM CUS_PERSON
+            WHERE RELATION_TYPE = 1) F
+    ON F.ACCT_ID = A.ACCT_ID
+    WHERE 1=1
+		<!-- 数据权限 -->
+		<if test="userIds!=null and userIds.size()>0">
+			AND (
+			<if test="recordClerkId != null and recordClerkId >0">
+		  		A.RECORD_CLERK_ID =#{recordClerkId} OR  
+			</if>
+		   A.PM_USER_ID IN
+		<foreach item="itemId" collection="userIds" open="(" separator="," close=")">
+		          #{itemId}
+		</foreach>
+		)
+		</if>
+		<if test="projectName != null and projectName != '' ">
+			AND A.PROJECT_NAME LIKE '%${projectName}%'
+		</if>
+		<if test="projectNumber != null and projectNumber != '' ">
+			AND A.PROJECT_NUMBER LIKE '%${projectNumber}%'
+		</if>
+		<if test="productId != null and productId >0">
+			AND	A.PRODUCT_ID =#{productId}
+		</if>
+		<if test="isChechan != null">
+			AND	A.IS_CHECHAN =#{isChechan}
+		</if>
+		<if test="projectType != null and projectType >0">
+			AND	A.PROJECT_TYPE =#{projectType}
+		</if>
+		<if test="businessSourceStr != null and businessSourceStr!=''">
+			AND	E.BUSINESS_SOURCE_STR LIKE '%${businessSourceStr}%'
+		</if>
+		<if test="foreclosureStatus != null and foreclosureStatus >0">
+			AND	A.FORECLOSURE_STATUS =#{foreclosureStatus}
+		</if>
+		<if test="beginRequestDttm != null and beginRequestDttm !=''">
+			 AND A.REQUEST_DTTM <![CDATA[>= ]]> #{beginRequestDttm,jdbcType=TIMESTAMP,javaType=String}
+		</if>
+		<if test="endRequestDttm != null and endRequestDttm !=''">
+			 AND A.REQUEST_DTTM <![CDATA[<= ]]> #{endRequestDttm,jdbcType=TIMESTAMP,javaType=String}
+		</if>
+		<if test="declaration != null and declaration !='' ">
+			AND A.DECLARATION LIKE '%${declaration}%'
+		</if>
+		<if test="realName != null and realName !='' ">
+			AND D.REAL_NAME LIKE '%${realName}%'
+		</if>
+		 ) DP
+	</select>
+	
+	<select id="queryRepayment"  resultMap="PaymentResultMap" parameterType="com.xlkfinance.bms.rpc.repayment.RepaymentDetailIndexDTO">
+		SELECT A.PID,
+           TO_CHAR(A.PLAN_REPAY_DT,'yyyy-MM-dd') AS PLAN_REPAY_DT,
+           A.PLAN_CYCLE_NUM,
+           A.SHOULD_PRINCIPAL,
+           A.SHOULD_INTEREST,
+           A.TOTAL,
+           A.PRINCIPAL_BALANCE,
+           A.THIS_STATUS,
+           A.PROJECT_ID,
+           A.REBATE_FEE,
+           (A.SHOULD_INTEREST-A.REBATE_FEE) AS PRODUCT_INTEREST,
+           A.MONTH_MAID_RATE,
+           B.ACTUAL_PRINCIPAL,
+           B.ACTUAL_INTEREST,
+           B.ACTUAL_TOTAL,
+           TO_CHAR(B.ACTUAL_PRINCIPAL_TIME,'yyyy-MM-dd') AS ACTUAL_REPAY_DT,
+           C.OVERDUE_DAY AS OVERDUE_DAYS,
+           C.OVERDUE_MONEY,
+           C.ACTUAL_OVERDUE_MONEY,
+           C.SHOULD_OVERDUE_MONEY,
+           C.ACTUAL_PENALTY,
+           E.OVERDUE_RATE AS OVERDUE_RATE,
+           TO_CHAR(C.ACTUAL_PENALTY_TIME,'yyyy-MM-dd') AS actual_Overdue_Dt,
+           D.SHOULD_PREPAYMENT_FEE,
+           D.PRE_REPAY_AMT,
+           D.FINE,
+           TO_CHAR(D.REPAY_DATE,'yyyy-MM-dd') AS REPAY_DATE,
+           E.PREPAYMENT_RATE AS FINE_RATES,
+           B.PID AS PAYMENT_ID,
+           C.PID AS OVERDUE_ID,
+           D.PID AS PER_REPAY_ID,
+           C.SHOULD_PENALTY
+      FROM BIZ_LOAN_REPAYMENT_PLAN A
+      LEFT JOIN BIZ_PAYMENT_INFO B
+        ON A.PID = B.LOAN_PLAN_ID
+       AND A.PROJECT_ID = B.PROJECT_ID
+      LEFT JOIN BIZ_PROJECT_OVERDUE C
+        ON A.PID = C.LOAN_PLAN_ID
+       AND A.PROJECT_ID = C.PROJECT_ID
+      LEFT JOIN BIZ_LOAN_PRE_REPAY D
+        ON A.PID = D.LOAN_PLAN_ID
+       AND A.PROJECT_ID = D.PROJECT_ID
+      LEFT JOIN BIZ_PROJECT_GUARANTEE E
+      ON A.PROJECT_ID = E.PROJECT_ID
+		WHERE A.PROJECT_ID = #{projectId}
+		ORDER BY A.PLAN_CYCLE_NUM
+	</select>
+	<!-- 根据项目ID查询项目逾期信息（抵押贷） -->
+	<select id="queryOverdueByProject" resultMap="PaymentResultMap" parameterType="java.lang.Integer">
+		SELECT *
+  			 FROM (SELECT A.PID,
+               A.PROJECT_ID,
+               B.OVERDUE_MONEY,
+               B.SHOULD_PENALTY,
+               B.ACTUAL_PENALTY,
+               B.OVERDUE_DAY AS OVERDUE_DAYS,
+               B.OVERDUE_RATE,
+               A.PRINCIPAL_BALANCE,
+               A.PLAN_CYCLE_NUM AS OVERDUE_CYCLE_NUM
+          FROM BIZ_LOAN_REPAYMENT_PLAN A
+          LEFT JOIN BIZ_PROJECT_OVERDUE B
+            ON A.PID = B.LOAN_PLAN_ID
+         WHERE A.THIS_STATUS = 3 AND A.PROJECT_ID = #{projectId}
+         ORDER BY A.PLAN_CYCLE_NUM) T
+ 		WHERE ROWNUM = 1
+	</select>
+	<!-- 批量修改还款计划中的本期状态以及对账状态 -->
+	<update id="updateRepayments" parameterType="java.util.List">
+	BEGIN
+	 <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+		UPDATE BIZ_LOAN_REPAYMENT_PLAN
+		<set>
+		<if test="item.thisStatus != null and item.thisStatus>0">
+		     THIS_STATUS=#{item.thisStatus,jdbcType=INTEGER},
+		</if>
+		<if test="item.isReconciliation != null and item.isReconciliation >0">
+		     IS_RECONCILIATION=#{item.isReconciliation,jdbcType=INTEGER},
+		</if>
+		</set> 
+		WHERE PID = #{item.pId,jdbcType=INTEGER}
+	 </foreach>
+	 ;END;
+	</update>
+</mapper>

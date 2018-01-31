@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xlkfinance.bms.server.project.mapper.BizHisLoanInfoMapper">
+	<resultMap id="bizHisLoanInfoMap" type="com.xlkfinance.bms.rpc.project.BizHisLoanInfo">
+		<id property="pid" column="PID" />
+		<id property="projectId" column="PROJECT_ID" />
+		<id property="loanMoney" column="LOAN_MONEY" />
+		<id property="loanTerm" column="LOAN_TERM" />
+		<id property="repaymentType" column="REPAYMENT_TYPE" />
+		<id property="mortgageRate" column="MORTGAGE_RATE" />
+		<id property="loanUsage" column="LOAN_USAGE" />
+		<id property="payment" column="PAYMENT" />
+		<id property="monthMaidRate" column="MONTH_MAID_RATE" />
+		<id property="overdueRate" column="OVERDUE_RATE" />
+		<id property="prepaymentRate" column="PREPAYMENT_RATE" />
+		<id property="feeRate" column="FEE_RATE" />
+		<id property="createrId" column="CREATER_ID" />
+		<id property="createDate" column="CREATE_DATE" />
+		<id property="createNode" column="CREATE_NODE" />
+		<id property="createUserName" column="CREATE_USER_NAME" />
+		<id property="createNodeName" column="CREATE_NODE_NAME" />
+		<id property="projectType" column="PROJECT_TYPE" />
+	</resultMap>
+	<sql id="column_list">
+        PID,PROJECT_ID,LOAN_MONEY,LOAN_TERM,REPAYMENT_TYPE,MORTGAGE_RATE,LOAN_USAGE,PAYMENT,MONTH_MAID_RATE,OVERDUE_RATE,PREPAYMENT_RATE,FEE_RATE,CREATER_ID,CREATE_DATE,CREATE_NODE
+	</sql>
+	<!-- 查询所有 -->
+	<select id="getAll" resultMap="bizHisLoanInfoMap" parameterType="com.xlkfinance.bms.rpc.project.BizHisLoanInfo">
+		SELECT
+		<include refid="column_list" />,
+		(SELECT REAL_NAME FROM SYS_USER WHERE PID = CREATER_ID) CREATE_USER_NAME,
+		8 PROJECT_TYPE
+		FROM BIZ_HIS_LOAN_INFO
+		<where>
+			<trim>
+		      <if test="pid != null and pid >0">
+	          PID=#{pid}
+	          </if>
+		      <if test="projectId != null and projectId >0">
+	          AND PROJECT_ID=#{projectId}
+	          </if>
+		      <if test="loanMoney != null and loanMoney >0">
+	          AND LOAN_MONEY=#{loanMoney}
+	          </if>
+		      <if test="loanTerm != null and loanTerm >0">
+	          AND LOAN_TERM=#{loanTerm}
+	          </if>
+		      <if test="repaymentType != null and repaymentType !=''">
+	          AND REPAYMENT_TYPE=#{repaymentType}
+	          </if>
+		      <if test="mortgageRate != null and mortgageRate >0">
+	          AND MORTGAGE_RATE=#{mortgageRate}
+	          </if>
+		      <if test="loanUsage != null and loanUsage !=''">
+	          AND LOAN_USAGE=#{loanUsage}
+	          </if>
+		      <if test="payment != null and payment !=''">
+	          AND PAYMENT=#{payment}
+	          </if>
+		      <if test="monthMaidRate != null and monthMaidRate >0">
+	          AND MONTH_MAID_RATE=#{monthMaidRate}
+	          </if>
+		      <if test="overdueRate != null and overdueRate >0">
+	          AND OVERDUE_RATE=#{overdueRate}
+	          </if>
+		      <if test="prepaymentRate != null and prepaymentRate >0">
+	          AND PREPAYMENT_RATE=#{prepaymentRate}
+	          </if>
+		      <if test="feeRate != null and feeRate >0">
+	          AND FEE_RATE=#{feeRate}
+	          </if>
+		      <if test="createrId != null and createrId >0">
+	          AND CREATER_ID=#{createrId}
+	          </if>
+		      <if test="createDate != null and createDate !=''">
+	          AND CREATE_DATE=#{createDate}
+	          </if>
+		      <if test="createNode != null and createNode >0">
+	          AND CREATE_NODE=#{createNode}
+	          </if>
+			</trim>
+		</where>
+		ORDER BY CREATE_DATE DESC
+	</select>
+	<!-- 根据id获取 -->
+	<select id="getById" resultMap="bizHisLoanInfoMap">
+		SELECT <include refid="column_list" /> FROM BIZ_HIS_LOAN_INFO WHERE PID=#{pid}
+	</select>
+	
+	<!-- 根据ProjectId获取 -->
+	<select id="getHisLoanInfoByProjectId" resultMap="bizHisLoanInfoMap">
+		SELECT <include refid="column_list" /> FROM BIZ_HIS_LOAN_INFO WHERE PROJECT_ID=#{projectId,jdbcType=INTEGER}
+	</select>
+	
+	<!-- 插入一条数据 -->
+	<insert id="insert" parameterType="com.xlkfinance.bms.rpc.project.BizHisLoanInfo">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_BIZ_HIS_LOAN_INFO.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_HIS_LOAN_INFO (
+			PID,
+			PROJECT_ID,
+			LOAN_MONEY,
+			LOAN_TERM,
+			REPAYMENT_TYPE,
+			MORTGAGE_RATE,
+			LOAN_USAGE,
+			PAYMENT,
+			MONTH_MAID_RATE,
+			OVERDUE_RATE,
+			PREPAYMENT_RATE,
+			FEE_RATE,
+			CREATER_ID,
+			CREATE_DATE,
+			CREATE_NODE
+		)
+		SELECT
+			#{pid,jdbcType=INTEGER},
+			PROJECT_ID,
+			LOAN_MONEY,
+			LOAN_TERM,
+			REPAYMENT_TYPE,
+			MORTGAGE_RATE,
+			LOAN_USAGE,
+			PAYMENT_SOURCE,
+			MONTH_MAID_RATE,
+			OVERDUE_RATE,
+			PREPAYMENT_RATE,
+			FEE_RATE,
+			#{createrId,jdbcType=INTEGER},
+			SYSDATE,
+			#{createNode,jdbcType=INTEGER}
+		FROM biz_project_guarantee WHERE PROJECT_ID = #{projectId,jdbcType=INTEGER}
+	</insert>
+	
+	<!-- 根据id删除数据 -->
+	<delete id="deleteById" parameterType="com.xlkfinance.bms.rpc.project.BizHisLoanInfo">
+		<![CDATA[DELETE FROM BIZ_HIS_LOAN_INFO WHERE PID=#{pid}]]>
+	</delete>
+	<!-- 根据id更新数据 -->
+		<update id="update" parameterType="com.xlkfinance.bms.rpc.project.BizHisLoanInfo">
+		UPDATE BIZ_HIS_LOAN_INFO
+		<set>
+		    <if test="pid != null and pid >0">
+		     PID=#{pid},
+			</if>
+		    <if test="projectId != null and projectId >0">
+		     PROJECT_ID=#{projectId},
+			</if>
+		    <if test="loanMoney != null and loanMoney >0">
+		     LOAN_MONEY=#{loanMoney},
+			</if>
+		    <if test="loanTerm != null and loanTerm >0">
+		     LOAN_TERM=#{loanTerm},
+			</if>
+		    <if test="repaymentType != null and repaymentType !=''">
+		     REPAYMENT_TYPE=#{repaymentType},
+			</if>
+		    <if test="mortgageRate != null and mortgageRate >0">
+		     MORTGAGE_RATE=#{mortgageRate},
+			</if>
+		    <if test="loanUsage != null and loanUsage !=''">
+		     LOAN_USAGE=#{loanUsage},
+			</if>
+		    <if test="payment != null and payment !=''">
+		     PAYMENT=#{payment},
+			</if>
+		    <if test="monthMaidRate != null and monthMaidRate >0">
+		     MONTH_MAID_RATE=#{monthMaidRate},
+			</if>
+		    <if test="overdueRate != null and overdueRate >0">
+		     OVERDUE_RATE=#{overdueRate},
+			</if>
+		    <if test="prepaymentRate != null and prepaymentRate >0">
+		     PREPAYMENT_RATE=#{prepaymentRate},
+			</if>
+		    <if test="feeRate != null and feeRate >0">
+		     FEE_RATE=#{feeRate},
+			</if>
+		    <if test="createrId != null and createrId >0">
+		     CREATER_ID=#{createrId},
+			</if>
+		    <if test="createDate != null and createDate !=''">
+		     CREATE_DATE=#{createDate,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		    <if test="createNode != null and createNode >0">
+		     CREATE_NODE=#{createNode},
+			</if>
+		</set>
+		WHERE PID = #{pid}
+	</update>
+	<!-- 根据传入多个id删除数据 -->
+	<delete id="deleteByIds" parameterType="java.util.List">
+		DELETE FROM BIZ_HIS_LOAN_INFO WHERE PID in
+		<foreach collection="list" item="item" index="index" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+</mapper>

@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xlkfinance.bms.server.aom.org.mapper.OrgCooperateCityInfoMapper">
+	<resultMap id="orgCooperateCityInfoMap" type="com.qfang.xk.aom.rpc.org.OrgCooperateCityInfo">
+		<id property="pid" column="PID" />
+		<id property="areaCode" column="AREA_CODE" />
+		<id property="cityName" column="CITY_NAME" />
+		<id property="orgId" column="ORG_ID" />
+	</resultMap>
+	<sql id="column_list">
+        PID,AREA_CODE,CITY_NAME,ORG_ID
+	</sql>
+	<!-- 查询所有 -->
+	<select id="getAll" resultMap="orgCooperateCityInfoMap" parameterType="com.qfang.xk.aom.rpc.org.OrgCooperateCityInfo">
+		SELECT
+		<include refid="column_list" />
+		FROM ORG_COOPERATE_CITY_INFO
+		<where>
+			<trim>
+		      <if test="pid != null and pid >0">
+	          PID=#{pid}
+	          </if>
+		      <if test="areaCode != null and areaCode !=''">
+	          AND AREA_CODE=#{areaCode}
+	          </if>
+		      <if test="cityName != null and cityName !=''">
+	          AND CITY_NAME=#{cityName}
+	          </if>
+		      <if test="orgId != null and orgId >0">
+	          AND ORG_ID=#{orgId}
+	          </if>
+			</trim>
+		</where>
+	</select>
+	<!-- 根据id获取 -->
+	<select id="getById" resultMap="orgCooperateCityInfoMap">
+		SELECT <include refid="column_list" /> FROM ORG_COOPERATE_CITY_INFO WHERE PID=#{pid}
+	</select>
+	<!-- 插入一条数据 -->
+	<insert id="insert" parameterType="com.qfang.xk.aom.rpc.org.OrgCooperateCityInfo">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_ORG_COOPERATE_CITY_INFO.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO ORG_COOPERATE_CITY_INFO
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+				PID,
+			</if>
+		    <if test="areaCode != null and areaCode !=''">
+				AREA_CODE,
+			</if>
+		    <if test="cityName != null and cityName !=''">
+				CITY_NAME,
+			</if>
+		    <if test="orgId != null and orgId >0">
+				ORG_ID,
+			</if>
+			<if test="provinceCode != null and provinceCode !=''">
+				PROVINCE_CODE,
+			</if>
+			<if test="provinceName != null and provinceName !=''">
+				PROVINCE_NAME,
+			</if>
+		    <if test="contact != null and contact !=''">
+				CONTACT,
+			</if>
+		    <if test="phone != null and phone!=''">
+				PHONE,
+			</if>
+			<if test="remark != null and remark !=''">
+				REMARK,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+		        #{pid},
+			</if>
+		    <if test="areaCode != null and areaCode !=''">
+		        #{areaCode},
+			</if>
+		    <if test="cityName != null and cityName !=''">
+		       #{cityName},
+			</if>
+		    <if test="orgId != null and orgId >0">
+		        #{orgId},
+			</if>
+			<if test="provinceCode != null and provinceCode !=''">
+			    #{provinceCode},
+			</if>
+			<if test="provinceName != null and provinceName !=''">
+			    #{provinceName},
+			</if>
+		    <if test="contact != null and contact !=''">
+			     #{contact},
+			</if>
+		    <if test="phone != null and phone!=''">
+				 #{phone},
+			</if>
+			<if test="remark != null and remark !=''">
+				 #{remark},
+			</if>
+			
+		</trim>
+	</insert>
+	<!-- 根据id删除数据 -->
+	<delete id="deleteById" parameterType="com.qfang.xk.aom.rpc.org.OrgCooperateCityInfo">
+		<![CDATA[DELETE FROM ORG_COOPERATE_CITY_INFO WHERE PID=#{pid}]]>
+	</delete>
+	<!-- 根据id更新数据 -->
+		<update id="update" parameterType="com.qfang.xk.aom.rpc.org.OrgCooperateCityInfo">
+		UPDATE ORG_COOPERATE_CITY_INFO
+		<set>
+		    <if test="pid != null and pid >0">
+		     PID=#{pid},
+			</if>
+		    <if test="areaCode != null and areaCode !=''">
+		     AREA_CODE=#{areaCode},
+			</if>
+		    <if test="cityName != null and cityName !=''">
+		     CITY_NAME=#{cityName},
+			</if>
+		    <if test="orgId != null and orgId >0">
+		     ORG_ID=#{orgId},
+			</if>
+			<if test="provinceCode != null and provinceCode !=''">
+				PROVINCE_CODE=#{provinceCode},
+			</if>
+			<if test="provinceName != null and provinceName !=''">
+				PROVINCE_NAME=#{provinceName},
+			</if>
+		    <if test="contact != null and contact !=''">
+				CONTACT=#{contact},
+			</if>
+		    <if test="phone != null and phone!=''">
+				PHONE=#{phone},
+			</if>
+			<if test="remark != null and remark !=''">
+				REMARK=#{remark},
+			</if>
+		</set>
+		WHERE PID = #{pid}
+	</update>
+	<!-- 根据传入多个id删除数据 -->
+	<delete id="deleteByIds" parameterType="java.util.List">
+		DELETE FROM ORG_COOPERATE_CITY_INFO WHERE PID in
+		<foreach collection="list" item="item" index="index" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+	
+	<!-- 根据传入机构ID删除数据 -->
+	<delete id="deleteByOrgId" parameterType="java.lang.Integer">
+		DELETE FROM ORG_COOPERATE_CITY_INFO WHERE ORG_ID=#{orgId}
+	</delete>
+	
+	<select id="getCitysByCodes" parameterType="java.util.List" resultMap="orgCooperateCityInfoMap">
+		SELECT SA.AREA_CODE AS AREA_CODE,SA.AREA_NAME AS CITY_NAME FROM SYS_AREA_INFO SA WHERE SA.AREA_CODE IN 
+		<foreach collection="list" item="item" index="index" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+</mapper>

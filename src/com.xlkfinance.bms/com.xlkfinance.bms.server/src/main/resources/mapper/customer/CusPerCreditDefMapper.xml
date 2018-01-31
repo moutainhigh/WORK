@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.customer.mapper.CusPerCreditDefMapper">
+
+<resultMap id="selectAllResultMap" type="com.xlkfinance.bms.rpc.customer.CusPerCreditDef" >
+    <id column="PID" property="pid" jdbcType="INTEGER" />
+   	<result column="CREDIT_ID" property="cusPerCredit.pid" jdbcType="INTEGER" /> 
+   	<result column="DAY_TYPE" property="dayType" jdbcType="INTEGER" /> 
+   	<result column="DAY_VAL" property="dayVal" jdbcType="INTEGER" /> 
+   	<result column="DAY_INDEX" property="dayIndex" jdbcType="INTEGER" /> 
+   	<result column="DAY_NAME_DESC" property="dayNameDesc" jdbcType="VARCHAR" /> 
+   	<result column="STATUS" property="status" jdbcType="INTEGER" /> 
+</resultMap>	
+	
+<insert id="insertCreditDefs" parameterType="java.util.List">
+    insert into cus_per_credit_def (
+    	PID, 
+    	CREDIT_ID, 
+    	DAY_TYPE,
+    	DAY_VAL,
+    	DAY_INDEX,
+    	DAY_NAME_DESC,
+    	STATUS) 
+	select Seq_Cus_Per_Credit_Def.Nextval,A.* from(
+        <foreach collection="list" item="item" index="index"
+            separator="UNION">
+            SELECT
+		    	#{item.cusPerCredit.pid,jdbcType=INTEGER},
+		     	#{item.dayType,jdbcType=INTEGER},
+		     	#{item.dayVal,jdbcType=INTEGER},
+		     	#{item.dayIndex,jdbcType=INTEGER},
+		     	#{item.dayNameDesc,jdbcType=VARCHAR},
+		     	#{item.status,jdbcType=INTEGER}
+            from dual 
+        </foreach>
+     ) A
+</insert>
+  <!-- 更新的方法 -->
+<update id="updateCreditDefs" parameterType="java.util.List">
+	begin
+	<foreach collection="list" item="item" index="index" open="" close="" separator=";">
+               update cus_per_credit_def
+			<set>
+			<if test="item.cusPerCredit.pid != null">
+			    CREDIT_ID = #{item.cusPerCredit.pid,jdbcType=INTEGER},
+			</if>
+			<if test="item.dayType != null">
+			   DAY_TYPE = #{item.dayType,jdbcType=INTEGER},
+			</if>
+	    	<if test="item.dayVal != null">
+	      		DAY_VAL = #{item.dayVal,jdbcType=INTEGER},
+	      	</if>
+	      	<if test="item.dayIndex != null">
+	      		day_Index = #{item.dayIndex,jdbcType=INTEGER},
+	      	</if>
+	      	<if test="item.dayNameDesc != null">
+	      		day_name_desc = #{item.dayNameDesc,jdbcType=VARCHAR},
+	      	</if>
+	      	<if test="item.status != null">
+	      		status = #{item.status,jdbcType=INTEGER},
+	      	</if>
+			</set> 
+			where pid = #{item.pid,jdbcType=INTEGER}
+       </foreach>
+        ;end;
+</update>
+	
+	
+	<select id="selectDefByCreditId" resultMap="selectAllResultMap" parameterType="com.xlkfinance.bms.rpc.customer.CusPerCreditDef">
+  		select * from cus_per_credit_def where credit_id=#{cusPerCredit.pid,jdbcType=INTEGER} and day_type=#{dayType,jdbcType=INTEGER} order by day_index asc
+  	</select>
+</mapper>

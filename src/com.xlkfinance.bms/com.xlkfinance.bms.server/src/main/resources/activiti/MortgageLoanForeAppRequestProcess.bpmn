@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.xlkfinance.com/bms/mortgageLoanForeAppRequestProcess">
+  <process id="mortgageLoanForeAppRequestProcess" name="房抵贷贷前申请工作流" isExecutable="true">
+    <startEvent id="startevent" name="开始">
+      <extensionElements>
+        <activiti:formProperty id="nextRole" name="下一节点角色" type="string" default="JUNIOR_ACCOUNT_MANAGER" required="true"></activiti:formProperty>
+        <activiti:formProperty id="flow" name="流程走向标志" type="string" default="next" required="true"></activiti:formProperty>
+        <activiti:formProperty id="allowTurnDown" name="是否允许驳回？" type="string" default="no" required="true"></activiti:formProperty>
+      </extensionElements>
+    </startEvent>
+    <userTask id="task_AssessmentRequest" name="评估" activiti:candidateUsers="${candidateUsers}">
+      <extensionElements>
+        <activiti:formProperty id="nextRole" name="下一节点角色" type="string" default="MORTGAGE_INVESTIGATION" required="true"></activiti:formProperty>
+        <activiti:formProperty id="flow" name="流程走向标志" type="string" default="next" required="true"></activiti:formProperty>
+        <activiti:formProperty id="allowTurnDown" name="是否允许驳回？" type="string" default="yes" required="true"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <userTask id="task_InvestigationCheck" name="下户" activiti:candidateUsers="${candidateUsers}">
+      <extensionElements>
+        <activiti:formProperty id="nextRole" name="下一节点角色" type="string" default="RISK_TWO" required="true"></activiti:formProperty>
+        <activiti:formProperty id="flow" name="流程走向标志" type="string" default="next" required="true"></activiti:formProperty>
+        <activiti:formProperty id="allowTurnDown" name="是否允许驳回？" type="string" default="yes" required="true"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <userTask id="task_RiskTwoCheck" name="风控复审" activiti:candidateUsers="${candidateUsers}">
+      <extensionElements>
+        <activiti:formProperty id="nextRole" name="下一节点角色" type="string" default="RISK_OVER" required="true"></activiti:formProperty>
+        <activiti:formProperty id="flow" name="流程走向标志" type="string" default="next" required="true"></activiti:formProperty>
+        <activiti:formProperty id="allowTurnDown" name="是否允许驳回？" type="string" default="yes" required="true"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <userTask id="task_RiskOverCheck" name="风控终审" activiti:candidateUsers="${candidateUsers}">
+      <extensionElements>
+        <activiti:formProperty id="nextRole" name="下一节点角色" type="string" default="next" required="true"></activiti:formProperty>
+        <activiti:formProperty id="flow" name="流程走向标志" type="string" default="next" required="true"></activiti:formProperty>
+        <activiti:formProperty id="allowTurnDown" name="是否允许驳回？" type="string" default="yes" required="true"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flowToApply" sourceRef="startevent" targetRef="task_MortgageLoanRequest"></sequenceFlow>
+    <sequenceFlow id="flowToInvest" name="下户" sourceRef="exclusivegatewayAssessment" targetRef="task_InvestigationCheck">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${router > 0}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flowToReaudit" sourceRef="task_InvestigationCheck" targetRef="task_RiskTwoCheck"></sequenceFlow>
+    <sequenceFlow id="flowToFinalAudit" name="终审" sourceRef="exclusivegatewayReAudit" targetRef="task_RiskOverCheck">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${router > 0}]]></conditionExpression>
+    </sequenceFlow>
+    <endEvent id="endevent" name="End"></endEvent>
+    <userTask id="task_MortgageLoanRequest" name="房抵贷申请" activiti:candidateUsers="${candidateUsers}">
+      <extensionElements>
+        <activiti:formProperty id="nextRole" name="下一节点角色" type="string" default="MORTGAGE_ASSESSMENT" required="true"></activiti:formProperty>
+        <activiti:formProperty id="flow" name="流程走向标志" type="string" default="next" required="true"></activiti:formProperty>
+        <activiti:formProperty id="allowTurnDown" name="是否允许驳回？" type="string" default="no" required="true"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flowToAssess" sourceRef="task_MortgageLoanRequest" targetRef="task_AssessmentRequest"></sequenceFlow>
+    <exclusiveGateway id="exclusivegatewayAssessment" name="评估网关分支，下户或结束"></exclusiveGateway>
+    <sequenceFlow id="flowToGatewayInvest" sourceRef="task_AssessmentRequest" targetRef="exclusivegatewayAssessment"></sequenceFlow>
+    <sequenceFlow id="flowAssessToEnd" name="评估拒单" sourceRef="exclusivegatewayAssessment" targetRef="endevent">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${router <= 0}]]></conditionExpression>
+    </sequenceFlow>
+    <exclusiveGateway id="exclusivegatewayReAudit" name="复审网关分支，终审或结束"></exclusiveGateway>
+    <sequenceFlow id="flowToGatewayFinalAudit" sourceRef="task_RiskTwoCheck" targetRef="exclusivegatewayReAudit"></sequenceFlow>
+    <sequenceFlow id="flowReauditToEnd" name="复审拒单" sourceRef="exclusivegatewayReAudit" targetRef="endevent">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${router <= 0}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flowToEnd" sourceRef="task_RiskOverCheck" targetRef="endevent"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_mortgageLoanForeAppRequestProcess">
+    <bpmndi:BPMNPlane bpmnElement="mortgageLoanForeAppRequestProcess" id="BPMNPlane_mortgageLoanForeAppRequestProcess">
+      <bpmndi:BPMNShape bpmnElement="startevent" id="BPMNShape_startevent">
+        <omgdc:Bounds height="35.0" width="35.0" x="20.0" y="40.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="task_AssessmentRequest" id="BPMNShape_task_AssessmentRequest">
+        <omgdc:Bounds height="55.0" width="105.0" x="280.0" y="30.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="task_InvestigationCheck" id="BPMNShape_task_InvestigationCheck">
+        <omgdc:Bounds height="55.0" width="105.0" x="680.0" y="30.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="task_RiskTwoCheck" id="BPMNShape_task_RiskTwoCheck">
+        <omgdc:Bounds height="55.0" width="105.0" x="680.0" y="160.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="task_RiskOverCheck" id="BPMNShape_task_RiskOverCheck">
+        <omgdc:Bounds height="55.0" width="105.0" x="539.0" y="268.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent" id="BPMNShape_endevent">
+        <omgdc:Bounds height="35.0" width="35.0" x="444.0" y="171.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="task_MortgageLoanRequest" id="BPMNShape_task_MortgageLoanRequest">
+        <omgdc:Bounds height="55.0" width="105.0" x="120.0" y="30.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegatewayAssessment" id="BPMNShape_exclusivegatewayAssessment">
+        <omgdc:Bounds height="40.0" width="40.0" x="441.0" y="37.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegatewayReAudit" id="BPMNShape_exclusivegatewayReAudit">
+        <omgdc:Bounds height="40.0" width="40.0" x="571.0" y="168.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flowToApply" id="BPMNEdge_flowToApply">
+        <omgdi:waypoint x="55.0" y="57.0"></omgdi:waypoint>
+        <omgdi:waypoint x="120.0" y="57.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flowToInvest" id="BPMNEdge_flowToInvest">
+        <omgdi:waypoint x="481.0" y="57.0"></omgdi:waypoint>
+        <omgdi:waypoint x="680.0" y="57.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="24.0" x="541.0" y="40.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flowToReaudit" id="BPMNEdge_flowToReaudit">
+        <omgdi:waypoint x="732.0" y="85.0"></omgdi:waypoint>
+        <omgdi:waypoint x="732.0" y="160.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flowToFinalAudit" id="BPMNEdge_flowToFinalAudit">
+        <omgdi:waypoint x="591.0" y="208.0"></omgdi:waypoint>
+        <omgdi:waypoint x="591.0" y="268.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="24.0" x="599.0" y="216.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flowToAssess" id="BPMNEdge_flowToAssess">
+        <omgdi:waypoint x="225.0" y="57.0"></omgdi:waypoint>
+        <omgdi:waypoint x="280.0" y="57.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flowToGatewayInvest" id="BPMNEdge_flowToGatewayInvest">
+        <omgdi:waypoint x="385.0" y="57.0"></omgdi:waypoint>
+        <omgdi:waypoint x="441.0" y="57.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flowAssessToEnd" id="BPMNEdge_flowAssessToEnd">
+        <omgdi:waypoint x="461.0" y="77.0"></omgdi:waypoint>
+        <omgdi:waypoint x="461.0" y="171.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="48.0" x="412.0" y="119.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flowToGatewayFinalAudit" id="BPMNEdge_flowToGatewayFinalAudit">
+        <omgdi:waypoint x="680.0" y="187.0"></omgdi:waypoint>
+        <omgdi:waypoint x="611.0" y="188.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flowReauditToEnd" id="BPMNEdge_flowReauditToEnd">
+        <omgdi:waypoint x="571.0" y="188.0"></omgdi:waypoint>
+        <omgdi:waypoint x="479.0" y="188.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="48.0" x="501.0" y="171.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flowToEnd" id="BPMNEdge_flowToEnd">
+        <omgdi:waypoint x="591.0" y="268.0"></omgdi:waypoint>
+        <omgdi:waypoint x="461.0" y="206.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

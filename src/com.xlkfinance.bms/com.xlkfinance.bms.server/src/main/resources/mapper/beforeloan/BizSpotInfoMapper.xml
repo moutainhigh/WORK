@@ -1,0 +1,570 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xlkfinance.bms.server.beforeloan.mapper.BizSpotInfoMapper">
+	<resultMap id="bizSpotInfoMap" type="com.xlkfinance.bms.rpc.beforeloan.BizSpotInfo">
+		<id property="pid" column="PID" />
+		<id property="projectId" column="PROJECT_ID" />
+		<id property="eastateId" column="EASTATE_ID" />
+		<id property="shouldSpotTime" column="SHOULD_SPOT_TIME" />
+		<id property="actualSpotTime" column="ACTUAL_SPOT_TIME" />
+		<id property="decorationSituation" column="DECORATION_SITUATION" />
+		<id property="houseTotals" column="HOUSE_TOTALS" />
+		<id property="floorTotals" column="FLOOR_TOTALS" />
+		<id property="houseStructure" column="HOUSE_STRUCTURE" />
+		<id property="elevatorsNums" column="ELEVATORS_NUMS" />
+		<id property="householdNums" column="HOUSEHOLD_NUMS" />
+		<id property="housePattern" column="HOUSE_PATTERN" />
+		<id property="shoppingNums" column="SHOPPING_NUMS" />
+		<id property="schoolNums" column="SCHOOL_NUMS" />
+		<id property="bankNums" column="BANK_NUMS" />
+		<id property="hospitalNums" column="HOSPITAL_NUMS" />
+		<id property="trafficSituation" column="TRAFFIC_SITUATION" />
+		<id property="aroundEnvironmental" column="AROUND_ENVIRONMENTAL" />
+		<id property="agencyPrice" column="AGENCY_PRICE" />
+		<id property="totalPrice" column="TOTAL_PRICE" />
+		<id property="useSituation" column="USE_SITUATION" />
+		<id property="actualPurpose" column="ACTUAL_PURPOSE" />
+		<id property="userType" column="USER_TYPE" />
+		<id property="userSituation" column="USER_SITUATION" />
+		<id property="leaseUse" column="LEASE_USE" />
+		<id property="updateDate" column="UPDATE_DATE" />
+		<id property="leaseTimeStart" column="LEASE_TIME_START" />
+		<id property="leaseTimeEnd" column="LEASE_TIME_END" />
+		<id property="lessee" column="LESSEE" />
+		<id property="othenRemark" column="OTHEN_REMARK" />
+		<id property="createDate" column="CREATE_DATE" />
+		<id property="createrId" column="CREATER_ID" />
+		<id property="updateId" column="UPDATE_ID" />
+		<id property="housePatternDetail" column="HOUSE_PATTERN_DETAIL" />
+		<id property="rentPaymentWay" column="RENT_PAYMENT_WAY" />
+		<id property="leaseUsePhone" column="LEASE_USE_PHONE" />
+		<id property="rentPrice" column="RENT_PRICE" />
+		<id property="rentEvaluationPrice" column="RENT_EVALUATION_PRICE" />
+		<id property="evaluationSource" column="EVALUATION_SOURCE" />
+		<id property="evaluationSourceDetail" column="EVALUATION_SOURCE_DETAIL" />
+		<id property="vacantDays" column="VACANT_DAYS" />
+		<id property="vacantRate" column="VACANT_RATE" />
+	</resultMap>
+	<sql id="column_list">
+        PID,PROJECT_ID,EASTATE_ID,SHOULD_SPOT_TIME,ACTUAL_SPOT_TIME,DECORATION_SITUATION,HOUSE_TOTALS,FLOOR_TOTALS,HOUSE_STRUCTURE,ELEVATORS_NUMS,HOUSEHOLD_NUMS,HOUSE_PATTERN,SHOPPING_NUMS,SCHOOL_NUMS,BANK_NUMS,HOSPITAL_NUMS,TRAFFIC_SITUATION,AROUND_ENVIRONMENTAL,AGENCY_PRICE,TOTAL_PRICE,USE_SITUATION,ACTUAL_PURPOSE,USER_TYPE,USER_SITUATION,LEASE_USE,UPDATE_DATE,LEASE_TIME_START,LEASE_TIME_END,LESSEE,OTHEN_REMARK,CREATE_DATE,CREATER_ID,UPDATE_ID,HOUSE_PATTERN_DETAIL,RENT_PAYMENT_WAY,LEASE_USE_PHONE,RENT_PRICE,RENT_EVALUATION_PRICE,EVALUATION_SOURCE,EVALUATION_SOURCE_DETAIL,VACANT_DAYS,VACANT_RATE
+	</sql>
+	<!-- 查询所有 -->
+	<select id="getAll" resultMap="bizSpotInfoMap" parameterType="com.xlkfinance.bms.rpc.beforeloan.BizSpotInfo">
+		SELECT
+		<include refid="column_list" />
+		FROM BIZ_SPOT_INFO
+		<where>
+			<trim>
+		      <if test="pid != null and pid >0">
+	          PID=#{pid}
+	          </if>
+		      <if test="projectId != null and projectId >0">
+	          AND PROJECT_ID=#{projectId}
+	          </if>
+		      <if test="eastateId != null and eastateId >0">
+	          AND EASTATE_ID=#{eastateId}
+	          </if>
+		      <if test="shouldSpotTime != null and shouldSpotTime !=''">
+	          AND SHOULD_SPOT_TIME=#{shouldSpotTime,jdbcType=TIMESTAMP,javaType=String}
+	          </if>
+		      <if test="actualSpotTime != null and actualSpotTime !=''">
+	          AND ACTUAL_SPOT_TIME=#{actualSpotTime,jdbcType=TIMESTAMP,javaType=String}
+	          </if>
+		      <if test="decorationSituation != null and decorationSituation !=''">
+	          AND DECORATION_SITUATION=#{decorationSituation}
+	          </if>
+		      <if test="houseTotals != null and houseTotals >0">
+	          AND HOUSE_TOTALS=#{houseTotals}
+	          </if>
+		      <if test="floorTotals != null and floorTotals >0">
+	          AND FLOOR_TOTALS=#{floorTotals}
+	          </if>
+		      <if test="houseStructure != null and houseStructure !=''">
+	          AND HOUSE_STRUCTURE=#{houseStructure}
+	          </if>
+		      <if test="elevatorsNums != null and elevatorsNums >0">
+	          AND ELEVATORS_NUMS=#{elevatorsNums}
+	          </if>
+		      <if test="householdNums != null and householdNums >0">
+	          AND HOUSEHOLD_NUMS=#{householdNums}
+	          </if>
+		      <if test="housePattern != null and housePattern !=''">
+	          AND HOUSE_PATTERN=#{housePattern}
+	          </if>
+		      <if test="shoppingNums != null and shoppingNums >0">
+	          AND SHOPPING_NUMS=#{shoppingNums}
+	          </if>
+		      <if test="schoolNums != null and schoolNums >0">
+	          AND SCHOOL_NUMS=#{schoolNums}
+	          </if>
+		      <if test="bankNums != null and bankNums >0">
+	          AND BANK_NUMS=#{bankNums}
+	          </if>
+		      <if test="hospitalNums != null and hospitalNums >0">
+	          AND HOSPITAL_NUMS=#{hospitalNums}
+	          </if>
+		      <if test="trafficSituation != null and trafficSituation !=''">
+	          AND TRAFFIC_SITUATION=#{trafficSituation}
+	          </if>
+		      <if test="aroundEnvironmental != null and aroundEnvironmental !=''">
+	          AND AROUND_ENVIRONMENTAL=#{aroundEnvironmental}
+	          </if>
+		      <if test="agencyPrice != null and agencyPrice >0">
+	          AND AGENCY_PRICE=#{agencyPrice}
+	          </if>
+		      <if test="totalPrice != null and totalPrice >0">
+	          AND TOTAL_PRICE=#{totalPrice}
+	          </if>
+		      <if test="useSituation != null and useSituation !=''">
+	          AND USE_SITUATION=#{useSituation}
+	          </if>
+		      <if test="actualPurpose != null and actualPurpose !=''">
+	          AND ACTUAL_PURPOSE=#{actualPurpose}
+	          </if>
+		      <if test="userType != null and userType !=''">
+	          AND USER_TYPE=#{userType}
+	          </if>
+		      <if test="userSituation != null and userSituation !=''">
+	          AND USER_SITUATION=#{userSituation}
+	          </if>
+		      <if test="leaseUse != null and leaseUse !=''">
+	          AND LEASE_USE=#{leaseUse}
+	          </if>
+		      <if test="updateDate != null and updateDate !=''">
+	          AND UPDATE_DATE=#{updateDate}
+	          </if>
+		      <if test="leaseTimeStart != null and leaseTimeStart !=''">
+	          AND LEASE_TIME_START=#{leaseTimeStart}
+	          </if>
+		      <if test="leaseTimeEnd != null and leaseTimeEnd !=''">
+	          AND LEASE_TIME_END=#{leaseTimeEnd}
+	          </if>
+		      <if test="lessee != null and lessee !=''">
+	          AND LESSEE=#{lessee}
+	          </if>
+		      <if test="othenRemark != null and othenRemark !=''">
+	          AND OTHEN_REMARK=#{othenRemark}
+	          </if>
+		      <if test="createDate != null and createDate !=''">
+	          AND CREATE_DATE=#{createDate}
+	          </if>
+		      <if test="createrId != null and createrId >0">
+	          AND CREATER_ID=#{createrId}
+	          </if>
+		      <if test="updateId != null and updateId >0">
+	          AND UPDATE_ID=#{updateId}
+	          </if>
+			</trim>
+		</where>
+	</select>
+	<!-- 根据id获取 -->
+	<select id="getById" resultMap="bizSpotInfoMap">
+		SELECT <include refid="column_list" /> FROM BIZ_SPOT_INFO WHERE PID=#{pid}
+	</select>
+	<!-- 根据eastateId获取 -->
+	<select id="getByEstateId" resultMap="bizSpotInfoMap">
+		SELECT <include refid="column_list" /> FROM BIZ_SPOT_INFO WHERE EASTATE_ID=#{eastateId}
+	</select>
+	<!-- 插入一条数据 -->
+	<insert id="insert" parameterType="com.xlkfinance.bms.rpc.beforeloan.BizSpotInfo">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_BIZ_SPOT_INFO.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_SPOT_INFO
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+				PID,
+			</if>
+		    <if test="projectId != null and projectId >0">
+				PROJECT_ID,
+			</if>
+		    <if test="eastateId != null and eastateId >0">
+				EASTATE_ID,
+			</if>
+		    <if test="shouldSpotTime != null and shouldSpotTime !=''">
+				SHOULD_SPOT_TIME,
+			</if>
+		    <if test="actualSpotTime != null and actualSpotTime !=''">
+				ACTUAL_SPOT_TIME,
+			</if>
+		    <if test="decorationSituation != null and decorationSituation !=''">
+				DECORATION_SITUATION,
+			</if>
+		    <if test="houseTotals != null and houseTotals >0">
+				HOUSE_TOTALS,
+			</if>
+		    <if test="floorTotals != null and floorTotals >0">
+				FLOOR_TOTALS,
+			</if>
+		    <if test="houseStructure != null and houseStructure !=''">
+				HOUSE_STRUCTURE,
+			</if>
+		    <if test="elevatorsNums != null and elevatorsNums >0">
+				ELEVATORS_NUMS,
+			</if>
+		    <if test="householdNums != null and householdNums >0">
+				HOUSEHOLD_NUMS,
+			</if>
+		    <if test="housePattern != null and housePattern !=''">
+				HOUSE_PATTERN,
+			</if>
+		    <if test="shoppingNums != null and shoppingNums >0">
+				SHOPPING_NUMS,
+			</if>
+		    <if test="schoolNums != null and schoolNums >0">
+				SCHOOL_NUMS,
+			</if>
+		    <if test="bankNums != null and bankNums >0">
+				BANK_NUMS,
+			</if>
+		    <if test="hospitalNums != null and hospitalNums >0">
+				HOSPITAL_NUMS,
+			</if>
+		    <if test="trafficSituation != null and trafficSituation !=''">
+				TRAFFIC_SITUATION,
+			</if>
+		    <if test="aroundEnvironmental != null and aroundEnvironmental !=''">
+				AROUND_ENVIRONMENTAL,
+			</if>
+		    <if test="agencyPrice != null and agencyPrice >0">
+				AGENCY_PRICE,
+			</if>
+		    <if test="totalPrice != null and totalPrice >0">
+				TOTAL_PRICE,
+			</if>
+		    <if test="useSituation != null and useSituation !=''">
+				USE_SITUATION,
+			</if>
+		    <if test="actualPurpose != null and actualPurpose !=''">
+				ACTUAL_PURPOSE,
+			</if>
+		    <if test="userType != null and userType !=''">
+				USER_TYPE,
+			</if>
+		    <if test="userSituation != null and userSituation !=''">
+				USER_SITUATION,
+			</if>
+		    <if test="leaseUse != null and leaseUse !=''">
+				LEASE_USE,
+			</if>
+		    <if test="updateDate != null and updateDate !=''">
+				UPDATE_DATE,
+			</if>
+		    <if test="leaseTimeStart != null and leaseTimeStart !=''">
+				LEASE_TIME_START,
+			</if>
+		    <if test="leaseTimeEnd != null and leaseTimeEnd !=''">
+				LEASE_TIME_END,
+			</if>
+		    <if test="lessee != null and lessee !=''">
+				LESSEE,
+			</if>
+		    <if test="othenRemark != null and othenRemark !=''">
+				OTHEN_REMARK,
+			</if>
+		    <if test="createDate != null and createDate !=''">
+				CREATE_DATE,
+			</if>
+		    <if test="createrId != null and createrId >0">
+				CREATER_ID,
+			</if>
+		    <if test="updateId != null and updateId >0">
+				UPDATE_ID,
+			</if>
+		    <if test="housePatternDetail != null and housePatternDetail != '' ">
+				HOUSE_PATTERN_DETAIL,
+			</if>
+		    <if test="rentPaymentWay != null and rentPaymentWay != '' ">
+				RENT_PAYMENT_WAY,
+			</if>
+			<if test="leaseUsePhone != null and leaseUsePhone !=''">
+				LEASE_USE_PHONE,
+			</if>
+		    <if test="rentPrice != null and rentPrice >0">
+				RENT_PRICE,
+			</if>
+		    <if test="rentEvaluationPrice != null and rentEvaluationPrice >0">
+				RENT_EVALUATION_PRICE,
+			</if>
+		    <if test="evaluationSource != null and evaluationSource != ''">
+				EVALUATION_SOURCE,
+			</if>
+		    <if test="evaluationSourceDetail != null and evaluationSourceDetail != ''">
+				EVALUATION_SOURCE_DETAIL,
+			</if>
+		    <if test="vacantDays != null and vacantDays >0 ">
+				VACANT_DAYS,
+			</if>
+		    <if test="vacantRate != null and vacantRate >0 ">
+				VACANT_RATE,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+		    #{pid},
+			</if>
+		    <if test="projectId != null and projectId >0">
+		    #{projectId},
+			</if>
+		    <if test="eastateId != null and eastateId >0">
+		    #{eastateId},
+			</if>
+		    <if test="shouldSpotTime != null and shouldSpotTime !=''">
+		    #{shouldSpotTime,jdbcType=TIMESTAMP,javaType=java.lang.String},
+			</if>
+		    <if test="actualSpotTime != null and actualSpotTime !=''">
+		    #{actualSpotTime,jdbcType=TIMESTAMP,javaType=java.lang.String},
+			</if>
+		    <if test="decorationSituation != null and decorationSituation !=''">
+		    #{decorationSituation},
+			</if>
+		    <if test="houseTotals != null and houseTotals >0">
+		    #{houseTotals},
+			</if>
+		    <if test="floorTotals != null and floorTotals >0">
+		    #{floorTotals},
+			</if>
+		    <if test="houseStructure != null and houseStructure !=''">
+		    #{houseStructure},
+			</if>
+		    <if test="elevatorsNums != null and elevatorsNums >0">
+		    #{elevatorsNums},
+			</if>
+		    <if test="householdNums != null and householdNums >0">
+		    #{householdNums},
+			</if>
+		    <if test="housePattern != null and housePattern !=''">
+		    #{housePattern},
+			</if>
+		    <if test="shoppingNums != null and shoppingNums >0">
+		    #{shoppingNums},
+			</if>
+		    <if test="schoolNums != null and schoolNums >0">
+		    #{schoolNums},
+			</if>
+		    <if test="bankNums != null and bankNums >0">
+		    #{bankNums},
+			</if>
+		    <if test="hospitalNums != null and hospitalNums >0">
+		    #{hospitalNums},
+			</if>
+		    <if test="trafficSituation != null and trafficSituation !=''">
+		    #{trafficSituation},
+			</if>
+		    <if test="aroundEnvironmental != null and aroundEnvironmental !=''">
+		    #{aroundEnvironmental},
+			</if>
+		    <if test="agencyPrice != null and agencyPrice >0">
+		    #{agencyPrice},
+			</if>
+		    <if test="totalPrice != null and totalPrice >0">
+		    #{totalPrice},
+			</if>
+		    <if test="useSituation != null and useSituation !=''">
+		    #{useSituation},
+			</if>
+		    <if test="actualPurpose != null and actualPurpose !=''">
+		    #{actualPurpose},
+			</if>
+		    <if test="userType != null and userType !=''">
+		    #{userType},
+			</if>
+		    <if test="userSituation != null and userSituation !=''">
+		    #{userSituation},
+			</if>
+		    <if test="leaseUse != null and leaseUse !=''">
+		    #{leaseUse},
+			</if>
+		    <if test="updateDate != null and updateDate !=''">
+		    #{updateDate,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		    <if test="leaseTimeStart != null and leaseTimeStart !=''">
+		    #{leaseTimeStart,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		    <if test="leaseTimeEnd != null and leaseTimeEnd !=''">
+		    #{leaseTimeEnd,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		    <if test="lessee != null and lessee !=''">
+		    #{lessee},
+			</if>
+		    <if test="othenRemark != null and othenRemark !=''">
+		    #{othenRemark},
+			</if>
+		    <if test="createDate != null and createDate !=''">
+		    #{createDate,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		    <if test="createrId != null and createrId >0">
+		    #{createrId},
+			</if>
+		    <if test="updateId != null and updateId >0">
+		    #{updateId},
+			</if>
+			<if test="housePatternDetail != null and housePatternDetail != '' ">
+			#{housePatternDetail},
+			</if>
+			<if test="rentPaymentWay != null and rentPaymentWay != '' ">
+			#{rentPaymentWay},
+			</if>
+			<if test="leaseUsePhone != null and leaseUsePhone !=''">
+		    #{leaseUsePhone},
+			</if>
+			 <if test="rentPrice != null and rentPrice >0">
+		    #{rentPrice},
+			</if>
+			 <if test="rentEvaluationPrice != null and rentEvaluationPrice >0">
+		    #{rentEvaluationPrice},
+			</if>
+		    <if test="evaluationSource != null and evaluationSource !=''">
+		    #{evaluationSource},
+			</if>
+		    <if test="evaluationSourceDetail != null and evaluationSourceDetail !=''">
+		    #{evaluationSourceDetail},
+			</if>
+		    <if test="vacantDays != null and vacantDays >0">
+		    #{vacantDays},
+			</if>
+			 <if test="vacantRate != null and vacantRate >0">
+		    #{vacantRate},
+			</if>
+			
+		</trim>
+	</insert>
+	<!-- 根据id删除数据 -->
+	<delete id="deleteById" parameterType="com.xlkfinance.bms.rpc.beforeloan.BizSpotInfo">
+		<![CDATA[DELETE FROM BIZ_SPOT_INFO WHERE PID=#{pid}]]>
+	</delete>
+	<!-- 根据id更新数据 -->
+		<update id="update" parameterType="com.xlkfinance.bms.rpc.beforeloan.BizSpotInfo">
+		UPDATE BIZ_SPOT_INFO
+		<set>
+		    <if test="pid != null and pid >0">
+		     PID=#{pid},
+			</if>
+		    <if test="projectId != null and projectId >0">
+		     PROJECT_ID=#{projectId},
+			</if>
+		    <if test="eastateId != null and eastateId >0">
+		     EASTATE_ID=#{eastateId},
+			</if>
+		    <if test="shouldSpotTime != null and shouldSpotTime !=''">
+		     SHOULD_SPOT_TIME=#{shouldSpotTime,jdbcType=TIMESTAMP,javaType=java.lang.String},
+			</if>
+		    <if test="actualSpotTime != null and actualSpotTime !=''">
+		     ACTUAL_SPOT_TIME=#{actualSpotTime,jdbcType=TIMESTAMP,javaType=java.lang.String},
+			</if>
+		    <if test="decorationSituation != null and decorationSituation !=''">
+		     DECORATION_SITUATION=#{decorationSituation},
+			</if>
+		    <if test="houseTotals != null and houseTotals >0">
+		     HOUSE_TOTALS=#{houseTotals},
+			</if>
+		    <if test="floorTotals != null and floorTotals >0">
+		     FLOOR_TOTALS=#{floorTotals},
+			</if>
+		    <if test="houseStructure != null and houseStructure !=''">
+		     HOUSE_STRUCTURE=#{houseStructure},
+			</if>
+		    <if test="elevatorsNums != null and elevatorsNums >0">
+		     ELEVATORS_NUMS=#{elevatorsNums},
+			</if>
+		    <if test="householdNums != null and householdNums >0">
+		     HOUSEHOLD_NUMS=#{householdNums},
+			</if>
+		    <if test="housePattern != null and housePattern !=''">
+		     HOUSE_PATTERN=#{housePattern},
+			</if>
+		    <if test="shoppingNums != null and shoppingNums >0">
+		     SHOPPING_NUMS=#{shoppingNums},
+			</if>
+		    <if test="schoolNums != null and schoolNums >0">
+		     SCHOOL_NUMS=#{schoolNums},
+			</if>
+		    <if test="bankNums != null and bankNums >0">
+		     BANK_NUMS=#{bankNums},
+			</if>
+		    <if test="hospitalNums != null and hospitalNums >0">
+		     HOSPITAL_NUMS=#{hospitalNums},
+			</if>
+		    <if test="trafficSituation != null and trafficSituation !=''">
+		     TRAFFIC_SITUATION=#{trafficSituation},
+			</if>
+		    <if test="aroundEnvironmental != null and aroundEnvironmental !=''">
+		     AROUND_ENVIRONMENTAL=#{aroundEnvironmental},
+			</if>
+		    <if test="agencyPrice != null and agencyPrice >0">
+		     AGENCY_PRICE=#{agencyPrice},
+			</if>
+		    <if test="totalPrice != null and totalPrice >0">
+		     TOTAL_PRICE=#{totalPrice},
+			</if>
+		    <if test="useSituation != null and useSituation !=''">
+		     USE_SITUATION=#{useSituation},
+			</if>
+		    <if test="actualPurpose != null and actualPurpose !=''">
+		     ACTUAL_PURPOSE=#{actualPurpose},
+			</if>
+		    <if test="userType != null and userType !=''">
+		     USER_TYPE=#{userType},
+			</if>
+		    <if test="userSituation != null and userSituation !=''">
+		     USER_SITUATION=#{userSituation},
+			</if>
+		    <if test="leaseUse != null and leaseUse !=''">
+		     LEASE_USE=#{leaseUse},
+			</if>
+		    UPDATE_DATE = sysdate,
+		    <if test="leaseTimeStart != null and leaseTimeStart !=''">
+		     LEASE_TIME_START=#{leaseTimeStart,jdbcType=TIMESTAMP,javaType=java.lang.String},
+			</if>
+		    <if test="leaseTimeEnd != null and leaseTimeEnd !=''">
+		     LEASE_TIME_END=#{leaseTimeEnd,jdbcType= TIMESTAMP,javaType=java.lang.String},
+			</if>
+		    <if test="lessee != null and lessee !=''">
+		     LESSEE=#{lessee},
+			</if>
+		    <if test="othenRemark != null and othenRemark !=''">
+		     OTHEN_REMARK=#{othenRemark},
+			</if>
+		    <if test="updateId != null and updateId >0">
+		     UPDATE_ID=#{updateId},
+			</if>
+			<if test="housePatternDetail != null and housePatternDetail != '' ">
+			HOUSE_PATTERN_DETAIL=#{housePatternDetail},
+			</if>
+			<if test="rentPaymentWay != null and rentPaymentWay != '' ">
+			RENT_PAYMENT_WAY=#{rentPaymentWay},
+			</if>
+			<if test="leaseUsePhone != null and leaseUsePhone !=''">
+				LEASE_USE_PHONE=#{leaseUsePhone},
+			</if>
+		    <if test="rentPrice != null and rentPrice >0">
+				RENT_PRICE=#{rentPrice},
+			</if>
+		    <if test="rentEvaluationPrice != null and rentEvaluationPrice >0">
+				RENT_EVALUATION_PRICE=#{rentEvaluationPrice},
+			</if>
+		    <if test="evaluationSource != null and evaluationSource != ''">
+				EVALUATION_SOURCE=#{evaluationSource},
+			</if>
+		    <if test="evaluationSourceDetail != null and evaluationSourceDetail != ''">
+				EVALUATION_SOURCE_DETAIL=#{evaluationSourceDetail},
+			</if>
+		    <if test="vacantDays != null and vacantDays >0 ">
+				VACANT_DAYS=#{vacantDays},
+			</if>
+		    <if test="vacantRate != null and vacantRate >0 ">
+				VACANT_RATE=#{vacantRate},
+			</if>
+		</set>
+		WHERE PID = #{pid}
+	</update>
+	<!-- 根据传入多个id删除数据 -->
+	<delete id="deleteByIds" parameterType="java.util.List">
+		DELETE FROM BIZ_SPOT_INFO WHERE PID in
+		<foreach collection="list" item="item" index="index" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+</mapper>

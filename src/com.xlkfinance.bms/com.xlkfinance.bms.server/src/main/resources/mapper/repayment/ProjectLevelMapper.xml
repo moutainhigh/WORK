@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.repayment.mapper.ProjectLevelMapper">
+	<resultMap id="projectLevelMaps" type="com.xlkfinance.bms.rpc.repayment.ProjectLevel">
+		<result property="pid" column="pid" />
+		<result property="projectLevel" column="PROJECT_LEVEL" />
+		<result property="processUserId" column="PROCESS_USER_ID" />
+		<result property="status" column="status" />
+		<result property="guaranteeType" column="GUARANTEE_TYPE" />
+		<result property="requestDttm" column="REQUEST_DTTM" />
+		<result property="overduenum" column="OVERDUENUM" />
+		<result property="projectName" column="PROJECT_NAME" />
+		<result property="projectNumber" column="PROJECT_NUMBER" />
+		<result property="projectId" column="PROJECT_ID" />
+		<result property="cusType" column="CUS_TYPE" />
+	</resultMap>
+
+	<insert id="addProjectLevel" parameterType="com.xlkfinance.bms.rpc.repayment.ProjectLevel">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_BIZ_PROJECT_LEVEL.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_PROJECT_LEVEL
+		( PID,
+		PROJECT_ID,
+		PROJECT_LEVEL,
+		PROCESS_USER_ID,
+		UPDATE_DTTM ,
+		STATUS
+		)
+		values
+		(
+		#{pid},
+		#{projectId,jdbcType=INTEGER},
+		#{projectLevel,jdbcType=INTEGER},
+		#{processUserId,jdbcType=INTEGER},
+		to_date( to_char(Sysdate,'yyyy-mm-dd'),'yyyy-mm-dd'), 
+		1
+		)
+	</insert>
+	<update id="editProjectLevel" parameterType="com.xlkfinance.bms.rpc.repayment.ProjectLevel">
+		update BIZ_PROJECT_LEVEL
+		<set>
+			<if test="projectLevel!=null and projectLevel!=''">
+				PROJECT_LEVEL = #{projectLevel},
+			</if>
+			<if test="processUserId!=null and processUserId!=''">
+				PROCESS_USER_ID = #{processUserId},
+			</if>
+			UPDATE_DTTM = to_date( to_char(Sysdate,'yyyy-mm-dd'),'yyyy-mm-dd') 
+		</set>
+		where PID = #{pid}
+	</update>
+
+	<delete id="delProjectLevelInfo" parameterType="java.lang.Integer" >
+		DELETE FROM BIZ_PROJECT_LEVEL BPL WHERE BPL.PID = #{pid}
+	</delete>
+
+
+	<select id="getProjectLevelInfo" resultMap="projectLevelMaps" parameterType="com.xlkfinance.bms.rpc.repayment.ProjectLevel">
+		SELECT *
+		FROM (SELECT W.*, ROWNUM RNUM
+		FROM (
+		SELECT BP.PID AS PROJECT_ID,
+		BP.PROJECT_NAME,
+		BP.PROJECT_NUMBER,
+		CASE CA.ACCT_TYPE
+		WHEN 1 THEN
+		'个人'
+		WHEN
+		2 THEN
+		'企业'
+		ELSE
+		'其它'
+		END AS CUS_TYPE,
+		(SELECT
+		TO_CHAR(WMSYS.WM_CONCAT(SL.LOOKUP_VAL))
+		FROM SYS_LOOKUP_VAL SL,
+		BIZ_PROJECT_GUARANTEE_TYPE BPGT
+		WHERE SL.PID = BPGT.GUARANTEE_TYPE
+		AND
+		BPGT.PROJECT_ID = BP.PID
+		GROUP BY BPGT.PROJECT_ID) AS GUARANTEE_TYPE,
+		TO_CHAR(BP.REQUEST_DTTM, 'yyyy-MM-dd') AS REQUEST_DTTM,
+		(SELECT
+		MAX(BV.OVERDUENUM)
+		FROM BIZ_LOAN_PLAN_V BV
+		WHERE BP.PID = BV.PROJECT_ID)
+		AS OVERDUENUM,
+		BPL.PROJECT_LEVEL,
+		BPL.PID
+		FROM BIZ_PROJECT BP
+		LEFT JOIN
+		CUS_ACCT_V CA
+		ON BP.ACCT_ID = CA.ACCT_ID
+		LEFT JOIN BIZ_PROJECT_LEVEL BPL
+		ON BP.PID = BPL.PROJECT_ID
+		LEFT JOIN BIZ_PROJECT_COMPLETE BPC
+    	ON BPC.PROJECT_ID= BP.PID
+		
+		WHERE  
+		CA.STATUS = 1
+		AND BP.STATUS = 1
+		AND BP.REQUEST_STATUS = 4
+		AND (BPC.IS_COMPLETE=0 OR BPC.IS_COMPLETE IS NULL)
+		<if test="cusName != null and cusName != '' ">
+			AND CA.ACCT_NAME like '%${cusName}%'
+		</if>
+		<if test="projectName != null and projectName != '' ">
+			AND BP.PROJECT_NAME like '%${projectName}%'
+		</if>
+		<if test="projectNumber != null and projectNumber != '' ">
+			AND BP.PROJECT_NUMBER like '%${projectNumber}%'
+		</if>
+		<if test="projectLevel != null and projectLevel != '' ">
+			AND BPL.PROJECT_LEVEL = ${projectLevel}
+		</if>
+		<if test="cusType != null and cusType != '' ">
+			AND CA.ACCT_TYPE =  ${cusType}
+		</if>
+		<if test="ecoTrade != null and ecoTrade != '' ">
+			AND CA.ECO_TRADE =  ${ecoTrade}
+		</if>
+		
+		<if test="requestDttm != null and requestDttm != '' ">
+			AND to_date( to_char(BP.REQUEST_DTTM,'yyyy-mm-dd'),'yyyy-mm-dd') <![CDATA[>=]]>
+			to_date(#{requestDttm},'yyyy-mm-dd')
+		</if>
+		<if test="requestDttmEnd != null and requestDttmEnd != '' ">
+			AND to_date( to_char(BP.REQUEST_DTTM,'yyyy-mm-dd'),'yyyy-mm-dd')<![CDATA[<=]]>to_date(#{requestDttmEnd},'yyyy-mm-dd')+1
+		</if>
+		GROUP BY BP.PID,
+		BP.PROJECT_NAME,
+		BP.PROJECT_NUMBER,
+		CA.ACCT_TYPE,
+		BP.REQUEST_DTTM,
+		BPL.PROJECT_LEVEL,
+		BPL.PID
+		ORDER BY BP.REQUEST_DTTM
+		)<![CDATA[ W
+	         ) 
+			WHERE RNUM BETWEEN (((#{page}-1) * #{rows})+1) AND (#{page} * #{rows})]]>
+	</select>
+	
+	<select id="getProjectLevelCount" resultType="java.lang.Integer" parameterType="com.xlkfinance.bms.rpc.repayment.ProjectLevel">
+		SELECT COUNT(1)
+		FROM ( SELECT BP.PID AS PROJECT_ID,
+		BP.PROJECT_NAME,
+		BP.PROJECT_NUMBER,
+		CASE CA.ACCT_TYPE
+		WHEN 1 THEN
+		'个人'
+		WHEN 2 THEN
+		'企业'
+		ELSE
+		'其它'
+		END AS CUS_TYPE,
+		(SELECT TO_CHAR(WMSYS.WM_CONCAT(SL.LOOKUP_VAL))
+		FROM SYS_LOOKUP_VAL SL, BIZ_PROJECT_GUARANTEE_TYPE BPGT
+		WHERE SL.PID = BPGT.GUARANTEE_TYPE
+		AND BPGT.PROJECT_ID = BP.PID
+		GROUP BY BPGT.PROJECT_ID) AS GUARANTEE_TYPE,
+		TO_CHAR(BP.REQUEST_DTTM, 'yyyy-MM-dd') AS REQUEST_DTTM,
+		(SELECT MAX(BV.OVERDUENUM)
+		FROM BIZ_LOAN_PLAN_V BV
+		WHERE BP.PID = BV.PROJECT_ID) AS OVERDUENUM,
+		BPL.PROJECT_LEVEL,
+		BPL.PID
+		FROM BIZ_PROJECT BP
+		LEFT JOIN CUS_ACCT_V CA
+		ON BP.ACCT_ID = CA.ACCT_ID
+		LEFT JOIN BIZ_PROJECT_LEVEL BPL
+		ON BP.PID = BPL.PROJECT_ID
+		LEFT JOIN BIZ_PROJECT_COMPLETE BPC
+    	ON BPC.PROJECT_ID= BP.PID
+		WHERE 
+		CA.STATUS = 1
+		AND BP.STATUS = 1
+		AND BP.REQUEST_STATUS = 4
+		AND (BPC.IS_COMPLETE=0 OR BPC.IS_COMPLETE IS NULL)
+		<if test="cusName != null and cusName != '' ">
+			AND CA.ACCT_NAME like '%${cusName}%'
+		</if>
+		<if test="projectName != null and projectName != '' ">
+			AND BP.PROJECT_NAME like '%${projectName}%'
+		</if>
+		<if test="projectNumber != null and projectNumber != '' ">
+			AND BP.PROJECT_NUMBER like '%${projectNumber}%'
+		</if>
+		<if test="projectLevel != null and projectLevel != '' ">
+			AND BPL.PROJECT_LEVEL = ${projectLevel}
+		</if>
+		<if test="cusType != null and cusType != '' ">
+			AND CA.ACCT_TYPE =  ${cusType}
+		</if>
+		<if test="ecoTrade != null and ecoTrade != '' ">
+			AND CA.ECO_TRADE =  ${ecoTrade}
+		</if>
+	
+		<if test="requestDttm != null and requestDttm != '' ">
+			AND to_date( to_char(BP.REQUEST_DTTM,'yyyy-mm-dd'),'yyyy-mm-dd') <![CDATA[>=]]>
+			to_date(#{requestDttm},'yyyy-mm-dd')
+		</if>
+		<if test="requestDttmEnd != null and requestDttmEnd != '' ">
+			AND to_date( to_char(BP.REQUEST_DTTM,'yyyy-mm-dd'),'yyyy-mm-dd')<![CDATA[<=]]>to_date(#{requestDttmEnd},'yyyy-mm-dd')+1
+		</if>
+		GROUP BY BP.PID,
+		BP.PROJECT_NAME,
+		BP.PROJECT_NUMBER,
+		CA.ACCT_TYPE,
+		BP.REQUEST_DTTM,
+		BPL.PROJECT_LEVEL,
+		BPL.PID)
+
+	</select>
+
+
+</mapper>

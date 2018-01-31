@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.push.mapper.MessagePushMapper">
+	<!-- 展期申请 -->
+	<resultMap id="MessagePushMapper"
+		type="com.xlkfinance.bms.rpc.push.MessagePush">
+		<result property="id" column="id" jdbcType="INTEGER"/>
+		<result property="title" column="TITLE" jdbcType="VARCHAR" /> 
+		<result property="content" column="CONTENT" jdbcType="VARCHAR" />
+		<result property="deviceType" column="DEVICE_TYPE" jdbcType="INTEGER" />
+		<result property="userName" column="USER_NAME" jdbcType="VARCHAR" />
+		<result property="sendTime" column="SEND_TIME" jdbcType="TIMESTAMP" />
+		<result property="bizType" column="BIZ_TYPE" jdbcType="INTEGER" />
+		<result property="remark" column="remark" jdbcType="VARCHAR"/>
+	</resultMap>
+
+
+	
+	<insert id="saveMessagePush" parameterType="com.xlkfinance.bms.rpc.push.MessagePush">
+		<!-- 获取序列号 -->
+		<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="id">
+			SELECT SEQ_BIZ_MESSAGE_PUSH.Nextval as id from DUAL
+		</selectKey>
+		
+		INSERT INTO BIZ_MESSAGE_PUSH
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			ID,
+			<if test="title!= null and title != '' ">
+				TITLE,
+			</if>
+			<if test="content != null and content != '' ">
+				CONTENT,
+			</if>
+			<if test="deviceType != null and deviceType != 0 ">
+				DEVICE_TYPE,
+			</if>
+			<if test="userName != null and userName != '' ">
+				USER_NAME,
+			</if>
+			<if test="remark != null and remark !=''">
+				REMARK,
+			</if>
+			 SEND_TIME,
+			 BIZ_TYPE
+			 
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+				#{id},
+			<if test="title != null and title != '' ">
+				#{title},
+			</if>
+			<if test="content != null and content != '' ">
+				#{content},
+			</if>
+			<if test="deviceType != null and deviceType != 0 ">
+				#{deviceType},
+			</if>
+			<if test="userName != null and userName != '' ">
+				#{userName},
+			</if>
+			<if test="remark != null and remark != ''">
+				#{remark},
+			</if>
+			 sysdate,
+			 #{bizType}
+		</trim>
+	</insert>
+	
+	<!-- 根据指定条件获取消息列表 -->
+	<select id="listMessagePush" resultMap="MessagePushMapper" parameterType="com.xlkfinance.bms.rpc.push.MessagePush">
+			SELECT
+			  A.id,
+			  A.TITLE,
+			  A.CONTENT,
+			  A.DEVICE_TYPE,
+			  A.USER_NAME,
+			  TO_CHAR(A.SEND_TIME,'yyy-MM-dd HH24:mi:ss') SEND_TIME
+			FROM 
+			(SELECT 
+			   ROWNUM RN,
+			   msg.*
+			FROM biz_message_push msg
+			
+			WHERE 1=1
+			<if test="title != null and title !=''">
+				AND msg.title like '%'||#{title}||'%' 
+			</if>
+			<if test="userName != null and userName != ''">
+				AND msg.user_name = #{userName}
+			</if>
+			ORDER BY msg.send_time DESC) A
+			WHERE RN BETWEEN (((#{page}-1) * #{rows})+1) AND (#{page} * #{rows})
+	</select>
+	<!-- 根据指定条件获取消息列表 记录总数-->
+	<select id="listMessagePushCount" resultType="Integer" parameterType="com.xlkfinance.bms.rpc.push.MessagePush">
+		SELECT 
+		   COUNT(id)
+		FROM biz_message_push msg
+		
+		WHERE 1=1
+		<if test="title != null and title !=''">
+			AND msg.title like '%'||#{title}||'%'
+		</if>
+		
+		<if test="userName != null and userName != ''">
+			AND msg.user_name = #{userName}
+		</if>
+		ORDER BY msg.send_time desc
+	</select>
+</mapper>

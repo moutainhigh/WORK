@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xlkfinance.bms.server.aom.finance.mapper.OrgAssureFundRecordMapper">
+	<resultMap id="orgAssureFundRecordMap" type="com.qfang.xk.aom.rpc.finance.OrgAssureFundRecord">
+		<id property="pid" column="PID" />
+		<id property="money" column="MONEY" />
+		<id property="recDate" column="REC_DATE" />
+		<id property="accountName" column="ACCOUNT_NAME" />
+		<id property="account" column="ACCOUNT" />
+		<id property="bank" column="BANK" />
+		<id property="type" column="TYPE" />
+		<id property="orgId" column="ORG_ID" />
+		<id property="orgName" column="ORG_NAME" />
+		<id property="remark" column="REMARK" />
+		<id property="createrDate" column="CREATER_DATE" />
+		<id property="createrId" column="CREATER_ID" />
+		<id property="updateId" column="UPDATE_ID" />
+		<id property="updateDate" column="UPDATE_DATE" />
+		<id property="createrAuthor" column="CREATER_AUTHOR" />
+		<id property="updateAuthor" column="UPDATE_AUTHOR" />
+	</resultMap>
+	<sql id="column_list">
+        PID,MONEY,REC_DATE,ACCOUNT_NAME,ACCOUNT,BANK,TYPE,ORG_ID,REMARK,CREATER_DATE,CREATER_ID,UPDATE_ID,UPDATE_DATE
+	</sql>
+	<!-- 查询所有 -->
+	<select id="getAll" resultMap="orgAssureFundRecordMap" parameterType="com.qfang.xk.aom.rpc.finance.OrgAssureFundRecord">
+		SELECT
+		<include refid="column_list" />
+		FROM ORG_ASSURE_FUND_RECORD
+		<where>
+			<trim>
+		      <if test="pid != null and pid >0">
+	          PID=#{pid}
+	          </if>
+		      <if test="money != null and money >0">
+	          AND MONEY=#{money}
+	          </if>
+		      <if test="recDate != null and recDate !=''">
+	          AND REC_DATE=#{recDate}
+	          </if>
+		      <if test="accountName != null and accountName !=''">
+	          AND ACCOUNT_NAME=#{accountName}
+	          </if>
+		      <if test="account != null and account !=''">
+	          AND ACCOUNT=#{account}
+	          </if>
+		      <if test="bank != null and bank !=''">
+	          AND BANK=#{bank}
+	          </if>
+		      <if test="type != null and type >0">
+	          AND TYPE=#{type}
+	          </if>
+		      <if test="orgId != null and orgId >0">
+	          AND ORG_ID=#{orgId}
+	          </if>
+		      <if test="remark != null and remark !=''">
+	          AND REMARK=#{remark}
+	          </if>
+		      <if test="createrDate != null and createrDate !=''">
+	          AND CREATER_DATE=#{createrDate}
+	          </if>
+		      <if test="createrId != null and createrId >0">
+	          AND CREATER_ID=#{createrId}
+	          </if>
+		      <if test="updateId != null and updateId >0">
+	          AND UPDATE_ID=#{updateId}
+	          </if>
+		      <if test="updateDate != null and updateDate !=''">
+	          AND UPDATE_DATE=#{updateDate}
+	          </if>
+			</trim>
+		</where>
+	</select>
+	<!-- 根据id获取 -->
+	<select id="getById" resultMap="orgAssureFundRecordMap">
+		SELECT <include refid="column_list" /> FROM ORG_ASSURE_FUND_RECORD WHERE PID=#{pid}
+	</select>
+	<!-- 插入一条数据 -->
+	<insert id="insert" parameterType="com.qfang.xk.aom.rpc.finance.OrgAssureFundRecord">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_ORG_ASSURE_FUND_RECORD.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO ORG_ASSURE_FUND_RECORD
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+				PID,
+			</if>
+		    <if test="money != null and money >0">
+				MONEY,
+			</if>
+		    <if test="recDate != null and recDate !=''">
+				REC_DATE,
+			</if>
+		    <if test="accountName != null and accountName !=''">
+				ACCOUNT_NAME,
+			</if>
+		    <if test="account != null and account !=''">
+				ACCOUNT,
+			</if>
+		    <if test="bank != null and bank !=''">
+				BANK,
+			</if>
+		    <if test="type != null and type >0">
+				TYPE,
+			</if>
+		    <if test="orgId != null and orgId >0">
+				ORG_ID,
+			</if>
+		    <if test="remark != null and remark !=''">
+				REMARK,
+			</if>
+				CREATER_DATE,
+		    <if test="createrId != null and createrId >0">
+				CREATER_ID,
+			</if>
+		    <if test="updateId != null and updateId >0">
+				UPDATE_ID,
+			</if>
+				UPDATE_DATE,
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+		    #{pid},
+			</if>
+		    <if test="money != null and money >0">
+		    #{money},
+			</if>
+		    <if test="recDate != null and recDate !=''">
+		    #{recDate,jdbcType= DATE,javaType= java.lang.String},
+			</if>
+		    <if test="accountName != null and accountName !=''">
+		    #{accountName},
+			</if>
+		    <if test="account != null and account !=''">
+		    #{account},
+			</if>
+		    <if test="bank != null and bank !=''">
+		    #{bank},
+			</if>
+		    <if test="type != null and type >0">
+		    #{type},
+			</if>
+		    <if test="orgId != null and orgId >0">
+		    #{orgId},
+			</if>
+		    <if test="remark != null and remark !=''">
+		    #{remark},
+			</if>
+		    SYSDATE,
+		    <if test="createrId != null and createrId >0">
+		    #{createrId},
+			</if>
+		    <if test="updateId != null and updateId >0">
+		    #{updateId},
+			</if>
+		   SYSDATE
+		</trim>
+	</insert>
+	<!-- 根据id删除数据 -->
+	<delete id="deleteById" parameterType="com.qfang.xk.aom.rpc.finance.OrgAssureFundRecord">
+		<![CDATA[DELETE FROM ORG_ASSURE_FUND_RECORD WHERE PID=#{pid}]]>
+	</delete>
+	<!-- 根据id更新数据 -->
+		<update id="update" parameterType="com.qfang.xk.aom.rpc.finance.OrgAssureFundRecord">
+		UPDATE ORG_ASSURE_FUND_RECORD
+		<set>
+		    <if test="pid != null and pid >0">
+		     PID=#{pid},
+			</if>
+		    <if test="money != null and money >0">
+		     MONEY=#{money},
+			</if>
+		    <if test="recDate != null and recDate !=''">
+		     REC_DATE=#{recDate,jdbcType= DATE,javaType= java.lang.String},
+			</if>
+		    <if test="accountName != null and accountName !=''">
+		     ACCOUNT_NAME=#{accountName},
+			</if>
+		    <if test="account != null and account !=''">
+		     ACCOUNT=#{account},
+			</if>
+		    <if test="bank != null and bank !=''">
+		     BANK=#{bank},
+			</if>
+		    <if test="type != null and type >0">
+		     TYPE=#{type},
+			</if>
+		    <if test="orgId != null and orgId >0">
+		     ORG_ID=#{orgId},
+			</if>
+		    <if test="remark != null and remark !=''">
+		     REMARK=#{remark},
+			</if>
+		     CREATER_DATE=SYSDATE,
+		    <if test="createrId != null and createrId >0">
+		     CREATER_ID=#{createrId},
+			</if>
+		    <if test="updateId != null and updateId >0">
+		     UPDATE_ID=#{updateId},
+			</if>
+		     UPDATE_DATE=SYSDATE
+		</set>
+		WHERE PID = #{pid}
+	</update>
+	<!-- 根据传入多个id删除数据 -->
+	<delete id="deleteByIds" parameterType="java.util.List">
+		DELETE FROM ORG_ASSURE_FUND_RECORD WHERE PID in
+		<foreach collection="list" item="item" index="index" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+	<!-- 保证金记录列表(分页查询) -->
+	<select id="queryOrgAssureFundRecordPage" resultMap="orgAssureFundRecordMap"
+		parameterType="com.qfang.xk.aom.rpc.finance.OrgAssureFundRecord">
+		<if test="page!=-1">
+			SELECT D.* FROM (SELECT T.*, ROWNUM RN
+			FROM (
+		</if>
+		SELECT A.PID,
+       A.MONEY,
+       A.REC_DATE,
+       A.ACCOUNT_NAME,
+       A.ACCOUNT,
+       A.BANK,
+       A.TYPE,
+       A.ORG_ID,
+       D.ORG_NAME,
+       A.REMARK,
+       A.CREATER_DATE,
+       A.CREATER_ID,
+       B.CREATER_AUTHOR,
+       A.UPDATE_ID,
+       C.UPDATE_AUTHOR,
+       A.UPDATE_DATE
+  FROM ORG_ASSURE_FUND_RECORD A
+  LEFT JOIN (SELECT U.PID, U.REAL_NAME AS CREATER_AUTHOR FROM SYS_USER U) B
+    ON A.CREATER_ID = B.PID
+  LEFT JOIN (SELECT U.PID, U.REAL_NAME AS UPDATE_AUTHOR FROM SYS_USER U) C
+    ON A.UPDATE_ID = C.PID
+  LEFT JOIN (SELECT ORG.PID, ORG.ORG_NAME FROM ORG_ASSETS_COOPERATION_INFO ORG) D
+    ON A.ORG_ID = D.PID
+		<where>
+			<trim>
+			  <if test="createrAuthor != null and createrAuthor !=''">
+			    AND B.CREATER_AUTHOR LIKE '%${file.createrAuthor}%'
+			  </if>
+			  <if test="orgName != null and orgName !=''">
+			    AND D.ORG_NAME LIKE '%${orgName}%'
+			  </if>
+			  <if test="accountName != null and accountName !=''">
+			    AND A.ACCOUNT_NAME LIKE '%${accountName}%'
+			  </if>
+			  <if test="bank != null and bank !=''">
+			    AND A.BANK LIKE '%${bank}%'
+			  </if>
+			  <if test="type != null and type >0">
+			    AND A.TYPE =#{type}
+			  </if>
+			  <if test="recDate != null and recDate !=''">
+				AND A.REC_DATE >=
+					TO_DATE(#{recDate},'yyyy-MM-dd')
+			  </if>
+			  <if test="recDateEnd != null and recDateEnd !=''">
+				AND A.REC_DATE <![CDATA[<=]]>
+					TO_DATE(CONCAT(#{recDateEnd},' 23:59:59'),'yyyy-mm-dd hh24:mi:ss')
+			  </if>
+			  <if test="orgId != null and orgId >0">
+			    AND A.ORG_ID =#{orgId}
+			  </if>
+			</trim>
+		</where>
+		ORDER BY A.UPDATE_DATE DESC
+		<if test="page!=-1">
+	<![CDATA[
+	) T
+	WHERE ROWNUM <=#{page}*#{rows}
+	) D
+	WHERE D.RN > ((#{page}-1)*#{rows})
+	]]>
+		</if>
+	</select>
+	<!--保证金记录列表总数 -->
+	<select id="getOrgAssureFundRecordTotal" resultType="Integer"
+		parameterType="com.qfang.xk.aom.rpc.finance.OrgAssureFundRecord">
+	<![CDATA[
+	SELECT COUNT(1) FROM
+			(SELECT A.PID
+  FROM ORG_ASSURE_FUND_RECORD A
+  LEFT JOIN (SELECT U.PID, U.REAL_NAME AS CREATER_AUTHOR FROM SYS_USER U) B
+    ON A.CREATER_ID = B.PID
+  LEFT JOIN (SELECT U.PID, U.REAL_NAME AS UPDATE_AUTHOR FROM SYS_USER U) C
+    ON A.UPDATE_ID = C.PID
+  LEFT JOIN (SELECT ORG.PID, ORG.ORG_NAME FROM ORG_ASSETS_COOPERATION_INFO ORG) D
+    ON A.ORG_ID = D.PID
+	]]>
+		<where>
+			<trim>
+			  <if test="createrAuthor != null and createrAuthor !=''">
+			    AND B.CREATER_AUTHOR LIKE '%${file.createrAuthor}%'
+			  </if>
+			  <if test="orgName != null and orgName !=''">
+			    AND D.ORG_NAME LIKE '%${orgName}%'
+			  </if>
+			  <if test="accountName != null and accountName !=''">
+			    AND A.ACCOUNT_NAME LIKE '%${accountName}%'
+			  </if>
+			  <if test="bank != null and bank !=''">
+			    AND A.BANK LIKE '%${bank}%'
+			  </if>
+			  <if test="type != null and type >0">
+			    AND A.TYPE =#{type}
+			  </if>
+			  <if test="recDate != null and recDate !=''">
+				AND A.REC_DATE >=
+					TO_DATE(#{recDate},'yyyy-MM-dd')
+			  </if>
+			  <if test="recDateEnd != null and recDateEnd !=''">
+				AND A.REC_DATE <![CDATA[<=]]>
+					TO_DATE(CONCAT(#{recDateEnd},' 23:59:59'),'yyyy-mm-dd hh24:mi:ss')
+			  </if>
+			  <if test="orgId != null and orgId >0">
+			    AND A.ORG_ID =#{orgId}
+			  </if>
+			</trim>
+		</where>
+		) T
+	</select>
+</mapper>

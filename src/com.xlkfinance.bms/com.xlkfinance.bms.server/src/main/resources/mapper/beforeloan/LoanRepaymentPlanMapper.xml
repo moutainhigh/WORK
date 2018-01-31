@@ -1,0 +1,470 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.beforeloan.mapper.LoanRepaymentPlanMapper">
+  
+    <resultMap type="com.xlkfinance.bms.rpc.repayment.RepaymentPlanBaseDTO" id="getRepaymentsResultMap">
+    	<id property="pId" column="pid"/>
+        <result property="loanInfoId" column="LOAN_INFO_ID" />
+        <result property="planRepayDt" column="PLAN_REPAY_DT" javaType="String" jdbcType="DATE" />
+        <result property="planCycleNum" column="PLAN_CYCLE_NUM" />
+        <result property="shouldPrincipal" column="SHOULD_PRINCIPAL" />
+        <result property="shouldMangCost" column="SHOULD_MANG_COST" />
+        <result property="shouldOtherCost" column="SHOULD_OTHER_COST" />
+        <result property="shouldOtherCostName" column="SHOULD_OTHER_COST_NAME" />
+        <result property="shouldInterest" column="SHOULD_INTEREST" />
+        <result property="total" column="TOTAL" />
+        <result property="principalBalance" column="PRINCIPAL_BALANCE" />
+    </resultMap>
+    
+    <resultMap type="com.xlkfinance.bms.rpc.beforeloan.RepaymentLoanInfo" id="getLoanInfoResultMap">
+        <result property="acctName" column="acct_name" />
+        <result property="contractNo" column="contract_no" />
+        <result property="loanOutDt" column="plan_out_loan_dt" javaType="String" jdbcType="DATE"/>
+        <result property="loanRepayDt" column="plan_repay_loan_dt" javaType="String" jdbcType="DATE"/>
+        <result property="repayCycle" column="repay_cycle" />
+        <result property="creditAmt" column="credit_amt" />
+        <result property="loanInterest" column="month_loan_interest" />
+        <result property="repaymentAmt" column="repayment_amt" />
+        <result property="repayFun" column="repay_fun" />
+        <result property="repayFunVal" column="REPAY_FUN_VAL" />
+        <result property="otherCostName" column="SHOULD_OTHER_COST_NAME" />
+        <result property="loanMgr" column="MONTH_LOAN_MGR" />
+        <result property="loanOtherFee" column="MONTH_LOAN_OTHER_FEE" />
+        <result property="feesProportion" column="FEES_PROPORTION" />
+        <result property="projectId" column="PROJECT_ID" />
+    </resultMap>
+    
+    <resultMap type="com.xlkfinance.bms.rpc.repayment.RepaymentPlanBaseDTO" id="ReconAmtResultMap">
+        <result property="shouldPrincipal" column="SHOULD_PRINCIPAL" />
+        <result property="shouldMangCost" column="SHOULD_MANG_COST" />
+        <result property="shouldOtherCost" column="SHOULD_OTHER_COST" />
+        <result property="shouldInterest" column="SHOULD_INTEREST" />
+    </resultMap>
+	
+	<sql id="repayment_Column_List">
+  	   pid  pId,
+       LOAN_INFO_ID loanInfoId,
+       to_char(GEN_DTTM,'yyyy-MM-DD HH24-mi-ss') genDttm,
+       GEN_USER_ID genUserId,
+       to_char(PLAN_REPAY_DT,'yyyy-MM-dd') planRepayDt,
+       PLAN_CYCLE_NUM planCycleNum,
+       PLAN_TYPE planType,
+       EX_TARGET exTarget,
+       EX_TYPE exType,
+       SHOULD_PRINCIPAL shouldPrincipal,
+       SHOULD_MANG_COST shouldMangCost,
+       SHOULD_OTHER_COST shouldOtherCost,
+       SHOULD_OTHER_COST_NAME shouldOtherCostName,
+       SHOULD_INTEREST shouldInterest,
+       TOTAL total,
+       PRINCIPAL_BALANCE principalBalance,
+       THIS_STATUS thisStatus,
+       PLAN_VERSION planVersion,
+       STATUS status,
+       IS_RECONCILIATION isReconciliation,
+       FREEZE_STATUS freezeStatus,
+       PROJECT_ID projectId,
+       REBATE_FEE rebateFee,
+       MONTH_MAID_RATE monthMaidRate
+    </sql>
+    
+    <select id="getMaxVersion" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+	       SELECT NVL(PKG_FINANCE.FUN_MAX_VERSION(#{loanId,jdbcType=INTEGER}),0)  FROM dual
+  	</select> 
+  	
+
+
+  <!-- 更新的方法 -->
+<update id="updateRepayments" parameterType="java.util.List">
+	begin
+	 <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+		update BIZ_LOAN_REPAYMENT_PLAN
+		<set>
+		
+		<if test="item.planRepayDt != null">
+		   PLAN_REPAY_DT = #{item.planRepayDt,jdbcType=DATE,javaType=String},
+		</if>
+    	<if test="item.shouldPrincipal != null">
+      		SHOULD_PRINCIPAL = #{item.shouldPrincipal,jdbcType=DOUBLE},
+      	</if>
+      	<if test="item.shouldMangCost != null">
+      		SHOULD_MANG_COST = #{item.shouldMangCost,jdbcType=DOUBLE}, 
+      	</if>
+      	<if test="item.shouldOtherCost != null">
+      		SHOULD_OTHER_COST = #{item.shouldOtherCost,jdbcType=DOUBLE},
+      	</if>
+      	<if test="item.shouldOtherCostName != null">
+      		SHOULD_OTHER_COST_NAME = #{item.shouldOtherCostName,jdbcType=VARCHAR},
+      	</if>
+      	<if test="item.shouldInterest != null">
+      		SHOULD_INTEREST = #{item.shouldInterest,jdbcType=DOUBLE},
+      	</if>
+      	<if test="item.total != null">
+      		TOTAL = #{item.total,jdbcType=DOUBLE},
+      	</if>
+      	<if test="item.principalBalance != null">
+      		PRINCIPAL_BALANCE = #{item.principalBalance,jdbcType=DOUBLE},
+      	</if>
+      	
+		</set> 
+		where pId = #{item.pId,jdbcType=INTEGER}
+	 </foreach>
+	 ;end;
+</update>
+
+<insert id="insertRepayments" parameterType="java.util.List">
+	INSERT INTO BIZ_LOAN_REPAYMENT_PLAN(
+		PID,
+	    LOAN_INFO_ID,
+	    GEN_DTTM,
+	    GEN_USER_ID,
+	    PLAN_REPAY_DT,
+	    PLAN_CYCLE_NUM,
+	    PLAN_TYPE,
+	    EX_TARGET,
+	    EX_TYPE,
+	    SHOULD_PRINCIPAL,
+	    SHOULD_MANG_COST,
+	    SHOULD_OTHER_COST,
+	    SHOULD_OTHER_COST_NAME,
+	    SHOULD_INTEREST,
+	    TOTAL,
+	    PRINCIPAL_BALANCE,
+	    THIS_STATUS,
+	    PLAN_VERSION,
+	    STATUS,
+	    IS_RECONCILIATION,
+	    FREEZE_STATUS,
+	    PROJECT_ID,
+	    REBATE_FEE,
+	    MONTH_MAID_RATE)
+	select SEQ_BIZ_LOAN_REPAYMENT_PLAN.Nextval,A.* from(
+        <foreach collection="list" item="item" index="index"
+            separator="UNION">
+            SELECT
+            #{item.loanInfoId,jdbcType=INTEGER},
+	    	#{item.genDttm,jdbcType=TIMESTAMP,javaType=String},
+	    	#{item.genUserId,jdbcType=INTEGER},
+	     	#{item.planRepayDt,jdbcType=DATE,javaType=String}, 
+	     	#{item.planCycleNum,jdbcType=INTEGER},
+	     	#{item.planType,jdbcType=INTEGER},
+	     	#{item.exTarget,jdbcType=INTEGER}, 
+	     	#{item.exType,jdbcType=INTEGER},
+	     	#{item.shouldPrincipal,jdbcType=DOUBLE},
+	     	#{item.shouldMangCost,jdbcType=DOUBLE},
+	     	#{item.shouldOtherCost,jdbcType=DOUBLE},
+	     	#{item.shouldOtherCostName,jdbcType=VARCHAR},
+	     	#{item.shouldInterest,jdbcType=DOUBLE},
+	     	#{item.total,jdbcType=DOUBLE},
+	     	#{item.principalBalance,jdbcType=DOUBLE},
+	     	#{item.thisStatus,jdbcType=INTEGER},
+	     	#{item.planVersion,jdbcType=INTEGER},
+	     	#{item.status,jdbcType=INTEGER},
+	     	#{item.isReconciliation,jdbcType=INTEGER},
+	     	#{item.freezeStatus,jdbcType=INTEGER},
+	     	#{item.projectId,jdbcType=INTEGER},
+	     	#{item.rebateFee,jdbcType=DOUBLE},
+	     	#{item.monthMaidRate,jdbcType=DOUBLE}
+            from dual 
+             </foreach>
+        ) A
+</insert>
+
+<update id="updateRepaymentOtherCostName" parameterType="com.xlkfinance.bms.rpc.repayment.RepaymentPlanBaseDTO">
+		update BIZ_LOAN_REPAYMENT_PLAN 
+		   set SHOULD_OTHER_COST_NAME = #{shouldOtherCostName,jdbcType=VARCHAR}
+		 where LOAN_INFO_ID = #{loanInfoId,jdbcType=INTEGER}
+		   and PLAN_VERSION =(SELECT MAX(PLAN_VERSION) FROM BIZ_LOAN_REPAYMENT_PLAN WHERE LOAN_INFO_ID=#{loanInfoId,jdbcType=INTEGER})
+</update>
+
+ <!-- 查询还款计划表列表 -->
+<select id="getRepayments" resultType="com.xlkfinance.bms.rpc.repayment.RepaymentPlanBaseDTO" parameterType="java.lang.Integer">
+	  SELECT 
+	  	<include refid="repayment_Column_List" />
+          FROM BIZ_LOAN_REPAYMENT_PLAN
+         WHERE PLAN_VERSION = PKG_FINANCE.FUN_MAX_FREEZE_VERSION(#{loanId,jdbcType=INTEGER})
+           AND LOAN_INFO_ID = #{loanId,jdbcType=INTEGER}
+</select>
+
+<select id="getRepaymentLoanInfo" resultMap="getLoanInfoResultMap" parameterType="java.lang.Integer">
+   SELECT CAV.ACCT_NAME,BL.PROJECT_ID,
+       (CASE
+         WHEN BP.PROJECT_TYPE = 4 THEN
+          PKG_CONTRACT.FUN_GET_CONTRACT_EXTENSION_NUM(BL.PROJECT_ID)
+         WHEN BP.PROJECT_TYPE != 4 THEN
+          PKG_CONTRACT.FUN_GET_CONTRACT_LOAN_NUM(BL.PROJECT_ID)
+         ELSE
+          ''
+       END) CONTRACT_NO,
+       BL.PLAN_OUT_LOAN_DT,
+       BL.PLAN_REPAY_LOAN_DT,
+       BL.REPAY_CYCLE,
+       BL.REPAY_FUN,
+       BL.MONTH_LOAN_MGR,
+       BL.MONTH_LOAN_OTHER_FEE,
+       BL.FEES_PROPORTION,
+       (SELECT SLK.LOOKUP_VAL
+          FROM SYS_LOOKUP_VAL SLK
+         WHERE SLK.PID = BL.REPAY_FUN) REPAY_FUN_VAL,
+       BL.CREDIT_AMT,
+       BL.MONTH_LOAN_INTEREST,
+       (SELECT BLR.TOTAL
+          FROM BIZ_LOAN_REPAYMENT_PLAN BLR
+         WHERE BLR.LOAN_INFO_ID = BL.PID
+           AND BLR.PLAN_VERSION = PKG_FINANCE.FUN_MAX_VERSION(BL.PID)
+           AND BLR.PLAN_CYCLE_NUM = 0) REPAYMENT_AMT,
+       (SELECT BLR.SHOULD_OTHER_COST_NAME
+          FROM BIZ_LOAN_REPAYMENT_PLAN BLR
+         WHERE BLR.LOAN_INFO_ID = BL.PID
+           AND BLR.PLAN_VERSION = PKG_FINANCE.FUN_MAX_VERSION(BL.PID)
+           AND BLR.PLAN_CYCLE_NUM = 1) SHOULD_OTHER_COST_NAME
+  FROM BIZ_LOAN BL, BIZ_PROJECT BP, CUS_ACCT_V CAV
+ WHERE BL.PID = #{loanId,jdbcType=INTEGER}   AND BP.PID = BL.PROJECT_ID
+   AND CAV.ACCT_ID = BP.ACCT_ID
+</select>
+
+<!-- 结清 清除还款计划表，及时发生表的无效数据 -->
+<update id="delRepaymentNofreezeData" parameterType="java.lang.Integer">
+  BEGIN
+    UPDATE BIZ_LOAN_REPAYMENT_PLAN BL
+       SET BL.STATUS = 0
+     WHERE BL.LOAN_INFO_ID =
+           (SELECT PID FROM BIZ_LOAN WHERE PROJECT_ID = #{projectId})
+       AND BL.PLAN_VERSION > (SELECT MAX(BL2.PLAN_VERSION)
+                                FROM BIZ_LOAN_REPAYMENT_PLAN BL2
+                               WHERE BL2.LOAN_INFO_ID = BL.LOAN_INFO_ID
+                                 AND BL2.FREEZE_STATUS = 1
+                                 AND BL2.STATUS = 1);
+  
+    UPDATE BIZ_LOAN_REALTIME_PLAN BL
+       SET BL.STATUS = 0
+     WHERE BL.LOAN_ID = (SELECT PID FROM BIZ_LOAN WHERE PROJECT_ID = #{projectId})
+       AND BL.PLAN_VERSION > (SELECT MAX(BL2.PLAN_VERSION)
+                                FROM BIZ_LOAN_REALTIME_PLAN BL2
+                               WHERE BL2.LOAN_ID = BL.LOAN_ID
+                                 AND BL2.FREEZE_STATUS = 1
+                                 AND BL2.STATUS = 1);
+  END;
+ 	
+</update>
+
+<update id="makeRepayments" parameterType="java.lang.Integer" statementType="CALLABLE">
+		<![CDATA[    
+		{ CALL PKG_REPAYMENT.PRO_SYNC_REPAYMENT(
+		#{P_LOAN_ID,mode=IN,jdbcType=INTEGER}
+				)} 
+         ]]>    
+</update>
+
+<!-- 修改还款计划表 中间表，即时表冻结状态 -->
+<update id="updateRepayFreezeStatus" parameterType="java.lang.Integer" >
+	begin
+	
+    UPDATE BIZ_LOAN_REPAYMENT_PLAN BL
+	   SET BL.FREEZE_STATUS = 1
+	 WHERE BL.LOAN_INFO_ID =(SELECT bizl.pid FROM biz_loan bizl WHERE bizl.project_id=#{projectId}) 
+	   AND BL.PLAN_VERSION = (SELECT MAX(PLAN_VERSION) PLAN_VERSION
+                         FROM BIZ_LOAN_REPAYMENT_PLAN
+                        WHERE LOAN_INFO_ID =BL.Loan_Info_Id);
+                        
+	UPDATE BIZ_LOAN_REPAYMENT_PLAN_MID BL
+	   SET BL.FREEZE_STATUS = 1
+	 WHERE BL.LOAN_INFO_ID =(SELECT bizl.pid FROM biz_loan bizl WHERE bizl.project_id=#{projectId})
+	   AND BL.PLAN_VERSION = (SELECT MAX(PLAN_VERSION) PLAN_VERSION
+                         FROM BIZ_LOAN_REPAYMENT_PLAN_MID
+                        WHERE LOAN_INFO_ID =BL.Loan_Info_Id);
+                        
+	UPDATE BIZ_LOAN_REALTIME_PLAN BL
+	   SET BL.FREEZE_STATUS = 1
+	 WHERE BL.LOAN_ID =(SELECT bizl.pid FROM biz_loan bizl WHERE bizl.project_id=#{projectId})
+	   AND BL.PLAN_VERSION = (SELECT MAX(PLAN_VERSION) PLAN_VERSION
+                         FROM BIZ_LOAN_REALTIME_PLAN
+                        WHERE LOAN_ID =BL.Loan_Id);                       
+    end;                    
+</update>
+
+<!-- 修改 坏账处理 还款计划表 中间表，即时表冻结状态 -->
+<update id="updateDebtFreezeStatus" statementType="CALLABLE"  parameterType="java.lang.Integer" >
+	<![CDATA[    
+		{ CALL PKG_REPAYMENT.PRO_UPDATE_DEBT_FREEZE_STATUS(
+		#{projectId,mode=IN,jdbcType=INTEGER}
+				)} 
+         ]]>   
+</update>
+
+
+<!-- 查询是否退还利息 -->
+<select id="getIsReturnInterest" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+SELECT NVL(BP.IS_RETURN_INTEREST, 0) IS_RETURN_INTEREST
+  FROM BIZ_PROJECT BP, BIZ_LOAN BL
+ WHERE BL.PROJECT_ID = BP.PID
+   AND BL.PID =#{loanId}
+</select>
+
+<!-- 根据贷款ID查询已对账金额 -->
+<select id="getRepayReconciliationAmt" parameterType="java.util.Map" statementType="CALLABLE" >
+		<![CDATA[    
+		{ CALL PKG_REPAYMENT.PRO_REPAY_RECONCILIATION_AMT(
+		#{loanRepayDto,mode=OUT,jdbcType=CURSOR,resultMap=ReconAmtResultMap},
+		#{loanId,mode=IN,jdbcType=INTEGER}
+				)} 
+         ]]>    
+</select>
+
+<!-- 根据展期项目ID获取被展项目还款计划表中间表信息 -->
+<select id="getRepaymentsByExdProId" parameterType="java.lang.Integer" resultType="com.xlkfinance.bms.rpc.repayment.RepaymentPlanBaseDTO">
+	SELECT 
+       BLRP.pid  pId,
+       BLRP.LOAN_INFO_ID loanInfoId,
+       to_char(BLRP.GEN_DTTM,'yyyy-MM-DD HH24-mi-ss') genDttm,
+       BLRP.GEN_USER_ID genUserId,
+       to_char(BLRP.PLAN_REPAY_DT,'yyyy-MM-dd') planRepayDt,
+       BLRP.PLAN_CYCLE_NUM planCycleNum,
+       BLRP.PLAN_TYPE planType,
+       BLRP.EX_TARGET exTarget,
+       BLRP.EX_TYPE exType,
+       BLRP.SHOULD_PRINCIPAL shouldPrincipal,
+       BLRP.SHOULD_MANG_COST shouldMangCost,
+       BLRP.SHOULD_OTHER_COST shouldOtherCost,
+       BLRP.SHOULD_OTHER_COST_NAME shouldOtherCostName,
+       BLRP.SHOULD_INTEREST shouldInterest,
+       BLRP.TOTAL total,
+       BLRP.PRINCIPAL_BALANCE principalBalance,
+       BLRP.THIS_STATUS thisStatus,
+       BLRP.PLAN_VERSION planVersion,
+       BLRP.STATUS status,
+       BLRP.IS_RECONCILIATION isReconciliation,
+       BLRP.FREEZE_STATUS freezeStatus
+    FROM BIZ_PROJECT_EXTENSION BP, BIZ_LOAN BL2, BIZ_LOAN_REPAYMENT_PLAN_MID BLRP
+   WHERE BP.PROJECT_ID =#{projectId}
+     AND BL2.PROJECT_ID = BP.EXTENSION_PROJECT_ID
+     AND BLRP.loan_info_id=bl2.pid
+     AND BLRP.plan_version= (SELECT MAX(PLAN_VERSION) FROM BIZ_LOAN_REPAYMENT_PLAN_MID  WHERE LOAN_INFO_ID=BLRP.LOAN_INFO_ID AND FREEZE_STATUS = 1 )
+	
+</select>
+
+
+<!-- 获取还款计划表中间表最大版本有效数据 -->
+<select id="getRepaymentMidsLoanId" parameterType="java.lang.Integer" resultType="com.xlkfinance.bms.rpc.repayment.RepaymentPlanBaseDTO">
+	SELECT 
+	  	<include refid="repayment_Column_List" />
+          FROM BIZ_LOAN_REPAYMENT_PLAN_MID
+         WHERE PLAN_VERSION =(SELECT MAX(PLAN_VERSION)
+							    FROM BIZ_LOAN_REPAYMENT_PLAN_MID
+							   WHERE FREEZE_STATUS = 1
+							     AND LOAN_INFO_ID =#{loanId,jdbcType=INTEGER})
+           AND LOAN_INFO_ID = #{loanId,jdbcType=INTEGER}
+	
+</select>
+
+<select id="getMaxVersionMid" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+	       SELECT NVL(PKG_FINANCE.FUN_MAX_VERSION(#{loanId,jdbcType=INTEGER}),0)  FROM dual
+</select> 
+
+<select id="getMaxVersionByExdProId" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+	  SELECT NVL(MAX(BLRP.PLAN_VERSION),0)
+	    FROM BIZ_PROJECT_EXTENSION   BP,
+	         BIZ_LOAN                BL2,
+	         BIZ_LOAN_REPAYMENT_PLAN BLRP
+	   WHERE BP.PROJECT_ID = #{projectId}
+	     AND BL2.PROJECT_ID = BP.EXTENSION_PROJECT_ID
+	     AND BLRP.LOAN_INFO_ID = BL2.PID
+</select> 
+
+<!-- 修改还款计划表 中间表对账状态 -->
+<update id="updateRepayFreezeStatusByPid" parameterType="com.xlkfinance.bms.rpc.repayment.RepaymentPlanBaseDTO" >
+	BEGIN
+	
+	    UPDATE BIZ_LOAN_REPAYMENT_PLAN 
+		   SET IS_RECONCILIATION = 1
+		 WHERE PLAN_CYCLE_NUM = #{planCycleNum} 
+		 	AND LOAN_INFO_ID = #{loanInfoId} 
+		 	AND STATUS = 1 
+	 	    AND PLAN_VERSION = (SELECT MAX(PLAN_VERSION)
+		                          FROM BIZ_LOAN_REPAYMENT_PLAN
+		                         WHERE LOAN_INFO_ID = #{loanInfoId} 
+		                           AND STATUS = 1);
+		 
+		UPDATE BIZ_LOAN_REPAYMENT_PLAN_MID 
+		   SET IS_RECONCILIATION = 1
+		WHERE PLAN_CYCLE_NUM = #{planCycleNum} 
+			AND LOAN_INFO_ID = #{loanInfoId} 
+			AND STATUS = 1 
+		    AND PLAN_VERSION = (SELECT MAX(PLAN_VERSION)
+		                           FROM BIZ_LOAN_REPAYMENT_PLAN_MID
+		                          WHERE LOAN_INFO_ID = #{loanInfoId} 
+		                            AND STATUS = 1);
+		 
+	END;	 
+</update>
+<!-- 根据项目ID查询还款计划表 -->
+<select id="getRepaymentsByProjectId" resultType="com.xlkfinance.bms.rpc.repayment.RepaymentPlanBaseDTO" parameterType="java.lang.Integer">
+	  SELECT 
+	  	<include refid="repayment_Column_List" />
+          FROM BIZ_LOAN_REPAYMENT_PLAN
+         WHERE PROJECT_ID = #{projectId,jdbcType=INTEGER}
+</select>
+
+<!-- 根据时间查询到期未还的还款计划表 -->
+<select id="getRepaymentByDt" resultType="com.xlkfinance.bms.rpc.repayment.RepaymentPlanBaseDTO" parameterType="com.xlkfinance.bms.rpc.repayment.RepaymentPlanBaseDTO">
+	  SELECT A.PID  pId,
+       A.LOAN_INFO_ID loanInfoId,
+       to_char(A.GEN_DTTM,'yyyy-MM-DD HH24-mi-ss') genDttm,
+       A.GEN_USER_ID genUserId,
+       to_char(A.PLAN_REPAY_DT,'yyyy-MM-dd') planRepayDt,
+       A.PLAN_CYCLE_NUM planCycleNum,
+       A.SHOULD_PRINCIPAL shouldPrincipal,
+       A.SHOULD_INTEREST shouldInterest,
+       A.TOTAL total,
+       A.PRINCIPAL_BALANCE principalBalance,
+       A.THIS_STATUS thisStatus,
+       A.PLAN_VERSION planVersion,
+       A.STATUS status,
+       A.PROJECT_ID projectId,
+       A.REBATE_FEE rebateFee,
+       A.MONTH_MAID_RATE monthMaidRate,
+       B.ACTUAL_PRINCIPAL actualPrincipal,
+       B.ACTUAL_INTEREST actualInterest,
+       B.ACTUAL_TOTAL actualTotal,
+       C.OVERDUE_MONEY overdueMoney,
+       C.SHOULD_PENALTY shouldPenalty,
+       C.ACTUAL_PENALTY actualPenalty,
+       C.ACTUAL_OVERDUE_MONEY actualOverdueMoney,
+       C.SHOULD_OVERDUE_MONEY shouldOverdueMoney,
+       B.PID paymentId,
+       C.PID overdueId,
+       D.OVERDUE_RATE overdueRate,
+       D.LOAN_TERM loanTerm,
+       E.PID repaymentId
+  FROM BIZ_LOAN_REPAYMENT_PLAN A
+  LEFT JOIN BIZ_PAYMENT_INFO B
+    ON A.PROJECT_ID = B.PROJECT_ID
+   AND A.PID = B.LOAN_PLAN_ID
+  LEFT JOIN BIZ_PROJECT_OVERDUE C
+    ON A.PROJECT_ID = C.PROJECT_ID
+   AND A.PID = C.LOAN_PLAN_ID
+  LEFT JOIN BIZ_PROJECT_GUARANTEE D
+  ON D.PROJECT_ID = A.PROJECT_ID
+  LEFT JOIN BIZ_LOAN_REPAYMENT E
+  ON A.PROJECT_ID = E.PROJECT_ID
+ WHERE A.THIS_STATUS IN (1, 3) AND TO_CHAR(A.PLAN_REPAY_DT,'yyyy-mm-dd')<![CDATA[< ]]> #{planRepayDt}
+ ORDER BY A.PLAN_CYCLE_NUM
+</select>
+<!-- 批量修改还款计划表状态 -->
+<update id="updateRepaymentPlan" parameterType="com.xlkfinance.bms.rpc.repayment.RepaymentPlanBaseDTO">
+	UPDATE BIZ_LOAN_REPAYMENT_PLAN
+		<set>
+		
+		<if test="thisStatus != null">
+		   THIS_STATUS = #{thisStatus,jdbcType=INTEGER},
+		</if>
+		</set> 
+		WHERE 
+		<if test="pidList!=null and pidList.size()>0">
+			   PID IN
+	  	<foreach item="itemId" collection="pidList" open="(" separator="," close=")">
+	          #{itemId}
+	  	</foreach>
+	  </if>
+</update>
+</mapper>

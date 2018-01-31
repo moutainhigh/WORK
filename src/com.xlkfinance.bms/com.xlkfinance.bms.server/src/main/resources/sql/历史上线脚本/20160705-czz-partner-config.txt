@@ -1,0 +1,91 @@
+
+
+
+
+添加字典项
+	
+	主配置类型---------
+	
+	配置类型：PARTNER_LOAN_LIMIT
+	配置名称：机构放款额度
+	描述：机构合作接口放款额度限制 
+		PARTNER_LOAN_LIMIT_TL(统联)
+		PARTNER_LOAN_LIMIT_DR_ONE(点融单笔放款额度)
+		PARTNER_LOAN_LIMIT_DR_DAY(点融单天放款额度)
+		PARTNER_LOAN_LIMIT_DR_MONEY(点融当月放款额度)
+		PARTNER_LOAN_LIMIT_DR_TOTAL(点融放款总额度)
+	
+	
+	配置值---------
+	数据字典值：PARTNER_LOAN_LIMIT_TL
+	数据字典描述：40000000
+	
+	数据字典值：PARTNER_LOAN_LIMIT_DR_ONE
+	数据字典描述：5000000
+	
+	数据字典值：PARTNER_LOAN_LIMIT_DR_DAY
+	数据字典描述：-1
+	
+	数据字典值：PARTNER_LOAN_LIMIT_DR_MONTH
+	数据字典描述：1000000000
+	
+	数据字典值：PARTNER_LOAN_LIMIT_DR_TOTAL
+	数据字典描述：2000000000
+	
+	
+	
+添加字典项   合作机构（PARTNER_NAME）   子类型
+	配置值---------
+	数据字典值：统联
+	数据字典描述：统联
+	
+	配置值---------
+	数据字典值：点融
+	数据字典描述：点融
+	
+	
+	
+==============================BMS-WEB   web-config.xml 以下为测试环境
+
+添加 
+#(QFANG)partner private key 
+qfang.partner.private.key=MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAN8Y4Pz77bCDitKbw7VXbaYLDHbmy+JhH9UTs6Sq/xjbqC6muE/QBLVd5U1yEeU/i3xq++hwC+sMg2Y6i5epP73zUL8Jx6vaygnDRNEcisc47d7wAGPrF3ExJrKz/dlCCzz+9UHpmqQhrJO6idteseP0F5ZKk5wu3jIwY4GqbYyTAgMBAAECgYAnxUSedL67n8eIofHyiuJmHkQbkis4cP3+uyNkMIOHR+kkX94thDTCrDlrY/Fiv8A67st3dTn6reFiwP8Pi0FsYu2lCiSLDS+mYXRz6/iAFEJgZDmAmkNvbUSRd3S4amWu4kPlywjAWAnwBNBNA1VPYH2z0Ovjel+e8UsZUzjvMQJBAP30nQmuqmrTywXh472wzxP6MdN0sQw+UCVMCW4toG7qfitvtUqcp6RRspILlVk9OhqOctgLHpTPuK4rc0GqPKkCQQDg5KsWb3HlhvwJbOOWoW9O3CDWpe5u1Q9p24WIjcPgeGNSdrambisZ+iLQAT8VSohfTs0v+G5jlKhsrarVT2jbAkAVBpWh4ZY2dgaPHB6w69yZONO7QCQQcXBNRjhZqOlphXyguAT4gnPWxPTV5qOc2dbfr/+OJ42GoJQXx30paKDRAkEAw1V6UMtNlzoOUbV1XBEt18YU87s+BKAkeiKEsl3H44FNa4PXE2mfIDoF4Lskar7JAlc0m1ThtLabL4IMXqhRfwJAWQoXy8bqV18SPPJqsRU8y0WXsKQmiUk6d2atoCan/bGuwAq1+5M2OAS/srCAyEbYKisVuW5b4o8lWnb5zC8k+Q==
+#(QFANG)partner public key 
+qfang.partner.public.key=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDfGOD8++2wg4rSm8O1V22mCwx25sviYR/VE7Okqv8Y26guprhP0AS1XeVNchHlP4t8avvocAvrDINmOouXqT+981C/Ccer2soJw0TRHIrHOO3e8ABj6xdxMSays/3ZQgs8/vVB6ZqkIayTuonbXrHj9BeWSpOcLt4yMGOBqm2MkwIDAQAB
+
+
+添加 
+#(tongling)partner institutions White list 
+tl.partner.param.add.user=QF01
+#(tongling)partner partnercode request 
+tl.partner.param.partnercode=40000000
+#(tongling)partner partnercode response
+tl.partner.param.partnercode.qfang=tl_qfang_partner
+#(tongling)partner partnercode 
+#(tongling)inst_code
+tl.partner.param.inst.code=QF
+#(tongling)fund_code
+tl.partner.param.fund.code=111111
+
+#(tongling)partner public key
+tl.partner.public.key=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC5kTTZlOdmgttMiV/u/oLTYIMp6D/YYreZTRWWqbXgOsWOB996RfH/bGSmjg+DrzlKu0wfHw5yyf4qG0VU/Ce3CETeRvWdg/X/cfpLIUJd2idc6GsQ1Ml6nvO0xK77F6i6RcuFNKD5SLZI9mPNsSnu0IqpDU36cFF0y3gl+Vs57wIDAQAB
+#(tongling)partner api.url (need config host ip) 
+tl.partner.api.url=http://unionfin.eicp.net:8180/fspopen/qfang
+#(tongling)partner md5 
+tl.partner.md5=16dbf0a1892e8c6b99fc1f4758d07c8e
+tl.sftp.host=unionfin.eicp.net
+tl.sftp.port=1022
+tl.sftp.username=fsppay
+tl.sftp.pwd=fsppay
+		
+添加 
+#===============================dianrong partner test environment config ===========================================
+dr.partner.clientId=9183628d075040e99ce1b8e322d3e2ea
+dr.partner.privateKey=MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAKkjUm5YybmrkrQe9ssNMQpVXqcd9ao+UPaZ4pmEcn7AxVr2sae0+qLlNwyFT68B/oxNbC2M0JqPv+582RjjDXHG5HBhWYSWWDnyqw/QKEYDBHnoNIYYf2LV8OMBBmnuvgbRV1/7z446INha/e1l7k/Dl08keW3gCxyAG96hEcbBAgMBAAECgYEAj1MmM+m7L0HrtASVHyWTi+0hoz2pAlWCKCXotixdFXnnAxkPHE0pIkZYKp0BFAz9lgi5hbPQxVjQzJgxI3yr03nxnsu9oqIN4pp33+pg/791CS+K8MV2aDcogK3NAJzC+E+fri7qdaYrALcmCNnB7m6pMZPudmLMsYtDUuPx7VECQQD8cl0P2bcWrM7i89CFoFfgh1i1cXi4a9a7TR7HEuR90ZNqqxffXkTIhXLekCBFq6N7UlDa+K0cnxx/1pF7CIV9AkEAq4TGDH6bamqd1e5SfUjDSRBVQyKQW7Sd0jfKHb3HhuU6H2u5QOqJuSWKZl42FKwyjkF6x+agQlX/DTl+xVR5lQJBAMtJsQU9lkGNQUDjhAzHVVy6wUXDraodNRs5fEplPVjQdrzUMHIwcIVlaV4ug752/DwnynK7BHRi8MlFWXvRHeUCQF5tClt2mDlN2Pcd7Wvr0xc2VrpPHQpftUM2U59sC5zINed2dta2SHwVnswcsclPw8VtZxsGbNQYZAHz1Ubt6sECQE+lQMUB/NL0m6LxTEwpSmHQzoZzwgAH/a2drAtbiD2sNperG32h802oMe9Cl+n57aPgm39DfKvYr5FIIrRPF5I=
+dr.partner.api.base.url=https://loanapp-dev.dianrong.com
+dr.partner.api.token.url=/v1/oauth2/token
+		
+		
+	
+	
+	  

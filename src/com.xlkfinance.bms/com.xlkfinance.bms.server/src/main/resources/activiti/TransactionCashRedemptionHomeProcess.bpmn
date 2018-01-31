@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <process id="transactionCashRedemptionHomeProcess" name="交易现金赎楼工作流" isExecutable="true">
+    <startEvent id="startevent1" name="Start"></startEvent>
+    <userTask id="task_Loan" name="发放贷款" activiti:candidateUsers="${candidateUsers}">
+      <extensionElements>
+        <activiti:formProperty id="nextRole" name="下一节点角色" type="string" default="HOUSE_CLERK" required="true"></activiti:formProperty>
+        <activiti:formProperty id="handleFlowId" name="办理流程条目ID" type="string" default="1" required="true"></activiti:formProperty>
+        <activiti:formProperty id="currentRole" name="当前节点角色" type="string" required="true"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <userTask id="task_Ransom_Floor" name="赎楼" activiti:candidateUsers="${candidateUsers}">
+      <extensionElements>
+        <activiti:formProperty id="nextRole" name="下一节点角色" type="string" default="JUNIOR_ACCOUNT_MANAGER" required="true"></activiti:formProperty>
+        <activiti:formProperty id="handleFlowId" name="办理流程条目ID" type="string" default="2" required="true"></activiti:formProperty>
+        <activiti:formProperty id="currentRole" name="当前节点角色" type="string" default="HOUSE_CLERK,DEPARTMENT_MANAGER" required="true"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow2" sourceRef="task_Loan" targetRef="task_Ransom_Floor"></sequenceFlow>
+    <userTask id="task_GetOldCertificate" name="取旧证" activiti:candidateUsers="${candidateUsers}">
+      <extensionElements>
+        <activiti:formProperty id="nextRole" name="下一节点角色" type="string" default="JUNIOR_ACCOUNT_MANAGER,GUARANTEE_DEPARTMENT_ASSISTANT,RESIDENT_COMMISSIONER" required="true"></activiti:formProperty>
+        <activiti:formProperty id="handleFlowId" name="办理流程条目ID" type="string" default="3" required="true"></activiti:formProperty>
+        <activiti:formProperty id="currentRole" name="当前节点角色" type="string" default="JUNIOR_ACCOUNT_MANAGER,DEPARTMENT_MANAGER" required="true"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow3" sourceRef="task_Ransom_Floor" targetRef="task_GetOldCertificate"></sequenceFlow>
+    <userTask id="task_CancelMortgage" name="注销抵押" activiti:candidateUsers="${candidateUsers}">
+      <extensionElements>
+        <activiti:formProperty id="nextRole" name="下一节点角色" type="string" default="GUARANTEE_DEPARTMENT_ASSISTANT,RESIDENT_COMMISSIONER" required="true"></activiti:formProperty>
+        <activiti:formProperty id="handleFlowId" name="办理流程条目ID" type="string" default="4" required="true"></activiti:formProperty>
+        <activiti:formProperty id="currentRole" name="当前节点角色" type="string" default="JUNIOR_ACCOUNT_MANAGER,GUARANTEE_DEPARTMENT_ASSISTANT,RESIDENT_COMMISSIONER" required="true"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow4" sourceRef="task_GetOldCertificate" targetRef="task_CancelMortgage"></sequenceFlow>
+    <userTask id="task_Mortgage" name="抵押" activiti:candidateUsers="${candidateUsers}">
+      <extensionElements>
+        <activiti:formProperty id="nextRole" name="下一节点角色" type="string" default="FUND_MANAGER" required="true"></activiti:formProperty>
+        <activiti:formProperty id="handleFlowId" name="办理流程条目ID" type="string" default="7" required="true"></activiti:formProperty>
+        <activiti:formProperty id="currentRole" name="当前节点角色" type="string" default="GUARANTEE_DEPARTMENT_ASSISTANT,RESIDENT_COMMISSIONER" required="true"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <endEvent id="endevent1" name="End"></endEvent>
+    <userTask id="task_ChangeName" name="过户" activiti:candidateUsers="${candidateUsers}">
+      <extensionElements>
+        <activiti:formProperty id="nextRole" name="下一节点角色" type="string" default="GUARANTEE_DEPARTMENT_ASSISTANT,RESIDENT_COMMISSIONER" required="true"></activiti:formProperty>
+        <activiti:formProperty id="handleFlowId" name="办理流程条目ID" type="string" default="5" required="true"></activiti:formProperty>
+        <activiti:formProperty id="currentRole" name="当前节点角色" type="string" default="GUARANTEE_DEPARTMENT_ASSISTANT,RESIDENT_COMMISSIONER" required="true"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <userTask id="task_GetNewCertificate" name="取新证" activiti:candidateUsers="${candidateUsers}">
+      <extensionElements>
+        <activiti:formProperty id="nextRole" name="下一节点角色" type="string" default="GUARANTEE_DEPARTMENT_ASSISTANT,RESIDENT_COMMISSIONER" required="true"></activiti:formProperty>
+        <activiti:formProperty id="handleFlowId" name="办理流程条目ID" type="string" default="6" required="true"></activiti:formProperty>
+        <activiti:formProperty id="currentRole" name="当前节点角色" type="string" default="GUARANTEE_DEPARTMENT_ASSISTANT,RESIDENT_COMMISSIONER" required="true"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow12" sourceRef="task_CancelMortgage" targetRef="task_ChangeName"></sequenceFlow>
+    <sequenceFlow id="flow13" sourceRef="task_ChangeName" targetRef="task_GetNewCertificate"></sequenceFlow>
+    <sequenceFlow id="flow15" sourceRef="startevent1" targetRef="task_Loan"></sequenceFlow>
+    <sequenceFlow id="flow16" sourceRef="task_GetNewCertificate" targetRef="task_Mortgage"></sequenceFlow>
+    <sequenceFlow id="flow17" sourceRef="task_Mortgage" targetRef="endevent1"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_transactionCashRedemptionHomeProcess">
+    <bpmndi:BPMNPlane bpmnElement="transactionCashRedemptionHomeProcess" id="BPMNPlane_transactionCashRedemptionHomeProcess">
+      <bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="364.0" y="40.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="task_Loan" id="BPMNShape_task_Loan">
+        <omgdc:Bounds height="55.0" width="256.0" x="254.0" y="153.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="task_Ransom_Floor" id="BPMNShape_task_Ransom_Floor">
+        <omgdc:Bounds height="55.0" width="256.0" x="254.0" y="243.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="task_GetOldCertificate" id="BPMNShape_task_GetOldCertificate">
+        <omgdc:Bounds height="55.0" width="256.0" x="254.0" y="333.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="task_CancelMortgage" id="BPMNShape_task_CancelMortgage">
+        <omgdc:Bounds height="55.0" width="255.0" x="255.0" y="423.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="task_Mortgage" id="BPMNShape_task_Mortgage">
+        <omgdc:Bounds height="55.0" width="249.0" x="254.0" y="699.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="361.0" y="876.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="task_ChangeName" id="BPMNShape_task_ChangeName">
+        <omgdc:Bounds height="55.0" width="249.0" x="257.0" y="520.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="task_GetNewCertificate" id="BPMNShape_task_GetNewCertificate">
+        <omgdc:Bounds height="55.0" width="249.0" x="258.0" y="610.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="382.0" y="208.0"></omgdi:waypoint>
+        <omgdi:waypoint x="382.0" y="243.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+        <omgdi:waypoint x="382.0" y="298.0"></omgdi:waypoint>
+        <omgdi:waypoint x="382.0" y="333.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+        <omgdi:waypoint x="382.0" y="388.0"></omgdi:waypoint>
+        <omgdi:waypoint x="382.0" y="423.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow12" id="BPMNEdge_flow12">
+        <omgdi:waypoint x="382.0" y="478.0"></omgdi:waypoint>
+        <omgdi:waypoint x="381.0" y="520.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow13" id="BPMNEdge_flow13">
+        <omgdi:waypoint x="381.0" y="575.0"></omgdi:waypoint>
+        <omgdi:waypoint x="382.0" y="610.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow15" id="BPMNEdge_flow15">
+        <omgdi:waypoint x="381.0" y="75.0"></omgdi:waypoint>
+        <omgdi:waypoint x="382.0" y="153.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow16" id="BPMNEdge_flow16">
+        <omgdi:waypoint x="382.0" y="665.0"></omgdi:waypoint>
+        <omgdi:waypoint x="378.0" y="699.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow17" id="BPMNEdge_flow17">
+        <omgdi:waypoint x="378.0" y="754.0"></omgdi:waypoint>
+        <omgdi:waypoint x="378.0" y="876.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

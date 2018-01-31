@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.product.mapper.ProductMapper">
+<resultMap type="com.xlkfinance.bms.rpc.product.Product" id="productMapper">
+  		<id property="pid" column="PID"/>
+  		<id property="createrId" column="CREATER_ID"/>
+  		<id property="productType" column="PRODUCT_TYPE"/>
+  		<id property="productName" column="PRODUCT_NAME"/>
+  		<id property="cityId" column="CITY_ID"/>
+  		<id property="productNumber" column="PRODUCT_NUM"/>
+  		<id property="loanMoney" column="LOAN_MONEY"/>
+  		<id property="loanTerm" column="LOAN_TERM"/>
+  		<id property="yearLoanInterest" column="YEAR_LOAN_iNTEREST"/>
+  		<id property="monthLoanInterest" column="MONTH_LOAN_INTEREST"/>
+  		<id property="manageRate" column="MANAGE_RATE"/>
+  		<id property="otherRate" column="OTHER_RATE"/>
+  		<id property="marketAvgInterest" column="MARKET_AVG_INTEREST"/>
+  		<id property="floatingRate" column="FLOATING_RATE"/>
+  		<id property="createDate" column="CREATE_DATE" jdbcType="TIMESTAMP" javaType="String"/>
+  		<id property="updateDate" column="UPDATE_DATE" jdbcType="TIMESTAMP" javaType="String"/>
+  		<id property="remark" column="REMARK"/>
+  		<id property="status" column="STATUS"/>
+  		<id property="loanWorkProcessId" column="LOAN_WORK_PROCESS_ID"/>
+  		<id property="bizHandleWorkProcessId" column="BIZHANDLE_WORK_PROCESS_ID"/>
+  		<id property="productSource" column="PRODUCT_SOURCE"/>
+  		<id property="tradeType" column="TRADE_TYPE"/>
+  		<id property="isForeclosure" column="IS_FORECLOSURE"/>
+  		<id property="productTypeText" column="productTypeText"/>
+  		<id property="cityName" column="cityName"/>
+  		<id property="productNumber" column="PRODUCT_NUM"/>
+</resultMap>
+<!-- 产品列表展示 -->
+<resultMap id="BaseResultMap" type="com.xlkfinance.bms.rpc.common.GridViewDTO">
+    <id property="pid" column="pid" />
+    <result property="value1" column="PRODUCT_NUM" />
+    <result property="value2" column="productTypeText" />
+    <result property="value3" column="PRODUCT_NAME" />
+    <result property="value4" column="cityName" />
+    <result property="value5" column="UPDATE_DATE" />
+    <result property="value7" column="LOAN_WORK_PROCESS_ID" />
+    <result property="value6" column="STATUS" />
+    <result property="value8" column="PRODUCT_TYPE" />
+    <result property="value9" column="TRADE_TYPE" />
+    <result property="value10" column="IS_FORECLOSURE" />
+</resultMap>
+
+<!-- 获取产品信息的PID -->
+<select id="getSeqBizProduct" resultType="java.lang.Integer">
+	SELECT SEQ_BIZ_PRODUCT.Nextval as PID from DUAL 
+</select>
+
+<!-- 新增产品 -->
+<insert id="addProduct" parameterType="com.xlkfinance.bms.rpc.product.Product">
+	INSERT INTO BIZ_PRODUCT 
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+        PID, 
+    	<if test="createrId != null and createrId >0"> 
+    	CREATER_ID, 
+    	</if>
+    	<if test="productType != null and productType!=0">
+    	PRODUCT_TYPE, 
+    	</if>
+    	<if test="productName != null and productName!=''">
+    	PRODUCT_NAME, 
+    	</if>
+    	
+    	<if test="productNumber != null and productNumber!=''">
+    	PRODUCT_NUM, 
+    	</if>
+    	<if test="cityId != null and cityId>0">
+    	CITY_ID, 
+    	</if>
+    	
+    	<if test="loanMoney != null and loanMoney!=''">
+    	LOAN_MONEY, 
+    	</if>
+    	<if test="loanTerm != null and loanTerm!=''">
+    	LOAN_TERM, 
+    	</if>
+    	<if test="yearLoanInterest != null and yearLoanInterest>0">
+    	YEAR_LOAN_INTEREST, 
+    	</if>
+    	<if test="monthLoanInterest != null and monthLoanInterest>0">
+    	MONTH_LOAN_INTEREST, 
+    	</if>
+    	<if test="manageRate != null and manageRate >0">
+    	MANAGE_RATE,
+    	</if>
+    	<if test="otherRate != null and otherRate >0">
+    	OTHER_RATE,
+    	</if>
+    	<if test="marketAvgInterest != null and marketAvgInterest >0">
+    	MARKET_AVG_INTEREST,
+    	</if>
+    	<if test="floatingRate != null and floatingRate >0">
+    	FLOATING_RATE,
+    	</if>
+    	<if test="createDate != null and createDate!=''">
+    	CREATE_DATE,
+    	</if>
+    	<if test="updateDate != null and updateDate!=''">
+    	UPDATE_DATE,
+    	</if>
+    	<if test="remark != null and remark!=''">
+    	REMARK,
+    	</if>
+    	<if test="loanWorkProcessId != null and loanWorkProcessId!=''">
+    	LOAN_WORK_PROCESS_ID,
+    	</if>
+    	<if test="bizHandleWorkProcessId != null and bizHandleWorkProcessId!=''">
+    	  BIZHANDLE_WORK_PROCESS_ID,
+    	</if>
+    	<if test="productSource != null and productSource >0">
+    	PRODUCT_SOURCE,
+    	</if>
+    	<if test="tradeType != null and tradeType >0">
+    	TRADE_TYPE,
+    	</if>
+    	<if test="isForeclosure != null and isForeclosure >0">
+    	IS_FORECLOSURE,
+    	</if>
+    	STATUS
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+    		#{pid,jdbcType=INTEGER}, 
+    	<if test="createrId != null and createrId >0">
+    		#{createrId,jdbcType=INTEGER}, 
+    	</if>
+    	<if test="productType != null and productType!=0">
+    		#{productType,jdbcType=INTEGER}, 
+    	</if>
+    	<if test="productName != null and productName!=''">
+    		#{productName,jdbcType=VARCHAR}, 
+    	</if>
+    	<if test="productNumber != null and productNumber!=''">
+    		#{productNumber,jdbcType=VARCHAR}, 
+    	</if>
+    	<if test="cityId != null and cityId>0">
+    		#{cityId,jdbcType=INTEGER}, 
+    	</if>
+    	<if test="loanMoney != null and loanMoney!=''">
+    		#{loanMoney,jdbcType=VARCHAR}, 
+    	</if>
+    	<if test="loanTerm != null and loanTerm!=''">
+    		#{loanTerm,jdbcType=VARCHAR}, 
+    	</if>
+    	<if test="yearLoanInterest != null and yearLoanInterest>0">
+    		#{yearLoanInterest,jdbcType=DOUBLE}, 
+    	</if>
+    	<if test="monthLoanInterest != null and monthLoanInterest>0">
+    		#{monthLoanInterest,jdbcType=DOUBLE}, 
+    	</if>
+    	<if test="manageRate != null and manageRate >0">
+    		#{manageRate,jdbcType=DOUBLE}, 
+    	</if>
+    	<if test="otherRate != null and otherRate >0">
+    		#{otherRate,jdbcType=DOUBLE}, 
+    	</if>
+    	<if test="marketAvgInterest != null and marketAvgInterest >0">
+    		#{marketAvgInterest,jdbcType=DOUBLE}, 
+    	</if>
+    	<if test="floatingRate != null and floatingRate >0">
+    		#{floatingRate,jdbcType=DOUBLE}, 
+    	</if>
+    	<if test="createDate != null and createDate!=''">
+    		#{createDate,jdbcType=TIMESTAMP,javaType=String}, 
+    	</if>
+    	<if test="updateDate != null and updateDate!=''">
+    		#{updateDate,jdbcType=TIMESTAMP,javaType=String}, 
+    	</if>
+    	<if test="remark != null and remark!=''">
+    		#{remark,jdbcType=CLOB,javaType=String}, 
+    	</if>
+    	<if test="loanWorkProcessId != null and loanWorkProcessId!=''">
+    		#{loanWorkProcessId},
+    	</if>
+    	<if test="bizHandleWorkProcessId != null and bizHandleWorkProcessId!=''">
+    	  	#{bizHandleWorkProcessId},
+    	</if>
+    	<if test="productSource != null and productSource >0">
+    		#{productSource},
+    	</if>
+    	<if test="tradeType != null and tradeType >0">
+    	#{tradeType},
+    	</if>
+    	<if test="isForeclosure != null and isForeclosure >0">
+     	#{isForeclosure},
+    	</if>
+    	
+    	1 
+    </trim>
+</insert>
+<!-- 修改产品信息 -->
+<update id="updateByPrimaryKey" parameterType="com.xlkfinance.bms.rpc.product.Product">
+	UPDATE BIZ_PRODUCT
+	<set>
+		<if test="createrId != null and createrId >0">
+    		CREATER_ID = #{createrId,jdbcType=INTEGER}, 
+    	</if>
+    	<if test="productType != null and productType!=0">
+    		PRODUCT_TYPE = #{productType,jdbcType=INTEGER}, 
+    	</if>
+    	<if test="productName != null and productName!=''">
+    		PRODUCT_NAME = #{productName,jdbcType=VARCHAR}, 
+    	</if>
+    	<if test="productNumber != null and productNumber!=''">
+    		PRODUCT_NUM = #{productNumber,jdbcType=VARCHAR}, 
+    	</if>
+    	<if test="cityId != null and cityId>0">
+    		CITY_ID = #{cityId,jdbcType=INTEGER}, 
+    	</if>
+    	
+    	<if test="loanMoney != null and loanMoney!=''">
+    		LOAN_MONEY = #{loanMoney,jdbcType=VARCHAR}, 
+    	</if>
+    	<if test="loanTerm != null and loanTerm!=''">
+    		LOAN_TERM = #{loanTerm,jdbcType=VARCHAR}, 
+    	</if>
+    	<if test="yearLoanInterest != null and yearLoanInterest>0">
+    		YEAR_LOAN_INTEREST = #{yearLoanInterest,jdbcType=DOUBLE}, 
+    	</if>
+    	<if test="monthLoanInterest != null and monthLoanInterest>0">
+    		MONTH_LOAN_INTEREST = #{monthLoanInterest,jdbcType=DOUBLE}, 
+    	</if>
+    	<if test="manageRate != null and manageRate >0">
+    		MANAGE_RATE = #{manageRate,jdbcType=DOUBLE}, 
+    	</if>
+    	<if test="otherRate != null and otherRate >0">
+    		OTHER_RATE = #{otherRate,jdbcType=DOUBLE}, 
+    	</if>
+    	<if test="marketAvgInterest != null and marketAvgInterest >0">
+    		MARKET_AVG_INTEREST = #{marketAvgInterest,jdbcType=DOUBLE}, 
+    	</if>
+    	<if test="floatingRate != null and floatingRate >0">
+    		FLOATING_RATE = #{floatingRate,jdbcType=DOUBLE}, 
+    	</if>
+    	<if test="updateDate != null and updateDate!=''">
+    		UPDATE_DATE = #{updateDate,jdbcType=TIMESTAMP,javaType=String}, 
+    	</if>
+    	<if test="remark != null and remark!=''">
+    		REMARK = #{remark,jdbcType=CLOB,javaType=String}, 
+    	</if>
+    	<if test="status != null and status>0">
+    		STATUS = #{status,jdbcType=INTEGER}, 
+    	</if>
+    	<if test="loanWorkProcessId != null and loanWorkProcessId!=''">
+    	LOAN_WORK_PROCESS_ID = #{loanWorkProcessId},
+    	</if> 
+    	<if test="bizHandleWorkProcessId != null and bizHandleWorkProcessId!=''">
+    	  	BIZHANDLE_WORK_PROCESS_ID=#{bizHandleWorkProcessId},
+    	</if>
+    	<if test="productSource != null and productSource >0">
+    		PRODUCT_SOURCE = #{productSource},
+    	</if>
+    	<if test="tradeType != null and tradeType >0">
+    		TRADE_TYPE = #{tradeType},
+    	</if>
+    	<if test="isForeclosure != null and isForeclosure >0">
+    		IS_FORECLOSURE = #{isForeclosure},
+    	</if>
+    	
+	</set>
+	where pid = #{pid}
+</update>
+<!-- 通过主键查询产品详情 -->
+<select id="getProductByPid" resultMap="productMapper" parameterType="java.lang.Integer">
+	select P.*,CASE P.PRODUCT_TYPE WHEN 1 THEN '信用' WHEN 2 THEN '赎楼' END productTypeText,(SELECT NAME FROM SYS_ORG_INFO O WHERE O.ID= P.CITY_ID) cityName FROM BIZ_PRODUCT P WHERE P.PID=#{pid,jdbcType=INTEGER}
+</select>
+<!-- 查询产品列表 -->
+<select id="getAllProduct" resultMap="BaseResultMap" parameterType="com.xlkfinance.bms.rpc.product.Product">
+	<![CDATA[
+	SELECT D.* FROM (SELECT T.*, ROWNUM RN
+	        FROM (
+		SELECT P.PID, 
+		P.PRODUCT_NUM,
+		P.PRODUCT_TYPE,
+		P.IS_FORECLOSURE,
+		P.TRADE_TYPE,
+		I.LOOKUP_DESC AS productTypeText,
+		P.PRODUCT_NAME,(SELECT NAME FROM SYS_ORG_INFO O WHERE O.ID= P.CITY_ID) cityName,
+		TO_CHAR(P.UPDATE_DATE,'yyyy-MM-dd HH24:MI:SS') UPDATE_DATE,P.STATUS,p.LOAN_WORK_PROCESS_ID,p.BIZHANDLE_WORK_PROCESS_ID
+		FROM BIZ_PRODUCT P
+		LEFT JOIN (SELECT SLV.LOOKUP_VAL, SLV.LOOKUP_DESC
+	               FROM SYS_LOOKUP SL, SYS_LOOKUP_VAL SLV
+	              WHERE SL.PID = SLV.LOOKUP_ID
+	                AND SL.LOOKUP_TYPE = 'PRODUCT_TYPE') I
+	     ON P.PRODUCT_TYPE = I.LOOKUP_VAL
+		 WHERE PRODUCT_SOURCE = 1 ]]>
+	<if test="userIds!=null and userIds.size()>0">
+		AND	P.CREATER_ID in
+	<foreach item="itemId" collection="userIds" open="(" separator="," close=")">
+	          #{itemId}
+	</foreach>
+	</if>
+	<if test="productName != null and productName!=''">
+		AND P.PRODUCT_NAME like '%${productName}%'
+	</if>
+	<if test="productNumber != null and productNumber!=''">
+		AND P.PRODUCT_NUM like '%${productNumber}%'
+	</if>
+	<if test="cityId != null and cityId>0">
+		AND P.CITY_ID = #{cityId,jdbcType=INTEGER}
+	</if>
+	<if test="cityIds!=null and cityIds.size()>0">
+		AND P.CITY_ID IN
+		<foreach item="itemId" collection="cityIds" open="(" separator="," close=")">
+	          #{itemId}
+		</foreach>
+	</if>
+	<![CDATA[ORDER BY P.UPDATE_DATE desc) T
+	WHERE ROWNUM <=#{page}*#{rows}
+	) D
+	WHERE D.RN > ((#{page}-1)*#{rows})]]>
+   </select>
+   
+ <!-- 查询产品总数  -->
+<select id="getTotalProducts" resultType="java.lang.Integer" parameterType="com.xlkfinance.bms.rpc.product.Product">
+	<![CDATA[
+	SELECT COUNT(PID) FROM (
+		SELECT P.PID, 
+		P.PRODUCT_NUM,
+		CASE P.PRODUCT_TYPE WHEN '1' THEN '信用' WHEN '2' THEN '赎楼' END productTypeText,
+		P.PRODUCT_NAME,(SELECT NAME FROM SYS_ORG_INFO O WHERE O.ID= P.CITY_ID) cityName,
+		TO_CHAR(P.UPDATE_DATE,'yyyy-MM-dd HH24:MI:SS') UPDATE_DATE,P.STATUS
+		FROM BIZ_PRODUCT P WHERE PRODUCT_SOURCE = 1 ]]>
+	<if test="userIds!=null and userIds.size()>0">
+		AND	CREATER_ID in
+	<foreach item="itemId" collection="userIds" open="(" separator="," close=")">
+	          #{itemId}
+	</foreach>
+	</if>
+	<if test="productName != null and productName!=''">
+		AND PRODUCT_NAME like '%${productName}%'
+	</if>
+	<if test="cityId != null and cityId>0">
+		AND CITY_ID = #{cityId,jdbcType=INTEGER}
+	</if>
+	<if test="productNumber != null and productNumber!=''">
+		AND PRODUCT_NUM like '%${productNumber}%'
+	</if> 
+	<if test="cityIds!=null and cityIds.size()>0">
+		AND P.CITY_ID in
+		<foreach item="itemId" collection="cityIds" open="(" separator="," close=")">
+	          #{itemId}
+		</foreach>
+	</if>
+	ORDER BY P.UPDATE_DATE) DP
+    </select>
+
+<!-- 根据城市不同查询产品列表 -->
+<select id="getAllProductList" resultMap="productMapper" parameterType="com.xlkfinance.bms.rpc.product.Product">
+	<![CDATA[
+		SELECT P.PID, P.PRODUCT_NAME, P.PRODUCT_NUM from BIZ_PRODUCT P WHERE PRODUCT_SOURCE IN (1,2) ]]>
+	<if test="cityId != null and cityId>0">
+		AND P.CITY_ID = #{cityId,jdbcType=INTEGER}
+	</if>
+	<if test="status != null and status>0">
+		AND P.STATUS = #{status,jdbcType=INTEGER}
+	</if>
+	<if test="productNumber != null and productNumber !=''">
+		AND P.PRODUCT_NUM = #{productNumber}
+	</if>
+	<if test="pid != null and pid >0">
+		AND P.PID = #{pid}
+	</if>
+	<if test="productType != null and productType > 0">
+		AND P.PRODUCT_TYPE = #{productType,jdbcType=INTEGER}
+	</if>
+	<if test="cityIds!=null and cityIds.size()>0">
+		AND P.CITY_ID IN
+		<foreach item="itemId" collection="cityIds" open="(" separator="," close=")">
+	          #{itemId}
+		</foreach>
+	</if>
+   </select>
+
+<!-- 查询产品类型 -->
+<select id="getProductType" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+		SELECT P.PRODUCT_TYPE from BIZ_PRODUCT P WHERE P.PID=#{pid,jdbcType=INTEGER}
+</select>
+
+<!-- 通过项目ID查询产品信息 -->
+<select id="findProductByProjectId" resultMap="productMapper" parameterType="java.lang.Integer">
+	SELECT B.PRODUCT_NAME,B.PID,b.product_num
+	FROM  BIZ_PROJECT A,BIZ_PRODUCT B
+	WHERE A.PRODUCT_ID = B.PID AND A.PID = #{projectId}
+</select>
+<!-- 查询机构产品信息 -->
+<select id="getOrgProduct" resultMap="productMapper" parameterType="com.xlkfinance.bms.rpc.product.Product">
+	 SELECT BP.* FROM BIZ_PRODUCT BP 
+	 WHERE BP.STATUS = 1 AND BP.PRODUCT_SOURCE = 2 AND BP.TRADE_TYPE = #{tradeType}
+</select>
+
+</mapper>

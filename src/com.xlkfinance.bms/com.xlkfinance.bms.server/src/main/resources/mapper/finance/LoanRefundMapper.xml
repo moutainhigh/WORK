@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.finance.mapper.LoanRefundMapper">
+
+<resultMap type="com.xlkfinance.bms.rpc.finance.LoanRefundView" id="LoanRefundMap">
+  		<id property="pid" column="pid"/>
+        <result property="actualRefundAmt" column="actual_Refund_Amt" />
+        <result property="refundDifferenceAmt" column="refund_Difference_Amt" />
+        <result property="refundDt" column="refund_Dt" />
+        <result property="refundBankId" column="refund_Bank_Id" />
+        <result property="remark" column="remark" />
+        <result property="projectId" column="project_Id" />
+        <result property="payableRefundAmt" column="payable_Refund_Amt" />
+        <result property="status" column="status" />
+        <result property="refundUserId" column="refund_User_Id" />
+        <result property="refundUserName" column="refund_User_Name" />
+</resultMap>
+<insert id="insert" parameterType="com.xlkfinance.bms.rpc.finance.LoanRefundDTO">
+    <selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+		SELECT SEQ_BIZ_LOAN_REFUND.Nextval as PID from DUAL
+	</selectKey>
+    insert into biz_loan_refund (
+		   	pid,
+			actual_refund_amt,
+			refund_difference_amt,
+			refund_dt,
+			remark,
+			refund_bank_id,
+			project_id,
+			payable_refund_amt,
+			status,
+			refund_user_id,
+			RECE_ID
+		)
+    values (
+	    #{pid,jdbcType=INTEGER},								
+	    #{actualRefundAmt,jdbcType=DOUBLE},
+	    #{refundDifferenceAmt,jdbcType=DOUBLE},
+	    #{refundDt,jdbcType=DATE},
+	    #{remark,jdbcType=VARCHAR},
+	    #{refundBankId,jdbcType=INTEGER},	    
+	    #{projectId,jdbcType=INTEGER},
+	    #{payableRefundAmt,jdbcType=DOUBLE},
+	    1,
+	    #{refundUserId,javaType=INTEGER} ,
+	    #{receivablesId,javaType=INTEGER})
+</insert>
+<select id="getLoanRefundList" parameterType="java.lang.Integer" resultMap="LoanRefundMap">
+  select refund.pid,refund.actual_refund_amt,refund.refund_difference_amt,to_char(refund.refund_dt,'yyyy-MM-dd') refund_dt,refund.remark,
+  		 refund.refund_bank_id,refund.project_id,refund.payable_refund_amt,refund.status,refund.refund_user_id ,
+		 PKG_COMMON.FUN_GET_SYS_USER_NAME(refund.refund_user_id) refund_user_name
+  from biz_loan_refund refund left join biz_loan l on l.project_id=refund.project_id
+  where refund.status=1 and l.pid=#{loanId}
+ 
+</select>
+<insert id="insertLoanRecInto" parameterType="com.xlkfinance.bms.rpc.finance.LoanRecIntoDTO">
+    <selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+		SELECT SEQ_BIZ_LOAN_REC_INTO.Nextval as PID from DUAL
+	</selectKey>
+    insert into BIZ_LOAN_REC_INTO (
+		      pid            ,
+			  actual_into_amt ,
+			  into_dt         ,
+			  remark          ,
+			  loan_id         ,
+			  status          ,
+			  user_id  ,
+			  rece_id,
+			  BANK_ID         
+		)
+    values (
+	    #{pid,jdbcType=INTEGER},								
+	    #{actualIntoAmt,jdbcType=DOUBLE},
+	    sysDate,
+	    #{remark,jdbcType=VARCHAR},
+	    #{loanId,jdbcType=INTEGER},	    
+	    1,
+	    #{userId,javaType=INTEGER} ,
+	    #{receivablesId,javaType=INTEGER},
+	    #{bankId,javaType=INTEGER})
+</insert>
+ <select id="getBankIdByLoanId" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+  SELECT distinct t.ft_bank_acct_id
+                 FROM BIZ_LOAN_RECONCILIATION_DTL T,Biz_Loan_Reconciliation r
+                WHERE T.Recon_Id=r.pid
+                  AND T.STATUS = 1 and r.loan_info_id=#{loanId}
+ 
+</select>
+</mapper>

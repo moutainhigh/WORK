@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xlkfinance.bms.server.inloan.mapper.BizBatchRefundFeeRelationMapper">
+	<resultMap id="bizBatchRefundFeeRelationMap" type="com.xlkfinance.bms.rpc.inloan.BizBatchRefundFeeRelation">
+		<id property="pid" column="PID" />
+		<id property="batchRefundFeeMainId" column="BATCH_REFUND_FEE_MAIN_ID" />
+		<id property="projectId" column="PROJECT_ID" />
+		<id property="refundFeeId" column="REFUND_FEE_ID" />
+	</resultMap>
+	<sql id="column_list">
+        PID,BATCH_REFUND_FEE_MAIN_ID,PROJECT_ID,REFUND_FEE_ID
+	</sql>
+	<!-- 查询所有 -->
+	<select id="getAll" resultMap="bizBatchRefundFeeRelationMap" parameterType="com.xlkfinance.bms.rpc.inloan.BizBatchRefundFeeRelation">
+		SELECT
+		<include refid="column_list" />
+		FROM BIZ_BATCH_REFUND_FEE_RELATION
+		<where>
+			<trim>
+		      <if test="pid != null and pid >0">
+	          PID=#{pid}
+	          </if>
+		      <if test="batchRefundFeeMainId != null and batchRefundFeeMainId >0">
+	          AND BATCH_REFUND_FEE_MAIN_ID=#{batchRefundFeeMainId}
+	          </if>
+		      <if test="projectId != null and projectId >0">
+	          AND PROJECT_ID=#{projectId}
+	          </if>
+		      <if test="refundFeeId != null and refundFeeId >0">
+	          AND REFUND_FEE_ID=#{refundFeeId}
+	          </if>
+			</trim>
+		</where>
+	</select>
+	<!-- 根据id获取 -->
+	<select id="getById" resultMap="bizBatchRefundFeeRelationMap">
+		SELECT <include refid="column_list" /> FROM BIZ_BATCH_REFUND_FEE_RELATION WHERE PID=#{pid}
+	</select>
+	<!-- 插入一条数据 -->
+	<insert id="insert" parameterType="com.xlkfinance.bms.rpc.inloan.BizBatchRefundFeeRelation">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_BATCH_REFUND_FEE_RELATION.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_BATCH_REFUND_FEE_RELATION
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+				PID,
+			</if>
+		    <if test="batchRefundFeeMainId != null and batchRefundFeeMainId >0">
+				BATCH_REFUND_FEE_MAIN_ID,
+			</if>
+		    <if test="projectId != null and projectId >0">
+				PROJECT_ID,
+			</if>
+		    <if test="refundFeeId != null and refundFeeId >0">
+				REFUND_FEE_ID,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+		    #{pid},
+			</if>
+		    <if test="batchRefundFeeMainId != null and batchRefundFeeMainId >0">
+		    #{batchRefundFeeMainId},
+			</if>
+		    <if test="projectId != null and projectId >0">
+		    #{projectId},
+			</if>
+		    <if test="refundFeeId != null and refundFeeId >0">
+		    #{refundFeeId},
+			</if>
+		</trim>
+	</insert>
+	<!-- 根据id删除数据 -->
+	<delete id="deleteById" parameterType="com.xlkfinance.bms.rpc.inloan.BizBatchRefundFeeRelation">
+		<![CDATA[DELETE FROM BIZ_BATCH_REFUND_FEE_RELATION WHERE PID=#{pid}]]>
+	</delete>
+	<!-- 根据id更新数据 -->
+		<update id="update" parameterType="com.xlkfinance.bms.rpc.inloan.BizBatchRefundFeeRelation">
+		UPDATE BIZ_BATCH_REFUND_FEE_RELATION
+		<set>
+		    <if test="pid != null and pid >0">
+		     PID=#{pid},
+			</if>
+		    <if test="batchRefundFeeMainId != null and batchRefundFeeMainId >0">
+		     BATCH_REFUND_FEE_MAIN_ID=#{batchRefundFeeMainId},
+			</if>
+		    <if test="projectId != null and projectId >0">
+		     PROJECT_ID=#{projectId},
+			</if>
+		    <if test="refundFeeId != null and refundFeeId >0">
+		     REFUND_FEE_ID=#{refundFeeId},
+			</if>
+		</set>
+		WHERE PID = #{pid}
+	</update>
+	<!-- 根据传入多个id删除数据 -->
+	<delete id="deleteByIds" parameterType="java.util.List">
+		DELETE FROM BIZ_BATCH_REFUND_FEE_RELATION WHERE PID in
+		<foreach collection="list" item="item" index="index" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+</mapper>

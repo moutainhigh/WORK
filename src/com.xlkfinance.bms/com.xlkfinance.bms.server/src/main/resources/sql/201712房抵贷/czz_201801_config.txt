@@ -1,0 +1,11 @@
+
+
+
+
+/**添加菜单*/
+客户管理  添加菜单
+征信报告费用管理	/creditReportFeeConfigController/index.action
+
+
+统计分析  添加菜单
+征信报告费用统计	/reportController/creditReportFeeIndex.action

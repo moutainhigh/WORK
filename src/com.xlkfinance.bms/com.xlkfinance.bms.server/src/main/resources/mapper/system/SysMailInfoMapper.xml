@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xlkfinance.bms.server.system.mapper.SysMailInfoMapper">
+	<resultMap id="sysMailInfoMap" type="com.xlkfinance.bms.rpc.system.SysMailInfo">
+		<id property="pid" column="PID" />
+		<id property="subject" column="SUBJECT" />
+		<id property="content" column="CONTENT" />
+		<id property="sendMail" column="SEND_MAIL" />
+		<id property="recMail" column="REC_MAIL" />
+		<id property="creatorId" column="CREATOR_ID" />
+		<id property="creatorDate" column="CREATOR_DATE" />
+		<id property="category" column="CATEGORY" />
+		<id property="status" column="STATUS" />
+		<id property="ipAddress" column="IP_ADDRESS" />
+	</resultMap>
+	<sql id="column_list">
+        PID,SUBJECT,CONTENT,SEND_MAIL,REC_MAIL,CREATOR_ID,CREATOR_DATE,CATEGORY,STATUS,IP_ADDRESS
+	</sql>
+	<!-- 查询所有 -->
+	<select id="getAll" resultMap="sysMailInfoMap" parameterType="com.xlkfinance.bms.rpc.system.SysMailInfo">
+		SELECT
+		<include refid="column_list" />
+		FROM SYS_MAIL_INFO
+		<where>
+			<trim>
+		      <if test="pid != null and pid >0">
+	          PID=#{pid}
+	          </if>
+		      <if test="subject != null and subject !=''">
+	          AND SUBJECT=#{subject}
+	          </if>
+		      <if test="content != null and content !=''">
+	          AND CONTENT=#{content}
+	          </if>
+		      <if test="sendMail != null and sendMail !=''">
+	          AND SEND_MAIL=#{sendMail}
+	          </if>
+		      <if test="recMail != null and recMail !=''">
+	          AND REC_MAIL=#{recMail}
+	          </if>
+		      <if test="creatorId != null and creatorId >0">
+	          AND CREATOR_ID=#{creatorId}
+	          </if>
+		      <if test="creatorDate != null and creatorDate !=''">
+	          AND CREATOR_DATE=#{creatorDate}
+	          </if>
+		      <if test="category != null and category >0">
+	          AND CATEGORY=#{category}
+	          </if>
+		      <if test="status != null and status >0">
+	          AND STATUS=#{status}
+	          </if>
+		      <if test="ipAddress != null and ipAddress !=''">
+	          AND IP_ADDRESS=#{ipAddress}
+	          </if>
+			</trim>
+		</where>
+	</select>
+	<!-- 根据id获取 -->
+	<select id="getById" resultMap="sysMailInfoMap">
+		SELECT <include refid="column_list" /> FROM SYS_MAIL_INFO WHERE PID=#{pid}
+	</select>
+	<!-- 插入一条数据 -->
+	<insert id="insert" parameterType="com.xlkfinance.bms.rpc.system.SysMailInfo">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_SYS_MAIL_INFO.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO SYS_MAIL_INFO
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+				PID,
+			</if>
+		    <if test="subject != null and subject !=''">
+				SUBJECT,
+			</if>
+		    <if test="content != null and content !=''">
+				CONTENT,
+			</if>
+		    <if test="sendMail != null and sendMail !=''">
+				SEND_MAIL,
+			</if>
+		    <if test="recMail != null and recMail !=''">
+				REC_MAIL,
+			</if>
+		    <if test="creatorId != null and creatorId >0">
+				CREATOR_ID,
+			</if>
+				CREATOR_DATE,
+		    <if test="category != null and category >0">
+				CATEGORY,
+			</if>
+		    <if test="status != null and status >0">
+				STATUS,
+			</if>
+		    <if test="ipAddress != null and ipAddress !=''">
+				IP_ADDRESS,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+		    #{pid},
+			</if>
+		    <if test="subject != null and subject !=''">
+		    #{subject},
+			</if>
+		    <if test="content != null and content !=''">
+		    #{content},
+			</if>
+		    <if test="sendMail != null and sendMail !=''">
+		    #{sendMail},
+			</if>
+		    <if test="recMail != null and recMail !=''">
+		    #{recMail},
+			</if>
+		    <if test="creatorId != null and creatorId >0">
+		    #{creatorId},
+			</if>
+		    SYSDATE,
+		    <if test="category != null and category >0">
+		    #{category},
+			</if>
+		    <if test="status != null and status >0">
+		    #{status},
+			</if>
+		    <if test="ipAddress != null and ipAddress !=''">
+		    #{ipAddress},
+			</if>
+		</trim>
+	</insert>
+	<!-- 根据id删除数据 -->
+	<delete id="deleteById" parameterType="com.xlkfinance.bms.rpc.system.SysMailInfo">
+		<![CDATA[DELETE FROM SYS_MAIL_INFO WHERE PID=#{pid}]]>
+	</delete>
+	<!-- 根据id更新数据 -->
+		<update id="update" parameterType="com.xlkfinance.bms.rpc.system.SysMailInfo">
+		UPDATE SYS_MAIL_INFO
+		<set>
+		    <if test="pid != null and pid >0">
+		     PID=#{pid},
+			</if>
+		    <if test="subject != null and subject !=''">
+		     SUBJECT=#{subject},
+			</if>
+		    <if test="content != null and content !=''">
+		     CONTENT=#{content},
+			</if>
+		    <if test="sendMail != null and sendMail !=''">
+		     SEND_MAIL=#{sendMail},
+			</if>
+		    <if test="recMail != null and recMail !=''">
+		     REC_MAIL=#{recMail},
+			</if>
+		    <if test="category != null and category >0">
+		     CATEGORY=#{category},
+			</if>
+		    <if test="status != null and status >0">
+		     STATUS=#{status},
+			</if>
+		    <if test="ipAddress != null and ipAddress !=''">
+		     IP_ADDRESS=#{ipAddress},
+			</if>
+		</set>
+		WHERE PID = #{pid}
+	</update>
+	<!-- 根据传入多个id删除数据 -->
+	<delete id="deleteByIds" parameterType="java.util.List">
+		DELETE FROM SYS_MAIL_INFO WHERE PID in
+		<foreach collection="list" item="item" index="index" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+</mapper>

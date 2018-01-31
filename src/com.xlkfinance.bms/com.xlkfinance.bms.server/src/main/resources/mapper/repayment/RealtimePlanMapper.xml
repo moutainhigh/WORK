@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.repayment.mapper.RealtimePlanMapper">
+	<insert id="insert" parameterType="com.xlkfinance.bms.rpc.repayment.RealtimePlan">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pId">
+			SELECT SEQ_BIZ_LOAN_REALTIME_PLAN.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_LOAN_REALTIME_PLAN
+		  (PID,
+		  	<if test="loanId !=null">
+				LOAN_ID,
+			</if>
+			<if test="genDttm !=null and genDttm !=''">
+			GEN_DTTM,
+			</if>
+			<if test="operUserId !=null">
+			OPER_USER_ID,
+			</if>
+			<if test="operRepayDt !=null and operRepayDt !=''">
+			OPER_REPAY_DT,
+			</if>
+			<if test="operType !=null">
+			OPER_TYPE,
+			</if>
+			<if test="baseAmt !=null">
+			BASE_AMT,
+			</if>
+			<if test="operCost !=null">
+			OPER_COST,
+			</if>
+			<if test="total !=null">
+			TOTAL,
+			</if>
+			<if test="principalBalance !=null">
+			PRINCIPAL_BALANCE,
+			</if>
+			<if test="planVersion !=null">
+			PLAN_VERSION,
+			</if>
+			<if test="refId !=null">
+			REF_ID,
+			</if>
+		   refund_type,
+		   STATUS,
+		   IS_RECONCILIATION)
+		values
+		(
+			#{pId,jdbcType=INTEGER},
+			<if test="loanId !=null">
+			#{loanId,jdbcType=INTEGER},
+			</if>
+			<if test="genDttm !=null and genDttm !=''">
+			#{genDttm,jdbcType=TIMESTAMP,javaType=String},
+			</if>
+			<if test="operUserId !=null">
+			#{operUserId,jdbcType=INTEGER},
+			</if>
+			<if test="operRepayDt !=null and operRepayDt !=''">
+			#{operRepayDt,jdbcType=DATE,javaType=String},
+			</if>
+			<if test="operType !=null">
+			#{operType,jdbcType=INTEGER},
+			</if>
+			<if test="baseAmt !=null">
+			#{baseAmt,jdbcType=DOUBLE},
+			</if>
+			<if test="operCost !=null">
+			#{operCost,jdbcType=DOUBLE},
+			</if>
+			<if test="total !=null">
+			#{total,jdbcType=DOUBLE},
+			</if>
+			<if test="principalBalance !=null">
+			#{principalBalance,jdbcType=DOUBLE},
+			</if>
+			<if test="planVersion !=null">
+			#{planVersion,jdbcType=INTEGER},
+			</if>
+			<if test="refId !=null">
+			#{refId,jdbcType=INTEGER},
+			</if>
+			1,2,1
+		)
+	</insert>
+	
+	<insert id="insertRealtimePlans" parameterType="java.util.List">
+	    INSERT INTO BIZ_LOAN_REALTIME_PLAN
+		  (PID,
+			LOAN_ID,
+			GEN_DTTM,
+			OPER_USER_ID,
+			OPER_REPAY_DT,
+			OPER_TYPE,
+			BASE_AMT,
+			OPER_COST,
+			TOTAL,
+			PRINCIPAL_BALANCE,
+			PLAN_VERSION,
+			REF_ID,
+		    IS_RECONCILIATION,
+		    refund_type,
+		    FREEZE_STATUS,
+		    STATUS
+		    )
+		select SEQ_BIZ_LOAN_REALTIME_PLAN.Nextval,A.* from(
+	        <foreach collection="list" item="item" index="index"
+	            separator="UNION">
+	            SELECT
+					#{item.loanId,jdbcType=INTEGER},
+					#{item.genDttm,jdbcType=TIMESTAMP,javaType=String},
+					#{item.operUserId,jdbcType=INTEGER},
+					#{item.operRepayDt,jdbcType=DATE,javaType=String},
+					#{item.operType,jdbcType=INTEGER},
+					#{item.baseAmt,jdbcType=DOUBLE},
+					#{item.operCost,jdbcType=DOUBLE},
+					#{item.total,jdbcType=DOUBLE},
+					#{item.principalBalance,jdbcType=DOUBLE},
+					#{item.planVersion,jdbcType=INTEGER},
+					#{item.refId,jdbcType=INTEGER},
+					#{item.isReconciliation,jdbcType=INTEGER},
+					#{item.refundType,jdbcType=INTEGER},
+					#{item.freezeStatus,jdbcType=INTEGER},1
+	            from dual 
+	        </foreach>
+	     ) A
+	</insert>
+	
+	<select id="getMaxVersion" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+	       SELECT NVL(PKG_FINANCE.FUN_REALTIME_MAX_VERSION(#{loanId,jdbcType=INTEGER}),0)  FROM dual
+  	</select>
+  	
+  	<select id="selectRealtimePlanByloanId" resultType="com.xlkfinance.bms.rpc.repayment.RealtimePlan" parameterType="java.util.HashMap">
+  		SELECT PID pId,
+	       loan_id loanId,
+	       to_char(gen_dttm,'yyyy-MM-dd HH:mm:ss') genDttm,
+	       oper_user_id operUserId,
+	       to_char(oper_repay_dt,'yyyy-MM-dd')  operRepayDt,
+	       oper_type operType,
+	       base_amt baseAmt,
+	       oper_cost operCost,
+	       total total,
+	       principal_balance principalBalance,
+	       plan_version planVersion,
+	       status status,
+	       ref_id refId,
+	       is_reconciliation isReconciliation,
+	       refund_type refundType
+	  FROM BIZ_LOAN_REALTIME_PLAN
+	 WHERE PLAN_VERSION = PKG_FINANCE.FUN_REALTIME_FRE_MAX_VERSION(#{loanId})
+	   AND LOAN_ID = #{loanId}
+	   <if test="refunType !=-1">
+	  	   <if test="refundType !=null and refundType>0">
+		   	AND (REFUND_TYPE != #{refundType} OR (REFUND_TYPE = #{refundType} AND REF_ID !=#{refId}))
+		   </if> 
+		   <if test="refundType == null or refundType==0">
+		   	AND (oper_type !=#{operType} OR (oper_type=#{operType} AND ref_id !=#{refId}))
+		   </if> 
+	   </if>   
+  	</select> 
+  	
+  	<!-- 当前提前还款的上一次提前还款 -->
+	<select id="getFirstRepayByPid" resultType="com.xlkfinance.bms.rpc.repayment.PreApplyRepayBaseDTO" parameterType="com.xlkfinance.bms.rpc.repayment.PreApplyRepayBaseDTO">
+		SELECT *
+		  FROM (SELECT T.PID pId, T.LOAN_ID loanId, T.PRE_REPAY_AMT preRepayAmt, T.REPAY_DATE repayDate
+		          FROM BIZ_LOAN_PRE_REPAY T
+		         WHERE T.REPAY_DATE <![CDATA[< ]]> (SELECT C.REPAY_DATE
+		                                 FROM BIZ_LOAN_PRE_REPAY C
+		                                WHERE C.PID =#{pId}) - 1
+		           AND T.LOAN_ID =#{loanId}
+		           AND T.STATUS = 1
+		         ORDER BY T.REPAY_DATE DESC) T1
+		 WHERE ROWNUM = 1
+	</select>
+	
+	<!-- 根据贷款ID查询已对账金额 -->
+<select id="getRealtimeNoReconAmt" parameterType="java.util.Map" statementType="CALLABLE" resultType="java.util.Map">
+		<![CDATA[    
+		{ CALL PKG_REPAYMENT.PRO_REALTIME_NO_RECON_AMT(
+		#{noReconAmt,mode=OUT,jdbcType=DOUBLE},
+		#{loanId,mode=IN,jdbcType=INTEGER},
+		#{operType,mode=IN,jdbcType=INTEGER}
+				)} 
+         ]]>    
+</select>
+
+<select id="getDebtReceiableAmt" resultType="com.xlkfinance.bms.rpc.repayment.RealtimePlan" parameterType="java.util.Map">
+
+SELECT PID pId,
+       loan_id loanId,
+       to_char(gen_dttm,'yyyy-MM-dd HH:mm:ss') genDttm,
+       oper_user_id operUserId,
+       to_char(oper_repay_dt,'yyyy-MM-dd')  operRepayDt,
+       oper_type operType,
+       base_amt baseAmt,
+       oper_cost operCost,
+       total total,
+       principal_balance principalBalance,
+       plan_version planVersion,
+       status status,
+       ref_id refId,
+       is_reconciliation isReconciliation,
+       refund_type refundType
+FROM BIZ_LOAN_REALTIME_PLAN
+	 WHERE PLAN_VERSION = PKG_FINANCE.FUN_REALTIME_MAX_VERSION(#{loanId})
+	 AND LOAN_ID =#{loanId}
+     AND REFUND_TYPE=3
+     <if test="operType!=11">
+     	AND OPER_TYPE!=11
+     </if>
+     <if test="operType==11">
+     	AND OPER_TYPE=11
+     </if>
+     <if test="refId !=null and refId!=0">
+     	AND ref_id=#{refId}
+     </if>
+     
+</select>
+
+<select id="getRepayMinAmt" resultType="java.lang.Double" parameterType="java.lang.Integer">
+	SELECT NVL(MIN(PRINCIPAL_BALANCE), 0)
+      FROM BIZ_LOAN_REALTIME_PLAN
+     WHERE LOAN_ID = #{loanId}
+       AND FREEZE_STATUS = 1
+       AND OPER_TYPE = 7
+</select>
+
+</mapper>

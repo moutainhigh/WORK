@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xlkfinance.bms.server.beforeloan.mapper.BizMortgageEvaluationMapper">
+	<resultMap id="bizMortgageEvaluationMap" type="com.xlkfinance.bms.rpc.beforeloan.BizMortgageEvaluation">
+		<id property="pid" column="PID" />
+		<id property="estate" column="ESTATE" />
+		<id property="evaluationPrice" column="EVALUATION_PRICE" />
+		<id property="evaluationSource" column="EVALUATION_SOURCE" />
+		<id property="evaluationProportion" column="EVALUATION_PROPORTION" />
+		<id property="createDate" column="CREATE_DATE" />
+		<id property="createrId" column="CREATER_ID" />
+		<id property="updateId" column="UPDATE_ID" />
+		<id property="updateDate" column="UPDATE_DATE" />
+	</resultMap>
+	<sql id="column_list">
+        PID,ESTATE,EVALUATION_PRICE,EVALUATION_SOURCE,EVALUATION_PROPORTION,CREATE_DATE,CREATER_ID,UPDATE_ID,UPDATE_DATE
+	</sql>
+	<!-- 查询所有 -->
+	<select id="getAll" resultMap="bizMortgageEvaluationMap" parameterType="com.xlkfinance.bms.rpc.beforeloan.BizMortgageEvaluation">
+		SELECT
+		<include refid="column_list" />
+		FROM BIZ_MORTGAGE_EVALUATION
+		<where>
+			<trim>
+		      <if test="pid != null and pid >0">
+	          PID=#{pid}
+	          </if>
+		      <if test="estate != null and estate >0">
+	          AND ESTATE=#{estate}
+	          </if>
+		      <if test="evaluationPrice != null and evaluationPrice >0">
+	          AND EVALUATION_PRICE=#{evaluationPrice}
+	          </if>
+		      <if test="evaluationSource != null and evaluationSource !=''">
+	          AND EVALUATION_SOURCE=#{evaluationSource}
+	          </if>
+		      <if test="evaluationProportion != null and evaluationProportion >0">
+	          AND EVALUATION_PROPORTION=#{evaluationProportion}
+	          </if>
+		      <if test="createDate != null and createDate !=''">
+	          AND CREATE_DATE=#{createDate}
+	          </if>
+		      <if test="createrId != null and createrId >0">
+	          AND CREATER_ID=#{createrId}
+	          </if>
+		      <if test="updateId != null and updateId >0">
+	          AND UPDATE_ID=#{updateId}
+	          </if>
+		      <if test="updateDate != null and updateDate !=''">
+	          AND UPDATE_DATE=#{updateDate}
+	          </if>
+			</trim>
+		</where>
+	</select>
+	<!-- 根据id获取 -->
+	<select id="getById" resultMap="bizMortgageEvaluationMap">
+		SELECT <include refid="column_list" /> FROM BIZ_MORTGAGE_EVALUATION WHERE PID=#{pid}
+	</select>
+	<!-- 插入一条数据 -->
+	<insert id="insert" parameterType="com.xlkfinance.bms.rpc.beforeloan.BizMortgageEvaluation">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_BIZ_MORTGAGE_EVALUATION.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_MORTGAGE_EVALUATION
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+				PID,
+			</if>
+		    <if test="estate != null and estate >0">
+				ESTATE,
+			</if>
+		    <if test="evaluationPrice != null and evaluationPrice >0">
+				EVALUATION_PRICE,
+			</if>
+		    <if test="evaluationSource != null and evaluationSource !=''">
+				EVALUATION_SOURCE,
+			</if>
+		    <if test="evaluationProportion != null and evaluationProportion >0">
+				EVALUATION_PROPORTION,
+			</if>
+		    <if test="createDate != null and createDate !=''">
+				CREATE_DATE,
+			</if>
+		    <if test="createrId != null and createrId >0">
+				CREATER_ID,
+			</if>
+		    <if test="updateId != null and updateId >0">
+				UPDATE_ID,
+			</if>
+		    <if test="updateDate != null and updateDate !=''">
+				UPDATE_DATE,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+		    #{pid},
+			</if>
+		    <if test="estate != null and estate >0">
+		    #{estate},
+			</if>
+		    <if test="evaluationPrice != null and evaluationPrice >0">
+		    #{evaluationPrice},
+			</if>
+		    <if test="evaluationSource != null and evaluationSource !=''">
+		    #{evaluationSource},
+			</if>
+		    <if test="evaluationProportion != null and evaluationProportion >0">
+		    #{evaluationProportion},
+			</if>
+		    <if test="createDate != null and createDate !=''">
+		    #{createDate,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		    <if test="createrId != null and createrId >0">
+		    #{createrId},
+			</if>
+		    <if test="updateId != null and updateId >0">
+		    #{updateId},
+			</if>
+		    <if test="updateDate != null and updateDate !=''">
+		    #{updateDate,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		</trim>
+	</insert>
+	<!-- 根据id删除数据 -->
+	<delete id="deleteById" parameterType="com.xlkfinance.bms.rpc.beforeloan.BizMortgageEvaluation">
+		<![CDATA[DELETE FROM BIZ_MORTGAGE_EVALUATION WHERE PID=#{pid}]]>
+	</delete>
+	<!-- 根据id更新数据 -->
+		<update id="update" parameterType="com.xlkfinance.bms.rpc.beforeloan.BizMortgageEvaluation">
+		UPDATE BIZ_MORTGAGE_EVALUATION
+		<set>
+		    <if test="pid != null and pid >0">
+		     PID=#{pid},
+			</if>
+		    <if test="estate != null and estate >0">
+		     ESTATE=#{estate},
+			</if>
+		    <if test="evaluationPrice != null and evaluationPrice >0">
+		     EVALUATION_PRICE=#{evaluationPrice},
+			</if>
+		    <if test="evaluationSource != null and evaluationSource !=''">
+		     EVALUATION_SOURCE=#{evaluationSource},
+			</if>
+		    <if test="evaluationProportion != null and evaluationProportion >0">
+		     EVALUATION_PROPORTION=#{evaluationProportion},
+			</if>
+		    <if test="createDate != null and createDate !=''">
+		     CREATE_DATE=#{createDate,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		    <if test="createrId != null and createrId >0">
+		     CREATER_ID=#{createrId},
+			</if>
+		    <if test="updateId != null and updateId >0">
+		     UPDATE_ID=#{updateId},
+			</if>
+		    <if test="updateDate != null and updateDate !=''">
+		     UPDATE_DATE=#{updateDate,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		</set>
+		WHERE PID = #{pid}
+	</update>
+	<!-- 根据传入多个id删除数据 -->
+	<delete id="deleteByIds" parameterType="java.util.List">
+		DELETE FROM BIZ_MORTGAGE_EVALUATION WHERE PID in
+		<foreach collection="list" item="item" index="index" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+</mapper>

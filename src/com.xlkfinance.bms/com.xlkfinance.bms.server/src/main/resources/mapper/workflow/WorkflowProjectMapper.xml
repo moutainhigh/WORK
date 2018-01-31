@@ -1,0 +1,1094 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.workflow.mapper.WorkflowProjectMapper">
+	<resultMap type="com.xlkfinance.bms.rpc.workflow.WorkflowProjectVo" id="workflowProjectMap">
+		<id column="PID" property="pid"/>
+		<result  column="WORKFLOW_INSTANCE_ID" property="workflowInstanceId"/>
+		<result  column="REF_ID" property="refId"/>
+		<result  column="PROCESS_DEFINITION_KEY" property="processDefinitionKey"/>
+		<result  column="PROJECT_ID" property="projectId"/>
+	</resultMap>
+	<resultMap type="com.xlkfinance.bms.rpc.workflow.BizTaskAcctProHisVo" id="bizTaskAcctProHisMap">
+		<id column="PID" property="pid"/>
+		<result column="ACCT_ID" property="acctId"/>
+		<result column="PROJECT_ID" property="projectId"/>
+		<result column="WORKFLOW_ID" property="workflowId"/>
+		<result column="PROJECT_WORKFLOW_STATUS" property="projectWorkflowStatus"/>
+		<result column="BEGIN_DT" property="beginDt" javaType="String" jdbcType="TIMESTAMP" />
+		<result column="END_DT" property="endDt" javaType="String" jdbcType="TIMESTAMP" />
+		<result column="STATUS" property="status"/>
+	</resultMap>
+	
+	<resultMap type="com.xlkfinance.bms.rpc.workflow.TaskHistoryDto" id="workflowHistoryMap">
+		<result  column="TASK_ID" property="workflowTaskId"/>
+		<result  column="PROCESS_INSTANCE_ID" property="workflowInstanceId"/>
+		<result  column="PROCESS_DEFINITION_ID" property="processdefintionId"/>
+		<result  column="TASK_DEF_KEY" property="workflowTaskDefKey"/>
+		<result  column="TASK_DEF_NAME" property="taskName"/>
+		<result  column="EXEC_USER_NAME" property="executeUserName"/>
+		<result  column="EXEC_USER_REAL_NAME" property="executeUserRealName"/>
+		<result  column="PROCESS_DEF_KEY" property="workflowProcessDefkey"/>
+		<result  column="APPROVAL_STATUS" property="approvalStatus"/>
+		<result  column="PROCESS_DEF_NAME" property="workflowProcessName"/>
+		<result  column="DUE_DATE" property="executeDttm"/>
+		<result  column="REF_ID" property="refId"/>
+		<result  column="PROJECT_ID" property="projectId"/>
+		<result  column="PROJECT_NAME" property="projectName"/>
+		<result  column="MESSAGE" property="message"/>
+	</resultMap>
+<resultMap id="BaseResultMap" type="com.xlkfinance.bms.rpc.common.GridViewDTO">
+    <result property="pid" column="pid"/>
+    <result property="value1" column="rev" />
+    <result property="value2" column="tname" />
+    <result property="value3" column="parentTaskId"/>
+    <result property="value4" column="descpt"/>
+    <result property="value5" column="priority"/>
+    <result property="value6" column="createTime"  />
+    <result property="value7" column="owner" />
+    <result property="value8" column="assignee" />
+    <result property="value9" column="delegation" />
+    <result property="value10" column="executionId" />
+    <result property="value11" column="procInstId"  />
+    <result property="value12" column="procDefId" />
+    <result property="value13" column="taskDefKey" />
+    <result property="value14" column="dueDate" />
+    <result property="value15" column="categ"  />
+    <result property="value16" column="suspensionState"  />
+    <result property="value17" column="tenantId"  />
+    <result property="value18" column="formKey" />
+  </resultMap>
+	<select id="queryTaskList" parameterType="java.util.Map" resultMap="BaseResultMap">
+		SELECT D.ID_ AS PID,D.NAME_ AS TNAME,D.REV_ AS REV,D.PARENT_TASK_ID_ AS PARENTTASKID,D.DESCRIPTION_ AS DESCPT,
+			D.PRIORITY_ AS PRIORITY,TO_CHAR(D.CREATE_TIME_,'yyyy-MM-dd HH24:MI:SS') AS CREATETIME,D.OWNER_ AS OWNER,D.ASSIGNEE_ AS ASSIGNEE
+		,D.DELEGATION_ AS DELEGATION,D.EXECUTION_ID_ AS EXECUTIONID,D.PROC_INST_ID_ AS PROCINSTID,
+		D.PROC_DEF_ID_ AS PROCDEFID,D.TASK_DEF_KEY_ AS TASKDEFKEY,TO_CHAR(D.DUE_DATE_,'yyyy-MM-dd HH24:MI:SS') AS DUEDATE
+		,D.CATEGORY_ AS CATEG,D.SUSPENSION_STATE_ AS SUSPENSIONSTATE,D.TENANT_ID_ AS TENANTID,D.FORM_KEY_ AS FORMKEY
+ 	FROM (SELECT T.*, ROWNUM RN
+	        FROM (
+          SELECT DISTINCT RES.*
+                  FROM ACT_RU_TASK RES
+                 INNER JOIN ACT_RU_IDENTITYLINK I
+                    ON I.TASK_ID_ = RES.ID_
+                 INNER JOIN (SELECT (CASE WHEN T.PROCESS_DEFINITION_KEY = 'creditExtensionRequestProcess' then t.ref_id 
+                 WHEN T.PROCESS_DEFINITION_KEY = 'foreExtensionRequestProcess' 
+                   THEN T.REF_ID ELSE T.PROJECT_ID END)AS PROJECT_ID,T.WORKFLOW_INSTANCE_ID,T.PROCESS_DEFINITION_KEY,T.REF_ID
+                  FROM BIZ_WORKFLOW_PROJECT T) PT
+                 ON RES.EXECUTION_ID_ = PT.WORKFLOW_INSTANCE_ID
+                 LEFT JOIN BIZ_PROJECT PRO 
+                 ON PRO.PID = PT.PROJECT_ID
+                 WHERE RES.ASSIGNEE_ IS NULL
+                 <!-- 批量退费的数据不要再这个查询结果，存在耦合漏洞，因为id是自增，所以not exists存在耦合的漏洞 -->
+                   AND ((PT.PROCESS_DEFINITION_KEY = 'refundInterestFeeProcess' and not exists(SELECT l.pid FROM BIZ_LOAN_BATCH_REFUND_FEE_MAIN l where l.pid=PT.REF_ID)) OR (PT.PROCESS_DEFINITION_KEY!='refundInterestFeeProcess'))
+                   AND I.TYPE_ = 'candidate'
+                   AND PRO.IS_CHECHAN=0
+                   AND PRO.IS_CLOSED=2
+                   AND PRO.IS_REJECT  IN(2,3)
+                   AND (I.USER_ID_ = #{userName})
+                  <if test="projectName != null and projectName != '' ">
+					AND PRO.PROJECT_NAME LIKE '%${projectName}%'
+				  </if>
+				  UNION ALL
+				  SELECT DISTINCT RES.*
+                  FROM ACT_RU_TASK RES
+                 INNER JOIN ACT_RU_IDENTITYLINK I
+                    ON I.TASK_ID_ = RES.ID_
+                 INNER JOIN (SELECT (CASE WHEN T.PROCESS_DEFINITION_KEY = 'creditExtensionRequestProcess' THEN T.REF_ID 
+                 WHEN T.PROCESS_DEFINITION_KEY = 'foreExtensionRequestProcess' 
+                   THEN T.REF_ID ELSE T.PROJECT_ID END)AS PROJECT_ID,T.WORKFLOW_INSTANCE_ID,T.PROCESS_DEFINITION_KEY
+                  FROM BIZ_WORKFLOW_PROJECT T) PT
+                 ON RES.EXECUTION_ID_ = PT.WORKFLOW_INSTANCE_ID
+                 LEFT JOIN BIZ_PROJECT PRO 
+                 ON PRO.PID = PT.PROJECT_ID
+                 WHERE RES.ASSIGNEE_ IS NULL
+                   AND I.TYPE_ = 'candidate'
+                   AND PRO.IS_CHECHAN=1 AND PRO.IS_CLOSED = 2 
+                   AND PT.PROCESS_DEFINITION_KEY NOT IN ('foreLoanRequestProcess','creditLoanRequestProcess','businessApplyRequestProcess')
+                   AND (I.USER_ID_ = #{userName})
+                  <if test="projectName != null and projectName != '' ">
+					AND PRO.PROJECT_NAME LIKE '%${projectName}%'
+				  </if>
+				  
+                 UNION ALL
+                 SELECT DISTINCT RES.*
+                  FROM ACT_RU_TASK RES
+                 INNER JOIN ACT_RU_IDENTITYLINK I
+                    ON I.TASK_ID_ = RES.ID_
+                 INNER JOIN BIZ_HANDLE_WORKFLOW PT
+                 ON RES.EXECUTION_ID_ = PT.EXECUTION_ID
+                 AND PT.STATUS=1
+                 LEFT JOIN BIZ_PROJECT PRO 
+                 ON PRO.PID = PT.PROJECT_ID
+                 WHERE RES.ASSIGNEE_ IS NULL
+                   AND I.TYPE_ = 'candidate'
+                   AND (I.USER_ID_ = #{userName})
+                   <if test="projectName != null and projectName != '' ">
+						AND PRO.PROJECT_NAME LIKE '%${projectName}%'
+					</if>
+					UNION ALL
+					SELECT DISTINCT RES.*
+                  FROM ACT_RU_TASK RES
+                 INNER JOIN ACT_RU_IDENTITYLINK I
+                    ON I.TASK_ID_ = RES.ID_
+                 INNER JOIN BIZ_WORKFLOW_PROJECT PT
+                 ON RES.EXECUTION_ID_ = PT.WORKFLOW_INSTANCE_ID
+                 LEFT JOIN ORG_COOPERAT_COMPANY_APPLY_INF PRO 
+                 ON PRO.PID = PT.PROJECT_ID
+                 LEFT JOIN ORG_ASSETS_COOPERATION_INFO OAC
+                 ON OAC.PID = PRO.ORG_ID
+                 WHERE RES.ASSIGNEE_ IS NULL
+                   AND I.TYPE_ = 'candidate'
+                   AND (I.USER_ID_ = #{userName})
+                   AND PT.PROCESS_DEFINITION_KEY = 'cooperationRequestProcess'
+					<if test="projectName != null and projectName != '' ">
+						AND OAC.ORG_NAME LIKE '%${projectName}%'
+					</if>
+					UNION
+					SELECT DISTINCT RES.*
+                  FROM ACT_RU_TASK RES
+                 INNER JOIN ACT_RU_IDENTITYLINK I
+                    ON I.TASK_ID_ = RES.ID_
+                 INNER JOIN BIZ_WORKFLOW_PROJECT PT
+                 ON RES.EXECUTION_ID_ = PT.WORKFLOW_INSTANCE_ID
+                 INNER JOIN BIZ_LOAN_BATCH_REFUND_FEE_MAIN BRF 
+                 ON BRF.PID = PT.PROJECT_ID AND BRF.PID=PT.REF_ID
+                 WHERE RES.ASSIGNEE_ IS NULL
+                   AND I.TYPE_ = 'candidate'
+                   AND (I.USER_ID_ = #{userName})
+                   AND PT.PROCESS_DEFINITION_KEY = 'refundInterestFeeProcess'
+					<if test="projectName != null and projectName != '' ">
+						AND BRF.BATCH_NAME LIKE '%${projectName}%'
+					</if>
+					UNION 
+					SELECT DISTINCT RES.*
+                  FROM ACT_RU_TASK RES
+                 INNER JOIN ACT_RU_IDENTITYLINK I
+                    ON I.TASK_ID_ = RES.ID_
+                 INNER JOIN BIZ_WORKFLOW_PROJECT PT
+                 ON RES.EXECUTION_ID_ = PT.WORKFLOW_INSTANCE_ID
+                 LEFT JOIN ORG_COOPERATION_UPDATE_APPLY OCUA 
+                 ON OCUA.PID = PT.REF_ID
+                 LEFT JOIN ORG_ASSETS_COOPERATION_INFO OAC
+                 ON OAC.PID = OCUA.ORG_ID
+                 WHERE RES.ASSIGNEE_ IS NULL
+                   AND I.TYPE_ = 'candidate'
+                   AND (I.USER_ID_ = #{userName})
+                   AND PT.PROCESS_DEFINITION_KEY = 'cooperationUpdateProcess'
+					<if test="projectName != null and projectName != '' ">
+						AND OAC.ORG_NAME LIKE '%${projectName}%'
+					</if>
+                 <![CDATA[) T
+		WHERE ROWNUM <=#{page}*#{rows}
+		ORDER BY T.CREATE_TIME_ desc) D
+	WHERE D.RN > ((#{page}-1)*#{rows})]]>
+	</select>
+	<select id="findWorkflowProject" parameterType="com.xlkfinance.bms.rpc.workflow.WorkflowProjectVo" 
+		resultMap="workflowProjectMap">
+		SELECT T.PID, T.WORKFLOW_INSTANCE_ID, T.REF_ID, T.PROCESS_DEFINITION_KEY, T.PROJECT_ID
+		  FROM BIZ_WORKFLOW_PROJECT T
+		 WHERE 
+		 	T.PID = (SELECT MAX(T1.PID)
+		 		FROM BIZ_WORKFLOW_PROJECT T1
+                 WHERE 1 = 1
+		 	<if test="null != workflowInstanceId">
+		 		AND T1.WORKFLOW_INSTANCE_ID = #{workflowInstanceId} 
+		 	</if>
+		 	<if test="null != processDefinitionKey">
+		 		AND T1.PROCESS_DEFINITION_KEY = #{processDefinitionKey}
+		 	</if>
+		 	<if test="refId != 0">
+		 		AND T1.REF_ID = #{refId}
+		 	</if>
+		 	<if test="projectId != 0">
+		 		AND T1.PROJECT_ID = #{projectId}
+		 	</if>
+		 	 	)
+	</select>
+	<select id="findWorkflowProjectByWhere" parameterType="com.xlkfinance.bms.rpc.workflow.WorkflowProjectVo" 
+		resultMap="workflowProjectMap">
+		SELECT T.PID, T.WORKFLOW_INSTANCE_ID, T.REF_ID, T.PROCESS_DEFINITION_KEY, T.PROJECT_ID
+		  FROM BIZ_WORKFLOW_PROJECT T
+		 <where>
+		 	<if test="null != workflowInstanceId">
+		 		AND T.WORKFLOW_INSTANCE_ID = #{workflowInstanceId} 
+		 	</if>
+		 	<if test="null != processDefinitionKey">
+		 		AND T.PROCESS_DEFINITION_KEY = #{processDefinitionKey}
+		 	</if>
+		 	<if test="refId != 0">
+		 		AND T.REF_ID = #{refId}
+		 	</if>
+		 	<if test="projectId != 0">
+		 		AND T.PROJECT_ID = #{projectId}
+		 	</if>
+		 </where> 
+	</select>
+	
+	<delete id="deleteWorkflowProject" parameterType="Integer">
+		DELETE FROM BIZ_WORKFLOW_PROJECT BWP WHERE BWP.REF_ID = #{refId}
+	</delete>
+	
+	<select id="selectWorkflowHistoryList" parameterType="com.xlkfinance.bms.rpc.workflow.EndTaskPageVO" 
+		resultMap="workflowHistoryMap">
+		SELECT * FROM(
+      SELECT C.*,ROWNUM RN FROM (  
+        SELECT *
+          FROM (SELECT DISTINCT RES.ID_ AS TASK_ID,
+                        RES.PROC_INST_ID_ AS PROCESS_INSTANCE_ID,
+                        RES.PROC_DEF_ID_ AS PROCESS_DEFINTION_ID,
+                        RES.EXECUTION_ID_ AS EXECUTION_ID,
+                        TO_CHAR(RES.NAME_) AS TASK_DEF_NAME,
+                        RES.ASSIGNEE_ AS EXEC_USER_NAME,
+                        T.REF_ID,
+                        T.PROJECT_ID,
+                        S.REAL_NAME AS EXEC_USER_REAL_NAME,
+                        TO_CHAR(RES.DUE_DATE_, 'yyyy-MM-dd HH24:MI:SS') AS DUE_DATE,
+                        TO_CHAR(RES.DELETE_REASON_) AS APPROVAL_STATUS,
+                        PRO.KEY_ AS PROCESS_DEF_KEY,
+                         TO_CHAR(PRO.NAME_) AS PROCESS_DEF_NAME,
+                        (CASE TO_CHAR(PRO.KEY_)
+                            WHEN 'creditExtensionRequestProcess' THEN
+                              (SELECT P.PROJECT_NAME
+                              FROM BIZ_PROJECT P
+                             WHERE P.PID = T.REF_ID)
+                              WHEN 'foreExtensionRequestProcess' THEN
+                              (SELECT P.PROJECT_NAME
+                              FROM BIZ_PROJECT P
+                             WHERE P.PID = T.REF_ID)
+                             WHEN 'cooperationRequestProcess' THEN
+                               (SELECT OC.ORG_NAME FROM ORG_COOPERAT_COMPANY_APPLY_INF O
+                                       LEFT JOIN ORG_ASSETS_COOPERATION_INFO OC
+                                       ON O.ORG_ID = OC.PID WHERE O.PID = T.REF_ID)
+                              WHEN 'cooperationUpdateProcess' THEN
+                                  (SELECT OC.ORG_NAME FROM ORG_COOPERATION_UPDATE_APPLY O
+                                       LEFT JOIN ORG_ASSETS_COOPERATION_INFO OC
+                                       ON O.ORG_ID = OC.PID WHERE O.PID = T.REF_ID)
+                          ELSE
+                           (SELECT P.PROJECT_NAME
+                              FROM BIZ_PROJECT P
+                             WHERE P.PID = T.PROJECT_ID
+                             )
+                        END) AS PROJECT_NAME,
+                        TO_CHAR(AHC.MESSAGE_)
+                            AS MESSAGE
+                  FROM ACT_HI_TASKINST RES
+                  LEFT JOIN ACT_RE_PROCDEF PRO
+                    ON RES.PROC_DEF_ID_ = PRO.ID_
+                  LEFT JOIN BIZ_WORKFLOW_PROJECT T
+                    ON T.WORKFLOW_INSTANCE_ID = RES.PROC_INST_ID_
+                   AND T.PROCESS_DEFINITION_KEY = PRO.KEY_
+                 LEFT JOIN ACT_HI_COMMENT AHC
+                 ON AHC.PROC_INST_ID_ = RES.PROC_INST_ID_
+                            AND AHC.TYPE_ = 'comment'
+                            AND AHC.TASK_ID_ = RES.ID_
+                 LEFT JOIN SYS_USER S
+                 ON S.USER_NAME = RES.ASSIGNEE_
+                 WHERE RES.END_TIME_ IS NOT NULL and T.PROJECT_ID IS NOT NULL
+                  <!-- 批量退费的数据不要再这个查询结果，存在耦合漏洞，因为id是自增，所以not exists存在耦合的漏洞 -->
+                   AND ((T.PROCESS_DEFINITION_KEY = 'refundInterestFeeProcess' and not exists(SELECT l.pid FROM BIZ_LOAN_BATCH_REFUND_FEE_MAIN l where l.pid=T.REF_ID)) OR (T.PROCESS_DEFINITION_KEY!='refundInterestFeeProcess'))
+                 ) R
+				   WHERE R.EXEC_USER_NAME = #{userName}
+			 	<if test="null != projectName and projectName!='' ">
+			 		AND R.PROJECT_NAME LIKE '%${projectName}%'  
+			 	</if>
+			 	<if test="null != executeDttm and executeDttm!='' ">
+			 		AND TO_DATE(substr(R.DUE_DATE,0,10),'YYYY-MM-DD') = TO_DATE( #{executeDttm},'YYYY-MM-DD')
+			 	</if>
+			 	 UNION ALL
+			 	 SELECT *
+				  FROM (SELECT DISTINCT RES.ID_ AS TASK_ID,
+                        RES.PROC_INST_ID_ AS PROCESS_INSTANCE_ID,
+                        RES.PROC_DEF_ID_ AS PROCESS_DEFINTION_ID,
+                        RES.EXECUTION_ID_ AS EXECUTION_ID,
+                        TO_CHAR(RES.NAME_)AS TASK_DEF_NAME,
+                        RES.ASSIGNEE_ AS EXEC_USER_NAME,
+                        T.REF_ID,
+                        hw.PROJECT_ID,
+                        S.REAL_NAME AS EXEC_USER_REAL_NAME,
+                        TO_CHAR(RES.DUE_DATE_, 'yyyy-MM-dd HH24:MI:SS') AS DUE_DATE,
+                        TO_CHAR(RES.DELETE_REASON_) AS APPROVAL_STATUS,
+                        PRO.KEY_ AS PROCESS_DEF_KEY,
+                        TO_CHAR(PRO.NAME_)AS PROCESS_DEF_NAME,
+                        P.PROJECT_NAME AS PROJECT_NAME,
+                        TO_CHAR(AHC.MESSAGE_) AS MESSAGE
+                  FROM ACT_HI_TASKINST RES
+                  LEFT JOIN ACT_RE_PROCDEF PRO
+                    ON RES.PROC_DEF_ID_ = PRO.ID_
+                  LEFT JOIN BIZ_WORKFLOW_PROJECT T
+                    ON T.WORKFLOW_INSTANCE_ID = RES.PROC_INST_ID_
+                   AND T.PROCESS_DEFINITION_KEY = PRO.KEY_
+                   LEFT JOIN SYS_USER S
+                 ON S.USER_NAME = RES.ASSIGNEE_
+                 LEFT JOIN ACT_HI_COMMENT AHC
+                 ON AHC.PROC_INST_ID_ = RES.PROC_INST_ID_
+                            AND AHC.TYPE_ = 'comment'
+                            AND AHC.TASK_ID_ = RES.ID_
+                 
+                 inner JOIN biz_handle_WORKFLOW hw
+                    ON hw.execution_id=RES.PROC_INST_ID_
+                    LEFT JOIN  BIZ_PROJECT P
+                 ON  P.PID = HW.PROJECT_ID) R
+				   WHERE R.EXEC_USER_NAME = #{userName}
+			 	<if test="null != projectName and projectName!='' ">
+			 		AND R.PROJECT_NAME LIKE '%${projectName}%'  
+			 	</if>
+			 	<if test="null != executeDttm and executeDttm!='' ">
+			 		AND TO_DATE(substr(R.DUE_DATE,0,10),'YYYY-MM-DD') = TO_DATE( #{executeDttm},'YYYY-MM-DD')
+			 	</if>
+			 	
+			 	UNION ALL
+			 	SELECT *
+          FROM (SELECT DISTINCT RES.ID_ AS TASK_ID,
+                        RES.PROC_INST_ID_ AS PROCESS_INSTANCE_ID,
+                        RES.PROC_DEF_ID_ AS PROCESS_DEFINTION_ID,
+                        RES.EXECUTION_ID_ AS EXECUTION_ID,
+                        TO_CHAR(RES.NAME_) AS TASK_DEF_NAME,
+                        RES.ASSIGNEE_ AS EXEC_USER_NAME,
+                        T.REF_ID,
+                        T.PROJECT_ID,
+                        S.REAL_NAME AS EXEC_USER_REAL_NAME,
+                        TO_CHAR(RES.DUE_DATE_, 'yyyy-MM-dd HH24:MI:SS') AS DUE_DATE,
+                        TO_CHAR(RES.DELETE_REASON_) AS APPROVAL_STATUS,
+                        PRO.KEY_ AS PROCESS_DEF_KEY,
+                         TO_CHAR(PRO.NAME_) AS PROCESS_DEF_NAME,
+                        '批量退费'||BF.BATCH_NAME AS PROJECT_NAME,
+                        TO_CHAR(AHC.MESSAGE_)
+                            AS MESSAGE
+                  FROM ACT_HI_TASKINST RES
+                  LEFT JOIN ACT_RE_PROCDEF PRO
+                    ON RES.PROC_DEF_ID_ = PRO.ID_
+                  LEFT JOIN BIZ_WORKFLOW_PROJECT T
+                    ON T.WORKFLOW_INSTANCE_ID = RES.PROC_INST_ID_
+                   AND T.PROCESS_DEFINITION_KEY = PRO.KEY_
+                 LEFT JOIN ACT_HI_COMMENT AHC
+                 ON AHC.PROC_INST_ID_ = RES.PROC_INST_ID_
+                            AND AHC.TYPE_ = 'comment'
+                            AND AHC.TASK_ID_ = RES.ID_
+                 LEFT JOIN SYS_USER S
+                 ON S.USER_NAME = RES.ASSIGNEE_
+                 INNER JOIN BIZ_LOAN_BATCH_REFUND_FEE_MAIN BF
+                 ON BF.PID=T.REF_ID AND T.PROCESS_DEFINITION_KEY='refundInterestFeeProcess'
+                 WHERE RES.END_TIME_ IS NOT NULL and T.PROJECT_ID IS NOT NULL) R
+           WHERE R.EXEC_USER_NAME = #{userName}
+           		<if test="null != projectName and projectName!='' ">
+			 		AND R.PROJECT_NAME LIKE '%${projectName}%'  
+			 	</if>
+			 	<if test="null != executeDttm and executeDttm!='' ">
+			 		AND TO_DATE(substr(R.DUE_DATE,0,10),'YYYY-MM-DD') = TO_DATE( #{executeDttm},'YYYY-MM-DD')
+			 	</if>
+		 	 ) C WHERE ROWNUM<![CDATA[<=]]>#{page}*#{rows} ORDER BY C.DUE_DATE DESC)
+		WHERE RN>=((#{page}-1)*#{rows})+1
+	</select>
+	
+	<select id="countWorkflowHistoryList" parameterType="com.xlkfinance.bms.rpc.workflow.EndTaskPageVO" 
+		resultType="java.lang.Integer">
+			SELECT COUNT(*) FROM (	
+				SELECT *
+				  FROM (
+				  SELECT DISTINCT
+					RES.ID_ AS TASK_ID,
+					RES.PROC_INST_ID_ AS PROCESS_INSTANCE_ID,
+					RES.PROC_DEF_ID_ AS PROCESS_DEFINTION_ID,
+					RES.EXECUTION_ID_ AS EXECUTION_ID,
+					RES.ASSIGNEE_ AS EXEC_USER_NAME,
+					T.REF_ID,
+					T.PROJECT_ID,
+					S.REAL_NAME AS EXEC_USER_REAL_NAME,
+					TO_CHAR ( RES.DUE_DATE_, 'yyyy-MM-dd HH24:MI:SS' ) AS DUE_DATE,
+					(CASE TO_CHAR (PRO.KEY_)
+						WHEN 'creditExtensionRequestProcess' THEN
+							( SELECT P .PROJECT_NAME FROM BIZ_PROJECT P WHERE P .PID = T .REF_ID )
+						WHEN 'foreExtensionRequestProcess' THEN
+							( SELECT P .PROJECT_NAME FROM BIZ_PROJECT P WHERE P .PID = T .REF_ID )
+						ELSE
+							( SELECT P .PROJECT_NAME FROM BIZ_PROJECT P WHERE P .PID = T .PROJECT_ID )
+						END
+					) AS PROJECT_NAME
+				FROM
+				ACT_HI_TASKINST RES
+				LEFT JOIN SYS_USER S ON S.USER_NAME = RES.ASSIGNEE_
+				LEFT JOIN ACT_RE_PROCDEF PRO ON RES.PROC_DEF_ID_ = PRO.ID_
+				LEFT JOIN BIZ_WORKFLOW_PROJECT T ON T .WORKFLOW_INSTANCE_ID = RES.PROC_INST_ID_
+				AND T .PROCESS_DEFINITION_KEY = PRO.KEY_
+				WHERE
+					RES.END_TIME_ IS NOT NULL
+				AND T .PROJECT_ID IS NOT NULL
+				 <!-- 批量退费的数据不要再这个查询结果，存在耦合漏洞，因为id是自增，所以not exists存在耦合的漏洞 -->
+                   AND ((T.PROCESS_DEFINITION_KEY = 'refundInterestFeeProcess' and not exists(SELECT l.pid FROM BIZ_LOAN_BATCH_REFUND_FEE_MAIN l where l.pid=T.REF_ID)) OR (T.PROCESS_DEFINITION_KEY!='refundInterestFeeProcess'))) R
+				   WHERE R.EXEC_USER_NAME = #{userName}
+			 	<if test="null != projectName and projectName!='' ">
+			 		AND R.PROJECT_NAME LIKE '%${projectName}%'  
+			 	</if>
+			 	<if test="null != executeDttm and executeDttm!='' ">
+			 		AND TO_DATE(substr(R.DUE_DATE,0,10),'YYYY-MM-DD') = TO_DATE( #{executeDttm},'YYYY-MM-DD')
+			 	</if>
+			 	 union all
+			 	 SELECT *
+				  FROM (SELECT DISTINCT
+						RES.ID_ AS TASK_ID,
+						RES.PROC_INST_ID_ AS PROCESS_INSTANCE_ID,
+						RES.PROC_DEF_ID_ AS PROCESS_DEFINTION_ID,
+						RES.EXECUTION_ID_ AS EXECUTION_ID,
+						RES.ASSIGNEE_ AS EXEC_USER_NAME,
+						T .REF_ID,
+						hw.PROJECT_ID,
+						S.REAL_NAME AS EXEC_USER_REAL_NAME,
+						TO_CHAR ( RES.DUE_DATE_, 'yyyy-MM-dd HH24:MI:SS' ) AS DUE_DATE,
+						( SELECT P .PROJECT_NAME FROM BIZ_PROJECT P WHERE P .PID = hw.PROJECT_ID ) AS PROJECT_NAME
+					FROM
+						ACT_HI_TASKINST RES
+					LEFT JOIN ACT_RE_PROCDEF PRO ON RES.PROC_DEF_ID_ = PRO.ID_
+					LEFT JOIN SYS_USER S ON S.USER_NAME = RES.ASSIGNEE_
+					LEFT JOIN BIZ_WORKFLOW_PROJECT T ON T .WORKFLOW_INSTANCE_ID = RES.PROC_INST_ID_
+					AND T .PROCESS_DEFINITION_KEY = PRO.KEY_
+					INNER JOIN biz_handle_WORKFLOW hw ON hw.execution_id = RES.PROC_INST_ID_) R
+				   WHERE R.EXEC_USER_NAME = #{userName}
+			 	<if test="null != projectName and projectName!='' ">
+			 		AND R.PROJECT_NAME LIKE '%${projectName}%'  
+			 	</if>
+			 	<if test="null != executeDttm and executeDttm!='' ">
+			 		AND TO_DATE(substr(R.DUE_DATE,0,10),'YYYY-MM-DD') = TO_DATE( #{executeDttm},'YYYY-MM-DD')
+			 	</if>
+			 	UNION ALL
+			 	 SELECT *
+          FROM (SELECT DISTINCT RES.ID_ AS TASK_ID,
+                                RES.PROC_INST_ID_ AS PROCESS_INSTANCE_ID,
+                                RES.PROC_DEF_ID_ AS PROCESS_DEFINTION_ID,
+                                RES.EXECUTION_ID_ AS EXECUTION_ID,
+                                RES.ASSIGNEE_ AS EXEC_USER_NAME,
+                                T.REF_ID,
+                                hw.PROJECT_ID,
+                                S.REAL_NAME AS EXEC_USER_REAL_NAME,
+                                TO_CHAR(RES.DUE_DATE_,
+                                        'yyyy-MM-dd HH24:MI:SS') AS DUE_DATE,
+                                ('批量退费'||bf.batch_name) AS PROJECT_NAME
+                  FROM ACT_HI_TASKINST RES
+                  LEFT JOIN ACT_RE_PROCDEF PRO
+                    ON RES.PROC_DEF_ID_ = PRO.ID_
+                  LEFT JOIN SYS_USER S
+                    ON S.USER_NAME = RES.ASSIGNEE_
+                  LEFT JOIN BIZ_WORKFLOW_PROJECT T
+                    ON T.WORKFLOW_INSTANCE_ID = RES.PROC_INST_ID_
+                   AND T.PROCESS_DEFINITION_KEY = PRO.KEY_
+                 INNER JOIN BIZ_WORKFLOW_PROJECT hw
+                     ON hw.WORKFLOW_INSTANCE_ID = RES.PROC_INST_ID_ and hw.PROCESS_DEFINITION_KEY='refundInterestFeeProcess'
+                 INNER JOIN BIZ_LOAN_BATCH_REFUND_FEE_MAIN BF
+                     ON BF.PID=hw.REF_ID) R
+           WHERE R.EXEC_USER_NAME = #{userName}
+           		<if test="null != projectName and projectName!='' ">
+			 		AND R.PROJECT_NAME LIKE '%${projectName}%'  
+			 	</if>
+			 	<if test="null != executeDttm and executeDttm!='' ">
+			 		AND TO_DATE(substr(R.DUE_DATE,0,10),'YYYY-MM-DD') = TO_DATE( #{executeDttm},'YYYY-MM-DD')
+			 	</if>
+		 	 )
+	</select>
+	
+	<select id="selectWorkflowHistoryListTotal" parameterType="com.xlkfinance.bms.rpc.workflow.WorkflowHistoryVo" 
+		resultType="java.lang.Integer">
+		SELECT COUNT(1)
+		  FROM (SELECT DISTINCT RES.ID_ AS TASK_ID,
+                    RES.PROC_INST_ID_ AS PROCESS_INSTANCE_ID,
+                    RES.PROC_DEF_ID_ AS PROCESS_DEFINTION_ID,
+                    RES.EXECUTION_ID_ AS EXECUTION_ID,
+                    RES.TASK_DEF_KEY_ AS TASK_DEF_KEY,
+                    RES.NAME_ AS TASK_DEF_NAME,
+                    RES.ASSIGNEE_ AS EXEC_USER_NAME,
+                    (SELECT REAL_NAME
+                       FROM SYS_USER
+                      WHERE 1 = 1
+                        AND STATUS = 1
+                        AND USER_NAME = RES.ASSIGNEE_) AS EXEC_USER_REAL_NAME,
+                    TO_CHAR(RES.DUE_DATE_, 'yyyy-MM-dd HH24:MI:SS') AS DUE_DATE,
+                    (CASE TO_CHAR(RES.DELETE_REASON_)
+                      WHEN 'completed' THEN
+                       '任务完成'
+                      WHEN 'deleted' THEN
+                       '任务删除'
+                      ELSE
+                       TO_CHAR(RES.DELETE_REASON_)
+                    END) APPROVAL_STATUS,
+                    PRO.KEY_ AS PROCESS_DEF_KEY,
+                    PRO.NAME_ AS PROCESS_DEF_NAME,
+                    T.REF_ID,
+                    T.PROJECT_ID,
+                    (CASE TO_CHAR(PRO.KEY_)
+                      WHEN 'extensionRequestProcess' THEN
+                       (SELECT P.PROJECT_NAME
+                          FROM BIZ_PROJECT P
+                         WHERE P.PID = T.REF_ID)
+                      ELSE
+                       (SELECT P.PROJECT_NAME
+                          FROM BIZ_PROJECT P
+                         WHERE P.PID = T.PROJECT_ID)
+                    END) AS PROJECT_NAME,
+                    (SELECT TO_CHAR(WM_CONCAT(T.MESSAGE_))
+                       FROM ACT_HI_COMMENT T
+                      WHERE T.PROC_INST_ID_ = RES.PROC_INST_ID_
+                        AND TYPE_ = 'comment'
+                        AND T.TASK_ID_ = RES.ID_) AS MESSAGE
+	          FROM ACT_HI_TASKINST RES
+	          LEFT JOIN ACT_RE_PROCDEF PRO
+	            ON RES.PROC_DEF_ID_ = PRO.ID_
+	          LEFT JOIN BIZ_WORKFLOW_PROJECT T
+	            ON T.WORKFLOW_INSTANCE_ID = RES.PROC_INST_ID_
+	           AND T.PROCESS_DEFINITION_KEY = PRO.KEY_
+	         WHERE RES.END_TIME_ IS NOT NULL and T.project_id is not null) R
+		   WHERE R.EXEC_USER_NAME = #{userName}
+	 	<if test="null != projectName and projectName!='' ">
+	 		AND R.PROJECT_NAME = #{projectName} 
+	 	</if>
+	 	<if test="null != executeDttm and executeDttm!='' ">
+	 		AND TO_DATE(substr(R.DUE_DATE,0,10),'YYYY-MM-DD') = TO_DATE( #{executeDttm},'YYYY-MM-DD')
+	 	</if>
+	</select>	
+	
+	<insert id="insertWorkflowProject" parameterType="com.xlkfinance.bms.rpc.workflow.WorkflowProjectVo">
+		<!-- 获取序列号 -->
+		<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+			SELECT SEQ_BIZ_WORKFLOW_PROJECT.Nextval AS PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_WORKFLOW_PROJECT 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+				PID,
+			<if test="null != workflowInstanceId">
+				WORKFLOW_INSTANCE_ID,
+			</if>
+			<if test="null != refId">
+				REF_ID,
+			</if>
+			<if test="null != processDefinitionKey">
+				PROCESS_DEFINITION_KEY,
+			</if>
+			<if test="null != projectId">
+				PROJECT_ID,
+			</if>
+		</trim>	
+		<trim prefix="VALUES (" suffix=")" suffixOverrides=",">
+				#{pid},
+			<if test="null != workflowInstanceId">
+				#{workflowInstanceId},
+			</if>
+			<if test="null != refId">
+				#{refId},
+			</if>
+			<if test="null != processDefinitionKey">
+				#{processDefinitionKey},
+			</if>
+			<if test="null != projectId">
+				#{projectId},
+			</if>
+		</trim>
+	</insert>
+	
+	<!-- BIZ_TASK_ACCT_PRO_HIS -->
+	<select id="selectTaskAcctProHis" parameterType="com.xlkfinance.bms.rpc.workflow.BizTaskAcctProHisVo" resultType="Integer"  >
+		SELECT COUNT(TAP.PID)
+		  FROM BIZ_TASK_ACCT_PRO_HIS TAP
+		 WHERE TAP.ACCT_ID = (SELECT BP.ACCT_ID FROM BIZ_PROJECT BP WHERE BP.PID = #{projectId})
+		   AND TAP.WORKFLOW_ID = #{workflowId}
+		   AND TAP.PROJECT_ID = #{projectId}
+		   AND TAP.PROJECT_WORKFLOW_STATUS = 1
+	</select>
+	<!-- BIZ_TASK_ACCT_PRO_HIS -->
+	<select id="getTaskAcctProHisByAcctId" parameterType="Integer" resultType="Integer"  >
+		SELECT COUNT(TAP.PID)
+		  FROM BIZ_TASK_ACCT_PRO_HIS TAP
+		 WHERE TAP.STATUS = 1
+		   AND TAP.ACCT_ID = #{acctId}
+		   AND TAP.PROJECT_WORKFLOW_STATUS = 1
+	</select>
+	<select id="getTaskAcctProHisByProjectId" parameterType="Integer" resultType="Integer" >
+		SELECT COUNT(TAP.PID)
+		  FROM BIZ_TASK_ACCT_PRO_HIS TAP
+		 WHERE TAP.STATUS = 1
+		   AND TAP.ACCT_ID = (SELECT T.ACCT_ID FROM BIZ_PROJECT T WHERE T.STATUS = 1 AND T.PID = #{projectId})
+		   AND TAP.PROJECT_ID = #{projectId}
+		   AND TAP.PROJECT_WORKFLOW_STATUS = 1
+	</select>
+	<select id="getRunLastTaskKeyByWIId" parameterType="String" resultType="String">
+		SELECT T1.TASK_DEF_KEY_
+           FROM ACT_HI_TASKINST T1
+          WHERE T1.ID_ =
+                (SELECT MAX(TO_NUMBER(T2.ID_))
+                   FROM ACT_HI_TASKINST T2
+                  WHERE T2.PROC_INST_ID_ = #{workflowInstanceId}
+                    AND T2.ASSIGNEE_ IS NOT NULL)
+	</select>
+	<insert id="insertTaskAcctProHis" parameterType="com.xlkfinance.bms.rpc.workflow.BizTaskAcctProHisVo">
+		<!-- 获取序列号 -->
+		<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+			SELECT SEQ_BIZ_TASK_ACCT_PRO_HIS.Nextval AS PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_TASK_ACCT_PRO_HIS T(
+			T.PID,
+			T.ACCT_ID,
+			T.PROJECT_ID,
+			T.WORKFLOW_ID,
+			T.PROJECT_WORKFLOW_STATUS,
+			T.BEGIN_DT,
+			T.STATUS)
+		VALUES (
+			#{pid},
+			(SELECT BP.ACCT_ID FROM BIZ_PROJECT BP WHERE BP.PID = #{projectId}),
+			#{projectId},
+			#{workflowId},
+			#{projectWorkflowStatus},
+			#{beginDt,javaType=String,jdbcType=TIMESTAMP},
+			1)
+	</insert>
+	<update id="updateTaskAcctProHisPWStatus"  parameterType="com.xlkfinance.bms.rpc.workflow.BizTaskAcctProHisVo">
+		 UPDATE BIZ_TASK_ACCT_PRO_HIS T SET 
+		 	T.PROJECT_WORKFLOW_STATUS = 2,
+		 	T.END_DT = #{endDt,javaType=String,jdbcType=TIMESTAMP}
+		 WHERE T.ACCT_ID = (SELECT BP.ACCT_ID FROM BIZ_PROJECT BP WHERE BP.PID = #{projectId})
+		   AND T.WORKFLOW_ID = #{workflowId}
+		   AND T.PROJECT_ID = #{projectId}
+	</update>
+	
+	<select id="getUserNamesByTaskId" parameterType="String" resultType="String">
+		SELECT TO_CHAR(WMSYS.WM_CONCAT(SU.REAL_NAME))
+		  FROM SYS_USER SU
+		 WHERE SU.USER_NAME IN (SELECT T.USER_ID_
+		                          FROM ACT_RU_IDENTITYLINK T
+		                         WHERE T.TASK_ID_ IS NOT NULL
+		                           AND T.TASK_ID_ = #{taskId})
+	</select>
+	
+	
+	<select id="findAllRunTask" parameterType="com.xlkfinance.bms.rpc.workflow.TaskVo" 
+		resultType="com.xlkfinance.bms.rpc.workflow.TaskVo">
+		 SELECT D.*
+	  		FROM (SELECT T.*, ROWNUM RN
+	          FROM (SELECT DISTINCT RES.ID_ workflowTaskId,
+	                                (CASE TO_CHAR(ARP.KEY_)
+	                                  WHEN 'creditFreezeOrThawRequestProcess' THEN
+	                                   (SELECT (CASE TO_CHAR(BCLR.CREDIT_USE_TYPE)
+	                                             WHEN '3' THEN
+	                                              '额度冻结工作流'
+	                                             ELSE
+	                                              TO_CHAR('额度解冻工作流')
+	                                           END) CREDIT_USE_TYPE
+	                                      FROM BIZ_CREDIT_LIMIT_RECORD BCLR
+	                                     WHERE BCLR.PID = BWP.REF_ID)
+	                                  ELSE
+	                                   TO_CHAR(ARP.NAME_)
+	                                END) workflowName,
+	                                RES.NAME_ AS taskName,
+	                                RES.TASK_DEF_KEY_ AS workflowTaskDefKey,
+	                                ARP.KEY_ AS workflowProcessDefkey,
+	                                ARE.ID_ AS workflowInstanceId,
+	                                TO_CHAR(RES.CREATE_TIME_,
+	                                        'yyyy-mm-dd HH:mi:dd') AS allocationDttm,
+	                                BWP.REF_ID AS refId,
+	                                BWP.PROJECT_ID AS projectId,
+	                                P.PROJECT_NAME AS workfloPprojectName,
+	                                I.USER_ID_ AS taskUserName,
+	                                SU.REAL_NAME AS taskUserRealName,
+	                                1 AS taskType,
+	                                1 AS taskStatus
+	                  FROM ACT_RU_TASK RES
+	                  LEFT JOIN ACT_RU_IDENTITYLINK I
+	                    ON I.TASK_ID_ = RES.ID_
+	                  LEFT JOIN ACT_RU_EXECUTION ARE
+	                    ON ARE.ID_ = RES.PROC_INST_ID_
+	                  LEFT JOIN BIZ_WORKFLOW_PROJECT BWP
+	                    ON BWP.WORKFLOW_INSTANCE_ID = RES.PROC_INST_ID_
+	                  LEFT JOIN BIZ_PROJECT P
+	                    ON P.PID = BWP.PROJECT_ID
+	                  LEFT JOIN ACT_RE_PROCDEF ARP
+	                    ON ARP.ID_ = ARE.PROC_DEF_ID_
+	                  LEFT JOIN SYS_USER SU
+	                    ON SU.USER_NAME = I.USER_ID_
+	                 WHERE 1 = 1
+	                 AND P.PROJECT_NAME IS NOT NULL
+	                   <if test="taskUserName!=null and taskUserName!=''">
+						  	AND SU.USER_NAME LIKE '%${taskUserName}%'
+						  </if>
+						  <if test="taskUserRealName!=null and taskUserRealName!=''">
+						  	AND SU.REAL_NAME LIKE '%${taskUserRealName}%'
+						  </if>
+						  <if test="taskName!=null and taskName!=''">
+						  	AND RES.NAME_ LIKE '%${taskName}%'
+						  </if>
+						  <if test="workfloPprojectName!=null and workfloPprojectName!=''">
+						  	AND P.PROJECT_NAME LIKE '%${workfloPprojectName}%'
+						  </if>
+						  <if test="allocationDttm!=null and allocationDttm!=''">
+						  	AND TO_DATE(TO_CHAR(RES.CREATE_TIME_, 'yyyy-mm-dd'),'yyyy-mm-dd')=TO_DATE(#{allocationDttm},'yyyy-mm-dd')
+						  </if>
+
+						UNION
+						SELECT DISTINCT RES.ID_ WORKFLOWTASKID,
+						TO_CHAR(ARP.NAME_) WORKFLOWNAME,
+						RES.NAME_ AS TASKNAME,
+						RES.TASK_DEF_KEY_ AS WORKFLOWTASKDEFKEY,
+						ARP.KEY_ AS WORKFLOWPROCESSDEFKEY,
+						ARE.ID_ AS WORKFLOWINSTANCEID,
+						TO_CHAR(RES.CREATE_TIME_, 'yyyy-mm-dd HH:mi:dd') AS ALLOCATIONDTTM,
+						0 AS REFID,
+						BWP.PROJECT_ID AS PROJECTID,
+						P.PROJECT_NAME AS WORKFLOPPROJECTNAME,
+						I.USER_ID_ AS TASKUSERNAME,
+						SU.REAL_NAME AS TASKUSERREALNAME,
+						1 AS TASKTYPE,
+						1 AS TASKSTATUS
+						FROM BIZ_HANDLE_WORKFLOW BWP
+						INNER JOIN ACT_RU_TASK RES
+						ON BWP.EXECUTION_ID = RES.PROC_INST_ID_
+						LEFT JOIN ACT_RU_IDENTITYLINK I
+						ON I.TASK_ID_ = RES.ID_
+						LEFT JOIN ACT_RU_EXECUTION ARE
+						ON ARE.ID_ = RES.PROC_INST_ID_
+						LEFT JOIN BIZ_PROJECT P
+						ON P.PID = BWP.PROJECT_ID
+						LEFT JOIN ACT_RE_PROCDEF ARP
+						ON ARP.ID_ = ARE.PROC_DEF_ID_
+						LEFT JOIN SYS_USER SU
+						ON SU.USER_NAME = I.USER_ID_
+						WHERE BWP.STATUS=1
+	                   <if test="taskUserName!=null and taskUserName!=''">
+						  	AND SU.USER_NAME LIKE '%${taskUserName}%'
+						  </if>
+						  <if test="taskUserRealName!=null and taskUserRealName!=''">
+						  	AND SU.REAL_NAME LIKE '%${taskUserRealName}%'
+						  </if>
+						  <if test="taskName!=null and taskName!=''">
+						  	AND RES.NAME_ LIKE '%${taskName}%'
+						  </if>
+						  <if test="workfloPprojectName!=null and workfloPprojectName!=''">
+						  	AND P.PROJECT_NAME LIKE '%${workfloPprojectName}%'
+						  </if>
+						  <if test="allocationDttm!=null and allocationDttm!=''">
+						  	AND TO_DATE(TO_CHAR(RES.CREATE_TIME_, 'yyyy-mm-dd'),'yyyy-mm-dd')=TO_DATE(#{allocationDttm},'yyyy-mm-dd')
+						  </if>
+						UNION
+						SELECT DISTINCT RES.ID_ WORKFLOWTASKID,
+						TO_CHAR(ARP.NAME_) WORKFLOWNAME,
+						RES.NAME_ AS TASKNAME,
+						RES.TASK_DEF_KEY_ AS WORKFLOWTASKDEFKEY,
+						ARP.KEY_ AS WORKFLOWPROCESSDEFKEY,
+			            ARE.ID_ AS WORKFLOWINSTANCEID,
+			            TO_CHAR(RES.CREATE_TIME_, 'yyyy-mm-dd HH:mi:dd') AS ALLOCATIONDTTM,
+			            0 AS REFID,
+			            BWP.PROJECT_ID AS PROJECTID,
+			            ORG.ORG_NAME AS WORKFLOPPROJECTNAME,
+			            I.USER_ID_ AS TASKUSERNAME,
+			            SU.REAL_NAME AS TASKUSERREALNAME,
+			            1 AS TASKTYPE,
+			            1 AS TASKSTATUS
+			            FROM BIZ_WORKFLOW_PROJECT BWP
+			            INNER JOIN ACT_RU_TASK RES
+			            ON BWP.WORKFLOW_INSTANCE_ID = RES.PROC_INST_ID_
+			            LEFT JOIN ACT_RU_IDENTITYLINK I
+			            ON I.TASK_ID_ = RES.ID_
+			            LEFT JOIN ACT_RU_EXECUTION ARE
+			            ON ARE.ID_ = RES.PROC_INST_ID_
+			            LEFT JOIN ORG_COOPERAT_COMPANY_APPLY_INF P
+			            ON P.PID = BWP.PROJECT_ID
+			            LEFT JOIN ORG_ASSETS_COOPERATION_INFO ORG
+			            ON ORG.PID=P.ORG_ID
+			            LEFT JOIN ACT_RE_PROCDEF ARP
+			            ON ARP.ID_ = ARE.PROC_DEF_ID_
+			            LEFT JOIN SYS_USER SU
+			            ON SU.USER_NAME = I.USER_ID_
+			            WHERE ARP.KEY_='cooperationUpdateProcess'
+	                      <if test="taskUserName!=null and taskUserName!=''">
+						  	AND SU.USER_NAME LIKE '%${taskUserName}%'
+						  </if>
+						  <if test="taskUserRealName!=null and taskUserRealName!=''">
+						  	AND SU.REAL_NAME LIKE '%${taskUserRealName}%'
+						  </if>
+						  <if test="taskName!=null and taskName!=''">
+						  	AND RES.NAME_ LIKE '%${taskName}%'
+						  </if>
+						  <if test="workfloPprojectName!=null and workfloPprojectName!=''">
+						  	AND ORG.ORG_NAME LIKE '%${workfloPprojectName}%'
+						  </if>
+						  <if test="allocationDttm!=null and allocationDttm!=''">
+						  	AND TO_DATE(TO_CHAR(RES.CREATE_TIME_, 'yyyy-mm-dd'),'yyyy-mm-dd')=TO_DATE(#{allocationDttm},'yyyy-mm-dd')
+						  </if>
+				   <if test="taskStatus==2">
+				   		UNION
+			                SELECT DISTINCT AHT.ID_ workflowTaskId,
+			                                (CASE TO_CHAR(ARP.KEY_)
+			                                  WHEN 'creditFreezeOrThawRequestProcess' THEN
+			                                   (SELECT (CASE TO_CHAR(BCLR.CREDIT_USE_TYPE)
+			                                             WHEN '3' THEN
+			                                              '额度冻结工作流'
+			                                             ELSE
+			                                              TO_CHAR('额度解冻工作流')
+			                                           END) CREDIT_USE_TYPE
+			                                      FROM BIZ_CREDIT_LIMIT_RECORD BCLR
+			                                     WHERE BCLR.PID = BWP.REF_ID)
+			                                  ELSE
+			                                   TO_CHAR(ARP.NAME_)
+			                                END) workflowName,
+			                                AHT.NAME_ AS taskName,
+			                                AHT.TASK_DEF_KEY_ AS workflowTaskDefKey,
+			                                ARP.KEY_ AS workflowProcessDefkey,
+			                                ARE.ID_ AS workflowInstanceId,
+			                                TO_CHAR(AHT.START_TIME_, 'yyyy-mm-dd') AS allocationDttm,
+			                                BWP.REF_ID AS refId,
+			                                BWP.PROJECT_ID AS projectId,
+			                                P.PROJECT_NAME AS workfloPprojectName,
+			                                I.USER_ID_ AS taskUserName,
+			                                SU.REAL_NAME AS taskUserRealName,
+			                                1 AS taskType,
+			                                2 AS TASKSTATUS
+							  FROM ACT_HI_TASKINST AHT
+							  LEFT JOIN ACT_HI_IDENTITYLINK I
+							    ON I.TASK_ID_ = AHT.ID_
+							  LEFT JOIN ACT_HI_PROCINST ARE
+							    ON ARE.ID_ = AHT.PROC_INST_ID_
+							  LEFT JOIN BIZ_WORKFLOW_PROJECT BWP
+							    ON BWP.WORKFLOW_INSTANCE_ID = AHT.PROC_INST_ID_
+							  LEFT JOIN BIZ_PROJECT P
+							    ON P.PID = BWP.PROJECT_ID
+							  LEFT JOIN ACT_RE_PROCDEF ARP
+							    ON ARP.ID_ = ARE.PROC_DEF_ID_
+							  LEFT JOIN SYS_USER SU
+							    ON SU.USER_NAME = I.USER_ID_
+			                 WHERE 1 = 1
+			                  <if test="taskUserName!=null and taskUserName!=''">
+								  	AND SU.USER_NAME LIKE '%${taskUserName}%'
+								  </if>
+								  <if test="taskUserRealName!=null and taskUserRealName!=''">
+								  	AND SU.REAL_NAME LIKE '%${taskUserRealName}%'
+								  </if>
+								  <if test="taskName!=null and taskName!=''">
+								  	AND RES.NAME_ LIKE '%${taskName}%'
+								  </if>
+								  <if test="workfloPprojectName!=null and workfloPprojectName!=''">
+								  	AND P.PROJECT_NAME LIKE '%${workfloPprojectName}%'
+								  </if>
+								  <if test="allocationDttm!=null and allocationDttm!=''">
+								  	AND TO_DATE(TO_CHAR(RES.CREATE_TIME_, 'yyyy-mm-dd'),'yyyy-mm-dd')=TO_DATE(#{allocationDttm},'yyyy-mm-dd')
+								  </if>
+							</if>
+						) T
+					WHERE ROWNUM <![CDATA[<=]]>#{page}*#{rows} ) D
+			 WHERE D.RN > ((#{page}-1)*#{rows})
+         
+		 
+	</select>
+	
+	<select id="findAllRunTaskTotal" parameterType="com.xlkfinance.bms.rpc.workflow.TaskVo" 
+		resultType="Integer">
+			SELECT COUNT(1) FROM
+			(SELECT DISTINCT RES.ID_ workflowTaskId,
+                          (CASE TO_CHAR(ARP.KEY_)
+                            WHEN 'creditFreezeOrThawRequestProcess' THEN
+                             (SELECT (CASE TO_CHAR(BCLR.CREDIT_USE_TYPE)
+                                       WHEN '3' THEN
+                                        '额度冻结工作流'
+                                       ELSE
+                                        TO_CHAR('额度解冻工作流')
+                                     END) CREDIT_USE_TYPE
+                                FROM BIZ_CREDIT_LIMIT_RECORD BCLR
+                               WHERE BCLR.PID = BWP.REF_ID)
+                            ELSE
+                             TO_CHAR(ARP.NAME_)
+                          END) workflowName,
+                          RES.NAME_ AS taskName,
+                          RES.TASK_DEF_KEY_ AS workflowTaskDefKey,
+                          ARP.KEY_ AS workflowProcessDefkey,
+                          ARE.ID_ AS workflowInstanceId,
+                          TO_CHAR(RES.CREATE_TIME_,
+                                  'yyyy-mm-dd HH:mi:dd') AS allocationDttm,
+                          BWP.REF_ID AS refId,
+                          BWP.PROJECT_ID AS projectId,
+                          P.PROJECT_NAME AS workfloPprojectName,
+                          I.USER_ID_ AS taskUserName,
+                          SU.REAL_NAME AS taskUserRealName,
+                          1 AS taskType,
+                          1 AS taskStatus
+            FROM ACT_RU_TASK RES
+            LEFT JOIN ACT_RU_IDENTITYLINK I
+              ON I.TASK_ID_ = RES.ID_
+            LEFT JOIN ACT_RU_EXECUTION ARE
+              ON ARE.ID_ = RES.PROC_INST_ID_
+            LEFT JOIN BIZ_WORKFLOW_PROJECT BWP
+              ON BWP.WORKFLOW_INSTANCE_ID = RES.PROC_INST_ID_
+            LEFT JOIN BIZ_PROJECT P
+              ON P.PID = BWP.PROJECT_ID
+            LEFT JOIN ACT_RE_PROCDEF ARP
+              ON ARP.ID_ = ARE.PROC_DEF_ID_
+            LEFT JOIN SYS_USER SU
+              ON SU.USER_NAME = I.USER_ID_
+           WHERE 1 = 1
+            AND P.PROJECT_NAME IS NOT NULL
+             <if test="taskUserName!=null and taskUserName!=''">
+				 	AND SU.USER_NAME LIKE '%${taskUserName}%'
+				 </if>
+				 <if test="taskUserRealName!=null and taskUserRealName!=''">
+				 	AND SU.REAL_NAME LIKE '%${taskUserRealName}%'
+				 </if>
+				 <if test="taskName!=null and taskName!=''">
+				 	AND RES.NAME_ LIKE '%${taskName}%'
+				 </if>
+				 <if test="workfloPprojectName!=null and workfloPprojectName!=''">
+				 	AND P.PROJECT_NAME LIKE '%${workfloPprojectName}%'
+				 </if>
+				 <if test="allocationDttm!=null and allocationDttm!=''">
+				 	AND TO_DATE(TO_CHAR(RES.CREATE_TIME_, 'yyyy-mm-dd'),'yyyy-mm-dd')=TO_DATE(#{allocationDttm},'yyyy-mm-dd')
+				 </if>
+				 UNION
+						SELECT DISTINCT RES.ID_ WORKFLOWTASKID,
+						TO_CHAR(ARP.NAME_) WORKFLOWNAME,
+						RES.NAME_ AS TASKNAME,
+						RES.TASK_DEF_KEY_ AS WORKFLOWTASKDEFKEY,
+						ARP.KEY_ AS WORKFLOWPROCESSDEFKEY,
+						ARE.ID_ AS WORKFLOWINSTANCEID,
+						TO_CHAR(RES.CREATE_TIME_, 'yyyy-mm-dd HH:mi:dd') AS ALLOCATIONDTTM,
+						0 AS REFID,
+						BWP.PROJECT_ID AS PROJECTID,
+						P.PROJECT_NAME AS WORKFLOPPROJECTNAME,
+						I.USER_ID_ AS TASKUSERNAME,
+						SU.REAL_NAME AS TASKUSERREALNAME,
+						1 AS TASKTYPE,
+						1 AS TASKSTATUS
+						FROM BIZ_HANDLE_WORKFLOW BWP
+						INNER JOIN ACT_RU_TASK RES
+						ON BWP.EXECUTION_ID = RES.PROC_INST_ID_
+						LEFT JOIN ACT_RU_IDENTITYLINK I
+						ON I.TASK_ID_ = RES.ID_
+						LEFT JOIN ACT_RU_EXECUTION ARE
+						ON ARE.ID_ = RES.PROC_INST_ID_
+						LEFT JOIN BIZ_PROJECT P
+						ON P.PID = BWP.PROJECT_ID
+						LEFT JOIN ACT_RE_PROCDEF ARP
+						ON ARP.ID_ = ARE.PROC_DEF_ID_
+						LEFT JOIN SYS_USER SU
+						ON SU.USER_NAME = I.USER_ID_
+						WHERE BWP.STATUS=1
+	                   <if test="taskUserName!=null and taskUserName!=''">
+						  	AND SU.USER_NAME LIKE '%${taskUserName}%'
+						  </if>
+						  <if test="taskUserRealName!=null and taskUserRealName!=''">
+						  	AND SU.REAL_NAME LIKE '%${taskUserRealName}%'
+						  </if>
+						  <if test="taskName!=null and taskName!=''">
+						  	AND RES.NAME_ LIKE '%${taskName}%'
+						  </if>
+						  <if test="workfloPprojectName!=null and workfloPprojectName!=''">
+						  	AND P.PROJECT_NAME LIKE '%${workfloPprojectName}%'
+						  </if>
+						  <if test="allocationDttm!=null and allocationDttm!=''">
+						  	AND TO_DATE(TO_CHAR(RES.CREATE_TIME_, 'yyyy-mm-dd'),'yyyy-mm-dd')=TO_DATE(#{allocationDttm},'yyyy-mm-dd')
+						  </if>
+						  UNION
+						SELECT DISTINCT RES.ID_ WORKFLOWTASKID,
+						TO_CHAR(ARP.NAME_) WORKFLOWNAME,
+						RES.NAME_ AS TASKNAME,
+						RES.TASK_DEF_KEY_ AS WORKFLOWTASKDEFKEY,
+						ARP.KEY_ AS WORKFLOWPROCESSDEFKEY,
+			            ARE.ID_ AS WORKFLOWINSTANCEID,
+			            TO_CHAR(RES.CREATE_TIME_, 'yyyy-mm-dd HH:mi:dd') AS ALLOCATIONDTTM,
+			            0 AS REFID,
+			            BWP.PROJECT_ID AS PROJECTID,
+			            ORG.ORG_NAME AS WORKFLOPPROJECTNAME,
+			            I.USER_ID_ AS TASKUSERNAME,
+			            SU.REAL_NAME AS TASKUSERREALNAME,
+			            1 AS TASKTYPE,
+			            1 AS TASKSTATUS
+			            FROM BIZ_WORKFLOW_PROJECT BWP
+			            INNER JOIN ACT_RU_TASK RES
+			            ON BWP.WORKFLOW_INSTANCE_ID = RES.PROC_INST_ID_
+			            LEFT JOIN ACT_RU_IDENTITYLINK I
+			            ON I.TASK_ID_ = RES.ID_
+			            LEFT JOIN ACT_RU_EXECUTION ARE
+			            ON ARE.ID_ = RES.PROC_INST_ID_
+			            LEFT JOIN ORG_COOPERAT_COMPANY_APPLY_INF P
+			            ON P.PID = BWP.PROJECT_ID
+			            LEFT JOIN ORG_ASSETS_COOPERATION_INFO ORG
+			            ON ORG.PID=P.ORG_ID
+			            LEFT JOIN ACT_RE_PROCDEF ARP
+			            ON ARP.ID_ = ARE.PROC_DEF_ID_
+			            LEFT JOIN SYS_USER SU
+			            ON SU.USER_NAME = I.USER_ID_
+			            WHERE ARP.KEY_='cooperationUpdateProcess'
+			              <if test="taskUserName!=null and taskUserName!=''">
+						  	AND SU.USER_NAME LIKE '%${taskUserName}%'
+						  </if>
+						  <if test="taskUserRealName!=null and taskUserRealName!=''">
+						  	AND SU.REAL_NAME LIKE '%${taskUserRealName}%'
+						  </if>
+						  <if test="taskName!=null and taskName!=''">
+						  	AND RES.NAME_ LIKE '%${taskName}%'
+						  </if>
+						  <if test="workfloPprojectName!=null and workfloPprojectName!=''">
+						  	AND ORG.ORG_NAME LIKE '%${workfloPprojectName}%'
+						  </if>
+						  <if test="allocationDttm!=null and allocationDttm!=''">
+						  	AND TO_DATE(TO_CHAR(RES.CREATE_TIME_, 'yyyy-mm-dd'),'yyyy-mm-dd')=TO_DATE(#{allocationDttm},'yyyy-mm-dd')
+						  </if>
+				<if test="taskStatus==2">
+				UNION
+		            SELECT DISTINCT AHT.ID_ workflowTaskId,
+		                            (CASE TO_CHAR(ARP.KEY_)
+		                              WHEN 'creditFreezeOrThawRequestProcess' THEN
+		                               (SELECT (CASE TO_CHAR(BCLR.CREDIT_USE_TYPE)
+		                                         WHEN '3' THEN
+		                                          '额度冻结工作流'
+		                                         ELSE
+		                                          TO_CHAR('额度解冻工作流')
+		                                       END) CREDIT_USE_TYPE
+		                                  FROM BIZ_CREDIT_LIMIT_RECORD BCLR
+		                                 WHERE BCLR.PID = BWP.REF_ID)
+		                              ELSE
+		                               TO_CHAR(ARP.NAME_)
+		                            END) workflowName,
+		                            AHT.NAME_ AS taskName,
+		                            AHT.TASK_DEF_KEY_ AS workflowTaskDefKey,
+		                            ARP.KEY_ AS workflowProcessDefkey,
+		                            ARE.ID_ AS workflowInstanceId,
+		                            TO_CHAR(AHT.START_TIME_, 'yyyy-mm-dd') AS allocationDttm,
+		                            BWP.REF_ID AS refId,
+		                            BWP.PROJECT_ID AS projectId,
+		                            P.PROJECT_NAME AS workfloPprojectName,
+		                            I.USER_ID_ AS taskUserName,
+		                            SU.REAL_NAME AS taskUserRealName,
+		                            1 AS taskType,
+		                            2 AS TASKSTATUS
+					  FROM ACT_HI_TASKINST AHT
+					  LEFT JOIN ACT_HI_IDENTITYLINK I
+					    ON I.TASK_ID_ = AHT.ID_
+					  LEFT JOIN ACT_HI_PROCINST ARE
+					    ON ARE.ID_ = AHT.PROC_INST_ID_
+					  LEFT JOIN BIZ_WORKFLOW_PROJECT BWP
+					    ON BWP.WORKFLOW_INSTANCE_ID = AHT.PROC_INST_ID_
+					  LEFT JOIN BIZ_PROJECT P
+					    ON P.PID = BWP.PROJECT_ID
+					  LEFT JOIN ACT_RE_PROCDEF ARP
+					    ON ARP.ID_ = ARE.PROC_DEF_ID_
+					  LEFT JOIN SYS_USER SU
+					    ON SU.USER_NAME = I.USER_ID_
+		             WHERE 1 = 1
+		              <if test="taskUserName!=null and taskUserName!=''">
+			  			AND SU.USER_NAME LIKE '%${taskUserName}%'
+					  </if>
+					  <if test="taskUserRealName!=null and taskUserRealName!=''">
+					  	AND SU.REAL_NAME LIKE '%${taskUserRealName}%'
+					  </if>
+					  <if test="taskName!=null and taskName!=''">
+					  	AND RES.NAME_ LIKE '%${taskName}%'
+					  </if>
+					  <if test="workfloPprojectName!=null and workfloPprojectName!=''">
+					  	AND P.PROJECT_NAME LIKE '%${workfloPprojectName}%'
+					  </if>
+					  <if test="allocationDttm!=null and allocationDttm!=''">
+					  	AND TO_DATE(TO_CHAR(RES.CREATE_TIME_, 'yyyy-mm-dd'),'yyyy-mm-dd')=TO_DATE(#{allocationDttm},'yyyy-mm-dd')
+					  </if>
+				</if>
+		) T
+	</select>
+	<select id="getRunWorkflowProject" parameterType="com.xlkfinance.bms.rpc.workflow.WorkflowProjectVo" 
+		resultMap="workflowProjectMap">
+		SELECT A.*
+  FROM BIZ_WORKFLOW_PROJECT A
+ INNER JOIN ACT_RU_TASK B
+    ON A.WORKFLOW_INSTANCE_ID = B.EXECUTION_ID_
+ WHERE A.PROCESS_DEFINITION_KEY = #{processDefinitionKey}
+   AND A.PROJECT_ID =#{projectId}
+	</select>
+</mapper>

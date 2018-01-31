@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.customer.mapper.CusComStaffMapper">
+<resultMap type="com.xlkfinance.bms.rpc.customer.CusComStaff" id="cusComStacffMap">
+	  <id property="pid" column="pid"/>
+        <result property="personNum" column="PERSON_NUM" />
+        <result property="ratio" column="RATIO" />
+</resultMap>
+
+<insert id="insertCusComStaffs" parameterType="java.util.List">
+    insert into cus_com_staff (
+    	PID, 
+    	CUS_COM_ID, 
+    	CATELOG, 
+    	TEACH_TYPE, 
+    	PERSON_NUM, 
+    	RATIO,
+    	SORTNUM,
+    	STATUS)
+   select SEQ_CUS_COM_STAFF.Nextval,A.* from(
+        <foreach collection="list" item="item" index="index"
+            separator="UNION">
+            SELECT
+		    #{item.cusComBase.pid,jdbcType=INTEGER}, 
+		    #{item.catelog,jdbcType=VARCHAR}, 
+		    #{item.teachType,jdbcType=VARCHAR}, 
+	     	#{item.personNum,jdbcType=INTEGER}, 
+	     	#{item.ratio,jdbcType=DOUBLE},
+	     	#{item.sortNum,jdbcType=INTEGER},
+	     	#{item.status,jdbcType=INTEGER}
+            from dual 
+        </foreach>
+        ) A
+  </insert>
+  
+  <select id="selectByComId" resultMap="cusComStacffMap"  parameterType="java.lang.Integer">
+      select ccs.pid,ccs.person_num,ccs.ratio from cus_com_staff ccs 
+            where ccs.cus_com_id=#{comId,jdbcType=INTEGER} 
+            order by ccs.sortnum
+  </select>
+  
+   <!-- 更新的方法 -->
+	<update id="updateByPrimaryKey" parameterType="com.xlkfinance.bms.rpc.customer.CusComStaff">
+		update cus_com_staff
+		<set>
+		<if test="cusComBase.pid != null">
+		     CUS_COM_ID = #{cusComBase.pid,jdbcType=INTEGER}, 
+		</if>
+		<if test="catelog != null">
+			 CATELOG = #{catelog,jdbcType=VARCHAR}, 
+		</if>
+		<if test="teachType != null">
+    		TEACH_TYPE = #{teachType,jdbcType=VARCHAR}, 
+    	</if>
+    	<if test="personNum != null">
+    		PERSON_NUM = #{personNum,jdbcType=INTEGER}, 
+    	</if>
+    	<if test="ratio != null">
+     		RATIO = #{ratio,jdbcType=DOUBLE},
+     	</if>
+     	<if test="status != null">
+     		STATUS = #{status,jdbcType=INTEGER},
+     	</if>
+		</set> 
+		where pid = #{pid,jdbcType=INTEGER}
+	</update>
+	
+	<update id="updateCusComStaffs" parameterType="java.util.List">
+	   <foreach collection="list" item="item" index="index" open="begin" close=";end;" separator=";">
+		  update cus_com_staff
+		<set>
+		<if test="item.cusComBase.pid != null">
+		    CUS_COM_ID = #{item.cusComBase.pid,jdbcType=INTEGER},
+		</if>
+		<if test="item.catelog != null">
+		   CATELOG = #{item.catelog,jdbcType=VARCHAR},
+		</if>
+    	<if test="item.teachType != null">
+      		TEACH_TYPE = #{item.teachType,jdbcType=VARCHAR},
+      	</if>
+      	<if test="item.personNum != null">
+      		PERSON_NUM = #{item.personNum,jdbcType=INTEGER}, 
+      	</if>
+      	<if test="item.ratio != null">
+      		RATIO = #{item.ratio,jdbcType=DOUBLE},
+      	</if>
+      	<if test="item.status != null">
+      		 STATUS = #{item.status,jdbcType=INTEGER},
+      	</if>
+		</set> 
+		where pid = #{item.pid,jdbcType=INTEGER}
+	 </foreach>
+	</update>
+	
+</mapper>

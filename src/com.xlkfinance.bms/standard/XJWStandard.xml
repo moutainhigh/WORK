@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC "-//Puppy Crawl//DTD Check Configuration 1.3//EN" "http://www.puppycrawl.com/dtds/configuration_1_3.dtd">
+
+<!--
+    This configuration file was written by the eclipse-cs plugin configuration editor
+-->
+<!--
+    Checkstyle-Configuration: ABCStandard
+    Description: none
+-->
+<module name="Checker">
+  <property name="severity" value="warning"/>
+  <property name="charset" value="UTF-8"/>
+  <message key="general.exception" value="捕获异常 {0}"/>
+  <message key="general.fileNotFound" value="文件无法找到!"/>
+  <module name="TreeWalker">
+    <message key="general.exception" value="捕获异常{0}"/>
+    <module name="AbstractClassName">
+      <property name="format" value="^[A-Z][A-Z0-9a-z]*(_[A-Z0-9a-z]+)*$"/>
+      <message key="illegal.abstract.class.name" value="抽象类''{0}''需要以大写字母开头."/>
+    </module>
+    <module name="ConstantName">
+      <property name="format" value="^[A-Z|\d]*(_[A-Z|\d]+)*$"/>
+      <message key="name.invalidPattern" value="常量名只允许大写字母和数字，单词间用下划线隔开。"/>
+    </module>
+    <module name="MemberName">
+      <property name="format" value="^[a-z][a-zA-Z0-9|_]*$"/>
+      <message key="name.invalidPattern" value="类的属性名采用大小写混合的方式，第一个单词的首字母小写，其后单词的首字母大写。不应以下划线或美元符号开头"/>
+    </module>
+    <module name="MethodName">
+      <property name="format" value="^[a-z][a-zA-Z0-9|_]*$"/>
+      <message key="name.invalidPattern" value="方法名字采用大小写混合的方式，第一个单词的首字母小写，其后单词的首字母大写。"/>
+      <message key="method.name.equals.class.name" value="''{0}''方法名不能和enclosing class名相同."/>
+    </module>
+    <module name="PackageName">
+      <property name="format" value="^[a-z]+(\.[a-z][a-z0-9]*)*$"/>
+      <message key="name.invalidPattern" value="包名''{0}'' 采用全部小写字母或者数字."/>
+    </module>
+    <module name="ParameterName">
+      <property name="format" value="^[a-z][a-zA-Z0-9|_]*$"/>
+      <message key="name.invalidPattern" value="参数名采用大小写混合的方式，第一个单词的首字母小写，其后单词的首字母大写。不应以下划线或美元符号开头"/>
+    </module>
+    <module name="StaticVariableName">
+      <property name="format" value="^[a-z][a-zA-Z0-9|_]*$"/>
+      <message key="name.invalidPattern" value="静态变量名采用大小写混合的方式，第一个单词的首字母小写，其后单词的首字母大写。不应以下划线或美元符号开头"/>
+    </module>
+    <module name="TypeName">
+      <message key="name.invalidPattern" value="类或者接口的命名要是数字或者字母，且以大写字母开头"/>
+    </module>
+    <module name="AvoidStaticImport">
+      <property name="severity" value="ignore"/>
+      <message key="import.avoidStatic" value="{0}导入静态成员应该避免."/>
+      <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="inherit"/>
+    </module>
+    <module name="UnusedImports">
+      <message key="import.unused" value="{0}未被使用."/>
+    </module>
+    <module name="RedundantImport">
+      <message key="import.same" value="{0}是重复的包导入."/>
+      <message key="import.duplicate" value="{1}与第{0,number,integer} 行导入重复 ."/>
+      <message key="import.lang" value="{0}为java.lang包的内容，不需要导入."/>
+    </module>
+    <module name="ModifierOrder">
+      <message key="annotation.order" value="''{0}''注释修饰符不应该在非注释修饰符之前."/>
+      <message key="mod.order" value="''{0}''修饰符不符合JLS建议,正确的顺序是(public,protected,private,abstract,static,final,transient,volatile,synchronized,native,strictfp)"/>
+    </module>
+    <module name="RedundantModifier">
+      <property name="severity" value="ignore"/>
+      <message key="redundantModifier" value="''{0}''修饰符不需要."/>
+      <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="inherit"/>
+    </module>
+    <module name="EqualsHashCode">
+      <message key="equals.noHashCode" value="''equals()''的定义和''hashCode()''的定义不匹配."/>
+    </module>
+    <module name="EmptyBlock">
+      <message key="block.empty" value="{0} 块为空."/>
+      <message key="block.noStmt" value="至少要有一个语句"/>
+    </module>
+    <module name="InnerAssignment">
+      <message key="assignment.inner.avoid" value="内部的赋值应该避免."/>
+    </module>
+    <module name="MagicNumber">
+      <property name="tokens" value="NUM_DOUBLE,NUM_FLOAT"/>
+      <message key="magic.number" value="''{0}'' 的定义没有明确含义，即魔术数."/>
+    </module>
+    <module name="MissingSwitchDefault">
+      <message key="missing.switch.default" value="switch语句缺少&quot;default&quot; 分支."/>
+    </module>
+    <module name="RedundantThrows">
+      <property name="severity" value="ignore"/>
+      <property name="allowUnchecked" value="true"/>
+      <property name="allowSubclasses" value="true"/>
+      <property name="logLoadErrors" value="true"/>
+      <property name="suppressLoadErrors" value="true"/>
+      <message key="redundant.throws.duplicate" value="''{0}''异常多次处理，此异常冗余."/>
+      <message key="redundant.throws.subclass" value="''{0}''是''{1}''的子类，此异常冗余."/>
+      <message key="redundant.throws.classInfo" value="{0}的类信息无法获取."/>
+      <message key="redundant.throws.unchecked" value="''{0}'' 异常没有声明，此异常冗余."/>
+    </module>
+    <module name="SimplifyBooleanExpression">
+      <message key="simplify.expression" value="表达式可以简化."/>
+    </module>
+    <module name="SimplifyBooleanReturn">
+      <message key="simplify.boolreturn" value="可以去掉条件逻辑."/>
+    </module>
+    <module name="StringLiteralEquality">
+      <message key="string.literal.equality" value="String类型的比较需要使用equals(), 而不是''{0}''."/>
+    </module>
+    <module name="IllegalCatch">
+      <property name="illegalClassNames" value="java.lang.Throwable, java.lang.RuntimeException"/>
+      <message key="illegal.catch" value="''{0}''异常捕获不允许."/>
+    </module>
+    <module name="IllegalThrows">
+      <message key="illegal.throw" value="''{0}''异常抛出不允许."/>
+    </module>
+    <module name="DeclarationOrder">
+      <message key="declaration.order.constructor" value="构建器的定义次序不对,应按照如下顺序：static变量,实例变量,构建器,方法"/>
+      <message key="declaration.order.access" value="同类型（static,实例）变量定义顺序不对,应按照如下顺序：public,protected,package level[no access modifier],private"/>
+      <message key="declaration.order.static" value="static变量的定义顺序不对,应按照如下顺序：static变量,实例变量,构建器,方法"/>
+      <message key="declaration.order.instance" value="实例变量的定义顺序不对,应按照如下顺序：static变量,实例变量,构建器,方法"/>
+      <message key="declaration.order.method" value="方法定义的顺序不对,应按照如下顺序：static变量,实例变量,构建器,方法"/>
+    </module>
+    <module name="DefaultComesLast">
+      <message key="default.comes.last" value="Default 需要在 switch 语句的最后."/>
+    </module>
+    <module name="FallThrough">
+      <message key="fall.through" value="switch语句的前一个分支失败."/>
+      <message key="fall.through.last" value="switch语句的后一个分支失败."/>
+    </module>
+    <module name="MultipleVariableDeclarations">
+      <message key="multiple.variable.declarations" value="每行代码只允许一个变量定义."/>
+      <message key="multiple.variable.declarations.comma" value="每个语句只能有一个变量的申明."/>
+    </module>
+    <module name="ArrayTypeStyle">
+      <message key="array.type.style" value="数组的括号位置不合法."/>
+    </module>
+    <module name="HiddenField">
+      <property name="ignoreConstructorParameter" value="true"/>
+      <property name="ignoreSetter" value="true"/>
+      <property name="ignoreAbstractMethods" value="true"/>
+      <message key="hidden.field" value="''{0}''与类的属性命名重复."/>
+    </module>
+    <module name="LeftCurly">
+      <message key="line.previous" value="''{0}''应该在上一行."/>
+      <message key="line.new" value="''{0}''应该在新的一行."/>
+    </module>
+    <module name="RightCurly">
+      <message key="line.alone" value="''{0}''应该在独立的一行."/>
+      <message key="line.new" value="''{0}''应该在新的一行."/>
+      <message key="line.same" value="''{0}''应该在同一行."/>
+    </module>
+    <module name="NeedBraces">
+      <message key="needBraces" value="''{0}'' 需要使用 '''{}'''."/>
+    </module>
+    <module name="JavadocType">
+      <message key="javadoc.missing" value="类或者接口缺少注释"/>
+      <message key="javadoc.unusedTagGeneral" value="未使用的Java文档标记"/>
+    </module>
+    <module name="AvoidStarImport">
+      <message key="import.avoidStar" value="{0}包含&quot;*&quot;."/>
+    </module>
+    <module name="JavadocMethod">
+      <property name="allowMissingParamTags" value="true"/>
+      <property name="allowMissingThrowsTags" value="true"/>
+      <property name="allowMissingReturnTag" value="true"/>
+      <property name="allowMissingPropertyJavadoc" value="true"/>
+      <property name="logLoadErrors" value="true"/>
+      <property name="suppressLoadErrors" value="true"/>
+      <property name="tokens" value="METHOD_DEF"/>
+      <message key="javadoc.missing" value="方法缺少注释"/>
+      <message key="javadoc.duplicateTag" value="{0} 标记重复."/>
+      <message key="javadoc.return.expected" value="需要 @return 标记."/>
+      <message key="javadoc.invalidInheritDoc" value="'{'@inheritDoc'}' 标记使用不正确."/>
+      <message key="javadoc.unusedTagGeneral" value="未使用Java文档标记."/>
+    </module>
+    <module name="RegexpSinglelineJava">
+      <property name="format" value="System\.out\.((print)|(write))"/>
+      <property name="message" value="禁止使用System.out.print，System.out.println，System.out.write"/>
+      <property name="ignoreComments" value="true"/>
+    </module>
+    <module name="LineLength">
+      <property name="max" value="100"/>
+      <property name="tabWidth" value="4"/>
+      <message key="maxLineLen" value="代码行超过 {0,number,integer} 个字符."/>
+    </module>
+    <module name="PackageDeclaration">
+      <message key="missing.package.declaration" value="缺少包的申明"/>
+    </module>
+  </module>
+  <module name="FileLength">
+    <message key="maxLen.file" value="文件长度为 {0,number,integer}  (不允许超过{1,number,integer})."/>
+  </module>
+</module>

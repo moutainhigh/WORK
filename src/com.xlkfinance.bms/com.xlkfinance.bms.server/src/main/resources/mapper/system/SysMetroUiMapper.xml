@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.system.mapper.SysMetroUiMapper">
+	<insert id="insertSysMetroUi" parameterType="com.xlkfinance.bms.rpc.system.SysMetroUiVo">
+		<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+			SELECT SEQ_SYS_METRO_UI.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO SYS_METRO_UI(
+				PID,
+				LOCATION_ID,
+				MENU_ID,
+				MENU_NAME,
+				STATUS
+			) VALUES (#{pid},#{locationId},#{menuId},#{menuName},1)
+	</insert>
+	<update id="updateSysMetroUi" parameterType="com.xlkfinance.bms.rpc.system.SysMetroUiVo">
+		UPDATE SYS_METRO_UI SET
+		<if test="null != locationId">LOCATION_ID = #{locationId},</if>
+		<if test="null != menuId">MENU_ID = #{menuId},</if>
+		<if test="null != menuName">MENU_NAME = #{menuName},</if>
+		STATUS = 1
+		WHERE PID = #{pid}
+	</update>
+	<delete id="deleteSysMetroUi" parameterType="Integer">
+		DELETE FROM SYS_METRO_UI 
+		WHERE PID = #{pid}
+	</delete>
+	<select id="getSysMetroUiByPid" resultType="com.xlkfinance.bms.rpc.system.SysMetroUiVo" parameterType="Integer">
+		SELECT 
+			T.PID AS pid, 
+			T.LOCATION_ID AS locationId, 
+			(SELECT ICON_CLS
+	          FROM SYS_MENU SM
+	         WHERE SM.PID =
+	               (SELECT M.PARENT_ID FROM SYS_MENU M WHERE M.PID = T.MENU_ID)) AS showImg, 
+			T.MENU_ID AS menuId, 
+			T.MENU_NAME AS menuName,
+			T.ICON_CLS AS iconCls,
+			T.STATUS AS status
+		  FROM SYS_METRO_UI T
+		 WHERE T.STATUS = 1 T.PID = #{pid}
+	</select>
+	<select id="findSysMetroUiPage" parameterType="com.xlkfinance.bms.rpc.system.SysMetroUiVo" resultType="com.xlkfinance.bms.rpc.system.SysMetroUiVo">
+		SELECT 
+			M.PID AS pid, 
+			M.LOCATION_ID AS locationId, 
+			(SELECT ICON_CLS
+	          FROM SYS_MENU SM
+	         WHERE SM.PID =
+	               (SELECT T.PARENT_ID FROM SYS_MENU T WHERE T.PID = M.MENU_ID)) AS showImg, 
+			M.MENU_ID AS menuId,
+			(SELECT SM.PARENT_ID FROM SYS_MENU SM WHERE SM.PID = M.MENU_ID) AS parentId,
+			(SELECT SM.MENU_URL FROM SYS_MENU SM WHERE SM.PID = M.MENU_ID) AS actionUrl, 
+			M.MENU_NAME AS menuName,
+			M.ICON_CLS AS iconCls,
+			M.STATUS AS status
+		 FROM (SELECT A.*, ROWNUM RN
+		         FROM (SELECT T.PID, 
+					T.LOCATION_ID, 
+					T.SHOW_IMG, 
+					T.MENU_ID, 
+					T.MENU_NAME,
+					T.ICON_CLS,
+					T.STATUS
+				  FROM SYS_METRO_UI T) A) M
+		<if test="rows != 0">
+		 	WHERE RN BETWEEN (((#{page}-1) * #{rows})+1) AND (#{page} * #{rows})
+		</if>
+	</select>
+	<!-- 查询根菜单 根据用户权限 条件用户名称 -->
+	<select id="selectMetroUiByUserName" parameterType="String" resultType="com.xlkfinance.bms.rpc.system.SysMetroUiVo">
+		SELECT SMU.PID AS pid,
+	       SMU.LOCATION_ID AS locationId,
+	       (SELECT ICON_CLS
+	          FROM SYS_MENU SM
+	         WHERE SM.PID =
+	               (SELECT M.PARENT_ID FROM SYS_MENU M WHERE M.PID = SMU.MENU_ID)) AS showImg,
+	       (SELECT SM.MENU_URL FROM SYS_MENU SM WHERE SM.PID = SMU.MENU_ID) AS actionUrl,
+	       SMU.MENU_ID AS menuId,
+	       SMU.MENU_NAME AS menuName,
+	       SMU.STATUS AS status,
+	       SMU.ICON_CLS AS iconCls
+	   FROM SYS_METRO_UI SMU, SYS_USER_MENU_V SUMV
+	 	   WHERE SMU.MENU_ID = SUMV.PID
+	   	   AND SUMV.USER_NAME = #{userName}
+	</select>
+	<select id="findSysMetroUiTotal" resultType="Integer">
+		SELECT COUNT(1) FROM SYS_METRO_UI
+	</select>
+</mapper>

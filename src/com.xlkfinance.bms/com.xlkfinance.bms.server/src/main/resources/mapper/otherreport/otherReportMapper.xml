@@ -1,0 +1,1476 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.otherreport.mapper.OtherReportMapper">
+<!--资金方业务笔数详情-->
+<resultMap type="com.xlkfinance.bms.rpc.otherReport.ForeclosureCapDetailsReport" id="foreclosureCapDetailsReportMap">
+		<id property="projectId" column="PROJECT_ID" />
+		<id property="projectName" column="PROJECT_NAME" />
+		<id property="projectNumber" column="PROJECT_NUMBER" />
+		
+		<id property="pmUserName" column="PM_USER_NAME" />
+		<id property="chinaName" column="CHINA_NAME" />
+		<id property="businessCategoryStr" column="BUSINESS_CATEGORY_STR" />
+		
+		<id property="orgName" column="ORG_NAME" />
+		<id property="orgCode" column="ORG_CODE" />
+		<id property="loanAmount" column="LOAN_AMOUNT" />
+		<id property="approveMoney" column="APPROVE_MONEY" />
+		<id property="approvalStatus" column="APPROVAL_STATUS" />
+		<id property="confirmLoanStatus" column="CONFIRM_LOAN_STATUS" />
+		<id property="loanStatus" column="LOAN_STATUS" />
+		<id property="approvalComment" column="APPROVAL_COMMENT" />
+		
+		<id property="approvalTime" column="APPROVAL_TIME" />
+		<id property="loanTime" column="LOAN_TIME" />
+		<id property="applyDate" column="APPLY_DATE" />
+		<id property="payInterest" column="PAY_INTEREST" />
+		<id property="loanResultTime" column="LOAN_RESULT_TIME" />
+		<id property="partnerLoanDate" column="PARTNER_LOAN_DATE" />
+		<id property="recLoanDate" column="REC_LOAN_DATE" />
+		<id property="refundDate" column="REFUND_DATE" />
+	</resultMap>
+	<!--合作机构业务笔数详情-->
+	<resultMap type="com.xlkfinance.bms.rpc.otherReport.ForeclosureOrgDetailsReport" id="foreclosureOrgDetailsReportMap">
+		<id property="projectId" column="PROJECT_ID" />
+		<id property="projectName" column="PROJECT_NAME" />
+		<id property="projectNumber" column="PROJECT_NUMBER" />
+		<id property="loanDate" column="LOAN_DATE" />
+		<id property="orgOrgName" column="ORG_ORG_NAME" />
+		<id property="pmUserName" column="PM_USER_NAME" />
+		<id property="chinaName" column="CHINA_NAME" />
+		
+		<id property="loanAmount" column="LOAN_AMOUNT" />		
+		<id property="loanDays" column="LOAN_DAYS" />
+		<id property="guaranteeFee" column="GUARANTEE_FEE" />
+		<id property="poundage" column="POUNDAGE" />
+		<id property="paymentDate" column="PAYMENT_DATE" />
+		<id property="newPepaymentDate" column="NEW_REPAYMENT_DATE" />
+		<id property="repaymentMoney" column="REPAYMENT_MONEY" />
+		<id property="orgName" column="ORG_NAME" />
+	</resultMap>
+	
+	<!-- 资金方新增详情分页查询含导出 -->
+	<select id="queryForeclosureCapNewDetails" resultMap="foreclosureCapDetailsReportMap"
+		parameterType="com.xlkfinance.bms.rpc.otherReport.ForeclosureCapDetailsReport">
+		<if test="page!=-1">
+			SELECT D.* FROM (SELECT T.*, ROWNUM RN
+			FROM (
+		</if>
+		  SELECT PRO.PID AS PROJECT_ID,
+          A.ORG_CODE,
+          TO_CHAR(AFH.REC_DATE,'yyyy-mm-dd hh24:mi:ss') RE_MONTH,
+          PRO.PROJECT_NAME ,
+          PRO.PROJECT_NUMBER,
+          C.REAL_NAME AS PM_USER_NAME,
+          (SELECT B.CHINA_NAME FROM CUS_PERSON B WHERE PRO.ACCT_ID = B.ACCT_ID AND B.RELATION_TYPE =1) AS CHINA_NAME,
+          SLV.LOOKUP_DESC AS BUSINESS_CATEGORY_STR,
+          A.ORG_NAME,
+          PAR.LOAN_AMOUNT , 
+          PAR.APPROVE_MONEY,
+          PAR.APPROVAL_STATUS ,
+          PAR.CONFIRM_LOAN_STATUS ,
+          PAR.LOAN_STATUS, 
+          PAR.APPROVAL_COMMENT, 
+         TO_CHAR(PAR.APPROVAL_TIME,'yyyy-mm-dd hh24:mi:ss') AS APPROVAL_TIME, 
+         TO_CHAR(PAR.LOAN_TIME,'yyyy-mm-dd hh24:mi:ss') AS LOAN_TIME,
+         PAR.APPLY_DATE, 
+        (
+           SELECT 
+            NVL (PAR.REFUND_XIFEE,0)+
+            NVL (PAR.REFUND_LOAN_AMOUNT,0)+
+            NVL (PAR.PARTNER_INTERESTS,0)+
+            NVL (PAR.REFUND_FINE,0)+
+            NVL (PAR.REFUND_COMPDINTE,0)+
+            NVL (PAR.REFUND_PENALTY,0)-
+            NVL (PAR.APPROVE_MONEY,0) 
+            FROM BIZ_PROJECT_PARTNER PAR
+             WHERE PAR.REPAYMENT_REPURCHASE_STATUS = 3 and par.loan_status=4
+             AND PAR.PROJECT_ID = PRO.PID
+        )  AS PAY_INTEREST,
+        TO_CHAR(M.NEW_REPAYMENT_DATE,'yyyy-mm-dd') AS REC_LOAN_DATE,
+         
+          TO_CHAR(PAR.SUBMIT_APPROVAL_TIME,'yyyy-mm-dd hh24:mi:ss') AS SUBMIT_APPROVAL_TIME, 
+          TO_CHAR(PAR.LOAN_RESULT_TIME,'yyyy-mm-dd hh24:mi:ss') AS LOAN_RESULT_TIME,
+          TO_CHAR(PAR.PARTNER_LOAN_DATE,'yyyy-mm-dd') AS PARTNER_LOAN_DATE,
+           TO_CHAR(PAR.REFUND_DATE,'yyyy-mm-dd') AS REFUND_DATE
+          FROM (SELECT *
+                  FROM BIZ_PROJECT
+                 WHERE STATUS = 1
+                   AND PROJECT_TYPE IN (2, 6)
+                   AND PROJECT_SOURCE IN (2, 3)
+                   AND IS_CLOSED = 2
+                   AND IS_CHECHAN = 0) PRO
+            LEFT JOIN SYS_USER C ON C.PID = PRO.PM_USER_ID
+            LEFT JOIN ( select * 
+             FROM BIZ_PROJECT_PARTNER S WHERE S.LOAN_STATUS = 4
+             ) PAR ON PAR.PROJECT_ID = PRO.PID
+            LEFT JOIN SYS_LOOKUP_VAL SLV ON SLV.PID = PRO.BUSINESS_CATEGORY    
+            INNER JOIN V_PROJECT_LOAN AFH ON PRO.PID = AFH.PROJECT_ID
+            INNER JOIN CAPITAL_ORG_INFO A ON AFH.PRO_RESOURCE = A.ORG_CODE
+            LEFT JOIN BIZ_LOAN_REPAYMENT M  ON M.PROJECT_ID = PRO.PID
+		<where>
+			<trim>
+				<if test="userIds!=null and userIds.size()>0">
+					AND PRO.PM_USER_ID IN
+					<foreach item="itemId" collection="userIds" open="("
+						separator="," close=")">
+						#{itemId}
+					</foreach>
+				</if>
+				<if test="orgName!=null and orgName!=''">
+				 	and A.ORG_NAME=#{orgName}
+				</if>
+				<if test="projectName!=null and projectName!=''">
+					AND PRO.PROJECT_NAME LIKE '%${projectName}%'
+				</if>
+				<if test="projectNumber!=null and projectNumber!=''">
+					AND PRO.PROJECT_NUMBER LIKE '%${projectNumber}%'
+				</if>
+				<if test="pmUserName!=null and pmUserName!=''">
+					AND C.REAL_NAME LIKE '%${pmUserName}%'
+				</if>
+					<if test = "chooseMonthOrWeek ==0">
+			 			<if test="fromDay !=null and fromDay !=''">
+							AND AFH.REC_DATE <![CDATA[>=]]> 
+							TO_DATE(CONCAT(#{fromDay},'000000'),'yyyymmddhh24miss')
+						</if>
+						<if test="endDay !=null and endDay !=''">
+							AND AFH.REC_DATE<![CDATA[<=]]> 
+							TO_DATE(CONCAT(#{endDay},'235959'),'yyyymmddhh24miss')
+						</if>
+					</if>
+					<if test = "chooseMonthOrWeek ==1">
+						<if test="fromDay !=null and fromDay !=''">
+							AND AFH.REC_DATE <![CDATA[>=]]> 
+							TO_DATE(CONCAT(#{fromDay},'000000'),'yyyymmddhh24miss')
+						</if>
+						<if test="endDay !=null and endDay !=''">
+							AND AFH.REC_DATE<![CDATA[<=]]> 
+							TO_DATE(CONCAT(#{endDay},'235959'),'yyyymmddhh24miss')
+						</if>
+					</if>
+					<if test = "chooseMonthOrWeek ==2">
+		 				<if test="fromDay !=null and fromDay !=''">
+							AND AFH.REC_DATE <![CDATA[>=]]> 
+							TO_DATE(CONCAT(#{fromDay},'000000'),'yyyymmddhh24miss')
+						</if>
+						<if test="endDay !=null and endDay !=''">
+							AND AFH.REC_DATE<![CDATA[<=]]> 
+							TO_DATE(CONCAT(#{fromDay},'235959'),'yyyymmddhh24miss')
+						</if>
+				   </if>
+			</trim>
+		</where>
+		ORDER BY M.NEW_REPAYMENT_DATE DESC
+		<if test="page!=-1">
+			<![CDATA[
+			) T
+			WHERE ROWNUM <=#{page}*#{rows}
+			) D
+			WHERE D.RN > ((#{page}-1)*#{rows})
+			]]>
+		</if>
+	</select>
+	<!-- 资金方新增详情总数 -->
+	<select id="queryForeclosureCapNewDetailsTotal" resultType="Integer" parameterType="com.xlkfinance.bms.rpc.otherReport.ForeclosureCapDetailsReport">
+	SELECT COUNT(1) FROM
+			(SELECT   
+		  		PRO.PID AS PROJECT_ID
+          FROM (SELECT *
+                  FROM BIZ_PROJECT
+                 WHERE STATUS = 1
+                   AND PROJECT_TYPE IN (2, 6)
+                   AND PROJECT_SOURCE IN (2, 3)
+                   AND IS_CLOSED = 2
+                   AND IS_CHECHAN = 0) PRO
+            LEFT JOIN SYS_USER C ON C.PID = PRO.PM_USER_ID
+            LEFT JOIN ( SELECT * 
+            FROM BIZ_PROJECT_PARTNER S WHERE S.LOAN_STATUS = 4
+             ) PAR ON PAR.PROJECT_ID = PRO.PID
+            LEFT JOIN SYS_LOOKUP_VAL SLV ON SLV.PID = PRO.BUSINESS_CATEGORY    
+            INNER JOIN V_PROJECT_LOAN AFH ON PRO.PID = AFH.PROJECT_ID
+            INNER JOIN CAPITAL_ORG_INFO A ON AFH.PRO_RESOURCE = A.ORG_CODE
+            LEFT JOIN BIZ_LOAN_REPAYMENT M  ON M.PROJECT_ID = PRO.PID
+			<where>
+			<trim>
+				<if test="userIds!=null and userIds.size()>0">
+					AND PRO.PM_USER_ID IN
+					<foreach item="itemId" collection="userIds" open="("
+						separator="," close=")">
+						#{itemId}
+					</foreach>
+				</if>
+				<if test="orgName!=null and orgName!=''">
+				 	and A.ORG_NAME=#{orgName}
+				</if>
+				<if test="projectName!=null and projectName!=''">
+						AND PRO.PROJECT_NAME LIKE '%${projectName}%'
+				</if>
+				<if test="projectNumber!=null and projectNumber!=''">
+						AND PRO.PROJECT_NUMBER LIKE '%${projectNumber}%'
+				</if>
+				<if test="pmUserName!=null and pmUserName!=''">
+						AND C.REAL_NAME LIKE '%${pmUserName}%'
+				</if>
+						<if test = "chooseMonthOrWeek ==0">
+				 			<if test="fromDay !=null and fromDay !=''">
+								AND AFH.REC_DATE <![CDATA[>=]]> 
+								TO_DATE(CONCAT(#{fromDay},'000000'),'yyyymmddhh24miss')
+							</if>
+							<if test="endDay !=null and endDay !=''">
+								AND AFH.REC_DATE<![CDATA[<=]]> 
+								TO_DATE(CONCAT(#{endDay},'235959'),'yyyymmddhh24miss')
+							</if>
+						</if>
+						<if test = "chooseMonthOrWeek ==1">
+							<if test="fromDay !=null and fromDay !=''">
+								AND AFH.REC_DATE <![CDATA[>=]]> 
+								TO_DATE(CONCAT(#{fromDay},'000000'),'yyyymmddhh24miss')
+							</if>
+							<if test="endDay !=null and endDay !=''">
+								AND AFH.REC_DATE<![CDATA[<=]]> 
+								TO_DATE(CONCAT(#{endDay},'235959'),'yyyymmddhh24miss')
+							</if>
+						</if>
+						<if test = "chooseMonthOrWeek ==2">
+			 				<if test="fromDay !=null and fromDay !=''">
+								AND AFH.REC_DATE <![CDATA[>=]]> 
+								TO_DATE(CONCAT(#{fromDay},'000000'),'yyyymmddhh24miss')
+							</if>
+							<if test="endDay !=null and endDay !=''">
+								AND AFH.REC_DATE<![CDATA[<=]]> 
+								TO_DATE(CONCAT(#{fromDay},'235959'),'yyyymmddhh24miss')
+							</if>
+					   </if>
+			</trim>
+		</where>
+		) T
+	</select>
+	
+	<!-- 资金方结清详情分页查询含导出 -->
+	<select id="queryForeclosureCapSquareDetails" resultMap="foreclosureCapDetailsReportMap"
+		parameterType="com.xlkfinance.bms.rpc.otherReport.ForeclosureCapDetailsReport">
+		<if test="page!=-1">
+			SELECT D.* FROM (SELECT T.*, ROWNUM RN
+			FROM (
+		</if>
+		SELECT 
+          PRO.PID AS PROJECT_ID ,
+          PRO.PROJECT_NAME,
+          PRO.PROJECT_NUMBER ,
+          c.real_name  AS PM_USER_NAME,
+          (SELECT B.CHINA_NAME FROM CUS_PERSON B WHERE PRO.ACCT_ID = B.ACCT_ID AND B.RELATION_TYPE =1) AS CHINA_NAME,
+           SLV.LOOKUP_DESC AS BUSINESS_CATEGORY_STR,
+          A.ORG_NAME,
+          A.ORG_CODE,
+           TO_CHAR(R.NEW_REPAYMENT_DATE, 'YYYYMM')AS RE_MONTH,
+           PAR.LOAN_AMOUNT AS LOAN_AMOUNT, 
+
+          PAR.APPROVE_MONEY AS APPROVE_MONEY,
+          PAR.APPROVAL_STATUS AS APPROVAL_STATUS,
+          PAR.CONFIRM_LOAN_STATUS  AS CONFIRM_LOAN_STATUS,
+          PAR.LOAN_STATUS AS LOAN_STATUS, 
+          PAR.APPROVAL_COMMENT AS APPROVAL_COMMENT, 
+          TO_CHAR(PAR.APPROVAL_TIME,'yyyy-mm-dd hh24:mi:ss') AS APPROVAL_TIME,
+          TO_CHAR( PAR.LOAN_TIME,'yyyy-mm-dd hh24:mi:ss') AS LOAN_TIME, 
+          PAR.APPLY_DATE, 
+          (
+           SELECT 
+            NVL (PAR.REFUND_XIFEE,0)+
+            NVL (PAR.REFUND_LOAN_AMOUNT,0)+
+            NVL (PAR.PARTNER_INTERESTS,0)+
+            NVL (PAR.REFUND_FINE,0)+
+            NVL (PAR.REFUND_COMPDINTE,0)+
+            NVL (PAR.REFUND_PENALTY,0)-
+            NVL (PAR.APPROVE_MONEY,0) 
+             FROM BIZ_PROJECT_PARTNER PAR 
+             WHERE PAR.REPAYMENT_REPURCHASE_STATUS = 3
+             AND PAR.PROJECT_ID = PRO.PID
+        )  AS PAY_INTEREST, 
+          TO_CHAR(PAR.LOAN_RESULT_TIME,'yyyy-mm-dd hh24:mi:ss') AS  LOAN_RESULT_TIME,
+          TO_CHAR(PAR.PARTNER_LOAN_DATE,'YYYY-MM-DD') AS PARTNER_LOAN_DATE,
+          TO_CHAR(R.NEW_REPAYMENT_DATE,'YYYY-MM-DD') AS REC_LOAN_DATE,
+          TO_CHAR(PAR.REFUND_DATE,'yyyy-mm-dd') AS REFUND_DATE
+          FROM (SELECT *
+                  FROM BIZ_PROJECT
+                 WHERE STATUS = 1
+                   AND PROJECT_TYPE IN (2, 6)
+                   AND PROJECT_SOURCE IN (2, 3)
+                   AND IS_CLOSED = 2
+                   AND IS_CHECHAN = 0) PRO
+         LEFT JOIN SYS_USER C ON C.PID = PRO.PM_USER_ID
+         LEFT JOIN BIZ_LOAN_REPAYMENT R ON R.PROJECT_ID = PRO.PID
+         INNER JOIN V_PROJECT_LOAN FH ON PRO.PID = FH.PROJECT_ID
+         LEFT JOIN CAPITAL_ORG_INFO A ON FH.PRO_RESOURCE = A.ORG_CODE
+         LEFT JOIN ( SELECT * 
+            FROM BIZ_PROJECT_PARTNER S WHERE S.LOAN_STATUS = 4
+             ) PAR ON PAR.PROJECT_ID = PRO.PID
+         LEFT JOIN SYS_LOOKUP_VAL SLV ON SLV.PID = PRO.BUSINESS_CATEGORY
+	
+		<where>
+				R.STATUS = 2
+			<trim>
+				<if test="userIds!=null and userIds.size()>0">
+					AND PRO.PM_USER_ID IN
+					<foreach item="itemId" collection="userIds" open="("
+						separator="," close=")">
+						#{itemId}
+					</foreach>
+				</if>
+				<if test="orgName!=null and orgName!=''">
+				 	and A.ORG_NAME=#{orgName}
+				</if>
+				<if test="projectName!=null and projectName!=''">
+						AND PRO.PROJECT_NAME LIKE '%${projectName}%'
+				</if>
+				<if test="projectNumber!=null and projectNumber!=''">
+						AND PRO.PROJECT_NUMBER LIKE '%${projectNumber}%'
+				</if>
+				<if test="pmUserName!=null and pmUserName!=''">
+						AND C.REAL_NAME LIKE '%${pmUserName}%'
+				</if>
+				<if test = "chooseMonthOrWeek ==0">
+		 			<if test="fromDay !=null and fromDay !=''">
+						AND R.NEW_REPAYMENT_DATE <![CDATA[>=]]> 
+						TO_DATE(CONCAT(#{fromDay},'000000'),'yyyymmddhh24miss')
+					</if>
+					<if test="endDay !=null and endDay !=''">
+						AND R.NEW_REPAYMENT_DATE<![CDATA[<=]]> 
+						TO_DATE(CONCAT(#{endDay},'235959'),'yyyymmddhh24miss')
+					</if>
+				 </if>
+				 <if test = "chooseMonthOrWeek ==1">
+					<if test="fromDay !=null and fromDay !=''">
+						AND R.NEW_REPAYMENT_DATE <![CDATA[>=]]> 
+						TO_DATE(CONCAT(#{fromDay},'000000'),'yyyymmddhh24miss')
+					</if>
+					<if test="endDay !=null and endDay !=''">
+						AND R.NEW_REPAYMENT_DATE<![CDATA[<=]]> 
+						TO_DATE(CONCAT(#{endDay},'235959'),'yyyymmddhh24miss')
+					</if>
+				 </if>
+		 		 <if test = "chooseMonthOrWeek ==2">
+	 				<if test="fromDay !=null and fromDay !=''">
+						AND R.NEW_REPAYMENT_DATE <![CDATA[>=]]> 
+						TO_DATE(CONCAT(#{fromDay},'000000'),'yyyymmddhh24miss')
+					</if>
+					<if test="endDay !=null and endDay !=''">
+						AND R.NEW_REPAYMENT_DATE<![CDATA[<=]]> 
+						TO_DATE(CONCAT(#{fromDay},'235959'),'yyyymmddhh24miss')
+					</if>
+			    </if>
+			</trim>
+		</where>
+		ORDER BY R.NEW_REPAYMENT_DATE DESC
+		<if test="page!=-1">
+			<![CDATA[
+			) T
+			WHERE ROWNUM <=#{page}*#{rows}
+			) D
+			WHERE D.RN > ((#{page}-1)*#{rows})
+			]]>
+		</if>
+	</select>
+	<!-- 资金方结清详情总数 -->
+	<select id="queryForeclosureCapSquareDetailsTotal" resultType="Integer" parameterType="com.xlkfinance.bms.rpc.otherReport.ForeclosureCapDetailsReport">
+	SELECT COUNT(1) FROM
+			(
+		SELECT 
+          PRO.PID AS PROJECT_ID 
+          FROM (SELECT *
+                  FROM BIZ_PROJECT
+                 WHERE STATUS = 1
+                   AND PROJECT_TYPE IN (2, 6)
+                   AND PROJECT_SOURCE IN (2, 3)
+                   AND IS_CLOSED = 2
+                   AND IS_CHECHAN = 0) PRO
+         LEFT JOIN SYS_USER C ON C.PID = PRO.PM_USER_ID
+         LEFT JOIN BIZ_LOAN_REPAYMENT R ON R.PROJECT_ID = PRO.PID
+         INNER JOIN V_PROJECT_LOAN FH ON PRO.PID = FH.PROJECT_ID
+         LEFT JOIN CAPITAL_ORG_INFO A ON FH.PRO_RESOURCE = A.ORG_CODE
+         LEFT JOIN ( SELECT * 
+            FROM BIZ_PROJECT_PARTNER S WHERE S.LOAN_STATUS = 4
+             ) PAR ON PAR.PROJECT_ID = PRO.PID
+         LEFT JOIN SYS_LOOKUP_VAL SLV ON SLV.PID = PRO.BUSINESS_CATEGORY
+			<where>
+				R.STATUS = 2
+			<trim>
+				<if test="userIds!=null and userIds.size()>0">
+					AND PRO.PM_USER_ID IN
+					<foreach item="itemId" collection="userIds" open="("
+						separator="," close=")">
+						#{itemId}
+					</foreach>
+				</if>
+				<if test="orgName!=null and orgName!=''">
+				 	and A.ORG_NAME=#{orgName}
+				</if>
+				<if test="projectName!=null and projectName!=''">
+						AND PRO.PROJECT_NAME LIKE '%${projectName}%'
+				</if>
+				<if test="projectNumber!=null and projectNumber!=''">
+						AND PRO.PROJECT_NUMBER LIKE '%${projectNumber}%'
+				</if>
+				<if test="pmUserName!=null and pmUserName!=''">
+						AND C.REAL_NAME LIKE '%${pmUserName}%'
+				</if>
+						<if test = "chooseMonthOrWeek ==0">
+				 			<if test="fromDay !=null and fromDay !=''">
+								AND R.NEW_REPAYMENT_DATE <![CDATA[>=]]> 
+								TO_DATE(CONCAT(#{fromDay},'000000'),'yyyymmddhh24miss')
+							</if>
+							<if test="endDay !=null and endDay !=''">
+								AND R.NEW_REPAYMENT_DATE<![CDATA[<=]]> 
+								TO_DATE(CONCAT(#{endDay},'235959'),'yyyymmddhh24miss')
+							</if>
+						</if>
+						<if test = "chooseMonthOrWeek ==1">
+							<if test="fromDay !=null and fromDay !=''">
+								AND R.NEW_REPAYMENT_DATE <![CDATA[>=]]> 
+								TO_DATE(CONCAT(#{fromDay},'000000'),'yyyymmddhh24miss')
+							</if>
+							<if test="endDay !=null and endDay !=''">
+								AND R.NEW_REPAYMENT_DATE<![CDATA[<=]]> 
+								TO_DATE(CONCAT(#{endDay},'235959'),'yyyymmddhh24miss')
+							</if>
+						</if>
+						<if test = "chooseMonthOrWeek ==2">
+			 				<if test="fromDay !=null and fromDay !=''">
+								AND R.NEW_REPAYMENT_DATE <![CDATA[>=]]> 
+								TO_DATE(CONCAT(#{fromDay},'000000'),'yyyymmddhh24miss')
+							</if>
+							<if test="endDay !=null and endDay !=''">
+								AND R.NEW_REPAYMENT_DATE<![CDATA[<=]]> 
+								TO_DATE(CONCAT(#{fromDay},'235959'),'yyyymmddhh24miss')
+							</if>
+					   </if>
+			</trim>
+		</where>
+		) T
+	</select>
+	
+	
+	<!-- 资金方在途详情分页查询含导出 -->
+<select id="queryForeclosureCapIngDetails" resultMap="foreclosureCapDetailsReportMap"
+		parameterType="com.xlkfinance.bms.rpc.otherReport.ForeclosureCapDetailsReport">
+		<if test="page!=-1">
+			SELECT D.* FROM (SELECT T.*, ROWNUM RN
+			FROM (
+		</if>
+				SELECT 
+				A.PROJECT_ID, A.PROJECT_NAME, A.PROJECT_NUMBER,
+				A.PM_USER_NAME, A.CHINA_NAME, A.BUSINESS_CATEGORY_STR,
+				A.ORG_NAME, A.ORG_CODE, A.LOAN_AMOUNT, A.APPROVE_MONEY,
+				A.APPROVAL_STATUS, A.CONFIRM_LOAN_STATUS, A.LOAN_STATUS,
+				A.APPROVAL_COMMENT, A.APPROVAL_TIME, A.LOAN_TIME,
+				A.APPLY_DATE, A.PAY_INTEREST, A.LOAN_RESULT_TIME,
+			    A.PARTNER_LOAN_DATE, A.REFUND_DATE, A.REC_LOAN_DATE,A.RE_MONTH
+			
+				FROM (
+				SELECT
+				P.PID AS PROJECT_ID, P.PROJECT_NAME, P.PROJECT_NUMBER,
+				C.REAL_NAME AS PM_USER_NAME, CP.CHINA_NAME, SLV.LOOKUP_DESC AS BUSINESS_CATEGORY_STR,
+				A.ORG_NAME, A.ORG_CODE, PAR.LOAN_AMOUNT AS LOAN_AMOUNT,
+				PAR.APPROVE_MONEY AS APPROVE_MONEY, PAR.APPROVAL_STATUS AS APPROVAL_STATUS,
+				PAR.CONFIRM_LOAN_STATUS AS CONFIRM_LOAN_STATUS, PAR.LOAN_STATUS AS LOAN_STATUS,
+				PAR.APPROVAL_COMMENT AS APPROVAL_COMMENT,
+				TO_CHAR(PAR.APPROVAL_TIME,'yyyy-mm-dd hh24:mi:ss') AS APPROVAL_TIME,
+				TO_CHAR(PAR.LOAN_TIME,'yyyy-mm-dd hh24:mi:ss') AS LOAN_TIME,
+				TO_CHAR(R.NEW_REPAYMENT_DATE,'yyyy-mm-dd') AS REC_LOAN_DATE,
+				PAR.APPLY_DATE,
+				(
+				SELECT
+				NVL (PAR.REFUND_XIFEE,0)+
+				NVL (PAR.REFUND_LOAN_AMOUNT,0)+
+				NVL (PAR.PARTNER_INTERESTS,0)+
+				NVL (PAR.REFUND_FINE,0)+
+				NVL (PAR.REFUND_COMPDINTE,0)+
+				NVL (PAR.REFUND_PENALTY,0)-
+				NVL (PAR.APPROVE_MONEY,0)
+				FROM BIZ_PROJECT_PARTNER PAR
+				WHERE PAR.REPAYMENT_REPURCHASE_STATUS = 3 AND PAR.PROJECT_ID = P.PID
+				) AS PAY_INTEREST,
+				TO_CHAR(PAR.LOAN_RESULT_TIME,'yyyy-mm-dd hh24:mi:ss') AS LOAN_RESULT_TIME,
+				TO_CHAR(PAR.PARTNER_LOAN_DATE,'yyyy-mm-dd') AS PARTNER_LOAN_DATE,
+				
+				TO_CHAR(PAR.REFUND_DATE,'yyyy-mm-dd') AS REFUND_DATE,
+				TO_CHAR(AFH.REC_DATE, 'YYYYMM') RE_MONTH
+				FROM (SELECT * FROM BIZ_PROJECT
+				WHERE STATUS = 1 AND PROJECT_TYPE IN (2, 6)
+				AND PROJECT_SOURCE IN (2, 3) AND IS_CLOSED = 2
+				AND IS_CHECHAN = 0) P
+				INNER JOIN V_PROJECT_LOAN AFH ON P.PID = AFH.PROJECT_ID
+				INNER JOIN CAPITAL_ORG_INFO A ON AFH.PRO_RESOURCE = A.ORG_CODE
+				LEFT JOIN SYS_USER C ON C.PID = P.PM_USER_ID
+				LEFT JOIN CUS_PERSON CP ON CP.ACCT_ID = P.ACCT_ID AND CP.RELATION_TYPE =1
+				LEFT JOIN SYS_LOOKUP_VAL SLV ON SLV.PID = P.BUSINESS_CATEGORY
+				LEFT JOIN BIZ_LOAN_REPAYMENT R ON R.PROJECT_ID = P.PID
+				LEFT JOIN (SELECT * 
+                           FROM BIZ_PROJECT_PARTNER S WHERE S.LOAN_STATUS = 4
+                ) PAR ON PAR.PROJECT_ID = P.PID
+				  <if test="orgName!=null and orgName!=''">
+				 		WHERE A.ORG_NAME=#{orgName}
+					</if>
+					<if test = "chooseMonthOrWeek ==0">
+						<if test="endDay !=null and endDay !=''">
+							AND TO_CHAR(AFH.REC_DATE, 'YYYYMMDD')  <![CDATA[<=]]>#{endDay}
+						</if>
+					</if>
+					<if test = "chooseMonthOrWeek ==1">
+						<if test="endDay !=null and endDay !=''">
+							AND TO_CHAR(AFH.REC_DATE, 'YYYYMMDD')  <![CDATA[<=]]>#{endDay}
+						</if>
+					</if>
+					<if test = "chooseMonthOrWeek ==2">
+						<if test="endDay !=null and endDay !=''">
+							AND TO_CHAR(AFH.REC_DATE, 'YYYYMMDD')  <![CDATA[<=]]>#{fromDay}
+						</if>
+				   </if>
+				   ORDER BY R.NEW_REPAYMENT_DATE DESC
+				) A,
+				(
+				SELECT P.PID AS PROJECT_ID,A.ORG_NAME FROM
+				(SELECT *
+				FROM BIZ_PROJECT
+				WHERE STATUS = 1
+				AND PROJECT_TYPE IN (2, 6) AND PROJECT_SOURCE IN (2, 3)
+				AND IS_CLOSED = 2 AND IS_CHECHAN = 0) P
+				LEFT JOIN BIZ_LOAN_REPAYMENT R ON R.PROJECT_ID = P.PID
+				INNER JOIN V_PROJECT_LOAN FH ON P.PID = FH.PROJECT_ID
+				LEFT JOIN CAPITAL_ORG_INFO A ON FH.PRO_RESOURCE = A.ORG_CODE
+				WHERE R.STATUS = 2
+				     <if test="orgName!=null and orgName!=''">
+				 		and A.ORG_NAME=#{orgName}
+					</if>
+					<if test = "chooseMonthOrWeek ==0">
+						<if test="endDay !=null and endDay !=''">
+							AND TO_CHAR(R.NEW_REPAYMENT_DATE, 'YYYYMMDD')  <![CDATA[<=]]>#{endDay}
+						</if>
+					</if>
+					<if test = "chooseMonthOrWeek ==1">
+						<if test="endDay !=null and endDay !=''">
+							AND TO_CHAR(R.NEW_REPAYMENT_DATE, 'YYYYMMDD')  <![CDATA[<=]]>#{endDay}
+						</if>
+					</if>
+					<if test = "chooseMonthOrWeek ==2">
+						<if test="endDay !=null and endDay !=''">
+							AND TO_CHAR(R.NEW_REPAYMENT_DATE, 'YYYYMMDD')  <![CDATA[<=]]>#{fromDay}
+						</if>
+				   </if>
+				) B
+		<where>
+			<trim>
+			    <if test="1==1">
+				A.PROJECT_ID = B.PROJECT_ID(+)
+				AND A.ORG_NAME = B.ORG_NAME(+)
+				AND B.PROJECT_ID IS NULL
+				</if>
+				<if test="userIds!=null and userIds.size()>0">
+					AND A.PM_USER_ID IN
+					<foreach item="itemId" collection="userIds" open="("
+						separator="," close=")">
+						#{itemId}
+					</foreach>
+				</if>
+				<if test="projectName!=null and projectName!=''">
+					AND A.PROJECT_NAME LIKE '%${projectName}%'
+				</if>
+				<if test="projectNumber!=null and projectNumber!=''">
+					AND A.PROJECT_NUMBER LIKE '%${projectNumber}%'
+				</if>
+				<if test="pmUserName!=null and pmUserName!=''">
+					AND A.PM_USER_NAME LIKE '%${pmUserName}%'
+				</if>
+			</trim>
+		</where>
+		<if test="page!=-1">
+			<![CDATA[
+			) T
+			WHERE ROWNUM <=#{page}*#{rows}
+			) D
+			WHERE D.RN > ((#{page}-1)*#{rows})
+			]]>
+		</if>
+	</select>
+	<!-- 资金方在途详情总数 -->
+	<select id="queryForeclosureCapIngDetailsTotal" resultType="Integer" parameterType="com.xlkfinance.bms.rpc.otherReport.ForeclosureCapDetailsReport">
+	SELECT COUNT(1) FROM
+			(
+				SELECT 
+				A.PROJECT_ID
+				FROM (
+				SELECT
+				P.PID AS PROJECT_ID, P.PROJECT_NAME, P.PROJECT_NUMBER,
+				C.REAL_NAME AS PM_USER_NAME, CP.CHINA_NAME, SLV.LOOKUP_DESC AS BUSINESS_CATEGORY_STR,
+				A.ORG_NAME, A.ORG_CODE, PAR.LOAN_AMOUNT AS LOAN_AMOUNT,
+				PAR.APPROVE_MONEY AS APPROVE_MONEY, PAR.APPROVAL_STATUS AS APPROVAL_STATUS,
+				PAR.CONFIRM_LOAN_STATUS AS CONFIRM_LOAN_STATUS, PAR.LOAN_STATUS AS LOAN_STATUS,
+				PAR.APPROVAL_COMMENT AS APPROVAL_COMMENT,
+				TO_CHAR(PAR.APPROVAL_TIME,'YYYY-MM-DD HH:MM:SS') AS APPROVAL_TIME,
+				TO_CHAR( PAR.LOAN_TIME,'YYYY-MM-DD HH:MM:SS') AS LOAN_TIME,
+				PAR.APPLY_DATE,
+				(
+				SELECT
+				NVL (PAR.REFUND_XIFEE,0)+
+				NVL (PAR.REFUND_LOAN_AMOUNT,0)+
+				NVL (PAR.PARTNER_INTERESTS,0)+
+				NVL (PAR.REFUND_FINE,0)+
+				NVL (PAR.REFUND_COMPDINTE,0)+
+				NVL (PAR.REFUND_PENALTY,0)-
+				NVL (PAR.APPROVE_MONEY,0)
+				FROM BIZ_PROJECT_PARTNER PAR
+				WHERE PAR.REPAYMENT_REPURCHASE_STATUS = 3 AND PAR.PROJECT_ID = P.PID
+				) AS PAY_INTEREST,
+				TO_CHAR(PAR.LOAN_RESULT_TIME,'YYYY-MM-DD HH:MM:SS') AS LOAN_RESULT_TIME,
+				TO_CHAR(PAR.PARTNER_LOAN_DATE,'YYYY-MM-DD HH:MM:SS') AS
+				PARTNER_LOAN_DATE,
+				
+				TO_CHAR(PAR.REFUND_DATE,'YYYY-MM-DD HH:MM:SS') AS REFUND_DATE,
+				TO_CHAR(R.NEW_REPAYMENT_DATE, 'YYYYMM') RE_MONTH
+				FROM (SELECT * FROM BIZ_PROJECT
+				WHERE STATUS = 1 AND PROJECT_TYPE IN (2, 6)
+				AND PROJECT_SOURCE IN (2, 3) AND IS_CLOSED = 2
+				AND IS_CHECHAN = 0) P
+				INNER JOIN V_PROJECT_LOAN AFH ON P.PID = AFH.PROJECT_ID
+				INNER JOIN CAPITAL_ORG_INFO A ON AFH.PRO_RESOURCE = A.ORG_CODE
+				LEFT JOIN SYS_USER C ON C.PID = P.PM_USER_ID
+				LEFT JOIN CUS_PERSON CP ON CP.ACCT_ID = P.ACCT_ID AND CP.RELATION_TYPE =1
+				LEFT JOIN SYS_LOOKUP_VAL SLV ON SLV.PID = P.BUSINESS_CATEGORY
+				LEFT JOIN BIZ_LOAN_REPAYMENT R ON R.PROJECT_ID = P.PID
+				LEFT JOIN (SELECT * 
+                           FROM BIZ_PROJECT_PARTNER S WHERE S.LOAN_STATUS = 4
+                )  PAR ON PAR.PROJECT_ID = P.PID
+				  <if test="orgName!=null and orgName!=''">
+				 		WHERE A.ORG_NAME=#{orgName}
+					</if>
+					<if test = "chooseMonthOrWeek ==0">
+						<if test="endDay !=null and endDay !=''">
+							AND TO_CHAR(AFH.REC_DATE, 'YYYYMMDD')  <![CDATA[<=]]>#{endDay}
+						</if>
+					</if>
+					<if test = "chooseMonthOrWeek ==1">
+						<if test="endDay !=null and endDay !=''">
+							AND TO_CHAR(AFH.REC_DATE, 'YYYYMMDD')  <![CDATA[<=]]>#{endDay}
+						</if>
+					</if>
+					<if test = "chooseMonthOrWeek ==2">
+						<if test="endDay !=null and endDay !=''">
+							AND TO_CHAR(AFH.REC_DATE, 'YYYYMMDD')  <![CDATA[<=]]>#{fromDay}
+						</if>
+				   </if>
+				) A,
+				(
+				SELECT P.PID AS PROJECT_ID,A.ORG_NAME FROM
+				(SELECT *
+				FROM BIZ_PROJECT
+				WHERE STATUS = 1
+				AND PROJECT_TYPE IN (2, 6) AND PROJECT_SOURCE IN (2, 3)
+				AND IS_CLOSED = 2 AND IS_CHECHAN = 0) P
+				LEFT JOIN BIZ_LOAN_REPAYMENT R ON R.PROJECT_ID = P.PID
+				INNER JOIN V_PROJECT_LOAN FH ON P.PID = FH.PROJECT_ID
+				LEFT JOIN CAPITAL_ORG_INFO A ON FH.PRO_RESOURCE = A.ORG_CODE
+				WHERE R.STATUS = 2
+				     <if test="orgName!=null and orgName!=''">
+				 		and A.ORG_NAME=#{orgName}
+					</if>
+					<if test = "chooseMonthOrWeek ==0">
+						<if test="endDay !=null and endDay !=''">
+							AND TO_CHAR(R.NEW_REPAYMENT_DATE, 'YYYYMMDD')  <![CDATA[<=]]>#{endDay}
+						</if>
+					</if>
+					<if test = "chooseMonthOrWeek ==1">
+						<if test="endDay !=null and endDay !=''">
+							AND TO_CHAR(R.NEW_REPAYMENT_DATE, 'YYYYMMDD')  <![CDATA[<=]]>#{endDay}
+						</if>
+					</if>
+					<if test = "chooseMonthOrWeek ==2">
+						<if test="endDay !=null and endDay !=''">
+							AND TO_CHAR(R.NEW_REPAYMENT_DATE, 'YYYYMMDD')  <![CDATA[<=]]>#{fromDay}
+						</if>
+				   </if>
+				) B
+		   <where>
+				<trim>
+				    <if test="1==1">
+					A.PROJECT_ID = B.PROJECT_ID(+)
+					AND A.ORG_NAME = B.ORG_NAME(+)
+					AND B.PROJECT_ID IS NULL
+					</if>
+					<if test="userIds!=null and userIds.size()>0">
+						AND A.PM_USER_ID IN
+						<foreach item="itemId" collection="userIds" open="("
+							separator="," close=")">
+							#{itemId}
+						</foreach>
+					</if>
+					<if test="projectName!=null and projectName!=''">
+						AND A.PROJECT_NAME LIKE '%${projectName}%'
+					</if>
+					<if test="projectNumber!=null and projectNumber!=''">
+						AND A.PROJECT_NUMBER LIKE '%${projectNumber}%'
+					</if>
+					<if test="pmUserName!=null and pmUserName!=''">
+						AND A.PM_USER_NAME LIKE '%${pmUserName}%'
+					</if>
+				</trim>
+		  </where>
+				) T
+	</select>
+	
+	
+	<!-- 合作机构新增详情分页查询含导出 -->
+	<select id="queryForeclosureOrgNewDetails" resultMap="foreclosureOrgDetailsReportMap"
+		parameterType="com.xlkfinance.bms.rpc.otherReport.ForeclosureOrgDetailsReport">
+		<if test="page!=-1">
+			SELECT D.* FROM (SELECT T.*, ROWNUM RN
+			FROM (
+		</if>
+							SELECT P.PID AS PROJECT_ID,
+							P.PROJECT_NAME,
+							P.PROJECT_NUMBER,
+							TO_CHAR(BLF.REC_DATE,'YYYY-MM-DD') AS LOAN_DATE,
+							OA.ORG_NAME AS ORG_ORG_NAME,
+							C.REAL_NAME AS PM_USER_NAME,
+							(SELECT B.CHINA_NAME FROM CUS_PERSON B WHERE P.ACCT_ID = B.ACCT_ID AND
+							B.RELATION_TYPE =1) AS CHINA_NAME,
+							BG.LOAN_MONEY AS LOAN_AMOUNT,
+							BF.LOAN_DAYS,
+							(SELECT A.REC_MONEY FROM BIZ_LOAN_APPLY_FINANCE_HANDLE A
+							LEFT JOIN BIZ_LOAN_FINANCE_HANDLE D ON A.FINANCE_HANDLE_ID = D.PID
+							LEFT JOIN BIZ_PROJECT E ON E.PID = D.PROJECT_ID
+							WHERE A.REC_PRO= 1 and D.PROJECT_ID = p.PID ) AS GUARANTEE_FEE,
+							(SELECT A.REC_MONEY FROM BIZ_LOAN_APPLY_FINANCE_HANDLE A
+							LEFT JOIN BIZ_LOAN_FINANCE_HANDLE D ON A.FINANCE_HANDLE_ID = D.PID
+							LEFT JOIN BIZ_PROJECT E ON E.PID = D.PROJECT_ID
+							WHERE A.REC_PRO= 2 and D.PROJECT_ID = p.PID ) AS POUNDAGE,
+							TO_CHAR(BF.PAYMENT_DATE,'YYYY-MM-DD') as PAYMENT_DATE,
+							TO_CHAR(BR.NEW_REPAYMENT_DATE,'YYYY-MM-DD') AS NEW_REPAYMENT_DATE,
+							BR.REPAYMENT_MONEY,
+							A.ORG_NAME
+							FROM (SELECT *
+							FROM BIZ_PROJECT
+							WHERE STATUS = 1 AND PROJECT_TYPE IN (2,6) AND IS_NEED_FINANCIAL =1
+							AND PROJECT_SOURCE IN (2,3) AND IS_CHECHAN=0
+                           <if test="includeWt==1">
+                           	  OR(PROJECT_SOURCE = 1 AND IS_NEED_FINANCIAL = 2 AND 1=1)
+                           </if>
+                            ) P
+                       LEFT JOIN BIZ_LOAN_FINANCE_HANDLE FH ON FH.PROJECT_ID = P.PID AND FH.STATUS =3 
+                       LEFT JOIN ORG_ASSETS_COOPERATION_INFO OA ON OA.PID = P.BUSINESS_SOURCE_NO
+                       LEFT JOIN ORG_COOPERAT_COMPANY_APPLY_INF OC ON OC.ORG_ID = OA.PID
+                       LEFT JOIN SYS_USER C ON C.PID = P.PM_USER_ID 
+                       LEFT JOIN BIZ_PROJECT_FORECLOSURE BF ON BF.PROJECT_ID= P.PID
+                       LEFT JOIN BIZ_PROJECT_GUARANTEE BG ON BG.PROJECT_ID = P.PID
+                       LEFT JOIN BIZ_LOAN_REPAYMENT BR ON BR.PROJECT_ID=P.PID AND BR.STATUS = 2
+                       INNER JOIN V_PROJECT_LOAN VPL ON P.PID = VPL.PROJECT_ID
+                       LEFT JOIN CAPITAL_ORG_INFO A ON VPL.PRO_RESOURCE = A.ORG_CODE
+                       
+                       LEFT JOIN (SELECT AFH.REC_DATE,AFH.FINANCE_HANDLE_ID
+                           FROM BIZ_LOAN_APPLY_FINANCE_HANDLE AFH
+                          WHERE AFH.REC_PRO = 3) BLF
+                    ON BLF.FINANCE_HANDLE_ID = fh.PID
+
+		<where>
+			<trim>
+				<if test="userIds!=null and userIds.size()>0">
+					AND P.PM_USER_ID IN
+					<foreach item="itemId" collection="userIds" open="("
+						separator="," close=")">
+						#{itemId}
+					</foreach>
+				</if>
+				<if test="orgOrgName!=null and orgOrgName!=''">
+				 	and OA.ORG_NAME=#{orgOrgName}
+				</if>
+				<if test="projectName!=null and projectName!=''">
+					AND P.PROJECT_NAME LIKE '%${projectName}%'
+				</if>
+				<if test="projectNumber!=null and projectNumber!=''">
+					AND P.PROJECT_NUMBER LIKE '%${projectNumber}%'
+				</if>
+				<if test="pmUserName!=null and pmUserName!=''">
+					AND C.REAL_NAME LIKE '%${pmUserName}%'
+				</if>
+				<if test = "chooseMonthOrWeek ==0">
+		 			<if test="fromDay !=null and fromDay !=''">
+						AND BLF.REC_DATE <![CDATA[>=]]> 
+						TO_DATE(CONCAT(#{fromDay},'000000'),'yyyymmddhh24miss')
+					</if>
+					<if test="endDay !=null and endDay !=''">
+						AND BLF.REC_DATE<![CDATA[<=]]> 
+						TO_DATE(CONCAT(#{endDay},'235959'),'yyyymmddhh24miss')
+					</if>
+				</if>
+				<if test = "chooseMonthOrWeek ==1">
+					<if test="fromDay !=null and fromDay !=''">
+						AND BLF.REC_DATE <![CDATA[>=]]> 
+						TO_DATE(CONCAT(#{fromDay},'000000'),'yyyymmddhh24miss')
+					</if>
+					<if test="endDay !=null and endDay !=''">
+						AND BLF.REC_DATE<![CDATA[<=]]> 
+						TO_DATE(CONCAT(#{endDay},'235959'),'yyyymmddhh24miss')
+					</if>
+				</if>
+				<if test = "chooseMonthOrWeek ==2">
+	 				<if test="fromDay !=null and fromDay !=''">
+						AND BLF.REC_DATE <![CDATA[>=]]> 
+						TO_DATE(CONCAT(#{fromDay},'000000'),'yyyymmddhh24miss')
+					</if>
+					<if test="endDay !=null and endDay !=''">
+						AND BLF.REC_DATE<![CDATA[<=]]> 
+						TO_DATE(CONCAT(#{fromDay},'235959'),'yyyymmddhh24miss')
+					</if>
+			   </if>
+			</trim>
+		</where>
+		ORDER BY BLF.REC_DATE DESC
+		<if test="page!=-1">
+			<![CDATA[
+			) T
+			WHERE ROWNUM <=#{page}*#{rows}
+			) D
+			WHERE D.RN > ((#{page}-1)*#{rows})
+			]]>
+		</if>
+	</select>
+	<!-- 合作机构新增详情总数 -->
+	<select id="queryForeclosureOrgNewDetailsTotal" resultType="Integer" parameterType="com.xlkfinance.bms.rpc.otherReport.ForeclosureOrgDetailsReport">
+	SELECT COUNT(1) FROM
+			(SELECT  P.PID AS PROJECT_ID
+                  FROM (SELECT * 
+                        FROM BIZ_PROJECT
+                        WHERE STATUS = 1 AND PROJECT_TYPE IN (2,6) AND IS_NEED_FINANCIAL =1
+                           AND PROJECT_SOURCE IN (2,3) AND IS_CHECHAN=0
+                           <if test="includeWt==1">
+                           	  OR(PROJECT_SOURCE = 1 AND IS_NEED_FINANCIAL = 2 AND 1=1)
+                           </if>
+                            ) P
+                       LEFT JOIN BIZ_LOAN_FINANCE_HANDLE FH ON FH.PROJECT_ID = P.PID AND FH.STATUS =3 
+                       LEFT JOIN ORG_ASSETS_COOPERATION_INFO OA ON OA.PID = P.BUSINESS_SOURCE_NO
+                       LEFT JOIN ORG_COOPERAT_COMPANY_APPLY_INF OC ON OC.ORG_ID = OA.PID
+                       LEFT JOIN SYS_USER C ON C.PID = P.PM_USER_ID 
+                       LEFT JOIN BIZ_PROJECT_FORECLOSURE BF ON BF.PROJECT_ID= P.PID
+                       LEFT JOIN BIZ_PROJECT_GUARANTEE BG ON BG.PROJECT_ID = P.PID
+                       LEFT JOIN BIZ_LOAN_REPAYMENT BR ON BR.PROJECT_ID=P.PID AND BR.STATUS = 2
+                       INNER JOIN V_PROJECT_LOAN VPL ON P.PID = VPL.PROJECT_ID
+                       LEFT JOIN CAPITAL_ORG_INFO A ON VPL.PRO_RESOURCE = A.ORG_CODE
+                       
+                       LEFT JOIN (SELECT AFH.REC_DATE,AFH.FINANCE_HANDLE_ID
+                           FROM BIZ_LOAN_APPLY_FINANCE_HANDLE AFH
+                          WHERE AFH.REC_PRO = 3) BLF
+                    ON BLF.FINANCE_HANDLE_ID = fh.PID
+			<where>
+			<trim>
+				<if test="userIds!=null and userIds.size()>0">
+					AND P.PM_USER_ID IN
+					<foreach item="itemId" collection="userIds" open="("
+						separator="," close=")">
+						#{itemId}
+					</foreach>
+				</if>
+				<if test="orgOrgName!=null and orgOrgName!=''">
+				 	and OA.ORG_NAME=#{orgOrgName}
+				</if>
+				<if test="projectName!=null and projectName!=''">
+						AND P.PROJECT_NAME LIKE '%${projectName}%'
+				</if>
+				<if test="projectNumber!=null and projectNumber!=''">
+						AND P.PROJECT_NUMBER LIKE '%${projectNumber}%'
+				</if>
+				<if test="pmUserName!=null and pmUserName!=''">
+						AND C.REAL_NAME LIKE '%${pmUserName}%'
+				</if>
+				<if test = "chooseMonthOrWeek ==0">
+		 			<if test="fromDay !=null and fromDay !=''">
+						AND BLF.REC_DATE <![CDATA[>=]]> 
+						TO_DATE(CONCAT(#{fromDay},'000000'),'yyyymmddhh24miss')
+					</if>
+					<if test="endDay !=null and endDay !=''">
+						AND BLF.REC_DATE<![CDATA[<=]]> 
+						TO_DATE(CONCAT(#{endDay},'235959'),'yyyymmddhh24miss')
+					</if>
+				</if>
+				<if test = "chooseMonthOrWeek ==1">
+					<if test="fromDay !=null and fromDay !=''">
+						AND BLF.REC_DATE <![CDATA[>=]]> 
+						TO_DATE(CONCAT(#{fromDay},'000000'),'yyyymmddhh24miss')
+					</if>
+					<if test="endDay !=null and endDay !=''">
+						AND BLF.REC_DATE<![CDATA[<=]]> 
+						TO_DATE(CONCAT(#{endDay},'235959'),'yyyymmddhh24miss')
+					</if>
+				</if>
+				<if test = "chooseMonthOrWeek ==2">
+	 				<if test="fromDay !=null and fromDay !=''">
+						AND BLF.REC_DATE <![CDATA[>=]]> 
+						TO_DATE(CONCAT(#{fromDay},'000000'),'yyyymmddhh24miss')
+					</if>
+					<if test="endDay !=null and endDay !=''">
+						AND BLF.REC_DATE<![CDATA[<=]]> 
+						TO_DATE(CONCAT(#{fromDay},'235959'),'yyyymmddhh24miss')
+					</if>
+			   </if>
+			</trim>
+		</where>
+		) T
+	</select>
+	
+	<!-- 合作机构结清详情分页查询含导出 -->
+	<select id="queryForeclosureOrgSquareDetails" resultMap="foreclosureOrgDetailsReportMap"
+		parameterType="com.xlkfinance.bms.rpc.otherReport.ForeclosureOrgDetailsReport">
+		<if test="page!=-1">
+			SELECT D.* FROM (SELECT T.*, ROWNUM RN
+			FROM (
+		</if>
+					SELECT
+					TO_CHAR(R.NEW_REPAYMENT_DATE, 'YYYYMM') AS RE_MONTH,
+					P.PID AS PROJECT_ID,
+					P.PROJECT_NAME,
+					P.PROJECT_NUMBER,
+					TO_CHAR(BLF.REC_DATE,'YYYY-MM-DD') AS LOAN_DATE,
+					OA.ORG_NAME AS ORG_ORG_NAME,
+					C.REAL_NAME AS PM_USER_NAME,
+				
+					(SELECT B.CHINA_NAME FROM CUS_PERSON B WHERE P.ACCT_ID = B.ACCT_ID AND
+					B.RELATION_TYPE =1) AS CHINA_NAME,
+					BG.LOAN_MONEY AS LOAN_AMOUNT,
+					BF.LOAN_DAYS,
+					(SELECT A.REC_MONEY FROM BIZ_LOAN_APPLY_FINANCE_HANDLE A
+					LEFT JOIN BIZ_LOAN_FINANCE_HANDLE D ON A.FINANCE_HANDLE_ID = D.PID
+					LEFT JOIN BIZ_PROJECT E ON E.PID = D.PROJECT_ID
+					WHERE A.REC_PRO= 1 and D.PROJECT_ID = p.PID ) AS GUARANTEE_FEE,
+					(SELECT A.REC_MONEY FROM BIZ_LOAN_APPLY_FINANCE_HANDLE A
+					LEFT JOIN BIZ_LOAN_FINANCE_HANDLE D ON A.FINANCE_HANDLE_ID = D.PID
+					LEFT JOIN BIZ_PROJECT E ON E.PID = D.PROJECT_ID
+					WHERE A.REC_PRO= 2 and D.PROJECT_ID = p.PID ) AS POUNDAGE,
+					TO_CHAR(BF.PAYMENT_DATE,'YYYY-MM-DD') AS PAYMENT_DATE,
+					TO_CHAR(R.NEW_REPAYMENT_DATE,'YYYY-MM-DD') AS NEW_REPAYMENT_DATE,
+					R.REPAYMENT_MONEY,
+					A.ORG_NAME
+					FROM (SELECT *
+					FROM BIZ_PROJECT
+					WHERE STATUS = 1 AND PROJECT_TYPE IN (2,6) AND IS_NEED_FINANCIAL =1
+					AND PROJECT_SOURCE IN (2,3) AND IS_CHECHAN=0
+                         <if test="includeWt==1">
+                           	  OR(PROJECT_SOURCE = 1 AND IS_NEED_FINANCIAL = 2 AND 1=1)
+                          </if> 
+                      )P
+                      LEFT JOIN BIZ_LOAN_REPAYMENT R ON R.PROJECT_ID = P.PID AND R.STATUS = 2
+                      LEFT JOIN ORG_ASSETS_COOPERATION_INFO OA ON OA.PID = P.BUSINESS_SOURCE_NO
+                      LEFT JOIN ORG_COOPERAT_COMPANY_APPLY_INF OC ON OC.ORG_ID = OA.PID
+                      LEFT JOIN BIZ_LOAN_FINANCE_HANDLE J ON J.PROJECT_ID = P.PID
+                      LEFT JOIN (SELECT AFH.REC_DATE,AFH.FINANCE_HANDLE_ID
+                           FROM BIZ_LOAN_APPLY_FINANCE_HANDLE AFH
+                          WHERE AFH.REC_PRO = 3) BLF
+                      ON BLF.FINANCE_HANDLE_ID = J.PID
+                      LEFT JOIN SYS_USER C ON C.PID = P.PM_USER_ID 
+                      LEFT JOIN BIZ_PROJECT_FORECLOSURE BF ON BF.PROJECT_ID= P.PID
+                      LEFT JOIN BIZ_PROJECT_GUARANTEE BG ON BG.PROJECT_ID = P.PID
+                      INNER JOIN V_PROJECT_LOAN FH ON P.PID = FH.PROJECT_ID
+                      LEFT JOIN CAPITAL_ORG_INFO A ON FH.PRO_RESOURCE = A.ORG_CODE
+
+		<where>
+			<trim>
+				<if test="userIds!=null and userIds.size()>0">
+					AND P.PM_USER_ID IN
+					<foreach item="itemId" collection="userIds" open="("
+						separator="," close=")">
+						#{itemId}
+					</foreach>
+				</if>
+				<if test="orgOrgName!=null and orgOrgName!=''">
+				 	and OA.ORG_NAME=#{orgOrgName}
+				</if>
+				<if test="projectName!=null and projectName!=''">
+						AND P.PROJECT_NAME LIKE '%${projectName}%'
+				</if>
+				<if test="projectNumber!=null and projectNumber!=''">
+						AND P.PROJECT_NUMBER LIKE '%${projectNumber}%'
+				</if>
+				<if test="pmUserName!=null and pmUserName!=''">
+						AND C.REAL_NAME LIKE '%${pmUserName}%'
+				</if>
+				<if test = "chooseMonthOrWeek ==0">
+		 			<if test="fromDay !=null and fromDay !=''">
+						AND R.NEW_REPAYMENT_DATE <![CDATA[>=]]> 
+						TO_DATE(CONCAT(#{fromDay},'000000'),'yyyymmddhh24miss')
+					</if>
+					<if test="endDay !=null and endDay !=''">
+						AND R.NEW_REPAYMENT_DATE<![CDATA[<=]]> 
+						TO_DATE(CONCAT(#{endDay},'235959'),'yyyymmddhh24miss')
+					</if>
+				</if>
+				<if test = "chooseMonthOrWeek ==1">
+					<if test="fromDay !=null and fromDay !=''">
+						AND R.NEW_REPAYMENT_DATE <![CDATA[>=]]> 
+						TO_DATE(CONCAT(#{fromDay},'000000'),'yyyymmddhh24miss')
+					</if>
+					<if test="endDay !=null and endDay !=''">
+						AND R.NEW_REPAYMENT_DATE<![CDATA[<=]]> 
+						TO_DATE(CONCAT(#{endDay},'235959'),'yyyymmddhh24miss')
+					</if>
+				</if>
+				<if test = "chooseMonthOrWeek ==2">
+	 				<if test="fromDay !=null and fromDay !=''">
+						AND R.NEW_REPAYMENT_DATE <![CDATA[>=]]> 
+						TO_DATE(CONCAT(#{fromDay},'000000'),'yyyymmddhh24miss')
+					</if>
+					<if test="endDay !=null and endDay !=''">
+						AND R.NEW_REPAYMENT_DATE<![CDATA[<=]]> 
+						TO_DATE(CONCAT(#{fromDay},'235959'),'yyyymmddhh24miss')
+					</if>
+			   </if>
+			</trim>
+		</where>
+		ORDER BY BLF.REC_DATE DESC
+		<if test="page!=-1">
+			<![CDATA[
+			) T
+			WHERE ROWNUM <=#{page}*#{rows}
+			) D
+			WHERE D.RN > ((#{page}-1)*#{rows})
+			]]>
+		</if>
+	</select>
+	<!-- 合作机构结清详情总数 -->
+	<select id="queryForeclosureOrgSquareDetailsTotal" resultType="Integer" parameterType="com.xlkfinance.bms.rpc.otherReport.ForeclosureOrgDetailsReport">
+	SELECT COUNT(1) FROM
+			(SELECT  TO_CHAR(r.NEW_REPAYMENT_DATE, 'YYYYMM') as RE_MONTH,
+                       p.pid as project_id
+                FROM (SELECT * 
+                      FROM BIZ_PROJECT
+                      WHERE STATUS = 1 AND PROJECT_TYPE IN (2,6) AND IS_NEED_FINANCIAL =1
+                         AND PROJECT_SOURCE IN (2,3) AND IS_CHECHAN=0 
+                         <if test="includeWt==1">
+                           	  OR(PROJECT_SOURCE = 1 AND IS_NEED_FINANCIAL = 2 AND 1=1)
+                         </if>
+                      )P
+                      left join BIZ_LOAN_REPAYMENT R on r.project_id = p.pid and R.STATUS = 2
+                      left join ORG_ASSETS_COOPERATION_INFO OA on oa.pid = p.BUSINESS_SOURCE_NO
+                      left join ORG_COOPERAT_COMPANY_APPLY_INF OC on oc.org_id = oa.pid
+                      LEFT JOIN BIZ_LOAN_FINANCE_HANDLE J ON J.PROJECT_ID = P.PID
+                      LEFT JOIN (SELECT AFH.REC_DATE,AFH.FINANCE_HANDLE_ID
+                           FROM BIZ_LOAN_APPLY_FINANCE_HANDLE AFH
+                          WHERE AFH.REC_PRO = 3) BLF
+                      ON BLF.FINANCE_HANDLE_ID = J.PID
+                      LEFT JOIN SYS_USER C ON C.PID = P.PM_USER_ID 
+                      LEFT JOIN BIZ_PROJECT_FORECLOSURE BF ON BF.PROJECT_ID= P.PID
+                      LEFT JOIN BIZ_PROJECT_GUARANTEE BG ON BG.PROJECT_ID = P.PID
+                      
+                      INNER JOIN V_PROJECT_LOAN FH ON P.PID = FH.PROJECT_ID
+                      LEFT JOIN CAPITAL_ORG_INFO A ON FH.PRO_RESOURCE = A.ORG_CODE
+			<where>
+			<trim>
+				<if test="userIds!=null and userIds.size()>0">
+					AND P.PM_USER_ID IN
+					<foreach item="itemId" collection="userIds" open="("
+						separator="," close=")">
+						#{itemId}
+					</foreach>
+				</if>
+				<if test="orgOrgName!=null and orgOrgName!=''">
+				 	and OA.ORG_NAME=#{orgOrgName}
+				</if>
+				<if test="projectName!=null and projectName!=''">
+						AND P.PROJECT_NAME LIKE '%${projectName}%'
+				</if>
+				<if test="projectNumber!=null and projectNumber!=''">
+						AND P.PROJECT_NUMBER LIKE '%${projectNumber}%'
+				</if>
+				<if test="pmUserName!=null and pmUserName!=''">
+						AND C.REAL_NAME LIKE '%${pmUserName}%'
+				</if>
+				<if test = "chooseMonthOrWeek ==0">
+		 			<if test="fromDay !=null and fromDay !=''">
+						AND R.NEW_REPAYMENT_DATE <![CDATA[>=]]> 
+						TO_DATE(CONCAT(#{fromDay},'000000'),'yyyymmddhh24miss')
+					</if>
+					<if test="endDay !=null and endDay !=''">
+						AND R.NEW_REPAYMENT_DATE<![CDATA[<=]]> 
+						TO_DATE(CONCAT(#{endDay},'235959'),'yyyymmddhh24miss')
+					</if>
+				</if>
+				<if test = "chooseMonthOrWeek ==1">
+					<if test="fromDay !=null and fromDay !=''">
+						AND R.NEW_REPAYMENT_DATE <![CDATA[>=]]> 
+						TO_DATE(CONCAT(#{fromDay},'000000'),'yyyymmddhh24miss')
+					</if>
+					<if test="endDay !=null and endDay !=''">
+						AND R.NEW_REPAYMENT_DATE<![CDATA[<=]]> 
+						TO_DATE(CONCAT(#{endDay},'235959'),'yyyymmddhh24miss')
+					</if>
+				</if>
+				<if test = "chooseMonthOrWeek ==2">
+	 				<if test="fromDay !=null and fromDay !=''">
+						AND R.NEW_REPAYMENT_DATE <![CDATA[>=]]> 
+						TO_DATE(CONCAT(#{fromDay},'000000'),'yyyymmddhh24miss')
+					</if>
+					<if test="endDay !=null and endDay !=''">
+						AND R.NEW_REPAYMENT_DATE<![CDATA[<=]]> 
+						TO_DATE(CONCAT(#{fromDay},'235959'),'yyyymmddhh24miss')
+					</if>
+			   </if>
+			</trim>
+		</where>
+		) T
+	</select>
+	
+	<!-- 合作机构在途详情分页查询含导出 -->
+	<select id="queryForeclosureOrgIngDetails" resultMap="foreclosureOrgDetailsReportMap"
+		parameterType="com.xlkfinance.bms.rpc.otherReport.ForeclosureOrgDetailsReport">
+		<if test="page!=-1">
+			SELECT D.* FROM (SELECT T.*, ROWNUM RN
+			FROM (
+		</if>
+		SELECT 
+				A.ORG_ORG_NAME,
+				A.RE_MONTH,
+				A.PROJECT_ID,A.PM_USER_ID,
+				A.PROJECT_NAME,A.PROJECT_NUMBER,A.LOAN_DATE,A.PM_USER_NAME,
+				A.CHINA_NAME,A.LOAN_AMOUNT,A.LOAN_DAYS,A.GUARANTEE_FEE,A.POUNDAGE,A.PAYMENT_DATE,
+				A.NEW_REPAYMENT_DATE,A.REPAYMENT_MONEY,A.ORG_NAME
+			  FROM (
+			        SELECT OA.ORG_NAME AS ORG_ORG_NAME,P.PM_USER_ID,
+					       <if test = "chooseMonthOrWeek ==0">
+					          TO_CHAR(AFH.REC_DATE, 'YYYYMM') RE_MONTH,
+						   </if>
+						   <if test = "chooseMonthOrWeek ==1">
+							 TO_CHAR(AFH.REC_DATE, 'YYYYMMDD') RE_MONTH,
+						   </if>
+						   <if test = "chooseMonthOrWeek ==2">
+								TO_CHAR(AFH.REC_DATE, 'YYYYMMDD') RE_MONTH,
+						   </if>
+					P.PID as project_id,
+					P.PROJECT_NAME, P.PROJECT_NUMBER, TO_CHAR(BLF.REC_DATE, 'YYYY-MM-DD') AS LOAN_DATE,
+					C.REAL_NAME AS PM_USER_NAME, CP.CHINA_NAME,
+					BG.LOAN_MONEY AS LOAN_AMOUNT, BF.LOAN_DAYS,
+					(SELECT A.REC_MONEY FROM BIZ_LOAN_APPLY_FINANCE_HANDLE A
+					LEFT JOIN BIZ_LOAN_FINANCE_HANDLE D ON A.FINANCE_HANDLE_ID = D.PID
+					LEFT JOIN BIZ_PROJECT E ON E.PID = D.PROJECT_ID
+					WHERE A.REC_PRO= 1 and D.PROJECT_ID = p.PID ) AS GUARANTEE_FEE,
+					(SELECT A.REC_MONEY FROM BIZ_LOAN_APPLY_FINANCE_HANDLE A
+					LEFT JOIN BIZ_LOAN_FINANCE_HANDLE D ON A.FINANCE_HANDLE_ID = D.PID
+					LEFT JOIN BIZ_PROJECT E ON E.PID = D.PROJECT_ID
+					WHERE A.REC_PRO= 2 and D.PROJECT_ID = p.PID ) AS POUNDAGE,
+					TO_CHAR(BF.PAYMENT_DATE, 'YYYY-MM-DD') as PAYMENT_DATE,
+					TO_CHAR(BR.NEW_REPAYMENT_DATE, 'YYYY-MM-DD') AS NEW_REPAYMENT_DATE,
+					BR.REPAYMENT_MONEY, A.ORG_NAME
+					FROM (SELECT *
+					FROM BIZ_PROJECT
+					WHERE STATUS = 1
+					AND PROJECT_TYPE IN (2, 6)
+					AND IS_NEED_FINANCIAL = 1
+					AND PROJECT_SOURCE IN (2, 3)
+					AND IS_CHECHAN = 0
+			                    <if test="includeWt==1">
+                           	 	  OR(PROJECT_SOURCE = 1 AND IS_NEED_FINANCIAL = 2 AND 1=1)
+                         	   </if>
+			                 ) P 
+			          LEFT JOIN BIZ_LOAN_FINANCE_HANDLE FH ON P.PID = FH.PROJECT_ID
+			          LEFT JOIN BIZ_LOAN_APPLY_FINANCE_HANDLE AFH ON AFH.FINANCE_HANDLE_ID = FH.PID
+			          LEFT JOIN ORG_ASSETS_COOPERATION_INFO OA ON OA.PID = P.BUSINESS_SOURCE_NO
+			          LEFT JOIN ORG_COOPERAT_COMPANY_APPLY_INF OC ON OA.PID = OC.ORG_ID
+			          LEFT JOIN ORG_ASSETS_COOPERATION_INFO OA ON OA.PID = P.BUSINESS_SOURCE_NO
+			          LEFT JOIN SYS_USER C  ON C.PID = P.PM_USER_ID
+			          LEFT JOIN BIZ_PROJECT_GUARANTEE BG ON BG.PROJECT_ID = P.PID
+			          LEFT JOIN CUS_PERSON CP  ON P.ACCT_ID = CP.ACCT_ID AND CP.RELATION_TYPE = 1
+			          LEFT JOIN BIZ_PROJECT_FORECLOSURE BF ON BF.PROJECT_ID = P.PID
+			          LEFT JOIN BIZ_LOAN_REPAYMENT BR ON BR.PROJECT_ID = P.PID AND BR.STATUS = 2
+			          INNER JOIN V_PROJECT_LOAN VL ON P.PID = VL.PROJECT_ID
+			          LEFT JOIN CAPITAL_ORG_INFO A ON VL.PRO_RESOURCE = A.ORG_CODE
+			          LEFT JOIN (SELECT AFH.REC_DATE, AFH.FINANCE_HANDLE_ID
+			                       FROM BIZ_LOAN_APPLY_FINANCE_HANDLE AFH
+			                      WHERE AFH.REC_PRO = 3) BLF
+			            ON BLF.FINANCE_HANDLE_ID = FH.PID
+			         WHERE AFH.REC_PRO = 3
+			         AND FH.STATUS = 3
+			        <if test="orgOrgName!=null and orgOrgName!=''">
+				 		and OA.ORG_NAME=#{orgOrgName}
+					</if>
+					<if test = "chooseMonthOrWeek ==0">
+						<if test="endDay !=null and endDay !=''">
+							AND TO_CHAR(AFH.REC_DATE, 'YYYYMM')  <![CDATA[<=]]>#{endDay}
+						</if>
+					</if>
+					<if test = "chooseMonthOrWeek ==1">
+						<if test="endDay !=null and endDay !=''">
+							AND TO_CHAR(AFH.REC_DATE, 'YYYYMMDD')  <![CDATA[<=]]>#{endDay}
+						</if>
+					</if>
+					<if test = "chooseMonthOrWeek ==2">
+						<if test="endDay !=null and endDay !=''">
+							AND TO_CHAR(AFH.REC_DATE, 'YYYYMMDD')  <![CDATA[<=]]>#{fromDay}
+						</if>
+				   </if>
+			         GROUP BY OA.ORG_NAME,
+			         <if test = "chooseMonthOrWeek ==0">
+			          TO_CHAR(AFH.REC_DATE, 'YYYYMM'),
+					</if>
+					<if test = "chooseMonthOrWeek ==1">
+						 TO_CHAR(AFH.REC_DATE, 'YYYYMMDD'),
+					</if>
+					<if test = "chooseMonthOrWeek ==2">
+						 TO_CHAR(AFH.REC_DATE, 'YYYYMMDD'),
+				   </if>
+		                   P.PID,
+		                   P.PROJECT_NAME,
+		                   P.PROJECT_NUMBER,
+		                   OA.ORG_NAME,
+		                   C.REAL_NAME,
+		                   BF.LOAN_DAYS,
+		                   BG.LOAN_MONEY,
+		                   CHINA_NAME,
+		                   BG.GUARANTEE_FEE,
+		                   BG.POUNDAGE,
+		                   TO_CHAR(BF.PAYMENT_DATE, 'YYYY-MM-DD'),
+		                   TO_CHAR(BLF.REC_DATE, 'YYYY-MM-DD'),
+		                   TO_CHAR(BR.NEW_REPAYMENT_DATE, 'YYYY-MM-DD'),
+		                   BR.REPAYMENT_MONEY,
+		                   A.ORG_NAME,
+		                   P.PM_USER_ID
+			        ) A,
+			       (SELECT OA.ORG_NAME AS ORG_ORG_NAME,
+			               TO_CHAR(R.NEW_REPAYMENT_DATE, 'YYYYMM') RE_MONTH,
+			               P.PID AS PROJECT_ID
+			          FROM (SELECT *
+			                  FROM BIZ_PROJECT
+			                 WHERE STATUS = 1
+			                   AND PROJECT_TYPE IN (2, 6)
+			                   AND IS_NEED_FINANCIAL = 1
+			                   AND PROJECT_SOURCE IN (2, 3)
+			                   AND IS_CHECHAN = 0
+			                <if test="includeWt==1">
+                           	 	  OR(PROJECT_SOURCE = 1 AND IS_NEED_FINANCIAL = 2 AND 1=1)
+                         	</if>
+			                ) P
+			          LEFT JOIN BIZ_LOAN_REPAYMENT R ON P.PID = R.PROJECT_ID
+			          LEFT JOIN ORG_ASSETS_COOPERATION_INFO OA ON P.BUSINESS_SOURCE_NO = OA.PID
+			          LEFT JOIN ORG_COOPERAT_COMPANY_APPLY_INF OC ON OC.ORG_ID = OA.PID
+			         WHERE R.STATUS = 2
+			        <if test="orgOrgName!=null and orgOrgName!=''">
+				 		and OA.ORG_NAME=#{orgOrgName}
+					</if>
+					<if test = "chooseMonthOrWeek ==0">
+						<if test="endDay !=null and endDay !=''">
+							AND TO_CHAR(R.NEW_REPAYMENT_DATE, 'YYYYMM')  <![CDATA[<=]]>#{endDay}
+						</if>
+					</if>
+					<if test = "chooseMonthOrWeek ==1">
+						<if test="endDay !=null and endDay !=''">
+							AND TO_CHAR(R.NEW_REPAYMENT_DATE, 'YYYYMMDD')  <![CDATA[<=]]>#{endDay}
+						</if>
+					</if>
+					<if test = "chooseMonthOrWeek ==2">
+						<if test="endDay !=null and endDay !=''">
+							AND TO_CHAR(R.NEW_REPAYMENT_DATE, 'YYYYMMDD')  <![CDATA[<=]]>#{fromDay}
+						</if>
+				   </if>
+			           ) B
+		   <where>
+			<trim>
+			   <if test="1==1">
+					  A.PROJECT_ID = B.PROJECT_ID(+)
+					  AND A.ORG_ORG_NAME = B.ORG_ORG_NAME(+)
+					  AND B.PROJECT_ID IS NULL
+				</if>
+				<if test="userIds!=null and userIds.size()>0">
+					AND A.PM_USER_ID IN
+					<foreach item="itemId" collection="userIds" open="("
+						separator="," close=")">
+						#{itemId}
+					</foreach>
+				</if>
+				<if test="projectName!=null and projectName!=''">
+					AND A.PROJECT_NAME LIKE '%${projectName}%'
+				</if>
+				<if test="projectNumber!=null and projectNumber!=''">
+					AND A.PROJECT_NUMBER LIKE '%${projectNumber}%'
+				</if>
+				<if test="pmUserName!=null and pmUserName!=''">
+					AND A.PM_USER_NAME LIKE '%${pmUserName}%'
+				</if>
+			</trim>
+		</where>
+		ORDER BY A.RE_MONTH DESC
+		<if test="page!=-1">
+			<![CDATA[
+			) T
+			WHERE ROWNUM <=#{page}*#{rows}
+			) D
+			WHERE D.RN > ((#{page}-1)*#{rows})
+			]]>
+		</if>
+	</select>
+	
+	<!-- 合作机构在途详情总数 -->
+	<select id="queryForeclosureOrgIngDetailsTotal" resultType="Integer" parameterType="com.xlkfinance.bms.rpc.otherReport.ForeclosureOrgDetailsReport">
+	SELECT COUNT(1) FROM(
+		        SELECT 
+				  <if test = "chooseMonthOrWeek ==0">
+			          TO_CHAR(A.RE_MONTH, 'YYYYMM'),
+				   </if>
+				   <if test = "chooseMonthOrWeek ==1">
+					  TO_CHAR(A.RE_MONTH, 'YYYYMMDD'),
+				   </if>
+				   <if test = "chooseMonthOrWeek ==2">
+					  TO_CHAR(A.RE_MONTH, 'YYYYMMDD'),
+				   </if>
+				  A.ORG_ORG_NAME
+			  FROM (
+			         SELECT OA.ORG_NAME AS ORG_ORG_NAME,P.PM_USER_ID,
+			         	   <if test = "chooseMonthOrWeek ==0">
+					         TO_CHAR(AFH.REC_DATE, 'YYYYMM') RE_MONTH,
+						   </if>
+						   <if test = "chooseMonthOrWeek ==1">
+							 TO_CHAR(AFH.REC_DATE, 'YYYYMMDD') RE_MONTH,
+						   </if>
+						   <if test = "chooseMonthOrWeek ==2">
+								TO_CHAR(AFH.REC_DATE, 'YYYYMMDD') RE_MONTH,
+						   </if>
+			                P.PID AS PROJECT_ID,
+			                P.PROJECT_NAME, P.PROJECT_NUMBER, TO_CHAR(BLF.REC_DATE, 'YYYY-MM-DD') AS LOAN_DATE,
+			                C.REAL_NAME AS PM_USER_NAME, CP.CHINA_NAME,
+			                BG.LOAN_MONEY AS LOAN_AMOUNT, BF.LOAN_DAYS,
+			                BG.GUARANTEE_FEE, BG.POUNDAGE,
+			                TO_CHAR(BF.PAYMENT_DATE, 'YYYY-MM-DD') as PAYMENT_DATE,
+			                TO_CHAR(BR.NEW_REPAYMENT_DATE, 'YYYY-MM-DD') AS NEW_REPAYMENT_DATE,
+			               BR.REPAYMENT_MONEY, A.ORG_NAME 
+			          FROM (SELECT *
+			                   FROM BIZ_PROJECT
+			                  WHERE STATUS = 1
+			                    AND PROJECT_TYPE IN (2, 6)
+			                    AND IS_NEED_FINANCIAL = 1
+			                    AND PROJECT_SOURCE IN (2, 3)
+			                    AND IS_CHECHAN = 0
+			                    <if test="includeWt==1">
+                           	 	  OR(PROJECT_SOURCE = 1 AND IS_NEED_FINANCIAL = 2 AND 1=1)
+                         	   </if>
+			                 ) P 
+			          LEFT JOIN BIZ_LOAN_FINANCE_HANDLE FH ON P.PID = FH.PROJECT_ID
+			          LEFT JOIN BIZ_LOAN_APPLY_FINANCE_HANDLE AFH ON AFH.FINANCE_HANDLE_ID = FH.PID
+			          LEFT JOIN ORG_ASSETS_COOPERATION_INFO OA ON OA.PID = P.BUSINESS_SOURCE_NO
+			          LEFT JOIN ORG_COOPERAT_COMPANY_APPLY_INF OC ON OA.PID = OC.ORG_ID
+			          LEFT JOIN ORG_ASSETS_COOPERATION_INFO OA ON OA.PID = P.BUSINESS_SOURCE_NO
+			          LEFT JOIN SYS_USER C ON C.PID = P.PM_USER_ID
+			          LEFT JOIN BIZ_PROJECT_GUARANTEE BG ON BG.PROJECT_ID = P.PID
+			          LEFT JOIN CUS_PERSON CP ON P.ACCT_ID = CP.ACCT_ID AND CP.RELATION_TYPE = 1
+			          LEFT JOIN BIZ_PROJECT_FORECLOSURE BF ON BF.PROJECT_ID = P.PID
+			          LEFT JOIN BIZ_LOAN_REPAYMENT BR ON BR.PROJECT_ID = P.PID AND BR.STATUS = 2
+			          INNER JOIN V_PROJECT_LOAN VL ON P.PID = VL.PROJECT_ID
+			          LEFT JOIN CAPITAL_ORG_INFO A ON VL.PRO_RESOURCE = A.ORG_CODE
+			          LEFT JOIN (SELECT AFH.REC_DATE, AFH.FINANCE_HANDLE_ID
+			                       FROM BIZ_LOAN_APPLY_FINANCE_HANDLE AFH
+			                      WHERE AFH.REC_PRO = 3) BLF
+			            ON BLF.FINANCE_HANDLE_ID = FH.PID
+			         WHERE AFH.REC_PRO = 3
+			         AND FH.STATUS = 3
+			        <if test="orgOrgName!=null and orgOrgName!=''">
+				 		and OA.ORG_NAME=#{orgOrgName}
+					</if>
+					<if test = "chooseMonthOrWeek ==0">
+						<if test="endDay !=null and endDay !=''">
+							AND TO_CHAR(AFH.REC_DATE, 'YYYYMM')  <![CDATA[<=]]>#{endDay}
+						</if>
+					</if>
+					<if test = "chooseMonthOrWeek ==1">
+						<if test="endDay !=null and endDay !=''">
+							AND TO_CHAR(AFH.REC_DATE, 'YYYYMMDD')  <![CDATA[<=]]>#{endDay}
+						</if>
+					</if>
+					<if test = "chooseMonthOrWeek ==2">
+						<if test="endDay !=null and endDay !=''">
+							AND TO_CHAR(AFH.REC_DATE, 'YYYYMMDD')  <![CDATA[<=]]>#{fromDay}
+						</if>
+				   </if>
+			         GROUP BY OA.ORG_NAME,
+			        <if test = "chooseMonthOrWeek ==0">
+			           TO_CHAR(AFH.REC_DATE, 'YYYYMM'),
+					</if>
+					<if test = "chooseMonthOrWeek ==1">
+						TO_CHAR(AFH.REC_DATE, 'YYYYMMDD'),
+					</if>
+					<if test = "chooseMonthOrWeek ==2">
+					   TO_CHAR(AFH.REC_DATE, 'YYYYMMDD'),
+				   </if>
+                   P.PID,
+                   P.PROJECT_NAME,
+                   P.PROJECT_NUMBER,
+                   OA.ORG_NAME,
+                   C.REAL_NAME,
+                   BF.LOAN_DAYS,
+                   BG.LOAN_MONEY,
+                   CHINA_NAME,
+                   BG.GUARANTEE_FEE,
+                   BG.POUNDAGE,
+                   TO_CHAR(BF.PAYMENT_DATE, 'YYYY-MM-DD'),
+                   TO_CHAR(BLF.REC_DATE, 'YYYY-MM-DD'),
+                   TO_CHAR(BR.NEW_REPAYMENT_DATE, 'YYYY-MM-DD'),
+                   BR.REPAYMENT_MONEY,
+                   A.ORG_NAME,
+                   P.PM_USER_ID
+			        ) A,
+			       (SELECT OA.ORG_NAME AS ORG_ORG_NAME,
+			               TO_CHAR(R.NEW_REPAYMENT_DATE, 'YYYYMM') RE_MONTH,
+			               P.PID AS PROJECT_ID
+			          FROM (SELECT *
+			                  FROM BIZ_PROJECT
+			                 WHERE STATUS = 1
+			                   AND PROJECT_TYPE IN (2, 6)
+			                   AND IS_NEED_FINANCIAL = 1
+			                   AND PROJECT_SOURCE IN (2, 3)
+			                   AND IS_CHECHAN = 0
+			                <if test="includeWt==1">
+                           	 	  OR(PROJECT_SOURCE = 1 AND IS_NEED_FINANCIAL = 2 AND 1=1)
+                         	</if>
+			                ) P
+			          LEFT JOIN BIZ_LOAN_REPAYMENT R ON P.PID = R.PROJECT_ID
+			          LEFT JOIN ORG_ASSETS_COOPERATION_INFO OA ON P.BUSINESS_SOURCE_NO = OA.PID
+			          LEFT JOIN ORG_COOPERAT_COMPANY_APPLY_INF OC ON OC.ORG_ID = OA.PID
+			         WHERE R.STATUS = 2
+			        <if test="orgOrgName!=null and orgOrgName!=''">
+				 		and OA.ORG_NAME=#{orgOrgName}
+					</if>
+					<if test = "chooseMonthOrWeek ==0">
+						<if test="endDay !=null and endDay !=''">
+							AND TO_CHAR(R.NEW_REPAYMENT_DATE, 'YYYYMM')  <![CDATA[<=]]>#{endDay}
+						</if>
+					</if>
+					<if test = "chooseMonthOrWeek ==1">
+						<if test="endDay !=null and endDay !=''">
+							AND TO_CHAR(R.NEW_REPAYMENT_DATE, 'YYYYMMDD')  <![CDATA[<=]]>#{endDay}
+						</if>
+					</if>
+					<if test = "chooseMonthOrWeek ==2">
+						<if test="endDay !=null and endDay !=''">
+							AND TO_CHAR(R.NEW_REPAYMENT_DATE, 'YYYYMMDD')  <![CDATA[<=]]>#{fromDay}
+						</if>
+				   </if>
+			        ) B
+		<where>
+			<trim>
+			    <if test="1==1">
+					  A.PROJECT_ID = B.PROJECT_ID(+)
+					  AND A.ORG_ORG_NAME = B.ORG_ORG_NAME(+)
+					  AND B.PROJECT_ID IS NULL
+				</if>
+				<if test="userIds!=null and userIds.size()>0">
+					AND A.PM_USER_ID IN
+					<foreach item="itemId" collection="userIds" open="("
+						separator="," close=")">
+						#{itemId}
+					</foreach>
+				</if>
+				<if test="projectName!=null and projectName!=''">
+					AND A.PROJECT_NAME LIKE '%${projectName}%'
+				</if>
+				<if test="projectNumber!=null and projectNumber!=''">
+					AND A.PROJECT_NUMBER LIKE '%${projectNumber}%'
+				</if>
+				<if test="pmUserName!=null and pmUserName!=''">
+					AND A.PM_USER_NAME LIKE '%${pmUserName}%'
+				</if>
+			</trim>
+		</where>
+			) T
+	</select>
+</mapper>

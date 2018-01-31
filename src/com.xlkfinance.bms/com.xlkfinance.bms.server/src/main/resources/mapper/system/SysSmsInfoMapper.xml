@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xlkfinance.bms.server.system.mapper.SysSmsInfoMapper">
+	<resultMap id="sysSmsInfoMap" type="com.xlkfinance.bms.rpc.system.SysSmsInfo">
+		<id property="pid" column="PID" />
+		<id property="telphone" column="TELPHONE" />
+		<id property="content" column="CONTENT" />
+		<id property="sendDate" column="SEND_DATE" />
+		<id property="createDate" column="CREATE_DATE" />
+		<id property="creatorId" column="CREATOR_ID" />
+		<id property="category" column="CATEGORY" />
+		<id property="status" column="STATUS" />
+		<id property="ipAddress" column="IP_ADDRESS" />
+	</resultMap>
+	<sql id="column_list">
+        PID,TELPHONE,CONTENT,SEND_DATE,CREATE_DATE,CREATOR_ID,CATEGORY,STATUS,IP_ADDRESS
+	</sql>
+	<!-- 查询所有 -->
+	<select id="getAll" resultMap="sysSmsInfoMap" parameterType="com.xlkfinance.bms.rpc.system.SysSmsInfo">
+		SELECT
+		<include refid="column_list" />
+		FROM SYS_SMS_INFO
+		<where>
+			<trim>
+		      <if test="pid != null and pid >0">
+	          PID=#{pid}
+	          </if>
+		      <if test="telphone != null and telphone !=''">
+	          AND TELPHONE=#{telphone}
+	          </if>
+		      <if test="content != null and content !=''">
+	          AND CONTENT=#{content}
+	          </if>
+		      <if test="creatorId != null and creatorId >0">
+	          AND CREATOR_ID=#{creatorId}
+	          </if>
+		      <if test="category != null and category >0">
+	          AND CATEGORY=#{category}
+	          </if>
+		      <if test="status != null and status >0">
+	          AND STATUS=#{status}
+	          </if>
+		      <if test="ipAddress != null and ipAddress !=''">
+	          AND IP_ADDRESS=#{ipAddress}
+	          </if>
+			</trim>
+		</where>
+	</select>
+	<!-- 根据id获取 -->
+	<select id="getById" resultMap="sysSmsInfoMap">
+		SELECT <include refid="column_list" /> FROM SYS_SMS_INFO WHERE PID=#{pid}
+	</select>
+	<!-- 插入一条数据 -->
+	<insert id="insert" parameterType="com.xlkfinance.bms.rpc.system.SysSmsInfo">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_SYS_SMS_INFO.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO SYS_SMS_INFO
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+				PID,
+			</if>
+		    <if test="telphone != null and telphone !=''">
+				TELPHONE,
+			</if>
+		    <if test="content != null and content !=''">
+				CONTENT,
+			</if>
+				SEND_DATE,
+				CREATE_DATE,
+		    <if test="creatorId != null and creatorId >0">
+				CREATOR_ID,
+			</if>
+		    <if test="category != null and category >0">
+				CATEGORY,
+			</if>
+		    <if test="status != null and status >0">
+				STATUS,
+			</if>
+		    <if test="ipAddress != null and ipAddress !=''">
+				IP_ADDRESS,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+		    #{pid},
+			</if>
+		    <if test="telphone != null and telphone !=''">
+		    #{telphone},
+			</if>
+		    <if test="content != null and content !=''">
+		    #{content},
+			</if>
+		    SYSDATE,
+		    SYSDATE,
+		    <if test="creatorId != null and creatorId >0">
+		    #{creatorId},
+			</if>
+		    <if test="category != null and category >0">
+		    #{category},
+			</if>
+		    <if test="status != null and status >0">
+		    #{status},
+			</if>
+		    <if test="ipAddress != null and ipAddress !=''">
+		    #{ipAddress},
+			</if>
+		</trim>
+	</insert>
+	<!-- 根据id删除数据 -->
+	<delete id="deleteById" parameterType="com.xlkfinance.bms.rpc.system.SysSmsInfo">
+		<![CDATA[DELETE FROM SYS_SMS_INFO WHERE PID=#{pid}]]>
+	</delete>
+	<!-- 根据id更新数据 -->
+		<update id="update" parameterType="com.xlkfinance.bms.rpc.system.SysSmsInfo">
+		UPDATE SYS_SMS_INFO
+		<set>
+		    <if test="pid != null and pid >0">
+		     PID=#{pid},
+			</if>
+		    <if test="telphone != null and telphone !=''">
+		     TELPHONE=#{telphone},
+			</if>
+		    <if test="content != null and content !=''">
+		     CONTENT=#{content},
+			</if>
+		    <if test="category != null and category >0">
+		     CATEGORY=#{category},
+			</if>
+		    <if test="status != null and status >0">
+		     STATUS=#{status},
+			</if>
+		    <if test="ipAddress != null and ipAddress !=''">
+		     IP_ADDRESS=#{ipAddress},
+			</if>
+		</set>
+		WHERE PID = #{pid}
+	</update>
+	<!-- 根据传入多个id删除数据 -->
+	<delete id="deleteByIds" parameterType="java.util.List">
+		DELETE FROM SYS_SMS_INFO WHERE PID in
+		<foreach collection="list" item="item" index="index" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+</mapper>

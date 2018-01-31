@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.mortgage.mapper.ProjectAssExtractionMapper">
+	<resultMap id="projectAssExtractionResultMap" type="com.xlkfinance.bms.rpc.mortgage.ProjectAssExtraction">
+		<id column="PID" property="pid" jdbcType="INTEGER"/>
+		<result column="BASE_ID" property="baseId"  />
+		<result column="APPLY_USER_ID" property="applyUserId"  />
+		<result column="applyUserName" property="applyUserName"  />
+		<result column="APPLY_DTTM" property="applyDttm" javaType="String" jdbcType="TIMESTAMP"/>
+		<result column="APPLY_REMARK" property="applyRemark" />
+		<result column="HANDLE_USER_ID" property="handleUserId"  />
+		<result column="handleUserName" property="handleUserName"  />
+		<result column="HANDLE_DTTM" property="handleDttm" javaType="String" jdbcType="TIMESTAMP"/>
+		<result column="HANDLE_REMARK" property="handleRemark" />
+		<result column="STATUS" property="status" />
+		<!-- 外表属性 -->
+		<result column="ITEM_NAME" property="itemName" />
+		
+	</resultMap>
+	
+	<!-- 查询所需的列 -->
+	<sql id="queryRequiredColumn">
+		e.PID,e.BASE_ID,e.APPLY_REMARK,e.APPLY_DTTM,e.HANDLE_DTTM,e.HANDLE_REMARK,e.STATUS,b.ITEM_NAME,
+		(SELECT u.real_name FROM sys_user u WHERE u.pid = e.handle_user_id) handleUserName,
+		(SELECT u.real_name FROM sys_user u WHERE u.pid = e.apply_user_id) applyUserName
+	</sql>
+	
+	<!-- 查询当前抵质押物的条件 -->
+	<sql id="queryCondition">
+		FROM BIZ_PROJECT_ASS_EXTRACTION e ,BIZ_PROJECT_ASS_BASE b
+		WHERE e.BASE_ID = b.PID 
+		AND e.STATUS = 1 
+		AND e.BASE_ID = #{baseId} 
+		ORDER BY e.HANDLE_DTTM,e.APPLY_DTTM DESC 
+	</sql>
+	
+	<!-- 查询所有的提取信息的条件 -->
+	<sql id="queryCondition_all">
+		FROM BIZ_PROJECT_ASS_EXTRACTION e ,BIZ_PROJECT_ASS_BASE b
+		WHERE e.BASE_ID = b.PID 
+		AND e.STATUS = 1  
+		<if test="itemName != null and itemName != '' ">
+			AND b.ITEM_NAME like '%${itemName}%' 
+		</if>
+		ORDER BY e.HANDLE_DTTM,e.APPLY_DTTM DESC 
+	</sql>
+	
+	<!-- 分页的统一SQL -->
+	<sql id="paging">
+		WHERE 1 = 1  
+		<if test="page != null and page != 0 and rows != null and rows != 0 ">
+			AND rnum<![CDATA[<=]]>#{page}*#{rows}
+			AND rnum>=((#{page}-1)*#{rows})+1
+		</if>
+	</sql>
+	
+	<!-- 查询所有有效的提取信息 -->
+	<select id="getAllProjectAssExtraction" resultMap="projectAssExtractionResultMap" parameterType="com.xlkfinance.bms.rpc.mortgage.ProjectAssExtraction">
+		SELECT * FROM (
+		SELECT rownum rnum ,aa.* FROM (  
+		SELECT  rownum rid, 
+		<include refid="queryRequiredColumn" /> 
+		<include refid="queryCondition_all" /> 
+		) aa ) bb 
+		<include refid="paging" /> 
+	</select>
+
+	<!-- 查询所有有效的提取信息总数 -->
+	<select id="getAllProjectAssExtractionCount" resultType="java.lang.Integer" parameterType="com.xlkfinance.bms.rpc.mortgage.ProjectAssExtraction">
+		SELECT COUNT(*) 
+		<include refid="queryCondition_all" /> 
+	</select>
+	
+	<!-- 查询当前抵质押物的提取信息 -->
+	<select id="getProjectAssExtractionByBaseId" resultMap="projectAssExtractionResultMap">
+		SELECT * FROM (
+		SELECT rownum rnum ,aa.* FROM (  
+		SELECT  rownum rid, 
+		<include refid="queryRequiredColumn" /> 
+		<include refid="queryCondition" /> 
+		) aa ) bb 
+	</select>
+	
+	<!-- 查询当前抵质押物的提取信息总数 -->
+	<select id="getProjectAssExtractionCountByBaseId" resultType="java.lang.Integer">
+		SELECT COUNT(*) 
+		<include refid="queryCondition" /> 
+	</select>
+	
+	<insert id="insert" parameterType="com.xlkfinance.bms.rpc.mortgage.ProjectAssExtraction">
+		<!-- 获取序列号 -->
+		<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+			SELECT SEQ_BIZ_PROJECT_ASS_EXTRACTION.Nextval as PID from DUAL
+		</selectKey>
+		
+		INSERT INTO BIZ_PROJECT_ASS_EXTRACTION
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+				PID,
+			<if test="baseId != null and baseId != -1 ">
+				BASE_ID,
+			</if>
+			<if test="applyUserId != null and applyUserId != -1 ">
+				APPLY_USER_ID,
+			</if>
+			<if test="applyRemark != null and applyRemark != '' ">
+				APPLY_REMARK,
+			</if>
+			<if test="applyDttm != null and applyDttm != '' ">
+				APPLY_DTTM,
+			</if>
+			<if test="status != null and status != -1 ">
+				STATUS,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+				#{pid},
+			<if test="baseId != null and baseId != -1 ">
+				#{baseId},
+			</if>
+			<if test="applyUserId != null and applyUserId != -1 ">
+				#{applyUserId},
+			</if>
+			<if test="applyRemark != null and applyRemark != '' ">
+				#{applyRemark},
+			</if>
+			<if test="applyDttm != null and applyDttm != '' ">
+				#{applyDttm,javaType=String, jdbcType=TIMESTAMP},
+			</if>
+			<if test="status != null and status != -1 ">
+				#{status},
+			</if>
+		</trim>
+	</insert>
+	
+	<!-- 修改抵质押物的提取信息>>>提取处理操作 -->
+	<update id="updateProjectAssExtraction" parameterType="com.xlkfinance.bms.rpc.mortgage.ProjectAssExtraction">
+		UPDATE BIZ_PROJECT_ASS_EXTRACTION 
+		<trim prefix="set" suffixOverrides=",">
+			<if test="handleUserId != null and handleUserId != -1 ">
+				HANDLE_USER_ID = #{handleUserId},
+			</if>
+			<if test="handleDttm != null and handleDttm != '' ">
+				HANDLE_DTTM = #{handleDttm,javaType=String, jdbcType=TIMESTAMP},
+			</if>
+			<if test="handleRemark != null and handleRemark != '' ">
+				HANDLE_REMARK = #{handleRemark},
+			</if>
+		</trim>
+		WHERE PID = #{pid}
+	</update>
+	
+	<!-- 批量删除抵质押物的提取信息 -->
+	<update id="batchDelete" parameterType="java.lang.String">
+		UPDATE BIZ_PROJECT_ASS_EXTRACTION SET
+       	STATUS = 0 
+        WHERE PID in 
+        <foreach item="idItem" collection="array" open="(" separator="," close=")">
+			#{idItem}
+		</foreach>
+	</update>
+	
+</mapper>

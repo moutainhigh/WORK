@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.customer.mapper.CusBlacklistRefuseMapper">
+
+<resultMap id="BaseResultMap" type="com.xlkfinance.bms.rpc.common.GridViewDTO">
+    <id property="pid" column="pid" />
+    <result property="value1" column="cus_type" />
+    <result property="value2" column="CUS_NAME" />
+    <result property="value3" column="Cus_type_name" />
+    <result property="value4" column="cert_type" />
+    <result property="value5" column="cert_NUMBER" />
+    <result property="value6" column="telephone" />
+    <result property="value7" column="REFUSE_REASON" />
+    <result property="value8" column="REAL_NAME" />
+    <result property="value9" column="DEADLINE" jdbcType="DATE" javaType="String"/>
+    <result property="value10" column="BLACKLIST_REFUSE_ID" />
+    <result property="value11" column="PER_COM_ID" />
+    <result property="value12" column="SU_PID" />
+</resultMap>
+<insert id="insert" parameterType="com.xlkfinance.bms.rpc.customer.CusBlacklistRefuse">
+     <selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+		SELECT SEQ_CUS_ACCT_BLACKLIST_REFUSE.Nextval as PID from DUAL
+	</selectKey>
+    insert into CUS_ACCT_BLACKLIST_REFUSE (
+	    PID, 
+	    ACCT_ID, 
+	    LIST_TYPE, 
+	    DEADLINE, 
+	    REFUSE_REASON,
+	    STATUS)
+    values (
+	    #{pid,jdbcType=INTEGER}, 
+	    #{cusAcct.pid,jdbcType=INTEGER},
+	    #{listType,jdbcType=VARCHAR},
+	    #{deadline,jdbcType=DATE}, 
+	    #{refuseReason,jdbcType=VARCHAR},
+	    #{status,jdbcType=INTEGER})
+  </insert>
+  
+  
+  <insert id="insertBlackRefuses" parameterType="java.util.List">
+    insert into CUS_ACCT_BLACKLIST_REFUSE (
+	    PID, 
+	    ACCT_ID, 
+	    LIST_TYPE, 
+	    DEADLINE, 
+	    REFUSE_REASON,
+	    STATUS)
+	select SEQ_CUS_ACCT_BLACKLIST_REFUSE.Nextval,A.* from(
+        <foreach collection="list" item="item" index="index"
+            separator="UNION">
+            SELECT
+		    	#{item.cusAcct.pid,jdbcType=INTEGER},
+			    #{item.listType,jdbcType=VARCHAR},
+			    #{item.deadline,jdbcType=DATE,javaType=String}, 
+			    #{item.refuseReason,jdbcType=VARCHAR},
+			    1
+            from dual 
+        </foreach>
+     ) A
+</insert>
+
+<update id="updateBlackRefuses" parameterType="java.util.List">
+	begin
+	<foreach collection="list" item="item" index="index" open="" close="" separator=";">
+               update CUS_ACCT_BLACKLIST_REFUSE
+			<set>
+				<if test="item.revokeReason != null">
+		    		REVOKE_REASON = #{item.revokeReason,jdbcType=VARCHAR},
+		    	</if>
+				<if test="item.revokeDttm != null">
+		    		REVOKE_DTTM = #{item.revokeDttm,jdbcType=TIMESTAMP,javaType=String},
+		    	</if>
+				STATUS = 0
+			</set> 
+			where pid = #{item.pid,jdbcType=INTEGER}
+       </foreach>
+        ;end;
+</update>
+
+  <!-- 更新的方法 -->
+	<update id="updateByPrimaryKey" parameterType="com.xlkfinance.bms.rpc.customer.CusBlacklistRefuse">
+		update CUS_ACCT_BLACKLIST_REFUSE
+		<set>
+		<if test="cusAcct.pid != null">
+			ACCT_ID = #{cusAcct.pid,jdbcType=INTEGER},
+		</if>
+		<if test="listType != null">
+			LIST_TYPE =  #{listType,jdbcType=VARCHAR},
+		</if>
+		<if test="deadline != null">
+     		DEADLINE =  #{deadline,jdbcType=DATE}, 
+     	</if>
+		<if test="refuseReason != null">
+     		REFUSE_REASON =  #{refuseReason,jdbcType=VARCHAR},
+     	</if>
+		<if test="status != null">
+    		STATUS = #{status,jdbcType=INTEGER},
+    	</if>
+		<if test="revokeReason != null">
+    		REVOKE_REASON = #{revokeReason,jdbcType=VARCHAR},
+    	</if>
+		<if test="revokeDttm != null">
+    		REVOKE_DTTM = #{revokeDttm,jdbcType=TIMESTAMP,javaType=String},
+    	</if>
+		</set> 
+		where pid = #{pid,jdbcType=INTEGER}
+	</update>
+	
+<!-- 分页查询黑名单列表 -->
+<select id="selectBlacklists" resultMap="BaseResultMap" parameterType="com.xlkfinance.bms.rpc.customer.CusPerBaseDTO">
+		SELECT D.* FROM (SELECT T.*, ROWNUM RN
+	        FROM (
+		SELECT DISTINCT CA.PID,
+    CAV.PER_COM_ID PER_COM_ID,
+       CA.CUS_TYPE,
+       CAV.ACCT_NAME CUS_NAME,
+       CASE CA.CUS_TYPE
+         WHEN 1 THEN
+          '个人客户'
+         WHEN 2 THEN
+          '企业客户'
+         ELSE
+          '个人客户'
+       END CUS_TYPE_NAME,
+       CAV.CERT_TYPE,
+       CAV.CERT_NUMBER,
+       CAV.TELEPHONE,
+       (SELECT CBR.REFUSE_REASON
+          FROM CUS_ACCT_BLACKLIST_REFUSE CBR
+         WHERE CBR.ACCT_ID = CA.PID
+           AND CBR.STATUS = 1
+           AND CBR.LIST_TYPE = '2') REFUSE_REASON,
+       (SELECT CBR.PID
+          FROM CUS_ACCT_BLACKLIST_REFUSE CBR
+         WHERE CBR.ACCT_ID = CA.PID
+           AND CBR.STATUS = 1
+           AND CBR.LIST_TYPE = '2') BLACKLIST_REFUSE_ID,
+        (CASE WHEN SU.REAL_NAME IS NULL THEN '机构' ELSE SU.REAL_NAME END) AS REAL_NAME,
+       (SELECT SU.PID FROM SYS_USER SU WHERE CA.PM_USER_ID = SU.PID) SU_PID
+  FROM CUS_ACCT_BLACKLIST_REFUSE_V CAV, CUS_ACCT CA,CUS_RELATION CR, SYS_USER SU
+ WHERE CA.PID = CAV.ACCT_ID
+ AND CA.STATUS = 1
+ AND CA.CUS_STATUS IN(2,5,6,9)
+ AND CA.PID = CR.ACCT_ID
+ AND CR.ORG_TYPE = 1
+ AND CA.PM_USER_ID = SU.PID(+)
+ 		<if test="userIds!=null and userIds.size()>0">
+			AND	CR.PM_USER_ID IN
+		<foreach item="itemId" collection="userIds" open="(" separator="," close=")">
+		          #{itemId}
+		</foreach>
+		</if>
+	   <if test="cusName != null and cusName !=''">
+	   	AND CAV.ACCT_NAME LIKE '%${cusName}%'
+	   </if>	   
+	   <if test="certNumber != null and certNumber !=''">
+	   	AND CAV.CERT_NUMBER  LIKE '%${certNumber}%'
+	   </if>
+	   <if test="cusType !=0">
+	   	AND CA.CUS_TYPE= #{cusType,jdbcType=INTEGER}
+	   </if>
+	   <![CDATA[ORDER BY CA.PID DESC) T
+		WHERE ROWNUM <=#{page}*#{rows}
+		) D
+	WHERE D.RN > ((#{page}-1)*#{rows})]]>
+</select>
+<!-- 查询黑名单总数 -->
+<select id="getBlackListCount" resultType="java.lang.Integer" parameterType="com.xlkfinance.bms.rpc.customer.CusPerBaseDTO">
+	 SELECT COUNT(*) FROM (SELECT DISTINCT CA.PID 
+	 			FROM CUS_ACCT_BLACKLIST_REFUSE_V CAV, 
+	 				CUS_ACCT CA,CUS_RELATION CR, SYS_USER SU
+	 			WHERE CA.PID = CAV.ACCT_ID
+	 			AND CA.STATUS = 1
+	 			AND CA.CUS_STATUS in(2,5,6,9)
+	 			AND CA.PID = CR.ACCT_ID
+	 			AND CR.ORG_TYPE = 1
+	 			AND CA.PM_USER_ID = SU.PID(+)
+ 		<if test="userIds!=null and userIds.size()>0">
+			AND	CR.PM_USER_ID IN
+		<foreach item="itemId" collection="userIds" open="(" separator="," close=")">
+		          #{itemId}
+		</foreach>
+		</if>
+	   <if test="cusName != null and cusName !=''">
+	   	AND CAV.ACCT_NAME LIKE '%${cusName}%'
+	   </if>	   
+	   <if test="certNumber != null and certNumber !=''">
+	   	AND CAV.CERT_NUMBER  LIKE '%${certNumber}%'
+	   </if>
+	   <if test="cusType !=0">
+	   	AND CA.CUS_TYPE= #{cusType,jdbcType=INTEGER}
+	   </if>)
+</select>
+
+<select id="selectRefuses" resultMap="BaseResultMap" parameterType="com.xlkfinance.bms.rpc.customer.CusPerBaseDTO">
+	SELECT CA.PID,
+	   CAV.PER_COM_ID PER_COM_ID,
+       CA.CUS_TYPE,
+       CAV.ACCT_NAME CUS_NAME,
+       CASE CA.CUS_TYPE
+         WHEN 1 THEN
+          '个人客户'
+         WHEN 2 THEN
+          '企业客户'         
+       END CUS_TYPE_NAME,
+       CAV.CERT_TYPE,
+       CAV.CERT_NUMBER,
+       CAV.TELEPHONE,
+       (SELECT CBR.DEADLINE
+	          FROM CUS_ACCT_BLACKLIST_REFUSE CBR
+	         WHERE CBR.ACCT_ID = CA.PID
+	           AND CBR.STATUS = 1
+	           AND CBR.LIST_TYPE = '3') DEADLINE,
+       (SELECT CBR.REFUSE_REASON
+          FROM CUS_ACCT_BLACKLIST_REFUSE CBR
+         WHERE CBR.ACCT_ID = CA.PID
+           AND CBR.STATUS = 1
+           AND CBR.LIST_TYPE = '3') REFUSE_REASON,
+       (SELECT CBR.PID
+          FROM CUS_ACCT_BLACKLIST_REFUSE CBR
+         WHERE CBR.ACCT_ID = CA.PID
+           AND CBR.STATUS = 1
+           AND CBR.LIST_TYPE = '3') BLACKLIST_REFUSE_ID,
+       (SELECT SU.REAL_NAME FROM SYS_USER SU WHERE CA.PM_USER_ID = SU.PID) REAL_NAME,
+       (SELECT SU.PID FROM SYS_USER SU WHERE CA.PM_USER_ID = SU.PID) SU_PID
+  FROM CUS_ACCT_BLACKLIST_REFUSE_V CAV, CUS_ACCT CA
+ WHERE CA.PID = CAV.ACCT_ID
+ AND CA.STATUS = 1
+ AND  (CA.CUS_STATUS =3 or  CA.CUS_STATUS =5 or CA.CUS_STATUS =7 or CA.CUS_STATUS =9 )
+	   <if test="cusName != null and cusName !=''">
+	   	AND CAV.ACCT_NAME LIKE '%${cusName}%'
+	   </if>	   
+	   <if test="certNumber != null and certNumber !=''">
+	   	AND CAV.CERT_NUMBER  like '%${certNumber}%'
+	   </if>
+	   <if test="cusType !=0">
+	   	AND CA.CUS_TYPE= #{cusType,jdbcType=INTEGER}
+	   </if>
+		<if test="userIds!=null and userIds.size()>0">
+			AND	CA.PM_USER_ID in
+		<foreach item="itemId" collection="userIds" open="(" separator="," close=")">
+		          #{itemId}
+		</foreach>
+		</if>
+</select>
+<insert id="insertBlacklistRefuse" parameterType="com.xlkfinance.bms.rpc.customer.CusBlacklistRefuse">
+	 <selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+		SELECT SEQ_CUS_ACCT_BLACKLIST_REFUSE.Nextval as PID from DUAL
+	</selectKey>
+		 insert into CUS_ACCT_BLACKLIST_REFUSE (
+											    PID, 
+											    ACCT_ID, 
+											    LIST_TYPE, 
+											    STATUS)
+										values(
+										        #{pid,jdbcType=INTEGER}, 
+											    #{cusAcct.pid,jdbcType=INTEGER},
+											    '2',
+											    1
+										)    
+</insert>
+<!-- 根据证件号码查询是否为黑名单 -->
+<select id="getBlackByCertNum" resultType="java.lang.Integer" parameterType="com.xlkfinance.bms.rpc.customer.CusPerBaseDTO">
+	SELECT COUNT(*) FROM CUS_PERSON CP,CUS_ACCT_BLACKLIST_REFUSE CB 
+	WHERE CP.ACCT_ID = CB.ACCT_ID AND CB.STATUS = 1 AND CB.LIST_TYPE = 2
+	<if test="certNumber != null and certNumber !=''">
+	   AND	CP.CERT_NUMBER = #{certNumber}
+   	</if>
+   	<if test="cusAcct.pid != null and cusAcct.pid !=0">
+   		AND CB.ACCT_ID = #{cusAcct.pid,jdbcType=INTEGER}
+   	</if>
+</select>
+
+</mapper>

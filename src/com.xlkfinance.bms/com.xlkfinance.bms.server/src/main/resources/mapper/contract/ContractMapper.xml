@@ -1,0 +1,850 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.contract.mapper.ContractMapper">
+	
+	<!-- 动态查询合同生成所需要的参数 结果集字段映射 -->
+	<resultMap type="com.xlkfinance.bms.rpc.contract.ContractDynamicParameter" id="parameterCursorMap">
+		 <result column ="PARAMETER_CODE" property="parameterCode"/>
+		 <result column ="PARAMETER_VAL" property="parameterVal"/>  
+	</resultMap>
+	
+	<!-- 动态查询合同生成表格所需要的参数 结果集字段映射 -->
+	<resultMap type="com.xlkfinance.bms.rpc.contract.ContractDynamicTableParameter" id="parameterTableCursorMap">
+		<result column ="GOODS_NAME" property="goodsName"/>
+		<result column ="GOODS_NUMBER" property="goodsNumber"/>  
+		<result column ="GOODS_COUNT" property="goodsCount"/>
+		<result column ="GOODS_UNIT" property="goodsUnit"/>
+		<result column ="GOODS_ADDRESS" property="goodsAddress"/>
+		<result column ="GOODS_VALUE" property="goodsValue"/>
+		<result column ="GOODS_EFFECTIVE" property="goodsEffective"/>
+	</resultMap>
+	
+	<resultMap type="com.xlkfinance.bms.rpc.contract.ContractAttachment" id="contractAttachmentMap">
+		<result property="pid" column="PID"/>
+		<result property="contractId" column="CONTRACT_ID"/>
+		<result property="attachmentFileName" column="ATTACHMENT_FILE_NAME"/>
+		<result property="attachmentLocation" column="ATTACHMENT_LOCATION"/>
+		<result property="offlineCnt" column="OFFLINE_CNT"/>
+		<result property="onlineCnt" column="ONLINE_CNT"/>
+		<result property="remark" column="REMARK"/>
+	</resultMap>
+	
+	<resultMap type="com.xlkfinance.bms.rpc.contract.Contract" id="baseContractMap">
+		  <result column="PID" property="pid"/>
+          <result column="PROJECT_ID" property="projectId"/>
+          <result column="CONTRACT_TEMPLATE_ID" property="contractTemplateId"/>
+          <result column="CONTRACT_NAME" property="contractName"/>
+          <result column="CONTRACT_CATELOG" property="contractCatelog"/>
+          <result column="CONTRACT_URL" property="contractUrl"/>
+          <result column="CONTRACT_TYPE" property="contractType"/>
+          <result column="TEMP_CONTRACT_NO" property="tempContractNo"/>
+          <result column="CONTRACT_NO" property="contractNo"/>
+          <result column="IS_SIGN" property="isSigned"/>
+          <result column="IS_CONFIRM" property="isLegalConfirmation"/>
+          <result column="SIGN_DT" property="signedDate" javaType="String" jdbcType="DATE"/>
+          <result column="REMARK" property="remark"/>
+          <result column="PARENT_ID" property="parentId"/>
+          <result column="STATUS" property="status"/>	
+	</resultMap>
+	
+	<sql id="selectConUseful">
+		a.pid, a.contractCatelog, a.contractType,
+		a.contractTemplateId, a.contractNo,a.contractCatelogKey,
+		a.contractName, a.projectId,
+		a.contractUrl, a.isLegalConfirmation,
+		a.isSigned, a.signedDate, a.remark,
+		a.projectName, a.projectNuber
+	</sql>
+
+	<sql id="selectContractlist">
+		v.lookup_val as
+		contractTypeText,t.pid,t.contractCatelog,t.contractType,t.contractTemplateId,t.contractNo,t.contractCatelogKey,
+		t.contractName,t.projectId,t.contractUrl,
+		t.isLegalConfirmation
+		,t.isSigned ,t.signedDate ,t.remark,t.projectName,t.projectNuber
+	</sql>
+
+	<sql id="pading">
+		(SELECT d.* FROM( SELECT e.* FROM
+	</sql>
+
+	<sql id="padding">
+		where ROWNUM <![CDATA[<=]]>
+		#{page}*#{rows}) d
+		WHERE d.rn <![CDATA[>=]]>
+		((#{page}-1)*#{rows})+1
+		) t
+	</sql>
+
+	<!-- 动态查询借款合同生成所需要的参数 -->
+	<select id="getDebtorContractDynamicParameter" parameterType="map" statementType="CALLABLE">
+		<![CDATA[		
+			{CALL ${procedureName} (
+				#{parameterCursor, jdbcType=CURSOR, resultMap=parameterCursorMap, mode=OUT},
+				#{debtorProjectId, jdbcType=INTEGER, mode=IN},
+				#{creditProjectId, jdbcType=INTEGER, mode=IN},
+				#{commonDebtorPids, jdbcType=VARCHAR, mode=IN}
+			)}
+		]]>
+	</select>
+	
+	<!-- 动态查询抵押、质押合同生成所需要的参数 -->
+	<select id="getMortgagorContractDynamicParameter" parameterType="map" statementType="CALLABLE">
+		<![CDATA[		
+			{CALL ${procedureName} (
+				#{parameterCursor, jdbcType=CURSOR, resultMap=parameterCursorMap, mode=OUT},
+				#{projectId, jdbcType=INTEGER, mode=IN},
+				#{mortgagorId, jdbcType=INTEGER, mode=IN}
+			)}
+		]]>
+	</select>
+	
+	<!-- 动态查询保证合同生成所需要的参数 -->
+	<select id="getSuretyContractDynamicParameter" parameterType="map" statementType="CALLABLE">
+		<![CDATA[		
+			{CALL ${procedureName} (
+				#{parameterCursor, jdbcType=CURSOR, resultMap=parameterCursorMap, mode=OUT},
+				#{projectId, jdbcType=INTEGER, mode=IN},
+				#{suretyId, jdbcType=INTEGER, mode=IN}
+			)}
+		]]>
+	</select>
+	
+	<!-- 动态查询展期合同生成所需要的参数 -->
+	<select id="getExtensionContractDynamicParameter" parameterType="map" statementType="CALLABLE">
+		<![CDATA[		
+			{CALL ${procedureName} (
+				#{parameterCursor, jdbcType=CURSOR, resultMap=parameterCursorMap, mode=OUT},
+				#{projectId, jdbcType=INTEGER, mode=IN},
+				#{exdProjectId, jdbcType=INTEGER, mode=IN},
+				#{suretyId, jdbcType=INTEGER, mode=IN},
+				#{commonDebtorPids,jdbcType=VARCHAR, mode=IN}
+			)}
+		]]>
+	</select>
+	
+	<!-- 动态查询利率变更合同生成所需要的参数 -->
+	<select id="getRateChgContractDynamicParameter" parameterType="map" statementType="CALLABLE">
+		<![CDATA[		
+			{CALL ${procedureName} (
+				#{parameterCursor, jdbcType=CURSOR, resultMap=parameterCursorMap, mode=OUT},
+				#{projectId, jdbcType=INTEGER, mode=IN},
+				#{rateChgId, jdbcType=INTEGER, mode=IN},
+				#{commonDebtorPids,jdbcType=VARCHAR, mode=IN}
+			)}
+		]]>
+	</select>
+	
+	<!-- 动态查询合同生成表格所需要的参数 -->
+	<select id="getContractDynamicTableParameter" parameterType="map" statementType="CALLABLE">
+		<![CDATA[		
+			{CALL ${procedureName} (
+				#{parameterCursor, jdbcType=CURSOR, resultMap=parameterTableCursorMap, mode=OUT},
+				#{projectId, jdbcType=INTEGER, mode=IN},
+				#{mortgagorType, jdbcType=INTEGER, mode=IN}
+			)}
+		]]>
+	</select>
+
+	<select id="pageContractList" parameterType="com.xlkfinance.bms.rpc.contract.Contract"
+		resultType="com.xlkfinance.bms.rpc.contract.Contract">
+		SELECT
+		<include refid="selectContractlist" />
+		FROM
+		<include refid="pading" />
+		(SELECT
+		<include refid="selectConUseful" />
+		,rownum rn
+		FROM
+		(SELECT
+		c.pid, c.contract_catelog as contractCatelog, c.contract_type as
+		contractType,
+		c.contract_template_id as contractTemplateId,
+		CASE
+	      WHEN C.CONTRACT_NO IS NOT NULL AND
+	           length(C.CONTRACT_NO)>0 THEN
+	      C.CONTRACT_NO
+	      ELSE
+	        C.TEMP_CONTRACT_NO
+	    END AS contractNo,
+	    (SELECT SLV.LOOKUP_VAL FROM SYS_LOOKUP_VAL SLV WHERE SLV.PID =C.CONTRACT_CATELOG) as contractCatelogKey,
+		c.contract_name as contractName, c.project_id as projectId,
+		c.contract_url as contractUrl, c.is_confirm as isLegalConfirmation,
+		c.is_sign as isSigned, c.sign_dt as signedDate, c.remark,
+		bp.project_name AS projectName,bp.project_number AS projectNuber
+		FROM BIZ_PROJECT_CONTRACT c,BIZ_PROJECT bp,CUS_ACCT ca
+		where 1=1
+		AND c.STATUS = 1
+		AND BP.STATUS=1
+		AND bp.pid = c.project_id
+		AND bp.acct_id = ca.pid
+		<if test="customerType!=null and customerType!='' and customerType!='-1'">
+			AND ca.CUS_TYPE= #{customerType}
+		</if>
+		<if test="projectName!=null and projectName!='' ">
+			AND bp.project_name like '${projectName}%'
+		</if>
+		<if test="projectNuber!=null and projectNuber!='' ">
+			AND bp.project_number like '${projectNuber}%'
+		</if>
+		<if test="contractNo!=null and contractNo!='' ">
+			AND (c.contract_no like '${contractNo}%' OR C.TEMP_CONTRACT_NO like '${contractNo}%')
+		</if>
+		<if test="contractName!=null and contractName!='' ">
+			AND c.contract_name like '${contractName}%'
+		</if>
+		<if
+			test="economyType!=null and economyType!='' and economyType!='-1' and customerType==2">
+			AND bp.acct_id in (
+			SELECT acct_id FROM CUS_COM_BASE WHERE
+			ECO_TRADE = #{economyType}
+			<if test="customerName!=null and customerName!=''">
+				AND CPY_NAME like '${customerName}%'
+			</if>
+			)
+		</if>
+		<if test="economyType == '-1'">
+			AND bp.acct_id in (
+			SELECT acct_id FROM CUS_PERSON WHERE CHINA_NAME like '${customerName}%'
+			union
+			SELECT acct_id FROM CUS_COM_BASE WHERE CPY_NAME like '${customerName}%'
+			)
+		</if>
+		ORDER BY C.PID DESC
+		) a
+		) e
+		<include refid="padding" />
+		LEFT JOIN sys_lookup_val v
+		ON v.pid = t.contractType
+	</select>
+
+	<select id="pageContractCount" resultType="java.lang.Integer"
+		parameterType="com.xlkfinance.bms.rpc.contract.Contract">
+		SELECT COUNT(t.pid) as total FROM (
+		SELECT
+		c.pid, c.contract_catelog as contractCatelog, c.contract_type as
+		contractType,
+		c.contract_template_id as contractTemplateId, c.contract_no as contractNo,
+		c.contract_name as contractName, c.project_id as projectId,
+		c.contract_url as contractUrl, c.is_confirm as isLegalConfirmation,
+		c.is_sign as isSigned, c.sign_dt as signedDate, c.remark,
+		bp.project_name AS projectName,bp.project_number AS projectNuber
+		FROM BIZ_PROJECT_CONTRACT c,BIZ_PROJECT bp,CUS_ACCT ca
+		where 1=1
+		AND c.STATUS = 1
+		AND bp.pid = c.project_id
+		AND bp.acct_id = ca.pid
+		<if test="customerType!=null and customerType!='' and customerType!='-1'">
+			AND ca.CUS_TYPE= #{customerType}
+		</if>
+		<if test="projectName!=null and projectName!='' ">
+			AND bp.project_name like '${projectName}%'
+		</if>
+		<if test="projectNuber!=null and projectNuber!='' ">
+			AND bp.project_number like '${projectNuber}%'
+		</if>
+		<if test="contractNo!=null and contractNo!='' ">
+			AND (c.contract_no like '${contractNo}%' OR C.TEMP_CONTRACT_NO like '${contractNo}%')
+		</if>
+		<if test="contractName!=null and contractName!='' ">
+			AND c.contract_name like '${contractName}%'
+		</if>
+		<if test="economyType!=null and economyType!='' and economyType!='-1'">
+			AND bp.acct_id in (
+			SELECT acct_id FROM CUS_COM_BASE WHERE
+			ECO_TRADE = #{economyType}
+			<if test="customerName!=null and customerName!=''">
+				AND CPY_NAME like '${customerName}%'
+			</if>
+			)
+		</if>
+		<if test="economyType == '-1'">
+			AND bp.acct_id in (
+			SELECT acct_id FROM CUS_PERSON WHERE CHINA_NAME like '${customerName}%'
+			union
+			SELECT acct_id FROM CUS_COM_BASE WHERE CPY_NAME like '${customerName}%'
+			)
+		</if>
+		) t
+	</select>
+
+	<!-- 查询合同项目信息 -->
+	<select id="getProJectInfoById" parameterType="com.xlkfinance.bms.rpc.contract.Contract"
+		resultType="com.xlkfinance.bms.rpc.contract.ContractProject">
+		SELECT
+		p.pid,p.acct_id AS acctId,p.project_type AS projectType,
+		p.project_name AS projectName,p.PROJECT_number AS projectId,
+		p.pm_user_id AS pmUserId,p.request_status AS requestStatus,
+		p.request_dttm AS requestDttm,p.complete_dttm AS completeDttm,p.status
+		FROM
+		BIZ_PROJECT p
+		WHERE p.pid=#{projectId}
+	</select>
+
+	<!-- 查询合同附件信息 -->
+	<select id="pageFileAccessorieList" parameterType="com.xlkfinance.bms.rpc.contract.Contract"
+		resultType="com.xlkfinance.bms.rpc.contract.ContractAccessorie">
+		SELECT
+		a.pid,f.file_type AS fileType,f.file_name AS fileName,f.file_size AS fileSize,
+		f.upload_dttm AS uploadDttm,a.file_desc AS fileDesc,f.file_url AS
+		fileUrl
+		FROM BIZ_CONTRACT_ACCESSORIESSS a,BIZ_FILE f
+		WHERE f.pid = a.file_id
+		AND a.rowid IN
+		(select rid from
+		(select rownum rn,rid FROM
+		(select rowid rid,pid FROM BIZ_CONTRACT_ACCESSORIESSS
+		WHERE contract_id=#{pid}
+		AND status=1
+		)
+		where rownum<![CDATA[<=]]>#{page}*#{rows})
+		where rn>=((#{page}-1)*#{rows})+1)
+		ORDER BY f.upload_dttm desc
+	</select>
+
+	<!-- 查询合同附件条数 -->
+	<select id="pageAccessorieCount" parameterType="com.xlkfinance.bms.rpc.contract.Contract"
+		resultType="java.lang.Integer">
+		select count(1) as total FROM BIZ_CONTRACT_ACCESSORIESSS
+		WHERE contract_id=#{pid}
+		AND status=1
+	</select>
+
+	<!-- 删除合同附件 -->
+	<delete id="deleteAccessorie" parameterType="com.xlkfinance.bms.rpc.contract.ContractAccessorie">
+		update
+		BIZ_CONTRACT_ACCESSORIESSS set status =0 where pid =#{pid}
+	</delete>
+
+
+	<!-- 插入合同表数据 -->
+	<insert id="addContract" parameterType="com.xlkfinance.bms.rpc.contract.Contract">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_BIZ_PROJECT_CONTRACT.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_PROJECT_CONTRACT
+		(PID,
+		<if test="projectId != null and projectId!=0 ">
+			PROJECT_ID,
+		</if>
+		<if test="contractName != null and contractName!='' ">
+			CONTRACT_NAME,
+		</if>
+		<if test="contractTemplateId != null and contractTemplateId!=0 ">
+			CONTRACT_TEMPLATE_ID,
+		</if>
+		<if test="contractCatelogKey != null and contractCatelogKey!='' ">
+			CONTRACT_CATELOG,
+		</if>
+		<if test="contractUrl != null and contractUrl!='' ">
+			CONTRACT_URL,
+		</if>
+		<if test="contractTemplateId != null and contractTemplateId!=0 ">
+			CONTRACT_TYPE,
+		</if>
+		<if test="tempContractNo != null and tempContractNo!='' ">
+			TEMP_CONTRACT_NO,
+		</if>
+		<if test="contractNo != null and contractNo!='' ">
+			CONTRACT_NO,
+		</if>
+		<if test="isLegalConfirmation != null and isLegalConfirmation!=0 ">
+			IS_CONFIRM,
+		</if>
+		<if test="isSigned != null and isSigned!=0 ">
+			IS_SIGN,
+		</if>
+		<if test="signedDate != null  ">
+			SIGN_DT,
+		</if>
+		<if test="remark != null and remark!='' ">
+			REMARK,
+		</if>
+		<if test="parentId != null ">
+			PARENT_ID,
+		</if>
+		<if test="refId != null ">
+			REF_ID,
+		</if>
+		STATUS)
+		VALUES(
+			#{pid},
+			<if test="projectId != null and projectId!=0 ">
+		   #{projectId,jdbcType=INTEGER},
+		   </if>
+		   <if test="contractName != null and contractName!='' ">
+		   #{contractName,jdbcType=VARCHAR},
+		   </if>
+		   <if test="contractTemplateId != null and contractTemplateId!=0 ">
+		   #{contractTemplateId,jdbcType=INTEGER},
+		   </if>
+		   <if test="contractCatelogKey != null and contractCatelogKey!='' ">
+		   (SELECT SLV.PID FROM SYS_LOOKUP SL,SYS_LOOKUP_VAL SLV WHERE SL.PID=SLV.LOOKUP_ID 
+				AND SL.LOOKUP_TYPE='CONTRACT_TEMPLATE_CATELOG' AND SLV.LOOKUP_VAL =#{contractCatelogKey}),
+		   </if>
+		   <if test="contractUrl != null and contractUrl!='' ">
+		   #{contractUrl,jdbcType=INTEGER},
+		   </if>
+		   <if test="contractTemplateId != null and contractTemplateId!=0 ">
+		   (SELECT template_type FROM biz_contract_template WHERE pid=#{contractTemplateId,jdbcType=INTEGER}),
+		   </if>
+		   <if test="tempContractNo != null and tempContractNo!='' ">
+		   #{tempContractNo,jdbcType=VARCHAR},
+		   </if>
+		   <if test="contractNo != null and contractNo!='' ">
+		   #{contractNo,jdbcType=VARCHAR},
+		   </if>
+		   <if test="isLegalConfirmation != null and isLegalConfirmation!=0 ">
+		   #{isLegalConfirmation,jdbcType=INTEGER},
+		   </if>
+		   <if test="isSigned != null and isSigned!=0 ">
+		   #{isSigned,jdbcType=INTEGER},
+		   </if>
+		   <if test="signedDate != null  ">
+		   #{signedDate,jdbcType=DATE,javaType=String},
+		   </if>
+		   <if test="remark != null and remark!='' ">
+		   #{remark,jdbcType=VARCHAR},
+		   </if>
+		   <if test="parentId != null ">
+			#{parentId,jdbcType=INTEGER},
+			</if>
+			<if test="refId != null ">
+			#{refId,jdbcType=INTEGER},
+			</if>
+			1
+		
+		)
+
+	</insert>
+	<update id="updateContractUrlOrName" parameterType="com.xlkfinance.bms.rpc.contract.Contract">
+		UPDATE BIZ_PROJECT_CONTRACT 
+		<set>
+			<if test="contractUrl != null and contractUrl!='' ">
+		   		CONTRACT_URL=#{contractUrl,jdbcType=VARCHAR},
+		    </if>
+		    <if test="contractName != null and contractName!='' ">
+		   		CONTRACT_NAME=#{contractName,jdbcType=VARCHAR},
+		    </if>
+		</set>
+		WHERE PID=#{pid}
+	</update>
+	
+	<select id="getLoanContracts" resultType="com.xlkfinance.bms.rpc.contract.Contract" parameterType="com.xlkfinance.bms.rpc.contract.Contract">
+	    SELECT * FROM (
+		SELECT rownum rnum ,aa.* FROM (  
+		SELECT  rownum rid,   
+	    bpc.pid pid,
+	  	 bpc.contract_template_id contractTemplateId,
+	  	 bpc.contract_url contractUrl,
+	  	 bpc.parent_id parentId,
+	  	 bpc.PROJECT_ID projectId,
+	  	 (SELECT SLV.LOOKUP_DESC FROM SYS_LOOKUP_VAL SLV WHERE SLV.PID=BPC.CONTRACT_TYPE) contractTypeText,
+         BPC.CONTRACT_NAME contractName,
+         (SELECT BCP.PARAMETER_VAL
+           FROM BIZ_CONTRACT_PARAMETER BCP
+          WHERE BCP.CONTRACT_ID = BPC.PID
+            AND BCP.MATCH_FLAG LIKE '@CONTRACT_NUMBER@' AND BCP.STATUS=1) contractNo, 
+         (SELECT BCP.PARAMETER_VAL
+           FROM BIZ_CONTRACT_PARAMETER BCP
+          WHERE BCP.CONTRACT_ID = BPC.PID
+            AND BCP.MATCH_FLAG LIKE '@CONTRACT_PICE@' AND BCP.STATUS=1) num,
+         (SELECT BCP.PARAMETER_VAL
+           FROM BIZ_CONTRACT_PARAMETER BCP
+          WHERE BCP.CONTRACT_ID = BPC.PID
+            AND BCP.MATCH_FLAG LIKE '@JF_CONTRACT_PICE@' AND BCP.STATUS=1) firstNum,
+         (SELECT BCP.PARAMETER_VAL
+           FROM BIZ_CONTRACT_PARAMETER BCP
+          WHERE BCP.CONTRACT_ID = BPC.PID
+            AND BCP.MATCH_FLAG LIKE '@YF_CONTRACT_PICE@' AND BCP.STATUS=1) secondNum,
+         (SELECT BCP.PARAMETER_VAL
+           FROM BIZ_CONTRACT_PARAMETER BCP
+          WHERE BCP.CONTRACT_ID = BPC.PID
+            AND BCP.MATCH_FLAG LIKE '@REG_CONTRACT_PICE@' AND BCP.STATUS=1) mortgageBranch
+   FROM BIZ_PROJECT_CONTRACT BPC ,BIZ_CONTRACT_TEMPLATE BCT 
+   WHERE BPC.CONTRACT_TEMPLATE_ID=BCT.PID AND BPC.STATUS = 1 
+   <if test="customerType != null and customerType!=0 ">
+		AND (BCT.TEMPLATE_USE_MODE=#{customerType} or BCT.TEMPLATE_USE_MODE=0)
+   </if>
+   <!--  引用ID -->
+   <if test="refId != null and refId !=0 ">
+		AND BPC.REF_ID=#{refId}
+   </if>
+   <!--  添加 contractCatelogKey 值判断 用于展期 额度申请提交时验证是否有添加合同-->
+   <if test="contractCatelogKey != null and contractCatelogKey =='-1' ">
+     AND BPC.CONTRACT_CATELOG !=
+         ( SELECT SLV.PID FROM SYS_LOOKUP SL,SYS_LOOKUP_VAL SLV WHERE SL.PID=SLV.LOOKUP_ID 
+			AND SL.LOOKUP_TYPE='CONTRACT_TEMPLATE_CATELOG' 
+			AND SLV.LOOKUP_VAL = 'JJ')
+   </if>
+   <if test="contractCatelogKey != null and contractCatelogKey !='' and contractCatelogKey !='-1' ">
+	   	<!-- 查询合同类别 为授信，贷款的合同 -->
+	   	<if test="contractCatelogKey =='SX,DK'">
+	   		AND BPC.CONTRACT_CATELOG IN
+	         ( SELECT SLV.PID FROM SYS_LOOKUP SL,SYS_LOOKUP_VAL SLV WHERE SL.PID=SLV.LOOKUP_ID 
+				AND SL.LOOKUP_TYPE='CONTRACT_TEMPLATE_CATELOG' 
+				AND SLV.LOOKUP_VAL IN('SX','DK') )
+	   	</if>
+	   	<!-- 查询合同类别 为展期，授信，贷款的合同 -->
+	   	<if test="contractCatelogKey =='ZK,SX,DK'">
+	   		AND BPC.CONTRACT_CATELOG IN
+	         ( SELECT SLV.PID FROM SYS_LOOKUP SL,SYS_LOOKUP_VAL SLV WHERE SL.PID=SLV.LOOKUP_ID 
+				AND SL.LOOKUP_TYPE='CONTRACT_TEMPLATE_CATELOG' 
+				AND SLV.LOOKUP_VAL IN('ZK','SX','DK') )
+	   	</if>
+	   	<!-- 查询合同类别 为展期保证，保证的合同 -->
+	   	<if test="contractCatelogKey =='ZKBZ'">
+	   		AND BPC.CONTRACT_CATELOG IN
+	         ( SELECT SLV.PID FROM SYS_LOOKUP SL,SYS_LOOKUP_VAL SLV WHERE SL.PID=SLV.LOOKUP_ID 
+				AND SL.LOOKUP_TYPE='CONTRACT_TEMPLATE_CATELOG' 
+				AND SLV.LOOKUP_VAL IN('ZKBZ','BZ') )
+	   	</if>
+	   	<!-- 查询合同类别  与参数匹配的合同 -->
+		<if test="contractCatelogKey !='SX,DK' and contractCatelogKey !='ZK,SX,DK' and contractCatelogKey !='ZKBZ'">
+	     AND BPC.CONTRACT_CATELOG =
+	         ( SELECT SLV.PID FROM SYS_LOOKUP SL,SYS_LOOKUP_VAL SLV WHERE SL.PID=SLV.LOOKUP_ID 
+				AND SL.LOOKUP_TYPE='CONTRACT_TEMPLATE_CATELOG' 
+				AND SLV.LOOKUP_VAL = #{contractCatelogKey,jdbcType=VARCHAR} )
+		</if>
+   </if>
+    AND ( BPC.PROJECT_ID = #{projectId,jdbcType=INTEGER}
+     <if test="oldProjectId != null and oldProjectId !=0 ">
+		 OR BPC.PROJECT_ID = #{oldProjectId,jdbcType=INTEGER}
+     </if>
+     )
+		ORDER BY BPC.pid DESC ) aa
+		) bb 
+		where 1=1 
+		<if test="page != null and page !=0 and rows!=null and rows!=0">
+			and rnum<![CDATA[<=]]>#{page}*#{rows}
+			and rnum>=((#{page}-1)*#{rows})+1
+		</if>
+	</select>
+	
+	<select id="getLoanContractsCount" resultType="java.lang.Integer" parameterType="com.xlkfinance.bms.rpc.contract.Contract">
+	  SELECT count(*)
+   FROM BIZ_PROJECT_CONTRACT BPC ,BIZ_CONTRACT_TEMPLATE BCT 
+   WHERE BPC.CONTRACT_TEMPLATE_ID=BCT.PID AND BPC.STATUS = 1 
+   <if test="customerType != null and customerType!=0 ">
+		AND (BCT.TEMPLATE_USE_MODE=#{customerType} or BCT.TEMPLATE_USE_MODE=0)
+   </if>
+   <!--  引用ID -->
+   <if test="refId != null and refId !=0 ">
+		AND BPC.REF_ID=#{refId}
+   </if>
+   <if test="contractCatelogKey != null and contractCatelogKey !='' and contractCatelogKey !='-1' ">
+    	<!-- 查询合同类别 为授信，贷款的合同 -->
+	   	<if test="contractCatelogKey =='SX,DK'">
+	   		AND BPC.CONTRACT_CATELOG IN
+	         ( SELECT SLV.PID FROM SYS_LOOKUP SL,SYS_LOOKUP_VAL SLV WHERE SL.PID=SLV.LOOKUP_ID 
+				AND SL.LOOKUP_TYPE='CONTRACT_TEMPLATE_CATELOG' 
+				AND SLV.LOOKUP_VAL IN('SX','DK') )
+	   	</if>
+	   	<!-- 查询合同类别 为展期，授信，贷款的合同 -->
+	   	<if test="contractCatelogKey =='ZK,SX,DK'">
+	   		AND BPC.CONTRACT_CATELOG IN
+	         ( SELECT SLV.PID FROM SYS_LOOKUP SL,SYS_LOOKUP_VAL SLV WHERE SL.PID=SLV.LOOKUP_ID 
+				AND SL.LOOKUP_TYPE='CONTRACT_TEMPLATE_CATELOG' 
+				AND SLV.LOOKUP_VAL IN('ZK','SX','DK') )
+	   	</if>
+	   	<!-- 查询合同类别 为展期保证，保证的合同 -->
+	   	<if test="contractCatelogKey =='ZKBZ'">
+	   		AND BPC.CONTRACT_CATELOG IN
+	         ( SELECT SLV.PID FROM SYS_LOOKUP SL,SYS_LOOKUP_VAL SLV WHERE SL.PID=SLV.LOOKUP_ID 
+				AND SL.LOOKUP_TYPE='CONTRACT_TEMPLATE_CATELOG' 
+				AND SLV.LOOKUP_VAL IN('ZKBZ','BZ') )
+	   	</if>
+	   	<!-- 查询合同类别  与参数匹配的合同 -->
+		<if test="contractCatelogKey !='SX,DK' and contractCatelogKey !='ZK,SX,DK' and contractCatelogKey !='ZKBZ'">
+	     AND BPC.CONTRACT_CATELOG =
+	         ( SELECT SLV.PID FROM SYS_LOOKUP SL,SYS_LOOKUP_VAL SLV WHERE SL.PID=SLV.LOOKUP_ID 
+				AND SL.LOOKUP_TYPE='CONTRACT_TEMPLATE_CATELOG' 
+				AND SLV.LOOKUP_VAL = #{contractCatelogKey,jdbcType=VARCHAR} )
+		</if>
+     
+   </if>
+   AND ( BPC.PROJECT_ID = #{projectId,jdbcType=INTEGER}
+     <if test="oldProjectId != null and oldProjectId ">
+		 OR BPC.PROJECT_ID = #{oldProjectId,jdbcType=INTEGER}
+     </if>
+     )
+	</select>
+
+	<update id="deleteContracts" parameterType="java.util.List">
+		update
+		BIZ_PROJECT_CONTRACT
+		set
+		status=0
+		where pid in
+		<foreach item="itemId" collection="list" open="(" separator=","
+			close=")">
+			#{itemId}
+		</foreach>
+	</update>
+	
+	<!-- 查询所有合同的信息 -->
+	<select id="getAllContractListByProjectId" resultType="com.xlkfinance.bms.rpc.contract.Contract">
+		SELECT p.PID,p.CONTRACT_NAME contractName,p.CONTRACT_NO contractNo,p.contract_url contractUrl,
+		(SELECT slv.lookup_val FROM sys_lookup_val slv WHERE slv.pid= p.contract_type) contractTypeText,
+		t.TEMPLATE_NAME templateName,p.PROJECT_ID projectId
+		FROM BIZ_PROJECT_CONTRACT p,BIZ_CONTRACT_TEMPLATE t 
+    	WHERE p.CONTRACT_TEMPLATE_ID = t.PID 
+    	AND P.STATUS=1 
+    	AND p.PROJECT_ID = #{projectId} 
+    	AND p.status=1
+	</select>
+	
+	<!-- 根据合同ID查询合同信息 -->
+	<select id="getContractByContractId" resultType="com.xlkfinance.bms.rpc.contract.Contract">
+		SELECT  PC.PID,PC.PROJECT_ID projectId,PC.CONTRACT_TEMPLATE_ID contractTemplateId,
+		PC.CONTRACT_NAME contractName,PC.CONTRACT_CATELOG contractCatelog,PC.CONTRACT_URL contractUrl,
+		PC.CONTRACT_TYPE contractType,PC.TEMP_CONTRACT_NO tempContractNo,PC.CONTRACT_NO contractNo,PC.IS_SIGN isSigned,
+		PC.IS_CONFIRM isLegalConfirmation,PC.SIGN_DT signedDate,PC.REMARK remark,PC.PARENT_ID parentId,PC.STATUS 
+		FROM BIZ_PROJECT_CONTRACT PC
+		WHERE PC.PID = #{contractId}
+	</select>
+	
+	<!-- 修改合同编码 -->
+	<update id="updateContractNoByContractId">
+		UPDATE BIZ_PROJECT_CONTRACT 
+		SET CONTRACT_NO = #{contractNo}
+		WHERE PID = #{pid}
+	</update>
+
+	<select id="getParentContracts" resultType="com.xlkfinance.bms.rpc.contract.Contract" parameterType="java.lang.Integer">
+		SELECT PC.PID pid, PC.PROJECT_ID projectId, PC.CONTRACT_NAME contractName
+		  FROM BIZ_PROJECT_CONTRACT PC
+		 WHERE 1 = 1
+		   AND PC.STATUS=1
+		   AND PC.PROJECT_ID =#{projectId}   
+		UNION
+		SELECT PC.PID, PC.PROJECT_ID, PC.CONTRACT_NAME
+		  FROM BIZ_PROJECT_CONTRACT PC
+		 WHERE 1 = 1
+		   AND PC.STATUS=1
+		   AND EXISTS (SELECT DISTINCT PR.REF_PROJECT_ID
+		          FROM BIZ_PROJECT_RELATION PR
+		         WHERE 1 = 1
+		           AND PR.STATUS=1
+		           AND PR.PROJECT_ID = #{projectId}
+		           AND PC.PROJECT_ID = PR.REF_PROJECT_ID)
+	</select>
+	
+	<select id="getCreditContractCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+		 WITH TMP AS
+	       (SELECT NVL(COUNT(1), 0) AS TOTAL
+	          FROM BIZ_CONTRACT_TEMPLATE
+	         WHERE PID = #{templateId}
+	           AND STATUS=1
+	           AND TEMPLATE_CATELOG =
+	               (SELECT LV.PID
+	                  FROM SYS_LOOKUP SL, SYS_LOOKUP_VAL LV
+	                 WHERE SL.LOOKUP_TYPE = 'CONTRACT_TEMPLATE_CATELOG'
+	                   AND LV.LOOKUP_ID = SL.PID
+	                   AND SL.STATUS = 1
+	                   AND LV.STATUS = 1
+	                   AND LV.LOOKUP_VAL = 'SX')
+	           AND TEMPLATE_TYPE =
+	               (SELECT LV.PID
+	                  FROM SYS_LOOKUP SL, SYS_LOOKUP_VAL LV
+	                 WHERE SL.LOOKUP_TYPE = 'CONTRACT_TEMPLATE_TYPE'
+	                   AND LV.LOOKUP_ID = SL.PID
+	                   AND SL.STATUS = 1
+	                   AND LV.STATUS = 1
+	                   AND LV.LOOKUP_VAL = 'SX'))
+	      SELECT NVL (COUNT(1), 0)
+	        FROM BIZ_PROJECT_CONTRACT PC, BIZ_CONTRACT_TEMPLATE CT
+	       WHERE 1 = 1 
+	       AND PC.STATUS=1
+	       AND CT.STATUS=1
+	       AND (SELECT T.TOTAL FROM TMP T) > 0 
+	       AND PC.PROJECT_ID = #{projectId}
+	       AND CT.PID = PC.CONTRACT_TEMPLATE_ID 
+	       AND CT.TEMPLATE_CATELOG = (
+	        SELECT LV.PID
+	          FROM SYS_LOOKUP SL, SYS_LOOKUP_VAL LV
+	         WHERE SL.LOOKUP_TYPE = 'CONTRACT_TEMPLATE_CATELOG' AND LV.LOOKUP_ID = SL.PID AND SL.STATUS = 1 AND LV.STATUS = 1 AND LV.LOOKUP_VAL = 'SX') 
+	       AND CT.TEMPLATE_TYPE = (
+	        SELECT LV.PID
+	          FROM SYS_LOOKUP SL, SYS_LOOKUP_VAL LV
+	         WHERE SL.LOOKUP_TYPE = 'CONTRACT_TEMPLATE_TYPE' AND LV.LOOKUP_ID = SL.PID AND SL.STATUS = 1 AND LV.STATUS = 1 AND LV.LOOKUP_VAL = 'SX')
+	</select>
+	
+	<select id="getJkContractCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+		 WITH TMP AS
+	       (SELECT NVL(COUNT(1), 0) AS TOTAL
+	          FROM BIZ_CONTRACT_TEMPLATE
+	         WHERE PID = #{templateId}
+	           AND STATUS=1
+	           AND CONTRACT_TYPE_CODE LIKE 'JK'
+	           AND TEMPLATE_CATELOG =
+	               (SELECT LV.PID
+	                  FROM SYS_LOOKUP SL, SYS_LOOKUP_VAL LV
+	                 WHERE SL.LOOKUP_TYPE = 'CONTRACT_TEMPLATE_CATELOG'
+	                   AND LV.LOOKUP_ID = SL.PID
+	                   AND SL.STATUS = 1
+	                   AND LV.STATUS = 1
+	                   AND LV.LOOKUP_VAL = 'DK')
+	           AND TEMPLATE_TYPE =
+	               (SELECT LV.PID
+	                  FROM SYS_LOOKUP SL, SYS_LOOKUP_VAL LV
+	                 WHERE SL.LOOKUP_TYPE = 'CONTRACT_TEMPLATE_TYPE'
+	                   AND LV.LOOKUP_ID = SL.PID
+	                   AND SL.STATUS = 1
+	                   AND LV.STATUS = 1
+	                   AND LV.LOOKUP_VAL = 'JK'))
+	      SELECT NVL (COUNT(1), 0)
+	        FROM BIZ_PROJECT_CONTRACT PC, BIZ_CONTRACT_TEMPLATE CT
+	       WHERE 1 = 1 
+	       AND PC.STATUS=1
+	       AND CT.STATUS=1
+	       AND (SELECT T.TOTAL FROM TMP T) > 0 
+	       AND PC.PROJECT_ID = #{projectId}
+	       AND CT.PID = PC.CONTRACT_TEMPLATE_ID
+	       AND CT.CONTRACT_TYPE_CODE LIKE 'JK' 
+	       AND CT.TEMPLATE_CATELOG = (
+	        SELECT LV.PID
+	          FROM SYS_LOOKUP SL, SYS_LOOKUP_VAL LV
+	         WHERE SL.LOOKUP_TYPE = 'CONTRACT_TEMPLATE_CATELOG' AND LV.LOOKUP_ID = SL.PID AND SL.STATUS = 1 AND LV.STATUS = 1 AND LV.LOOKUP_VAL = 'DK') 
+	       AND CT.TEMPLATE_TYPE = (
+	        SELECT LV.PID
+	          FROM SYS_LOOKUP SL, SYS_LOOKUP_VAL LV
+	         WHERE SL.LOOKUP_TYPE = 'CONTRACT_TEMPLATE_TYPE' AND LV.LOOKUP_ID = SL.PID AND SL.STATUS = 1 AND LV.STATUS = 1 AND LV.LOOKUP_VAL = 'JK')
+	</select>
+	
+	<select id="getZkContractCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+		 WITH TMP AS
+	       (SELECT NVL(COUNT(1), 0) AS TOTAL
+	          FROM BIZ_CONTRACT_TEMPLATE
+	         WHERE PID = #{templateId}
+	           AND STATUS=1
+	           AND CONTRACT_TYPE_CODE LIKE '%JKZQ%'
+	           AND TEMPLATE_CATELOG =
+	               (SELECT LV.PID
+	                  FROM SYS_LOOKUP SL, SYS_LOOKUP_VAL LV
+	                 WHERE SL.LOOKUP_TYPE = 'CONTRACT_TEMPLATE_CATELOG'
+	                   AND LV.LOOKUP_ID = SL.PID
+	                   AND SL.STATUS = 1
+	                   AND LV.STATUS = 1
+	                   AND LV.LOOKUP_VAL = 'ZK')
+	         )
+	      SELECT NVL (COUNT(1), 0)
+	        FROM BIZ_PROJECT_CONTRACT PC, BIZ_CONTRACT_TEMPLATE CT
+	       WHERE 1 = 1 
+	       AND PC.STATUS=1
+	       AND CT.STATUS=1
+	       AND (SELECT T.TOTAL FROM TMP T) > 0 
+	       AND PC.PROJECT_ID = #{projectId}
+	       AND CT.PID = PC.CONTRACT_TEMPLATE_ID
+	       AND CT.CONTRACT_TYPE_CODE LIKE '%JKZQ%' 
+	       AND CT.TEMPLATE_CATELOG = (
+	        SELECT LV.PID
+	          FROM SYS_LOOKUP SL, SYS_LOOKUP_VAL LV
+	         WHERE SL.LOOKUP_TYPE = 'CONTRACT_TEMPLATE_CATELOG' AND LV.LOOKUP_ID = SL.PID AND SL.STATUS = 1 AND LV.STATUS = 1 AND LV.LOOKUP_VAL = 'ZK') 	       
+	</select>
+	
+	
+	<select id="getContractAttachment" resultMap="contractAttachmentMap" parameterType="java.lang.Integer">
+		SELECT *
+		  FROM BIZ_CONTRACT_ATTACHMENT BCA
+		 WHERE BCA.CONTRACT_ID = #{CONTRACTID}
+	</select>
+	
+	<insert id="addContractAttachment" parameterType="com.xlkfinance.bms.rpc.contract.ContractAttachment">
+	<selectKey order="BEFORE" resultType="java.lang.Integer" keyProperty="pid">
+		SELECT SEQ_BIZ_CONTRACT_ATTACHMENT.Nextval as PID from DUAL
+	</selectKey>
+		INSERT INTO BIZ_CONTRACT_ATTACHMENT
+		 (PID,
+          CONTRACT_ID,
+          ATTACHMENT_FILE_NAME,
+          ATTACHMENT_LOCATION,
+          OFFLINE_CNT,
+          ONLINE_CNT,
+          REMARK,
+          STATUS,
+          CREATE_DTTM)
+		VALUES
+		  (#{pid}, 
+		   #{contractId},
+		   #{attachmentFileName}, 
+		   #{attachmentLocation}, 
+		   #{offlineCnt}, 
+		   #{onlineCnt}, 
+		   #{remark}, 
+		   1, 
+		   sysdate)
+	</insert>
+	
+	<update id="editContractAttachment" parameterType="com.xlkfinance.bms.rpc.contract.ContractAttachment">
+		UPDATE BIZ_CONTRACT_ATTACHMENT
+		<set>
+			<if test="attachmentFileName!=null and attachmentFileName!=''">
+			ATTACHMENT_FILE_NAME = #{attachmentFileName},
+			</if>
+			<if test="attachmentLocation!=null and attachmentLocation!=''">
+			ATTACHMENT_LOCATION = #{attachmentLocation},
+			</if>
+			<if test="offlineCnt!=null and offlineCnt!=''">
+			OFFLINE_CNT = #{offlineCnt},
+			</if>
+			<if test="onlineCnt!=null and offlineCnt!=''">
+			ONLINE_CNT = #{onlineCnt},
+			</if>
+			<if test="remark!=null and remark!=''">
+			REMARK = #{remark}
+			</if>
+		</set>
+		WHERE CONTRACT_ID = #{contractId}
+	</update>
+	
+	<insert id="addAccessorie" parameterType="com.xlkfinance.bms.rpc.contract.ContractAccessorie">
+	<selectKey order="BEFORE" resultType="java.lang.Integer" keyProperty="pid">
+		SELECT SEQ_BIZ_CONTRACT_ACCESSORIESSS.Nextval as PID from DUAL
+	</selectKey>
+		insert INTO biz_contract_accessoriesss
+          (pid, contract_id, file_id, file_type, file_source, file_property, file_desc, status)
+        VALUES
+          (#{pid}, #{contractId}, #{fileId}, #{fileType}, null, null, #{fileDesc}, 1)
+	</insert>
+	
+	<update id="editAccessorie" parameterType="com.xlkfinance.bms.rpc.contract.ContractAccessorie">
+		UPDATE biz_contract_accessoriesss
+		<set>
+			<if test="fileId!=null and fileId!='' and fileId!=0">
+				file_id = #{fileId},
+			</if>
+			<if test="fileType!=null and fileType!=''">
+				file_type = #{fileType},
+			</if>
+			<if test="fileDesc!=null and fileDesc!=''">
+				file_desc = #{fileDesc},
+			</if>
+		</set>
+		WHERE pid = #{pid}
+	</update>
+	
+	<select id="getChildContract" parameterType="java.lang.Integer" resultType="java.lang.String">
+		SELECT CONTRACT_NAME
+         FROM BIZ_PROJECT_CONTRACT
+        WHERE PID = (SELECT MAX(PID)
+                       FROM BIZ_PROJECT_CONTRACT
+                      WHERE PARENT_ID =#{contractId}
+                        AND STATUS = 1)
+	</select>
+	
+		<!-- 合同生产编号 -->
+		<select id="getContractGenerateNumber" parameterType="java.util.Map" statementType="CALLABLE">
+				<![CDATA[ 
+			{ call PKG_CONTRACT.PRO_CONTRACT_GENERATE_NUMBER(#{contractId, mode=IN, jdbcType=INTEGER},
+				#{results,mode=OUT,jdbcType=CURSOR,resultMap=baseContractMap}) } 
+			  ]]>  
+		</select>
+	
+	<!-- 获取展期合同编号 -->
+	<select id="getExtensionContractNum" resultType="java.lang.String" parameterType="java.lang.Integer">
+			select PKG_CONTRACT.FUN_GET_CONTRACT_EXTENSION_NUM(#{projectId}) from dual 
+	</select>	
+	 
+</mapper>

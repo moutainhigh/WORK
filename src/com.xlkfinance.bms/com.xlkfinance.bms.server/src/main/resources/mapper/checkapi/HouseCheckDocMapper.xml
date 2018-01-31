@@ -1,0 +1,245 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.checkapi.mapper.HouseCheckDocMapper">
+
+<resultMap type="com.xlkfinance.bms.rpc.checkapi.HouseCheckDoc" id="baseResultMap">
+    <id column="PID" property="pid" />
+    <result column="USER_ID" property="userId" />
+    <result column="QUERY_TYPE" property="queryType" />
+    <result column="CERT_TYPE" property="certType" />
+    <result column="YEAR" property="year"  />
+    <result column="CERT_NO" property="certNo" />
+    <result column="PERSON_INFO" property="personInfo" />
+    <result column="CREATE_TIME" property="createTime"  />
+    <result column="UPDATE_TIME" property="updateTime"  />
+    <result column="IS_DEL" property="isDel" />
+    <association property="checkDocTime" column="{houseCheckDocId=PID}" select="getCheckDocTimeByMap"/>
+    <association property="checkStatus" column="{houseCheckDocId=PID}" select="getCheckStatusByMap"/>
+    
+</resultMap>
+ 
+
+<!-- 获取PID -->
+<select id="getSeqHouseCheckDoc" resultType="java.lang.Integer">
+	SELECT SEQ_HOUSE_CHECK_DOC.Nextval as PID from DUAL 
+</select>
+
+
+<select id="getCheckDocTimeByMap" resultType="java.lang.String" parameterType="java.util.HashMap">
+
+	SELECT CHECK_DOC_TIME FROM (
+		SELECT CHECK_DOC_TIME FROM BIZ_HOUSE_CHECK_DOC_DETAILS  D 
+	       
+	       WHERE D.HOUSE_CHECK_DOC_ID = #{houseCheckDocId}
+	       ORDER BY D.CHECK_DOC_TIME DESC  
+	) WHERE ROWNUM  = 1 
+</select>
+<select id="getCheckStatusByMap" resultType="java.lang.Integer" parameterType="java.util.HashMap">
+
+	SELECT CHECK_STATUS FROM (
+		SELECT CHECK_STATUS FROM BIZ_HOUSE_CHECK_DOC_DETAILS  D 
+	       WHERE D.HOUSE_CHECK_DOC_ID = #{houseCheckDocId}
+	       ORDER BY D.CHECK_DOC_TIME DESC  
+	) WHERE ROWNUM  = 1 
+</select>
+
+
+
+
+
+<!-- 查询列表 -->
+<select id="getHouseCheckDocs" resultMap="baseResultMap" parameterType="com.xlkfinance.bms.rpc.checkapi.HouseCheckDoc">
+	 
+	<![CDATA[
+	SELECT D.* FROM (SELECT T.*, ROWNUM RN
+		     FROM (	 
+ 			 SELECT H.PID, H.USER_ID, H.QUERY_TYPE, H.CERT_TYPE, H.YEAR,
+			 	 	H.CERT_NO, H.PERSON_INFO, IS_DEL  
+			 	FROM BIZ_HOUSE_CHECK_DOC H 
+			 		 
+			 WHERE 	1 = 1 
+	 ]]>
+		<if test="pid != null and pid > 0">
+	    		AND  H.PID = #{pid}
+	    </if>
+		<if test="userId != null and userId > 0">
+	    		AND H.USER_ID = #{userId}
+	    </if>
+		<if test="queryType != null and queryType > 0">
+	    		AND H.QUERY_TYPE = #{queryType,jdbcType=INTEGER}
+	    </if>
+		<if test="certType != null and certType > 0">
+	    		AND H.CERT_TYPE = #{certType,jdbcType=INTEGER}
+	    </if>
+		<if test="certNo != null and certNo != ''">
+	    		AND H.CERT_NO = #{certNo}
+	    </if>
+		<if test="year != null and year != ''">
+	    		AND H.YEAR = #{year}
+	    </if>
+		<if test="personInfo != null and personInfo != ''">
+	    		AND H.PERSON_INFO = #{personInfo}
+	    </if>
+		<if test="isDel != null and isDel > 0 ">
+	    		AND H.IS_DEL = #{isDel,jdbcType=INTEGER}
+	    </if>
+	    
+	    ORDER BY  H.UPDATE_TIME DESC
+	 
+	 <![CDATA[
+	 ) T WHERE ROWNUM <=#{page}*#{rows}
+	) D WHERE D.RN > ((#{page}-1)*#{rows})]]>
+</select>
+
+
+<!-- 查询列表数量 -->
+<select id="getHouseCheckDocCount" resultType="java.lang.Integer" parameterType="com.xlkfinance.bms.rpc.checkapi.HouseCheckDoc">
+	 
+	select count(0) from BIZ_HOUSE_CHECK_DOC H 
+	where 	1 = 1 
+	<if test="pid != null and pid > 0">
+    		AND  H.PID = #{pid}
+    </if>
+	<if test="userId != null and userId > 0">
+    		AND H.USER_ID = #{userId}
+    </if>
+	<if test="queryType != null and queryType > 0">
+    		AND H.QUERY_TYPE = #{queryType,jdbcType=INTEGER}
+    </if>
+	<if test="certType != null and certType > 0">
+    		AND H.CERT_TYPE = #{certType,jdbcType=INTEGER}
+    </if>
+	<if test="certNo != null and certNo != ''">
+    		AND H.CERT_NO = #{certNo}
+    </if>
+	<if test="year != null and year != ''">
+    		AND H.YEAR = #{year}
+    </if>
+	<if test="personInfo != null and personInfo != ''">
+    		AND H.PERSON_INFO = #{personInfo}
+    </if>
+  	<if test="isDel != null and isDel > 0 ">
+   		AND H.IS_DEL = #{isDel,jdbcType=INTEGER}
+    </if>
+</select>
+
+ 
+
+<!-- 新增 -->
+<insert id="addHouseCheckDoc" parameterType="com.xlkfinance.bms.rpc.checkapi.HouseCheckDoc">
+ 
+	INSERT INTO BIZ_HOUSE_CHECK_DOC
+	
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+        PID, 
+		<if test="userId != null and userId > 0">
+	    		USER_ID , 
+	    </if>
+		<if test="queryType != null and queryType > 0">
+	    		QUERY_TYPE, 
+	    </if>
+		<if test="certType != null and certType > 0">
+	    		CERT_TYPE, 
+	    </if>
+		<if test="year != null and year != ''">
+	    		YEAR, 
+	    </if>
+		<if test="certNo != null and certNo != ''">
+	    		CERT_NO, 
+	    </if>
+		<if test="personInfo != null and personInfo != ''">
+	    		PERSON_INFO, 
+	    </if>
+		<if test="createTime != null and createTime != ''">
+	    		CREATE_TIME, 
+	    </if>
+		<if test="updateTime != null and updateTime != ''">
+	    		UPDATE_TIME, 
+	    </if>
+  		<if test="isDel != null and isDel > 0 ">
+	   			IS_DEL, 
+	    </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+    		#{pid,jdbcType=INTEGER}, 
+    		
+		<if test="userId != null and userId > 0">
+	    		#{userId,jdbcType=INTEGER}, 
+	    </if>
+		<if test="queryType != null and queryType > 0">
+	    		#{queryType,jdbcType=INTEGER}, 
+	    </if>
+		<if test="certType != null and certType > 0">
+	    		#{certType,jdbcType=INTEGER},
+	    </if>
+		<if test="year != null and year != ''">
+	    		#{year}, 
+	    </if>
+		<if test="certNo != null and certNo != ''">
+	    		#{certNo}, 
+	    </if>
+		<if test="personInfo != null and personInfo != ''">
+	    		#{personInfo}, 
+	    </if>
+		<if test="createTime != null and createTime != ''">
+	    		#{createTime,javaType=String, jdbcType=TIMESTAMP},
+	    </if>
+		<if test="updateTime != null and updateTime != ''">
+	    		#{updateTime,javaType=String, jdbcType=TIMESTAMP},
+	    </if>
+	  	<if test="isDel != null and isDel > 0 ">
+	  			#{isDel,jdbcType=INTEGER},
+	    </if>
+    </trim>
+</insert>
+
+
+
+
+<!-- 新增 -->
+<update id="updateHouseCheckDoc" parameterType="com.xlkfinance.bms.rpc.checkapi.HouseCheckDoc">
+	UPDATE  BIZ_HOUSE_CHECK_DOC
+  	 <set>
+		<if test="userId != null and userId > 0">
+	    		USER_ID = #{userId,jdbcType=INTEGER}, 
+	    </if>
+		<if test="queryType != null and queryType > 0">
+	    		QUERY_TYPE = #{queryType,jdbcType=INTEGER}, 
+	    </if>
+		<if test="certType != null and certType > 0">
+	    		CERT_TYPE = #{certType,jdbcType=INTEGER},
+	    </if>
+		<if test="year != null and year != ''">
+	    		YEAR = #{year}, 
+	    </if>
+		<if test="certNo != null and certNo != ''">
+	    		CERT_NO = #{certNo},  
+	    </if>
+		<if test="personInfo != null and personInfo != ''">
+	    		PERSON_INFO = #{personInfo}, 
+	    </if>
+		<if test="updateTime != null and updateTime != ''">
+	    		UPDATE_TIME = #{updateTime,javaType=String, jdbcType=TIMESTAMP},
+	    </if>
+	  	<if test="isDel != null and isDel > 0 ">
+	  			IS_DEL = #{isDel,jdbcType=INTEGER},
+	    </if>
+	</set>
+	WHERE PID=#{pid,jdbcType=INTEGER}
+</update>
+
+
+
+<!-- 根据id查询 -->
+<select id="getHouseCheckDocById" resultMap="baseResultMap" parameterType="java.lang.Integer">
+		 
+	 select H.PID, H.USER_ID, H.QUERY_TYPE, H.CERT_TYPE, H.YEAR,
+	 	 H.CERT_NO, H.PERSON_INFO, IS_DEL,CREATE_TIME
+	 	from BIZ_HOUSE_CHECK_DOC H 
+			 where  H.PID = #{pid}
+</select>
+
+
+
+
+
+</mapper>

@@ -1,0 +1,699 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.beforeloan.mapper.ProjectForeclosureMapper">
+		<resultMap id="projectForeclosureMapper" type="com.xlkfinance.bms.rpc.beforeloan.ProjectForeclosure">
+			<result property="pid" column="PID" />
+			<result property="projectId" column="PROJECT_ID" />
+			<result property="oldLoanBank" column="OLD_LOAN_BANK" />
+			<result property="oldLoanPerson" column="OLD_LOAN_PERSON" />
+			<result property="oldLoanMoney" column="OLD_LOAN_MONEY" />
+			<result property="oldLoanPhone" column="OLD_LOAN_PHONE" />
+			<result property="newLoanBank" column="NEW_LOAN_BANK" />
+			<result property="newLoanPerson" column="NEW_LOAN_PERSON" />
+			<result property="newLoanMoney" column="NEW_LOAN_MONEY" />
+			<result property="newLoanPhone" column="NEW_LOAN_PHONE" />
+			<result property="fundsMoney" column="FUNDS_MONEY" />
+			<result property="superviseDepartment" column="SUPERVISE_DEPARTMENT" />
+			<result property="notarizationDate" column="NOTARIZATION_DATE" />
+			<result property="signDate" column="SIGN_DATE"/>
+			<result property="paymentType" column="PAYMENT_TYPE" />
+			<result property="remark" column="REMARK" />
+			<result property="accumulationFundBank" column="ACCUMULATION_FUND_BANK" />
+			<result property="accumulationFundMoney" column="ACCUMULATION_FUND_MONEY" />
+			<result property="loanDays" column="LOAN_DAYS" />
+			<result property="paymentName" column="PAYMENT_NAME" />
+			<result property="paymentAccount" column="PAYMENT_ACCOUNT" />
+			<result property="overdueDays" column="OVERDUE_DAYS" />
+			<result property="overdueRate" column="OVERDUE_RATE" />
+			<result property="overdueFee" column="OVERDUE_FEE" />
+			<result property="extensionDays" column="EXTENSION_DAYS" />
+			<result property="extensionRate" column="EXTENSION_RATE" />
+			<result property="extensionFee" column="EXTENSION_FEE" />
+			<result property="paymentDate" column="PAYMENT_DATE" />
+			<result property="receDate" column="RECE_DATE" />
+			
+			<result property="oldOwedAmount" column="OLD_OWED_AMOUNT" />
+			<result property="oldLoanTime" column="OLD_LOAN_TIME" />
+			<result property="superviseAccount" column="SUPERVISE_ACCOUNT" />
+			<result property="thirdBorrower" column="THIRD_BORROWER" />
+			<result property="thirdBorrowerCard" column="THIRD_BORROWER_CARD" />
+			<result property="thirdBorrowerPhone" column="THIRD_BORROWER_PHONE" />
+			<result property="thirdBorrowerAddress" column="THIRD_BORROWER_ADDRESS" />
+			<result property="foreAccount" column="FORE_ACCOUNT" />
+			
+			<result property="newReceAccount" column="NEW_RECE_ACCOUNT" />
+			<result property="newReceName" column="NEW_RECE_NAME" />
+			<result property="newReceBank" column="NEW_RECE_BANK" />
+			<result property="newRecePerson" column="NEW_RECE_PERSON" />
+			<result property="supersionReceAccount" column="SUPERSION_RECE_ACCOUNT" />
+			<result property="supersionReceName" column="SUPERSION_RECE_NAME" />
+			<result property="supersionReceBank" column="SUPERSION_RECE_BANK" />
+			
+			<result property="oldLoanBankBranch" column="OLD_LOAN_BANK_BRANCH" />
+			<result property="newLoanBankBranch" column="NEW_LOAN_BANK_BRANCH" />
+			<result property="superviseDepartmentBranch" column="SUPERVISE_DEPARTMENT_BRANCH" />
+			
+			<result property="oldBankStr" column="OLD_BANK_STR" />
+			<result property="newBankStr" column="NEW_BANK_STR" />
+			<result property="superviseDepartmentStr" column="SUPERVISE_DEPARTMENT_STR" />
+			<result property="oldBankBranchStr" column="OLD_BANK_BRANCH_STR" />
+			<result property="newBankBranchStr" column="NEW_BANK_BRANCH_STR" />
+			<result property="superviseDepartmentBranchStr" column="SUPERVISE_DEPARTMENT_BRANCH_STR" />
+			<result property="accumulationFundBankStr" column="ACCUMULATION_FUND_BANK_STR" />
+			<result property="idCardNumber" column="ID_CARD_NUMBER" />
+			<result property="downPayment" column="DOWN_PAYMENT" />
+			
+		    <result property="turnoverCapitalName" column="TURNOVER_CAPITAL_NAME" />
+			<result property="turnoverCapitalAccount" column="TURNOVER_CAPITAL_ACCOUNT" />
+			<result property="turnoverCapitalBank" column="TURNOVER_CAPITAL_BANK" />
+		</resultMap>
+	<sql id="Foreclosure_Column_List">
+	   PID pid,
+       PROJECT_ID projectId,
+       ID_CARD_NUMBER idCardNumber,
+       DOWN_PAYMENT downPayment,
+       OLD_LOAN_BANK oldLoanBank,
+       OLD_LOAN_PERSON oldLoanPerson,
+       OLD_LOAN_MONEY oldLoanMoney,
+       OLD_LOAN_PHONE oldLoanPhone,
+       NEW_LOAN_BANK newLoanBank,
+       NEW_LOAN_PERSON newLoanPerson,
+       NEW_LOAN_MONEY newLoanMoney,
+       NEW_LOAN_PHONE newLoanPhone,
+       FUNDS_MONEY fundsMoney,
+       SUPERVISE_DEPARTMENT superviseDepartment,
+       TO_CHAR(NOTARIZATION_DATE, 'yyyy-MM-dd') notarizationDate,
+       TO_CHAR(SIGN_DATE, 'yyyy-MM-dd') signDate,
+       TO_CHAR(PAYMENT_DATE, 'yyyy-MM-dd') paymentDate,
+       PAYMENT_TYPE paymentType,
+       REMARK remark,
+       ACCUMULATION_FUND_BANK accumulationFundBank,
+       ACCUMULATION_FUND_MONEY accumulationFundMoney,
+       LOAN_DAYS loanDays,
+       PAYMENT_NAME paymentName,
+       PAYMENT_ACCOUNT paymentAccount,
+       OVERDUE_DAYS overdueDays,
+       OVERDUE_RATE overdueRate,
+       OVERDUE_FEE overdueFee,
+       EXTENSION_DAYS extensionDays,
+       EXTENSION_RATE extensionRate,
+       EXTENSION_FEE extensionFee,
+       TO_CHAR(rece_Date, 'yyyy-MM-dd') receDate,
+       OLD_OWED_AMOUNT oldOwedAmount,
+       TO_CHAR(OLD_LOAN_TIME, 'yyyy-MM-dd') oldLoanTime,
+       SUPERVISE_ACCOUNT superviseAccount,
+       THIRD_BORROWER thirdBorrower,
+       THIRD_BORROWER_CARD thirdBorrowerCard,
+       THIRD_BORROWER_PHONE thirdBorrowerPhone,
+       THIRD_BORROWER_ADDRESS thirdBorrowerAddress,
+       FORE_ACCOUNT foreAccount,
+       NEW_RECE_ACCOUNT newReceAccount,
+       NEW_RECE_NAME newReceName,
+       NEW_RECE_BANK newReceBank,
+       NEW_RECE_PERSON newRecePerson,
+       SUPERSION_RECE_ACCOUNT supersionReceAccount,
+       SUPERSION_RECE_NAME supersionReceName,
+       SUPERSION_RECE_BANK supersionReceBank,
+       OLD_LOAN_BANK_BRANCH oldLoanBankBranch,
+       NEW_LOAN_BANK_BRANCH newLoanBankBranch,
+	   TURNOVER_CAPITAL_NAME turnoverCapitalName,
+	   TURNOVER_CAPITAL_ACCOUNT turnoverCapitalAccount,
+	   TURNOVER_CAPITAL_BANK turnoverCapitalBank,
+       SUPERVISE_DEPARTMENT_BRANCH superviseDepartmentBranch,
+       (SELECT B.BANK_NAME FROM OLD_LOAN_BANK_V B WHERE B.PID = PROJECT_ID) oldBankStr,
+       (SELECT B.BANK_NAME FROM SYS_BANK_INFO B WHERE B.PID = NEW_LOAN_BANK) newBankStr,
+       (SELECT B.BANK_NAME FROM SYS_BANK_INFO B WHERE B.PID = (CASE WHEN ISNUMBER(SUPERVISE_DEPARTMENT) = 1 THEN SUPERVISE_DEPARTMENT ELSE '0' END)) superviseDepartmentStr,
+       (SELECT B.BANK_NAME FROM SYS_BANK_INFO B WHERE B.PID = ACCUMULATION_FUND_BANK) accumulationFundBankStr,
+       (SELECT B.BANK_NAME FROM SYS_BANK_INFO B WHERE B.PID = OLD_LOAN_BANK_BRANCH) oldBankBranchStr,
+       (SELECT B.BANK_NAME FROM SYS_BANK_INFO B WHERE B.PID = NEW_LOAN_BANK_BRANCH) newBankBranchStr,
+       (SELECT B.BANK_NAME FROM SYS_BANK_INFO B WHERE B.PID = SUPERVISE_DEPARTMENT_BRANCH) superviseDepartmentBranchStr
+    </sql>
+    
+     <!-- 查询项目赎楼信息PID -->
+	<select id="getSeqBizProjectForeclosure" resultType="java.lang.Integer">
+		SELECT SEQ_BIZ_PROJECT_FORECLOSURE.NEXTVAL AS PID FROM DUAL
+	</select>
+    
+	<!-- 根据项目ID查询项目赎楼信息 -->
+	<select id="getForeclosureByProjectId"  resultType="com.xlkfinance.bms.rpc.beforeloan.ProjectForeclosure" parameterType="java.lang.Integer">
+		SELECT 
+		<include refid="Foreclosure_Column_List" /> 
+		FROM BIZ_PROJECT_FORECLOSURE WHERE PROJECT_ID = #{projectId}
+	</select>
+	
+	<!-- 新增项目赎楼信息 -->
+	<insert id="insertForeclosure" parameterType="com.xlkfinance.bms.rpc.beforeloan.ProjectForeclosure">
+		INSERT INTO BIZ_PROJECT_FORECLOSURE
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			PID,
+			<if test="projectId != null and projectId >0 ">
+				PROJECT_ID,
+			</if>
+			<if test="oldLoanBank != null and oldLoanBank!='' ">
+				OLD_LOAN_BANK,
+			</if>
+			<if test="oldLoanPerson != null and oldLoanPerson != '' ">
+				OLD_LOAN_PERSON,
+			</if>
+			<if test="oldLoanMoney != null and oldLoanMoney!=-1">
+				OLD_LOAN_MONEY,
+			</if>
+			<if test="oldLoanPhone != null and oldLoanPhone != ''">
+				OLD_LOAN_PHONE,
+			</if>
+			<if test="newLoanBank != null and newLoanBank!=''">
+				NEW_LOAN_BANK,
+			</if>
+			<if test="newLoanPerson != null and newLoanPerson!=''">
+				NEW_LOAN_PERSON,
+			</if>
+			<if test="newLoanMoney != null and newLoanMoney!=-1">
+				NEW_LOAN_MONEY,
+			</if>
+			<if test="newLoanPhone != null and newLoanPhone!=''">
+				NEW_LOAN_PHONE,
+			</if>
+			<if test="fundsMoney != null and fundsMoney !=-1">
+				FUNDS_MONEY,
+			</if>
+			
+			<if test="superviseDepartment != null and superviseDepartment != ''">
+				SUPERVISE_DEPARTMENT,
+			</if>
+			<if test="notarizationDate != null and notarizationDate != ''">
+				NOTARIZATION_DATE,
+			</if>
+			<if test="signDate != null and signDate != ''">
+				SIGN_DATE,
+			</if>
+			
+			<if test="paymentType != null and paymentType>0 ">
+				PAYMENT_TYPE,
+			</if>
+			<if test="remark != null and remark!='' ">
+				REMARK,
+			</if>
+			<if test="accumulationFundBank != null and accumulationFundBank != '' ">
+				ACCUMULATION_FUND_BANK,
+			</if>
+			<if test="accumulationFundMoney != null and accumulationFundMoney!=-1">
+				ACCUMULATION_FUND_MONEY,
+			</if>
+			<if test="loanDays != null and loanDays>0">
+				LOAN_DAYS,
+			</if>
+			<if test="paymentName != null and paymentName!=''">
+				PAYMENT_NAME,
+			</if>
+			<if test="paymentAccount != null and paymentAccount!=''">
+				PAYMENT_ACCOUNT,
+			</if>
+			<if test="overdueDays != null and overdueDays!= -1">
+				OVERDUE_DAYS,
+			</if>
+			<if test="overdueRate != null and overdueRate!= -1">
+				OVERDUE_RATE,
+			</if>
+			<if test="overdueFee != null and overdueFee!= -1">
+				OVERDUE_FEE,
+			</if>
+			
+			<if test="extensionDays != null and extensionDays!= -1">
+				EXTENSION_DAYS,
+			</if>
+			<if test="extensionRate != null and extensionRate!= -1">
+				EXTENSION_RATE,
+			</if>
+			<if test="extensionFee != null and extensionFee!= -1">
+				EXTENSION_FEE,
+			</if>
+			<if test="paymentDate != null and paymentDate!=''">
+				PAYMENT_DATE,
+			</if>
+			<if test="receDate != null and receDate!=''">
+				RECE_DATE,
+			</if>
+			
+			<if test="oldOwedAmount != null and oldOwedAmount!=-1">
+				OLD_OWED_AMOUNT,
+			</if>
+			<if test="oldLoanTime != null and oldLoanTime!=''">
+				OLD_LOAN_TIME,
+			</if>
+			<if test="superviseAccount != null and superviseAccount!=''">
+				SUPERVISE_ACCOUNT,
+			</if>
+			<if test="thirdBorrower != null and thirdBorrower!=''">
+				THIRD_BORROWER,
+			</if>
+			<if test="thirdBorrowerCard != null and thirdBorrowerCard!=''">
+				THIRD_BORROWER_CARD,
+			</if>
+			<if test="thirdBorrowerPhone != null and thirdBorrowerPhone!=''">
+				THIRD_BORROWER_PHONE,
+			</if>
+			<if test="thirdBorrowerAddress != null and thirdBorrowerAddress!=''">
+				THIRD_BORROWER_ADDRESS,
+			</if>
+			<if test="foreAccount != null and foreAccount!=''">
+				FORE_ACCOUNT,
+			</if>
+			<if test="newReceAccount != null and newReceAccount!=''">
+				NEW_RECE_ACCOUNT,
+			</if>
+			<if test="newReceName != null and newReceName!=''">
+				NEW_RECE_NAME,
+			</if>
+			<if test="newReceBank != null and newReceBank!=''">
+				NEW_RECE_BANK,
+			</if>
+			<if test="supersionReceAccount != null and supersionReceAccount!=''">
+				SUPERSION_RECE_ACCOUNT,
+			</if>
+			<if test="supersionReceName != null and supersionReceName!=''">
+				SUPERSION_RECE_NAME,
+			</if>
+			<if test="supersionReceBank != null and supersionReceBank!=''">
+				SUPERSION_RECE_BANK,
+			</if>
+			
+			<if test="oldLoanBankBranch != null and oldLoanBankBranch!=''">
+				OLD_LOAN_BANK_BRANCH,
+			</if>
+			<if test="newLoanBankBranch != null and newLoanBankBranch!=''">
+				NEW_LOAN_BANK_BRANCH,
+			</if>
+			<if test="superviseDepartmentBranch != null and superviseDepartmentBranch!=''">
+				SUPERVISE_DEPARTMENT_BRANCH, 
+			</if>
+			<if test="idCardNumber != null">
+				ID_CARD_NUMBER,
+			</if>
+			<if test="downPayment != null and downPayment !=-1">
+				DOWN_PAYMENT,
+			</if>
+			<if test="turnoverCapitalName != null and turnoverCapitalName !=''">
+				TURNOVER_CAPITAL_NAME,
+			</if>
+			<if test="turnoverCapitalAccount != null and turnoverCapitalAccount !=''">
+				TURNOVER_CAPITAL_ACCOUNT,
+			</if>
+			<if test="turnoverCapitalBank != null and turnoverCapitalBank !=''">
+				TURNOVER_CAPITAL_BANK,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+				#{pid},
+			<if test="projectId != null and projectId>0 ">
+				#{projectId},
+			</if>
+			<if test="oldLoanBank != null and oldLoanBank!='' ">
+				#{oldLoanBank},
+			</if>
+			<if test="oldLoanPerson != null and oldLoanPerson != '' ">
+				#{oldLoanPerson},
+			</if>
+			<if test="oldLoanMoney != null and oldLoanMoney!=-1">
+				#{oldLoanMoney},
+			</if>
+			<if test="oldLoanPhone != null and oldLoanPhone != ''">
+				#{oldLoanPhone},
+			</if>
+			<if test="newLoanBank != null and newLoanBank!=''">
+				#{newLoanBank},
+			</if>
+			<if test="newLoanPerson != null and newLoanPerson!=''">
+				#{newLoanPerson},
+			</if>
+			<if test="newLoanMoney != null and newLoanMoney!=-1">
+				#{newLoanMoney},
+			</if>
+			<if test="newLoanPhone != null and newLoanPhone!=''">
+				#{newLoanPhone},
+			</if>
+			<if test="fundsMoney != null and fundsMoney !=-1">
+				#{fundsMoney},
+			</if>
+			<if test="superviseDepartment != null and superviseDepartment != ''">
+				#{superviseDepartment},
+			</if>
+			<if test="notarizationDate != null and notarizationDate != ''">
+				#{notarizationDate,jdbcType=DATE,javaType=String},
+			</if>
+			<if test="signDate != null and signDate != ''">
+				#{signDate,jdbcType=DATE,javaType=String},
+			</if>
+			<if test="paymentType != null and paymentType >0 ">
+				#{paymentType},
+			</if>
+			<if test="remark != null and remark!='' ">
+				#{remark},
+			</if>
+			<if test="accumulationFundBank != null and accumulationFundBank != '' ">
+				#{accumulationFundBank},
+			</if>
+			<if test="accumulationFundMoney != null and accumulationFundMoney!=-1">
+				#{accumulationFundMoney},
+			</if>
+			<if test="loanDays != null and loanDays >0">
+				#{loanDays},
+			</if>
+			<if test="paymentName != null and paymentName!=''">
+				#{paymentName},
+			</if>
+			<if test="paymentAccount != null and paymentAccount!=''">
+				#{paymentAccount},
+			</if>
+			<if test="overdueDays != null and overdueDays!= -1">
+				#{overdueDays},
+			</if>
+			<if test="overdueRate != null and overdueRate!= -1">
+				#{overdueRate},
+			</if>
+			<if test="overdueFee != null and overdueFee!= -1">
+				#{overdueFee},
+			</if>
+			
+			<if test="extensionDays != null and extensionDays!= -1">
+				#{extensionDays},
+			</if>
+			<if test="extensionRate != null and extensionRate!= -1">
+				#{extensionRate},
+			</if>
+			<if test="extensionFee != null and extensionFee!= -1">
+				#{extensionFee},
+			</if>
+			<if test="paymentDate != null and paymentDate!=''">
+				#{paymentDate,jdbcType=DATE,javaType=String},
+			</if>
+			<if test="receDate != null and receDate!=''">
+				#{receDate,jdbcType=DATE,javaType=String},
+			</if>
+			
+			<if test="oldOwedAmount != null and oldOwedAmount!=-1">
+				#{oldOwedAmount},
+			</if>
+			<if test="oldLoanTime != null and oldLoanTime!=''">
+				#{oldLoanTime,jdbcType=DATE,javaType=String},
+			</if>
+			<if test="superviseAccount != null and superviseAccount!=''">
+				#{superviseAccount},
+			</if>
+			<if test="thirdBorrower != null and thirdBorrower!=''">
+				#{thirdBorrower},
+			</if>
+			<if test="thirdBorrowerCard != null and thirdBorrowerCard!=''">
+				#{thirdBorrowerCard},
+			</if>
+			<if test="thirdBorrowerPhone != null and thirdBorrowerPhone!=''">
+				#{thirdBorrowerPhone},
+			</if>
+			<if test="thirdBorrowerAddress != null and thirdBorrowerAddress!=''">
+				#{thirdBorrowerAddress},
+			</if>
+			<if test="foreAccount != null and foreAccount!=''">
+				#{foreAccount},
+			</if>
+			
+			<if test="newReceAccount != null and newReceAccount!=''">
+				#{newReceAccount},
+			</if>
+			<if test="newReceName != null and newReceName!=''">
+				#{newReceName},
+			</if>
+			<if test="newReceBank != null and newReceBank!=''">
+				#{newReceBank},
+			</if>
+			<if test="supersionReceAccount != null and supersionReceAccount!=''">
+				#{supersionReceAccount},
+			</if>
+			<if test="supersionReceName != null and supersionReceName!=''">
+				#{supersionReceName},
+			</if>
+			<if test="supersionReceBank != null and supersionReceBank!=''">
+				#{supersionReceBank},
+			</if>
+			
+			<if test="oldLoanBankBranch != null and oldLoanBankBranch!=''">
+				#{oldLoanBankBranch},
+			</if>
+			<if test="newLoanBankBranch != null and newLoanBankBranch!=''">
+				#{newLoanBankBranch},
+			</if>
+			<if test="superviseDepartmentBranch != null and superviseDepartmentBranch!=''">
+				#{superviseDepartmentBranch},
+			</if>
+			<if test="idCardNumber != null">
+				 #{idCardNumber},
+			</if>
+			<if test="downPayment != null and downPayment !=-1">
+				#{downPayment},
+			</if>
+			<if test="turnoverCapitalName != null and turnoverCapitalName !=''">
+				#{turnoverCapitalName},
+			</if>
+			<if test="turnoverCapitalAccount != null and turnoverCapitalAccount !=''">
+				#{turnoverCapitalAccount},
+			</if>
+			<if test="turnoverCapitalBank != null and turnoverCapitalBank !=''">
+				#{turnoverCapitalBank},
+			</if>
+		</trim>
+	</insert>
+	
+	<!-- 修改项目赎楼信息 -->
+	<update id="updateByPrimaryKey" parameterType="com.xlkfinance.bms.rpc.beforeloan.ProjectForeclosure">
+		UPDATE BIZ_PROJECT_Foreclosure
+		<trim prefix="set" suffixOverrides=",">
+			<if test="oldLoanBank != null">
+				OLD_LOAN_BANK = #{oldLoanBank},
+			</if>
+			<if test="oldLoanPerson != null">
+				OLD_LOAN_PERSON = #{oldLoanPerson},
+			</if>
+			<if test="oldLoanMoney != null">
+				OLD_LOAN_MONEY = #{oldLoanMoney},
+			</if>
+			<if test="oldLoanPhone != null">
+				OLD_LOAN_PHONE = #{oldLoanPhone},
+			</if>
+			<if test="newLoanBank != null and newLoanBank!=''">
+				NEW_LOAN_BANK = #{newLoanBank},
+			</if>
+			<if test="newLoanPerson != null">
+				NEW_LOAN_PERSON = #{newLoanPerson},
+			</if>
+			<if test="newLoanMoney != null and newLoanMoney!=-1">
+				NEW_LOAN_MONEY = #{newLoanMoney},
+			</if>
+			<if test="newLoanPhone != null">
+				NEW_LOAN_PHONE = #{newLoanPhone},
+			</if>
+			<if test="fundsMoney != null and fundsMoney !=-1">
+				FUNDS_MONEY = #{fundsMoney},
+			</if>
+			<if test="superviseDepartment != null and superviseDepartment != ''">
+				SUPERVISE_DEPARTMENT = #{superviseDepartment},
+			</if>
+			<if test="notarizationDate != null">
+				NOTARIZATION_DATE=#{notarizationDate,jdbcType=DATE,javaType=String},
+			</if>
+			<if test="signDate != null">
+				SIGN_DATE=#{signDate,jdbcType=DATE,javaType=String},
+			</if>
+			<if test="paymentType != null and paymentType >0 ">
+				PAYMENT_TYPE = #{paymentType},
+			</if>
+			<if test="remark != null and remark!='' ">
+				REMARK = #{remark},
+			</if>
+			<if test="accumulationFundBank != null">
+				ACCUMULATION_FUND_BANK = #{accumulationFundBank},
+			</if>
+			<if test="accumulationFundMoney != null">
+				ACCUMULATION_FUND_MONEY = #{accumulationFundMoney},
+			</if>
+			<if test="loanDays != null and loanDays >0">
+				LOAN_DAYS = #{loanDays},
+			</if>
+			<if test="paymentName != null">
+				PAYMENT_NAME = #{paymentName},
+			</if>
+			<if test="paymentAccount != null">
+				PAYMENT_ACCOUNT = #{paymentAccount},
+			</if>
+			<if test="overdueDays != null and overdueDays!= -1">
+				OVERDUE_DAYS = #{overdueDays},
+			</if>
+			<if test="overdueRate != null and overdueRate!= -1">
+				OVERDUE_RATE = #{overdueRate},
+			</if>
+			<if test="overdueFee != null and overdueFee!= -1">
+				OVERDUE_FEE = #{overdueFee},
+			</if>
+			
+			<if test="extensionDays != null and extensionDays!= -1">
+				EXTENSION_DAYS = #{extensionDays},
+			</if>
+			<if test="extensionRate != null and extensionRate!= -1">
+				EXTENSION_RATE = #{extensionRate},
+			</if>
+			<if test="extensionFee != null and extensionFee!= -1">
+				EXTENSION_FEE = #{extensionFee},
+			</if>
+			<if test="paymentDate != null and paymentDate!=''">
+				PAYMENT_DATE=#{paymentDate,jdbcType=DATE,javaType=String},
+			</if>
+			<if test="receDate != null and receDate!=''">
+				RECE_DATE = #{receDate,jdbcType=DATE,javaType=String},
+			</if>
+			
+			<if test="oldOwedAmount != null and oldOwedAmount!=-1">
+				OLD_OWED_AMOUNT = #{oldOwedAmount},
+			</if>
+			<if test="oldLoanTime != null">
+				OLD_LOAN_TIME = #{oldLoanTime,jdbcType=DATE,javaType=String},
+			</if>
+			<if test="superviseAccount != null">
+				SUPERVISE_ACCOUNT = #{superviseAccount},
+			</if>
+			<if test="thirdBorrower != null">
+				THIRD_BORROWER = #{thirdBorrower},
+			</if>
+			<if test="thirdBorrowerCard != null">
+				THIRD_BORROWER_CARD = #{thirdBorrowerCard},
+			</if>
+			<if test="thirdBorrowerPhone != null">
+				THIRD_BORROWER_PHONE = #{thirdBorrowerPhone},
+			</if>
+			<if test="thirdBorrowerAddress != null">
+				THIRD_BORROWER_ADDRESS = #{thirdBorrowerAddress},
+			</if>
+			<if test="foreAccount != null">
+				FORE_ACCOUNT = #{foreAccount},
+			</if>
+			
+			<if test="newReceAccount != null">
+				NEW_RECE_ACCOUNT = #{newReceAccount},
+			</if>
+			<if test="newReceName != null and newReceName!=''">
+				NEW_RECE_NAME = #{newReceName},
+			</if>
+			<if test="newReceBank != null">
+				NEW_RECE_BANK = #{newReceBank},
+			</if>
+			<if test="supersionReceAccount != null and supersionReceAccount!=''">
+				SUPERSION_RECE_ACCOUNT = #{supersionReceAccount},
+			</if>
+			<if test="supersionReceName != null">
+				SUPERSION_RECE_NAME = #{supersionReceName},
+			</if>
+			<if test="supersionReceBank != null">
+				SUPERSION_RECE_BANK = #{supersionReceBank},
+			</if>
+			<if test="oldLoanBankBranch != null and oldLoanBankBranch!=''">
+				OLD_LOAN_BANK_BRANCH = #{oldLoanBankBranch},
+			</if>
+			<if test="newLoanBankBranch != null and newLoanBankBranch!=''">
+				NEW_LOAN_BANK_BRANCH = #{newLoanBankBranch},
+			</if>
+			<if test="superviseDepartmentBranch != null and superviseDepartmentBranch!=''">
+				SUPERVISE_DEPARTMENT_BRANCH = #{superviseDepartmentBranch},
+			</if>
+			<if test="idCardNumber != null">
+				ID_CARD_NUMBER = #{idCardNumber},
+			</if>
+			<if test="downPayment != null and downPayment !=-1">
+				DOWN_PAYMENT = #{downPayment},
+			</if>
+			<if test="turnoverCapitalName != null">
+				TURNOVER_CAPITAL_NAME = #{turnoverCapitalName},
+			</if>
+			<if test="turnoverCapitalAccount != null">
+				TURNOVER_CAPITAL_ACCOUNT =#{turnoverCapitalAccount},
+			</if>
+			<if test="turnoverCapitalBank != null">
+				TURNOVER_CAPITAL_BANK = #{turnoverCapitalBank},
+			</if>
+		</trim>
+		WHERE PID = #{pid}
+	</update>
+	
+	<!-- 根据项目ID查询项目赎楼信息 -->
+	<select id="getProjectForeclosureInfo"  resultType="com.xlkfinance.bms.rpc.beforeloan.ProjectForeclosure" parameterType="java.lang.Integer">
+		SELECT  PID pid,
+       PROJECT_ID projectId,
+       OLD_LOAN_BANK oldLoanBank,
+       OLD_LOAN_PERSON oldLoanPerson,
+       OLD_LOAN_MONEY oldLoanMoney,
+       OLD_LOAN_PHONE oldLoanPhone,
+       NEW_LOAN_BANK newLoanBank,
+       NEW_LOAN_PERSON newLoanPerson,
+       NEW_LOAN_MONEY newLoanMoney,
+       NEW_LOAN_PHONE newLoanPhone,
+       FUNDS_MONEY fundsMoney,
+       SUPERVISE_DEPARTMENT superviseDepartment,
+       TO_CHAR(NOTARIZATION_DATE, 'yyyy-MM-dd') notarizationDate,
+       TO_CHAR(SIGN_DATE, 'yyyy-MM-dd') signDate,
+       TO_CHAR(PAYMENT_DATE, 'yyyy-MM-dd') paymentDate,
+       PAYMENT_TYPE paymentType,
+       REMARK remark,
+       ACCUMULATION_FUND_BANK accumulationFundBank,
+       ACCUMULATION_FUND_MONEY accumulationFundMoney,
+       LOAN_DAYS loanDays,
+       PAYMENT_NAME paymentName,
+       PAYMENT_ACCOUNT paymentAccount,
+       OVERDUE_DAYS overdueDays,
+       OVERDUE_RATE overdueRate,
+       OVERDUE_FEE overdueFee,
+       EXTENSION_DAYS extensionDays,
+       EXTENSION_RATE extensionRate,
+       EXTENSION_FEE extensionFee,
+       TO_CHAR(RECE_DATE, 'yyyy-MM-dd') receDate,
+       OLD_OWED_AMOUNT oldOwedAmount,
+       TO_CHAR(OLD_LOAN_TIME, 'yyyy-MM-dd') oldLoanTime,
+       SUPERVISE_ACCOUNT superviseAccount,
+       THIRD_BORROWER thirdBorrower,
+       THIRD_BORROWER_CARD thirdBorrowerCard,
+       THIRD_BORROWER_PHONE thirdBorrowerPhone,
+       THIRD_BORROWER_ADDRESS thirdBorrowerAddress,
+       FORE_ACCOUNT foreAccount,
+       NEW_RECE_ACCOUNT newReceAccount,
+       NEW_RECE_NAME newReceName,
+       NEW_RECE_BANK newReceBank,
+       SUPERSION_RECE_ACCOUNT supersionReceAccount,
+       SUPERSION_RECE_NAME supersionReceName,
+       SUPERSION_RECE_BANK supersionReceBank,
+       OLD_LOAN_BANK_BRANCH oldLoanBankBranch,
+       NEW_LOAN_BANK_BRANCH newLoanBankBranch,
+       SUPERVISE_DEPARTMENT_BRANCH superviseDepartmentBranch,
+       ID_CARD_NUMBER idCardNumber, 
+       DOWN_PAYMENT downPayment,
+       TURNOVER_CAPITAL_NAME turnoverCapitalName,
+	   TURNOVER_CAPITAL_ACCOUNT turnoverCapitalAccount,
+	   TURNOVER_CAPITAL_BANK turnoverCapitalBank
+       
+		FROM BIZ_PROJECT_Foreclosure WHERE PROJECT_ID = #{projectId}
+	</select>
+	
+	<!-- 修改项目赎楼信息(资金机构) -->
+	<update id="updateForeclosureByPartner" parameterType="com.xlkfinance.bms.rpc.beforeloan.ProjectForeclosure">
+		UPDATE BIZ_PROJECT_FORECLOSURE
+		<trim prefix="set" suffixOverrides=",">
+			<if test="newReceAccount != null and newReceAccount!=''">
+				NEW_RECE_ACCOUNT = #{newReceAccount},
+			</if>
+			<if test="newReceBank != null and newReceBank != ''">
+				NEW_RECE_BANK = #{newReceBank},
+			</if>
+			<if test="newReceName != null and newReceName!=''">
+				NEW_RECE_NAME = #{newReceName},
+			</if>
+			<if test="newRecePerson != null and newRecePerson!=''">
+				NEW_RECE_PERSON = #{newRecePerson},
+			</if>
+		</trim>
+		WHERE PID = #{pid}
+	</update>
+	
+</mapper>

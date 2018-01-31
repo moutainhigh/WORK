@@ -1,0 +1,1908 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.finance.mapper.FinanceBankMapper">
+<resultMap type="com.xlkfinance.bms.rpc.finance.FinanceBank" id="FinanceBankMap">
+  		<id property="pid" column="pid"/>
+        <result property="chargeName" column="CHARGE_NAME" />
+        <result property="bankCardTypeText" column="BANK_CARD_TYPE" />
+        <result property="bankText" column="BANKTEXT" />
+        <result property="bankNum" column="BANK_NUM" />
+        <result property="bankUserName" column="BANK_USER_NAME" />
+        <result property="defaultAmt" column="DEFAULT_AMT" />
+        <result property="isOpenText" column="IS_OPEN" />
+        <result property="remark" column="REMARK" />
+        <result property="showSeq" column="SHOW_SEQ" />
+</resultMap>
+<resultMap type="com.xlkfinance.bms.rpc.finance.FinanceBank" id="FinanceBankById">
+  		<id property="pid" column="pid"/>
+        <result property="chargeName" column="CHARGE_NAME" />
+        <result property="bankCardType" column="BANK_CARD_TYPE" />
+        <result property="bank" column="BANK" />
+        <result property="bankNum" column="BANK_NUM" />
+        <result property="bankUserName" column="BANK_USER_NAME" />
+        <result property="defaultAmt" column="DEFAULT_AMT" />
+        <result property="isOpen" column="IS_OPEN" />
+        <result property="remark" column="REMARK" />
+        <result property="showSeq" column="SHOW_SEQ" />
+        <result property="bankCardTypeText" column="BANK_CARD_TYPE_Text" />
+        <result property="creDttm" column="cre_dttm" />
+
+</resultMap>
+ 
+<select id="getFinanceAcctManager" resultMap="FinanceBankMap" parameterType="com.xlkfinance.bms.rpc.finance.FinanceBank">
+    SELECT *  FROM (SELECT W.*, ROWNUM RNUM   FROM ( 
+    SELECT CCT.PID,
+        CCT.CHARGE_NAME,
+        PKG_COMMON.FUN_GET_SYS_LOOKUP_VAL(CCT.BANK_CARD_TYPE) AS BANK_CARD_TYPE,
+        PKG_COMMON.FUN_GET_SYS_LOOKUP_VAL(CCT.BANK) AS BANKTEXT,
+         CCT.BANK_NUM,
+         CCT.BANK_USER_NAME,
+         CCT.DEFAULT_AMT,
+         CASE CCT.IS_OPEN
+                  WHEN 1 THEN
+                   '是'
+                  WHEN 2 THEN
+                   '否'
+         END IS_OPEN,
+         CCT.REMARK,
+         CCT.SHOW_SEQ
+    FROM BIZ_FINANCE_BANK CCT
+    WHERE 1=1 
+    AND CCT.STATUS=1
+    <if test="chargeName != null and  chargeName!=''">
+			AND CCT.CHARGE_NAME LIKE '%${chargeName}%' 
+	</if>
+	<if test="bankNum != null and  bankNum !=''">
+			AND CCT.BANK_NUM LIKE '%${bankNum}%' 
+	</if>
+	<if test=" bank != null and  bank !=0 and  bank !=-1">
+			AND CCT.BANK  = #{bank,jdbcType=INTEGER}
+	</if>
+	<if test="bankCardType != null  and  bankCardType !=0 and  bankCardType !=-1">
+			AND CCT.BANK_CARD_TYPE = #{bankCardType,jdbcType=INTEGER} 
+	</if>
+	ORDER BY CCT.SHOW_SEQ ASC
+		) W
+         ) 
+    <if test="page != null and page !=0 and rows!=null and rows!=0">
+		<![CDATA[ 
+ 		WHERE RNUM BETWEEN (((#{page}-1) * #{rows})+1) AND (#{page} * #{rows})]]>
+     </if>
+</select>
+<!-- add by yql -->
+<select id="countFinanceAcctManager" resultType="java.lang.Integer" parameterType="com.xlkfinance.bms.rpc.finance.FinanceBank">
+    SELECT  count(1)
+	FROM BIZ_FINANCE_BANK CCT
+    WHERE 1=1 
+    AND CCT.STATUS=1
+    <if test="chargeName != null and  chargeName!=''">
+			AND CCT.CHARGE_NAME LIKE '%${chargeName}%' 
+	</if>
+	<if test="bankNum != null and  bankNum !=''">
+			AND CCT.BANK_NUM LIKE '%${bankNum}%' 
+	</if>
+	<if test=" bank != null and  bank !=0">
+			AND CCT.BANK  = #{bank,jdbcType=INTEGER}
+	</if>
+	<if test="bankCardType != null  and  bankCardType !=0">
+			AND CCT.BANK_CARD_TYPE = #{bankCardType,jdbcType=INTEGER} 
+	</if>
+	
+     
+</select>
+<!-- add by yql -->
+<!-- 根据ID查 -->
+<select id="getFinanceAcctManagerById" resultMap="FinanceBankById" parameterType="java.lang.Integer">
+	SELECT CCT.PID,
+        CCT.CHARGE_NAME,
+        CCT.BANK_CARD_TYPE,
+         CCT.BANK,
+         CCT.BANK_NUM,
+         CCT.BANK_USER_NAME,
+         CCT.DEFAULT_AMT,
+         CCT.IS_OPEN,
+         CCT.REMARK,
+         CCT.SHOW_SEQ,
+         (SELECT SLV.LOOKUP_VAL FROM SYS_LOOKUP_VAL SLV WHERE SLV.PID=CCT.BANK_CARD_TYPE)  BANK_CARD_TYPE_text     ,
+         to_char(cct.cre_dttm,'yyyy-mm-dd') as cre_dttm    
+    FROM BIZ_FINANCE_BANK CCT
+    WHERE CCT.STATUS=1
+    AND CCT.PID= #{pid,jdbcType=INTEGER}
+</select>
+
+<insert id="insert" parameterType="com.xlkfinance.bms.rpc.finance.FinanceBank">
+    <selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+		SELECT SEQ_BIZ_FINANCE_BANK.Nextval as PID from DUAL
+	</selectKey>
+    insert into BIZ_FINANCE_BANK (
+	    PID, 
+	    CHARGE_NAME, 
+	    BANK_CARD_TYPE,
+	    BANK,
+	    BANK_NUM,
+	    BANK_USER_NAME,
+	    DEFAULT_AMT,
+	    IS_OPEN,
+	    REMARK,
+<!-- 	    CRE_DTTM, -->
+	    STATUS,
+	    SHOW_SEQ)
+    values (
+	    #{pid,jdbcType=INTEGER},
+	    #{chargeName,jdbcType=VARCHAR},
+	    #{bankCardType,jdbcType=INTEGER},
+	    #{bank,jdbcType=INTEGER},
+	    #{bankNum,jdbcType=VARCHAR},
+	    #{bankUserName,jdbcType=VARCHAR},
+	    #{defaultAmt,jdbcType=VARCHAR},
+	    #{isOpen,jdbcType=INTEGER},
+	    #{remark,jdbcType=VARCHAR},
+	    #{status,jdbcType=INTEGER},
+	    #{showSeq,javaType=INTEGER})
+</insert>
+<update id="updateFinanceAcctManager" parameterType="com.xlkfinance.bms.rpc.finance.FinanceBank">
+	update BIZ_FINANCE_BANK
+	set 
+	<if test="chargeName != null">
+			CHARGE_NAME = #{chargeName,jdbcType=VARCHAR}, 
+	</if>
+	<if test="bankCardType != null">
+			BANK_CARD_TYPE = #{bankCardType,jdbcType=INTEGER}, 
+	</if>
+	<if test="bank != null">
+			BANK = #{bank,jdbcType=INTEGER}, 
+	</if>
+	<if test="bankNum != null">
+			BANK_NUM = #{bankNum,jdbcType=VARCHAR}, 
+	</if>
+	<if test="bankUserName != null">
+			BANK_USER_NAME = #{bankUserName,jdbcType=VARCHAR}, 
+	</if>
+	<if test="defaultAmt != null">
+			DEFAULT_AMT = #{defaultAmt,jdbcType=VARCHAR}, 
+	</if>
+	<if test="isOpen != null">
+			IS_OPEN = #{isOpen,jdbcType=INTEGER}, 
+	</if>
+	<if test="remark != null">
+			REMARK = #{remark,jdbcType=VARCHAR}, 
+	</if>
+	<if test="status != null">
+			STATUS = #{status,jdbcType=INTEGER}, 
+	</if>
+	<if test="showSeq != null">
+			SHOW_SEQ = #{showSeq,jdbcType=INTEGER}, 
+	</if>
+	
+	 PID = #{pid,jdbcType=INTEGER} 
+	 where pid = #{pid,jdbcType=INTEGER}
+</update>
+<delete id="deleteFinanceAcctManager" parameterType="java.util.List">
+  update BIZ_FINANCE_BANK
+		set
+		status=0
+		where pid in 
+		<foreach item="itemId" collection="list" open="(" separator="," close=")">
+		          #{itemId}
+		</foreach>
+</delete>
+
+<!-- add by yql -->
+ <resultMap id="FinanceCusBusinessResultMap" type="com.xlkfinance.bms.rpc.finance.FinanceBusinessView">
+  		<result property="pid" column="pid" />
+  		<result property="loanId" column="LOANID" />
+        <result property="projectName" column="project_name" />
+        <result property="projectNumber" column="PROJECT_NUMBER" />
+        <result property="cusType" column="CUS_TYPE" />              
+        <result property="requestDttm" column="REQUEST_DTTM" />
+        <result property="creditAmt" column="CREDIT_AMT" />
+        <result property="cusName" column="CHINA_NAME" />
+        <result property="dueUnreceived" column="dueUnreceived"/>
+        <result property="unDue" column="unDue"/>
+        <result property="reconciliationAmt" column="reconciliationAmt"/>
+        <result property="unReconciliationAmt" column="unReconciliationAmt"/>
+        <result property="extensionAmt" column="extensionAmt"/>
+	
+    </resultMap>
+    <!-- 客户业务查询 -->
+	<select id="getFinanceCusBusiness" resultMap="FinanceCusBusinessResultMap" parameterType="com.xlkfinance.bms.rpc.finance.FinanceBusinessCondition">
+			SELECT *
+			  FROM (SELECT W.*, ROWNUM RNUM   FROM (         
+       		  select distinct PROJECT.PID,PROJECT.PROJECT_NAME,to_char(PROJECT.REQUEST_DTTM,'yyyy-mm-dd') REQUEST_DTTM,
+            PROJECT.PROJECT_NUMBER,
+            PKG_COMMON.FUN_GET_SYS_LOOKUP_VAL(COMBASE.ECO_TRADE) ECOTRADE,
+            PROJECT.ACCT_ID ACCTID,PKG_COMMON.FUN_GET_ACCT_NAME(PROJECT.ACCT_ID) CHINA_NAME ,
+            LOAN.CREDIT_AMT , (SELECT PKG_FINANCE_CUST.FUN_GET_PROJECT_EXTENSIONAMT(PROJECT.PID) FROM DUAL) AS EXTENSIONAMT , 
+            LOAN.PID AS LOANID,LOAN.PLAN_REPAY_LOAN_DT,PROJECT.REQUEST_DTTM as REQUEST_DTTM1,
+            CASE ACCT.CUS_TYPE
+                      WHEN 1 THEN
+                       '个人'
+                     WHEN 2 THEN
+                      '企业'
+                END CUS_TYPE
+        from  (select PROJECT.*,NVL(PCOM.IS_COMPLETE,0) as IS_COMPLETE,PCOM.STATUS as PCOM_STATUS from BIZ_PROJECT PROJECT
+               LEFT JOIN BIZ_PROJECT_COMPLETE PCOM ON PCOM.PROJECT_ID=PROJECT.Pid
+    			 <if test="overdueStartDay != null and overdueStartDay != '' and overdueStartDay != 0 and overdueEndDay != null and overdueEndDay != '' and overdueEndDay != 0 ">
+			           where PROJECT.PID in(select t.PROJECT_ID from biz_loan_plan_v t 
+			           where t.OVERDUENUM<![CDATA[>=]]>#{overdueStartDay} and t.OVERDUENUM<![CDATA[<=]]>(#{overdueEndDay}+1) )
+		           </if>
+               ) PROJECT   
+        LEFT JOIN BIZ_LOAN LOAN  ON PROJECT.Pid=LOAN.PROJECT_ID
+        LEFT JOIN CUS_ACCT ACCT ON ACCT.PID=PROJECT.ACCT_ID
+        LEFT JOIN CUS_COM_BASE COMBASE ON ACCT.PID=COMBASE.ACCT_ID
+        where PROJECT.status=1 and PROJECT.PROJECT_TYPE in (2,3,5,4) and  LOAN.status=1 and LOAN.Frozen_Satus=1
+         AND ( PROJECT.IS_COMPLETE=0 AND (PROJECT.PCOM_STATUS=1 or PROJECT.PCOM_STATUS is null) )      and PROJECT.REQUEST_STATUS=4 	        
+	    <if test="projectNumber != null and projectNumber != '' ">
+			AND project.PROJECT_NUMBER like '%${projectNumber}%'
+		</if>
+		<if test="projectName != null and projectName != '' ">
+			AND project.PROJECT_NAME like '%${projectName}%'
+		</if>
+		<if test="cusName != null and cusName != '' ">
+			AND pkg_common.FUN_GET_ACCT_NAME(project.ACCT_ID) like '%${cusName}%'
+		</if>
+		<if test="ecoTrade != null and ecoTrade != -1   and ecoTrade != 0 ">
+			AND COMBASE.ECO_TRADE = #{ecoTrade} 
+		</if>
+		<if test="cusType != null and cusType != -1   and cusType != 0 ">
+			and ACCT.CUS_TYPE = #{cusType}
+		</if>
+		<if test="expireStartDt != null and expireStartDt != '' and expireEndDt != null and expireEndDt != '' ">
+		AND PKG_FINANCE_CUST.FUN_IS_THE_LOAN_REAPYMENT(to_date( #{expireStartDt},'yyyy-mm-dd'),
+              to_date( #{expireEndDt},'yyyy-mm-dd'), LOAN.PID) <![CDATA[>]]> 0
+		
+		</if>
+		<if test="requestStartDt != null and requestStartDt != '' ">
+			AND to_date( to_char(project.REQUEST_DTTM,'yyyy-mm-dd'),'yyyy-mm-dd') <![CDATA[>=]]> to_date(#{requestStartDt},'yyyy-mm-dd')
+		</if>
+		<if test="requestEndDt != null and requestEndDt != '' ">
+			AND to_date( to_char(project.REQUEST_DTTM,'yyyy-mm-dd'),'yyyy-mm-dd') <![CDATA[<=]]> to_date(#{requestEndDt},'yyyy-mm-dd')
+		</if>
+		order by PROJECT_NAME,PROJECT.PROJECT_NUMBER
+		)<![CDATA[ W
+         ) 
+ 		WHERE RNUM BETWEEN (((#{page}-1) * #{rows})+1) AND (#{page} * #{rows})]]>
+		
+	 </select>
+	 <!-- add by yql -->
+	 <select id="countFinanceCusBusiness" resultType="java.lang.Integer" parameterType="com.xlkfinance.bms.rpc.finance.FinanceBusinessCondition">
+			 
+			select count(1) from (
+			 select distinct PROJECT.PID,PROJECT.PROJECT_NAME,to_char(PROJECT.REQUEST_DTTM,'yyyy-mm-dd') REQUEST_DTTM,
+            PROJECT.PROJECT_NUMBER,
+            PKG_COMMON.FUN_GET_SYS_LOOKUP_VAL(COMBASE.ECO_TRADE) ECOTRADE,
+            PROJECT.ACCT_ID ACCTID,PKG_COMMON.FUN_GET_ACCT_NAME(PROJECT.ACCT_ID) CHINA_NAME ,
+            LOAN.CREDIT_AMT ,LOAN.PID AS LOANID,LOAN.PLAN_REPAY_LOAN_DT,
+            CASE ACCT.CUS_TYPE
+                      WHEN 1 THEN
+                       '个人'
+                     WHEN 2 THEN
+                      '企业'
+                END CUS_TYPE
+        from  (select PROJECT.*,NVL(PCOM.IS_COMPLETE,0) as IS_COMPLETE,PCOM.STATUS as PCOM_STATUS from BIZ_PROJECT PROJECT
+               LEFT JOIN BIZ_PROJECT_COMPLETE PCOM ON PCOM.PROJECT_ID=PROJECT.Pid
+    			 <if test="overdueStartDay != null and overdueStartDay != '' and overdueStartDay != 0 and overdueEndDay != null and overdueEndDay != '' and overdueEndDay != 0 ">
+			           where PROJECT.PID in(select t.PROJECT_ID from biz_loan_plan_v t 
+			           where t.OVERDUENUM<![CDATA[>=]]>#{overdueStartDay} and t.OVERDUENUM<![CDATA[<=]]>(#{overdueEndDay}+1) )
+		           </if>
+               ) PROJECT   
+        LEFT JOIN BIZ_LOAN LOAN  ON PROJECT.Pid=LOAN.PROJECT_ID
+        LEFT JOIN CUS_ACCT ACCT ON ACCT.PID=PROJECT.ACCT_ID
+        LEFT JOIN CUS_COM_BASE COMBASE ON ACCT.PID=COMBASE.ACCT_ID
+        where PROJECT.status=1 and PROJECT.PROJECT_TYPE in (2,3,5,4) and  LOAN.status=1 and LOAN.Frozen_Satus=1 
+        AND ( PROJECT.IS_COMPLETE=0 AND (PROJECT.PCOM_STATUS=1 or PROJECT.PCOM_STATUS is null) )  	  and PROJECT.REQUEST_STATUS=4	
+        
+	    <if test="projectNumber != null and projectNumber != '' ">
+			AND project.PROJECT_NUMBER like '%${projectNumber}%'
+		</if>
+		<if test="projectName != null and projectName != '' ">
+			AND project.PROJECT_NAME like '%${projectName}%'
+		</if>
+		<if test="cusName != null and cusName != '' ">
+			AND pkg_common.FUN_GET_ACCT_NAME(project.ACCT_ID) like '%${cusName}%'
+		</if>
+		<if test="ecoTrade != null and ecoTrade != -1   and ecoTrade != 0 ">
+			AND COMBASE.ECO_TRADE = #{ecoTrade} 
+		</if>
+		<if test="cusType != null and cusType != -1   and cusType != 0 ">
+			AND ACCT.CUS_TYPE = #{cusType}
+		</if>
+		<if test="expireStartDt != null and expireStartDt != '' and expireEndDt != null and expireEndDt != '' ">
+		AND PKG_FINANCE_CUST.FUN_IS_THE_LOAN_REAPYMENT(to_date( #{expireStartDt},'yyyy-mm-dd'),
+              to_date( #{expireEndDt},'yyyy-mm-dd'), LOAN.PID) <![CDATA[>]]> 0
+		
+		</if>
+		<if test="requestStartDt != null and requestStartDt != '' ">
+			AND to_date( to_char(project.REQUEST_DTTM,'yyyy-mm-dd'),'yyyy-mm-dd') <![CDATA[>=]]> to_date(#{requestStartDt},'yyyy-mm-dd')
+		</if>
+		<if test="requestEndDt != null and requestEndDt != '' ">
+			AND to_date( to_char(project.REQUEST_DTTM,'yyyy-mm-dd'),'yyyy-mm-dd') <![CDATA[<=]]> to_date(#{requestEndDt},'yyyy-mm-dd')
+		</if>
+		)
+		
+	 </select>
+	 
+	 <resultMap id="ProjectTotalDetailMap" type="com.xlkfinance.bms.rpc.finance.ProjectTotalDetailView">
+  		<result property="pid" column="pid" />
+  		<result property="loanId" column="LOAN_ID" />
+        <result property="receiveDt" column="RECEIVE_DT" />
+        <result property="actualAmt" column="ACTUAL_AMT" />
+        <result property="availableBalance" column="Available_Balance" />              
+        <result property="reconciliationAmt" column="RECONCILIATION_AMT" />
+        <result property="useBalAmt" column="USE_BAL_AMT" />
+        <result property="dataVersion" column="DATA_VERSION" /> 
+	
+    </resultMap>
+	 <!--项目总流水查看-->
+	<select id="getProjectTotalDetailList" resultMap="ProjectTotalDetailMap" parameterType="com.xlkfinance.bms.rpc.finance.FinanceBusinessCondition">
+			
+			select LINPUT.PID,to_char(LINPUT.RECEIVE_DT,'yyyy-mm-dd') RECEIVE_DT,
+					LINPUT.ACTUAL_AMT,LINPUT.USE_BAL_AMT,LINPUT.STATUS,
+				 (select  SUM(RECONCILIATION_AMT) from BIZ_LOAN_RECONCILIATION LOANR WHERE LOANR.RECEIVABLES_ID=LINPUT.PID  and loanR.Status=1) RECONCILIATION_AMT
+				 ,LINPUT.LOAN_ID,LINPUT.Available_Balance,USE_BAL_AMT,DATA_VERSION
+			from BIZ_LOAN_INPUT LINPUT
+			where LINPUT.STATUS=1 and LINPUT.LOAN_ID=#{loanId}	    
+			order by LINPUT.Receive_Dt asc
+	 </select>
+	
+   <!--  逻辑删除财务收款 --> 
+	 <update id="deleteLoanInputDate" parameterType="java.lang.Integer">
+	   UPDATE biz_loan_input p SET p.status=0 WHERE  p.pid=#{pid}  AND p.actual_amt=p.available_balance AND p.data_version=0 and p.status=1
+	 </update>
+	 
+<!-- add by yql -->
+<resultMap id="AcctBatchRepaymentResultMap" type="com.xlkfinance.bms.rpc.finance.BatchRepaymentView">
+  		<result property="loanId" column="LOANID" />
+        <result property="pid" column="pid" />              
+        <result property="projectName" column="PROJECTNAME" />
+        <result property="projectNumber" column="PROJECTNUM" />
+    </resultMap>
+    <!-- 批量还款查询列表 -->
+<select id="getAcctBatchRepayment" resultMap="AcctBatchRepaymentResultMap" parameterType="com.xlkfinance.bms.rpc.finance.FinanceBusinessCondition">
+  
+			SELECT A.*
+			 FROM ( 
+			           SELECT M.*
+			                 FROM (
+			                          SELECT L.PID     AS LOANID,
+			                                 P.Pid AS pid,
+			                                 P.PROJECT_NAME   AS PROJECTNAME,
+			    
+			                                 P.PROJECT_NUMBER AS PROJECTNUM,
+			                                 ROWNUM           AS RNUM,
+                                          PKG_FINANCE_CUST.fun_get_last_repayment_date(L.PID )AS REPAYDT
+			                              FROM BIZ_LOAN L 
+			                              left join  BIZ_PROJECT P on L.PROJECT_ID = P.PID  and p.status=1 and L.status=1
+		                                  left join  CUS_ACCT_V V  on  P.ACCT_ID = V.ACCT_ID 
+		                                  left join BIZ_PROJECT_COMPLETE PCOM on PCOM.PROJECT_ID=p.Pid AND NVL(PCOM.IS_COMPLETE, 0) = 0 AND (PCOM.STATUS IS NULL OR PCOM.STATUS = 1)  
+			                             WHERE  p.REQUEST_STATUS=4 and p.project_type in (2,3,5,4) 
+			                             AND PKG_FINANCE_CUST.FUN_IS_THE_LOAN(TO_DATE(#{expireStartDt}, 'yyyy-mm-dd'),TO_DATE(#{expireEndDt},'yyyy-mm-dd'), L.PID) > 0
+			                            
+			                                <if test="projectNumber != null and projectNumber != '' ">
+									          AND P.PROJECT_NUMBER like '%${projectNumber}%'
+									        </if>
+									        <if test="projectName != null and projectName != '' ">
+									          AND P.PROJECT_NAME like '%${projectName}%'
+									        </if>
+									        <if test="cusName != null and cusName != '' ">
+									          AND V.ACCT_NAME like '%${cusName}%'
+									        </if>
+									        <if test="ecoTrade != null and ecoTrade != -1   and ecoTrade != 0">
+									          AND V.ECO_TRADE = #{ecoTrade} 
+									        </if>
+									        <if test="cusType != null and cusType != -1   and cusType != 0 ">
+									          AND V.ACCT_TYPE = #{cusType}
+									          </if>
+									         order by REPAYDT desc 
+			                     ) M
+			            WHERE M.RNUM BETWEEN (((#{page}-1) * #{rows})+1) AND (#{page} * #{rows})
+			  ) A 
+	 </select>
+
+	 <select id="countAcctBatchRepayment" resultType="java.lang.Integer" parameterType="com.xlkfinance.bms.rpc.finance.FinanceBusinessCondition">
+			       SELECT count(1)
+			                              FROM BIZ_LOAN L 
+			                              left join  BIZ_PROJECT P on L.PROJECT_ID = P.PID   and p.status=1 and L.status=1
+		                                  left join  CUS_ACCT_V V  on  P.ACCT_ID = V.ACCT_ID 
+		                                  left join BIZ_PROJECT_COMPLETE PCOM on PCOM.PROJECT_ID=p.Pid AND NVL(PCOM.IS_COMPLETE, 0) = 0 AND (PCOM.STATUS IS NULL OR PCOM.STATUS = 1) 
+			                             WHERE  p.REQUEST_STATUS=4 and p.project_type in (2,3,5,4) 
+			                             AND PKG_FINANCE_CUST.FUN_IS_THE_LOAN(TO_DATE(#{expireStartDt}, 'yyyy-mm-dd'),TO_DATE(#{expireEndDt},'yyyy-mm-dd'), L.PID) > 0
+			                            
+			                                <if test="projectNumber != null and projectNumber != '' ">
+									          AND P.PROJECT_NUMBER like '%${projectNumber}%'
+									        </if>
+									        <if test="projectName != null and projectName != '' ">
+									          AND P.PROJECT_NAME like '%${projectName}%'
+									        </if>
+									        <if test="cusName != null and cusName != '' ">
+									          AND V.ACCT_NAME like '%${cusName}%'
+									        </if>
+									        <if test="ecoTrade != null and ecoTrade != -1   and ecoTrade != 0">
+									          AND V.ECO_TRADE = #{ecoTrade} 
+									        </if>
+									        <if test="cusType != null and cusType != -1   and cusType != 0 ">
+									          AND V.ACCT_TYPE = #{cusType}
+									          </if>
+			
+	 </select>
+	 
+	 <!-- 查询欠款明细列表 返回map -->
+	 <resultMap id="CustArrearsViewResultMap" type="com.xlkfinance.bms.rpc.finance.CustArrearsView">
+  		<result property="pid" column="pid" />
+  		<result property="loanId" column="LOANID" />
+        <result property="projectName" column="project_name" />
+        <result property="projectNumber" column="PROJECT_NUMBER" />
+        <result property="cusType" column="CUS_TYPE" />              
+        <result property="requestDttm" column="REQUEST_DTTM" />
+        <result property="creditAmt" column="CREDIT_AMT" />
+        <result property="cusName" column="CHINA_NAME" />
+        <result property="unReceivedPrincipal" column="unReceivedPrincipal" />
+        <result property="unReceivedInterest" column="unReceivedInterest" />
+        <result property="unReceivedMangCost" column="unReceivedMangCost" />
+        <result property="unReceivedOtherCost" column="unReceivedOtherCost" />
+        <result property="unReceivedOverdueInterest" column="unReceivedOverdueInterest" />
+        <result property="unReceivedOverduePunitive" column="unReceivedOverduePunitive" />
+        <result property="receiveTotalAmt" column="receiveTotalAmt" />
+        <result property="dueUnReceivedTotal" column="dueUnReceivedTotal" />
+        <result property="noReceiveTotalAmt" column="noReceiveTotalAmt" />
+        <result property="outstandingTotal" column="outstandingTotal" />
+        <result property="comId" column="com_id" />
+        <result property="acctId" column="ACCT_ID" />
+        <result property="noReceiveTotalAmt_im" column="noReceiveTotalAmt_im" />
+        <result property="overdueCount" column="overdueCount" />
+        <result property="contractNo" column="CONTRACT_NO"/>
+        <result property="contractUrl" column="CONTRACT_URL"/>
+        
+    </resultMap>
+	 <!-- 查询欠款明细列表 -->
+	 <select id="getCustArrearsView" resultMap="CustArrearsViewResultMap" parameterType="com.xlkfinance.bms.rpc.finance.FinanceBusinessCondition">
+			SELECT *
+			  FROM (SELECT W.*, ROWNUM RNUM   FROM ( 
+			 select  PROJECT.PID,PROJECT.PROJECT_NAME,PROJECT.PROJECT_NUMBER,PPROJECT.PID as CONTRACT_ID,
+             PROJECT.CONTRACT_NO,PKG_CONTRACT.FUN_GET_CONTRACT_LOAN_URL(PROJECT.CONTRACT_NO) as CONTRACT_URL ,pkg_common.FUN_GET_ACCT_NAME(PROJECT.acct_id) CHINA_NAME
+             ,ACCT.CUS_TYPE as CUS_TYPE,COMBASE.Pid as com_id   ,PROJECT.ACCT_ID ,LOAN.pid as LOANId
+         from    (select PRO.*, case when PRO.PROJECT_TYPE=4 then PKG_CONTRACT.FUN_GET_CONTRACT_EXTENSION_NUM(PRO.pid) 
+                         else PKG_CONTRACT.FUN_GET_CONTRACT_LOAN_NUM(PRO.pid) end  as CONTRACT_NO  ,
+                         NVL(PCOM.IS_COMPLETE,0) as IS_COMPLETE,PCOM.STATUS as PCOM_STATUS
+                         from BIZ_PROJECT PRO
+                         LEFT JOIN BIZ_PROJECT_COMPLETE PCOM ON PCOM.PROJECT_ID=PRO.Pid
+				  <if test="overdueStartDay != null and overdueStartDay != '' and overdueStartDay != 0 and overdueEndDay != null and overdueEndDay != '' and overdueEndDay != 0 ">
+			           where PRO.PID in(select t.PROJECT_ID from biz_loan_plan_v t 
+			           where t.OVERDUENUM<![CDATA[>=]]>#{overdueStartDay} and t.OVERDUENUM<![CDATA[<=]]>(#{overdueEndDay}+1 ))
+		           </if>
+		           ) PROJECT
+				 left join BIZ_PROJECT_CONTRACT PPROJECT ON PPROJECT.PID= PROJECT.PID
+				 left join CUS_ACCT ACCT on ACCT.PID=PROJECT.ACCT_ID
+				 left join CUS_COM_BASE COMBASE on COMBASE.ACCT_ID=PROJECT.Acct_Id
+				 left join BIZ_LOAN LOAN ON PROJECT.Pid=LOAN.PROJECT_ID
+				 WHERE PROJECT.STATUS=1 and PROJECT.PROJECT_TYPE in (2,3,5,4) and PROJECT.REQUEST_STATUS=4
+				 AND ( PROJECT.IS_COMPLETE=0 AND (PROJECT.PCOM_STATUS=1 or PROJECT.PCOM_STATUS is null) )  
+				 	AND PKG_FINANCE_COMMON.GET_PROJECT_OWED_STATUS (LOAN.PID) >0
+	    <if test="projectNumber != null and projectNumber != '' ">
+			AND PROJECT.PROJECT_NUMBER like '%${projectNumber}%'
+		</if>
+		<if test="projectName != null and projectName != '' ">
+			AND PROJECT.PROJECT_NAME like '%${projectName}%'
+		</if>
+		<if test="cusName != null and cusName != '' ">
+			AND pkg_common.FUN_GET_ACCT_NAME(PROJECT.acct_id) like '%${cusName}%'
+		</if>
+		<if test="ecoTrade != null and ecoTrade != -1   and ecoTrade != 0 ">
+			AND COMBASE.ECO_TRADE = #{ecoTrade} 
+		</if>
+		<if test="cusType != null and cusType != -1   and cusType != 0">
+			AND ACCT.CUS_TYPE = #{cusType}
+		</if>
+		<if test="expireStartDt != null and expireStartDt != '' and expireEndDt != null and expireEndDt != '' ">
+		AND PKG_FINANCE_CUST.FUN_IS_THE_LOAN_REAPYMENT(to_date(#{expireStartDt},'yyyy-mm-dd'),
+              to_date(#{expireEndDt},'yyyy-mm-dd') , LOAN.PID) > 0
+		AND PKG_FINANCE_CUST.FUN_IS_THE_LOAN_REAPYMENT(to_date(#{expireStartDt},'yyyy-mm-dd'),
+              to_date(#{expireEndDt},'yyyy-mm-dd'), LOAN.PID) <![CDATA[>]]> 0
+		
+		</if>
+		<if test="requestStartDt != null and requestStartDt != '' ">
+			AND to_date( to_char(PROJECT.request_dttm,'yyyy-mm-dd'),'yyyy-mm-dd') <![CDATA[>=]]> to_date(#{requestStartDt},'yyyy-mm-dd')
+		</if>
+		<if test="requestEndDt != null and requestEndDt != '' ">
+			AND to_date( to_char(PROJECT.request_dttm,'yyyy-mm-dd'),'yyyy-mm-dd') <![CDATA[<=]]> to_date(#{requestEndDt},'yyyy-mm-dd')+1
+		</if>
+		 order by PROJECT.REQUEST_DTTM desc
+		)<![CDATA[ W
+         ) 
+ 		WHERE RNUM BETWEEN (((#{page}-1) * #{rows})+1) AND (#{page} * #{rows})]]>
+		
+	 </select>
+	 
+	  <!-- 统计欠款明细列表 -->
+	 <select id="countCustArrearsView"  resultType="java.lang.Integer" parameterType="com.xlkfinance.bms.rpc.finance.FinanceBusinessCondition">
+			select  count(1)
+				 from    (select PRO.*, case when PRO.PROJECT_TYPE=4 then PKG_CONTRACT.FUN_GET_CONTRACT_EXTENSION_NUM(PRO.pid) 
+                         else PKG_CONTRACT.FUN_GET_CONTRACT_LOAN_NUM(PRO.pid) end  as CONTRACT_NO , 
+                          NVL(PCOM.IS_COMPLETE,0) as IS_COMPLETE,PCOM.STATUS as PCOM_STATUS
+                         from BIZ_PROJECT PRO
+                         LEFT JOIN BIZ_PROJECT_COMPLETE PCOM ON PCOM.PROJECT_ID=PRO.Pid
+             
+				  <if test="overdueStartDay != null and overdueStartDay != '' and overdueStartDay != 0 and overdueEndDay != null and overdueEndDay != '' and overdueEndDay != 0 ">
+			           where PRO.PID in(select t.PROJECT_ID from biz_loan_plan_v t 
+			           where t.OVERDUENUM<![CDATA[>=]]>#{overdueStartDay} and t.OVERDUENUM<![CDATA[<=]]>(#{overdueEndDay}+1 ) )
+		           </if>
+		           ) PROJECT
+				 left join BIZ_PROJECT_CONTRACT PPROJECT ON PPROJECT.PID= PROJECT.PID
+				 left join CUS_ACCT ACCT on ACCT.PID=PROJECT.ACCT_ID
+				 left join CUS_COM_BASE COMBASE on COMBASE.ACCT_ID=PROJECT.Acct_Id
+				 left join BIZ_LOAN LOAN ON PROJECT.Pid=LOAN.PROJECT_ID
+				 WHERE PROJECT.STATUS=1 and PROJECT.PROJECT_TYPE in (2,3,5,4) and PROJECT.REQUEST_STATUS=4
+				  AND ( PROJECT.IS_COMPLETE=0 AND (PROJECT.PCOM_STATUS=1 or PROJECT.PCOM_STATUS is null) )  
+				  	AND PKG_FINANCE_COMMON.GET_PROJECT_OWED_STATUS (LOAN.PID) >0
+	    <if test="projectNumber != null and projectNumber != '' ">
+			AND PROJECT.PROJECT_NUMBER like '%${projectNumber}%'
+		</if>
+		<if test="projectName != null and projectName != '' ">
+			AND PROJECT.PROJECT_NAME like '%${projectName}%'
+		</if>
+		<if test="cusName != null and cusName != '' ">
+			AND pkg_common.FUN_GET_ACCT_NAME(PROJECT.acct_id) like '%${cusName}%'
+		</if>
+		<if test="ecoTrade != null and ecoTrade != -1   and ecoTrade != 0 ">
+			AND COMBASE.ECO_TRADE = #{ecoTrade} 
+		</if>
+		<if test="cusType != null and cusType != -1 and cusType != 0 ">
+			AND ACCT.CUS_TYPE = #{cusType}
+		</if>
+		<if test="expireStartDt != null and expireStartDt != '' and expireEndDt != null and expireEndDt != '' ">
+		AND PKG_FINANCE_CUST.FUN_IS_THE_LOAN_REAPYMENT(to_date(#{expireStartDt},'yyyy-mm-dd'),
+              to_date(#{expireEndDt},'yyyy-mm-dd') , LOAN.PID) > 0
+		AND PKG_FINANCE_CUST.FUN_IS_THE_LOAN_REAPYMENT(to_date(#{expireStartDt},'yyyy-mm-dd'),
+              to_date(#{expireEndDt},'yyyy-mm-dd'), LOAN.PID) <![CDATA[>]]> 0
+		</if>
+		<if test="requestStartDt != null and requestStartDt != '' ">
+			AND to_date( to_char(PROJECT.REQUEST_DTTM,'yyyy-mm-dd'),'yyyy-mm-dd')  <![CDATA[>=]]> to_date(#{requestStartDt},'yyyy-mm-dd')
+		</if>
+		<if test="requestEndDt != null and requestEndDt != '' ">
+			AND to_date( to_char(PROJECT.REQUEST_DTTM,'yyyy-mm-dd'),'yyyy-mm-dd') <![CDATA[<=]]> to_date(#{requestEndDt},'yyyy-mm-dd')+1
+		</if>		
+	 </select>
+	 <!-- 总账流水查询返回map -->
+	 <resultMap type="com.xlkfinance.bms.rpc.finance.FinanceAcctTotalView" id="FinanceAcctTotalViewMap">
+  		<id property="pid" column="pid"/>
+        <result property="chargeName" column="CHARGE_NAME" />
+        <result property="bankCardTypeText" column="BANK_CARD_TYPE" />
+        <result property="bankNum" column="BANK_NUM" />
+        <result property="bankUserName" column="BANK_USER_NAME" />
+        <result property="initialAmt" column="DEFAULT_AMT" />
+        <result property="incomeAccount" column="ACCOUNT_INCOME" />
+        <result property="accountOut" column="ACCOUNT_OUT" />
+        <result property="periodBalance" column="PERIOD_BALANCE" />
+        <result property="ftType" column="FT_TYPE" />
+
+</resultMap>
+	 <!-- 总账流水查询列表 -->
+	 <select id="getFinanceAcctTotalView" resultMap="FinanceAcctTotalViewMap" parameterType="com.xlkfinance.bms.rpc.finance.FinanceAcctTotalCondition">
+   	   SELECT *
+			  FROM (SELECT W.*, ROWNUM RNUM   FROM ( 
+	   select distinct BANK.pid,BANK.CHARGE_NAME,BANK.BANK_NUM,BANK.DEFAULT_AMT,BANK.BANK_USER_NAME,
+	   			(SELECT SLV.LOOKUP_VAL FROM SYS_LOOKUP_VAL SLV WHERE SLV.PID=BANK.BANK_CARD_TYPE)  BANK_CARD_TYPE,
+       		BANK.Cre_Dttm
+		from  BIZ_FINANCE_BANK BANK 
+		left join BIZ_LOAN_FT FT on BANK.PID=FT.FT_BANK_ACCT_ID and ft.status=1
+		 left join BIZ_FINANCE_TRANSACTION ftn on BANK.PID=ftn.bank_acct_id and ftn.status=1 
+		WHERE 
+	 		     BANK.Status=1
+    <if test="chargeName != null and  chargeName!=''">
+			AND BANK.CHARGE_NAME like '%${chargeName}%' 
+	</if>
+	<if test="bankNum != null and  bankNum !=''">
+			AND BANK.BANK_NUM LIKE '%${bankNum}%' 
+	</if>
+	<if test="bankCardType != null  and  bankCardType !=0 and  bankCardType !=-1">
+			AND BANK.BANK_CARD_TYPE = #{bankCardType,jdbcType=INTEGER} 
+	</if>
+	<if test=" bankUserName != null and  bankUserName !='' ">
+			AND BANK.BANK_USER_NAME  like '%${bankUserName}%' 
+	</if>
+	<if test="searcherPeriodStart != null and searcherPeriodStart != '' ">
+			AND (to_date( to_char(FT.FT_DATE,'yyyy-mm-dd'),'yyyy-mm-dd') <![CDATA[>=]]> to_date(#{searcherPeriodStart},'yyyy-mm-dd')
+			 or  to_date( to_char(ftn.ft_dt,'yyyy-mm-dd'),'yyyy-mm-dd')  <![CDATA[>=]]> to_date(#{searcherPeriodStart},'yyyy-mm-dd'))
+	</if>
+	<if test="searcherPeriodEnd != null and searcherPeriodEnd != '' ">
+		AND (to_date( to_char(FT.FT_DATE,'yyyy-mm-dd'),'yyyy-mm-dd') <![CDATA[<=]]> to_date(#{searcherPeriodEnd},'yyyy-mm-dd')
+		 or  to_date( to_char(ftn.ft_dt,'yyyy-mm-dd'),'yyyy-mm-dd') <![CDATA[<=]]> to_date(#{searcherPeriodEnd},'yyyy-mm-dd'))
+	</if>		
+	ORDER BY BANK.CRE_DTTM desc
+		) W
+         ) 
+		<![CDATA[ 
+ 		WHERE RNUM BETWEEN (((#{page}-1) * #{rows})+1) AND (#{page} * #{rows})]]>
+
+</select>
+<!-- 总账流水查询列表 -->
+	 <select id="countFinanceAcctTotal"  resultType="java.lang.Integer" parameterType="com.xlkfinance.bms.rpc.finance.FinanceAcctTotalCondition">
+	   select  count(distinct bank.pid)
+		from  BIZ_FINANCE_BANK BANK 
+		left join BIZ_LOAN_FT FT on BANK.PID=FT.FT_BANK_ACCT_ID and ft.status=1
+		 left join BIZ_FINANCE_TRANSACTION ftn on BANK.PID=ftn.bank_acct_id and ftn.status=1 
+		WHERE 
+	 		     BANK.Status=1
+    <if test="chargeName != null and  chargeName!=''">
+			AND BANK.CHARGE_NAME LIKE '%${chargeName}%' 
+	</if>
+<if test="bankNum != null and  bankNum !=''">
+			AND BANK.BANK_NUM LIKE '%${bankNum}%' 
+	</if>
+	<if test=" bankUserName != null and  bankUserName !=''">
+			AND BANK.BANK_USER_NAME  like '%${bankUserName}%' 
+	</if>
+	<if test="bankCardType != null  and  bankCardType !=0 and  bankCardType !=-1">
+			AND BANK.BANK_CARD_TYPE = #{bankCardType,jdbcType=INTEGER} 
+	</if>
+	<if test="searcherPeriodStart != null and searcherPeriodStart != '' ">
+			AND (to_date( to_char(FT.FT_DATE,'yyyy-mm-dd'),'yyyy-mm-dd') <![CDATA[>=]]> to_date(#{searcherPeriodStart},'yyyy-mm-dd')
+			 or  to_date( to_char(ftn.ft_dt,'yyyy-mm-dd'),'yyyy-mm-dd')  <![CDATA[>=]]> to_date(#{searcherPeriodStart},'yyyy-mm-dd'))
+	</if>
+	<if test="searcherPeriodEnd != null and searcherPeriodEnd != '' ">
+		AND (to_date( to_char(FT.FT_DATE,'yyyy-mm-dd'),'yyyy-mm-dd') <![CDATA[<=]]> to_date(#{searcherPeriodEnd},'yyyy-mm-dd')
+		 or  to_date( to_char(ftn.ft_dt,'yyyy-mm-dd'),'yyyy-mm-dd') <![CDATA[<=]]> to_date(#{searcherPeriodEnd},'yyyy-mm-dd'))
+	</if>				
+	
+</select>
+<!-- 总账查询的金额存储过程 -->
+	<select id="getFinanceTotalDatePro" statementType="CALLABLE"
+		parameterType="java.util.Map">
+        	<![CDATA[ 
+			{ call PKG_FINANCE.PRO_GET_FINANCE_TOTAL_DATA(
+				#{bankId, mode=IN,javaType=String,jdbcType=INTEGER},
+				#{searcherPeriodStart, mode=IN, jdbcType=DATE},
+				#{searcherPeriodEnd, mode=IN, jdbcType=DATE},
+				#{results,mode=OUT,jdbcType=CURSOR,resultMap=FinanceAcctTotalViewMap}) } 
+			  ]]>
+	</select>
+<!-- 总账流水查询返回map -->
+	 <resultMap type="com.xlkfinance.bms.rpc.finance.FinanceAcctTotalDetailView" id="FinanceAcctTotalDetailMap">
+  		<id property="pid" column="pid"/>
+        <result property="ftDate" column="FT_DATE" />
+        <result property="ftAmt" column="FT_AMT" />
+        <result property="ftType" column="FT_TYPE" />
+        <result property="remarks" column="REMARK" />
+</resultMap>
+ <!-- 总账流水查询列表 -->
+	 <select id="getFinanceAcctTotalDetailView" resultMap="FinanceAcctTotalDetailMap" parameterType="com.xlkfinance.bms.rpc.finance.FinanceAcctTotalCondition">
+   	 select * from (select ft.pid,to_char(FT_DATE,'yyyy-MM-dd') FT_DATE,FT_AMT,FT_TYPE,REMARK from biz_loan_ft ft
+     WHERE 
+    ft.Status=1 and ft.ft_bank_acct_id=#{pid}
+    union
+    select t.pid,to_char(FT_DT,'yyyy-MM-dd') FT_DATE,FT_AMT, 
+    -- 财务类型（收入1、支出2） 但是ft表示1支出，2 收入
+     case when FT_TYPE=1 THEN 2
+     when FT_TYPE=2 THEN 1  END as FT_TYPE,REMARK
+     from BIZ_FINANCE_TRANSACTION t where  t.status=1 and t.bank_acct_id=#{pid}) ftTable
+     where 1=1  
+	<if test="searcherPeriodStart != null and searcherPeriodStart != '' ">
+			and  to_date(ftTable.FT_DATE,'yyyy-mm-dd') <![CDATA[>=]]> to_date(#{searcherPeriodStart},'yyyy-mm-dd')
+	</if>
+	<if test="searcherPeriodEnd != null and searcherPeriodEnd != '' ">
+		AND to_date(ftTable.FT_DATE,'yyyy-mm-dd') <![CDATA[<=]]> to_date(#{searcherPeriodEnd},'yyyy-mm-dd')
+	</if>		
+	order by ftTable.FT_DATE desc
+
+</select>
+<!-- 获取项目的大体数据情况 -->
+<select id="getProGetPlanProject" statementType="CALLABLE" parameterType="java.util.Map" >
+        	<![CDATA[ 
+			{ call PKG_FINANCE_CUST.PRO_GET_PLAN_PROJECT(#{projectId, mode=IN, jdbcType=INTEGER},
+				#{currentDate, mode=IN, jdbcType=DATE},
+				#{results,mode=OUT,jdbcType=CURSOR,resultMap=FinanceCusBusinessResultMap}) } 
+			  ]]>  
+</select>
+
+<!-- 总账流水查询返回map -->
+	 <resultMap type="com.xlkfinance.bms.rpc.finance.LoanReconciliationDtlView" id="LoanReconciliationDtlMap">
+  		<id property="pid" column="pid"/>
+        <result property="cycleName" column="CYCLE_NAME" />
+        <result property="reconciliationDt" column="RECONCILIATION_DT" />
+        <result property="delTypeName" column="DEL_TYPE_NAME" />
+        <result property="reconciliationAmt" column="Dtl_Amt" />
+        <result property="description" column="DESCRIPTION" />
+        <result property="type" column="DTL_TYPE" />
+</resultMap>
+ <!-- 总账流水查询列表 -->
+	 <select id="getLoanReconciliationDtl" resultMap="LoanReconciliationDtlMap" parameterType="java.lang.Integer">
+   	  SELECT (CASE
+	         WHEN D.RECONCILIATION_CYCLE_NUM = -1 THEN
+	          L.DEL_TYPE_NAME
+	         ELSE
+	         CONCAT(d.reconciliation_cycle_num,'期')
+	       END) AS CYCLE_NAME,
+	       L.PID,to_char(D.RECONCILIATION_DT,'yyyy-MM-dd') RECONCILIATION_DT ,L.DEL_TYPE_NAME,
+	       D.RECONCILIATION_AMT,L.DESCRIPTION,L.Dtl_Amt,L.DTL_TYPE
+	  FROM BIZ_LOAN_RECONCILIATION D, BIZ_LOAN_RECONCILIATION_DTL L
+	  WHERE L.RECON_ID = D.PID and L.Status=1 
+   			and D.RECEIVABLES_ID=#{receId,jdbcType=INTEGER}
+   			UNION ALL
+   	select 
+	    '余额转入' as CYCLE_NAME,
+	    t.pid ,to_char(t.balance_dt,'yyyy-MM-dd') RECONCILIATION_DT,
+	    '转入余额' as DEL_TYPE_NAME,
+	    t.balance_amt as RECONCILIATION_AMT ,
+	    t.remark as DESCRIPTION,
+	    t.balance_amt as Dtl_Amt, -1 as DTL_TYPE
+	from biz_acct_project_balance t 
+	where t.status=1 and t.BALANCE_TYPE=1 and t.RECE_ID=#{receId,jdbcType=INTEGER}
+	 UNION ALL
+   select 
+      '余额退还' as CYCLE_NAME,
+      t.pid ,to_char(t.refund_dt,'yyyy-MM-dd') RECONCILIATION_DT,
+      '退还余额' as DEL_TYPE_NAME,
+      t.ACTUAL_REFUND_AMT as RECONCILIATION_AMT ,
+      t.REMARK as DESCRIPTION,
+      t.ACTUAL_REFUND_AMT as Dtl_Amt, -1 as DTL_TYPE
+  from biz_loan_refund t 
+  where t.status=1 and t.RECE_ID=#{receId,jdbcType=INTEGER}
+   UNION ALL
+   select 
+      '剩余金额转' as CYCLE_NAME,
+      i.pid ,to_char(i.into_dt,'yyyy-MM-dd') RECONCILIATION_DT,
+      '剩余金额转收入' as DEL_TYPE_NAME,
+      i.actual_into_amt as RECONCILIATION_AMT ,
+      i.remark as DESCRIPTION,
+      i.actual_into_amt as Dtl_Amt, -1 as DTL_TYPE
+  from biz_loan_rec_into i 
+  where i.status=1 and i.RECE_ID=#{receId,jdbcType=INTEGER}
+   			
+    </select>
+<!-- 获取客户欠款详情 -->
+<select id="getProGetCustProjectDetail" statementType="CALLABLE" parameterType="java.util.Map" >
+        	<![CDATA[ 
+			{ call PKG_FINANCE_CUST.PRO_GET_CUST_PROJECT_DETAIL(#{projectId, mode=IN, jdbcType=INTEGER},
+				#{currentDate, mode=IN, jdbcType=DATE},
+				#{results,mode=OUT,jdbcType=CURSOR,resultMap=CustArrearsViewResultMap}) } 
+			  ]]>  
+</select>
+
+
+<!-- 新增账户余额 -->
+<insert id="addAcctProjectBalance" parameterType="com.xlkfinance.bms.rpc.finance.AcctProjectBalanceDTO">
+  <selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+		SELECT SEQ_BIZ_ACCT_PROJECT_BALANCE.Nextval as PID from DUAL
+	</selectKey>
+    insert into BIZ_ACCT_PROJECT_BALANCE(
+           pid,
+		   acct_id,
+		   project_id,
+		   balance_amt,
+		   remark,
+		   balance_dt,
+		   balance_type,
+		   status,
+		   RECE_ID)
+    values (
+	    #{pid,jdbcType=INTEGER},
+	    #{acctId,jdbcType=INTEGER},
+	    #{projectId,jdbcType=INTEGER},
+	    #{balanceAmt,jdbcType=DOUBLE},
+	    #{remark,jdbcType=VARCHAR},
+	    #{balanceDt,jdbcType=DATE,javaType=String}, 
+	    #{balanceType,jdbcType=INTEGER}, 
+	    1,
+	    #{receivablesId,jdbcType=INTEGER}
+	    )
+</insert>
+<resultMap type="com.xlkfinance.bms.rpc.finance.AcctProjectBalanceView" id="AcctProjectBalanceViewMap">
+  		<id property="pid" column="PID"/>
+        <result property="acctId" column="acct_id" />
+        <result property="acctAmt" column="ACCT_AMT" />
+        <result property="balanceAmt" column="BALANCE_AMT" />
+        <result property="projectId" column="PROJECT_ID" />
+        <result property="acctName" column="acct_Name" />
+        <result property="dateVersion" column="DATA_VERSION" />
+        <result property="receivablesId" column="receivables_Id" />
+        <result property="balanceAmt" column="AVAILABLE_BALANCE" />
+          
+</resultMap>
+<!-- 查询 账户余额-->	
+<select id="getAcctProjectBalanceByLoand" resultMap="AcctProjectBalanceViewMap" parameterType="java.lang.Integer">
+	select P.PID AS PROJECT_ID,P.acct_Id AS acct_Id,
+		  	PKG_FINANCE.FUN_GET_CUSTOMER_BALANCE(#{loanId},P.ACCT_ID) as  BALANCE_AMT,
+		  	PKG_COMMON.FUN_GET_ACCT_NAME(P.ACCT_ID) AS ACCT_NAME
+	from BIZ_LOAN L LEFT JOIN BIZ_PROJECT P ON P.PID=L.PROJECT_ID
+	where L.STATUS=1 AND L.PID= #{loanId,jdbcType=INTEGER}
+</select>
+
+<select id="getBalanceByReceId" resultMap="AcctProjectBalanceViewMap" parameterType="java.lang.Integer">
+	   SELECT I.PID AS receivables_Id,I.AVAILABLE_BALANCE,I.DATA_VERSION 
+	   FROM BIZ_LOAN_INPUT I 
+	   WHERE I.PID=#{receId,jdbcType=INTEGER}  and I.STATUS=1
+</select>
+<!--  -->
+<resultMap type="com.xlkfinance.bms.rpc.finance.UnReconciliationView" id="UnReconciliationMap">
+  		<id property="pid" column="PID"/>
+        <result property="projectId" column="PROJECT_ID" />
+        <result property="projectName" column="project_name" />
+        <result property="projectNumber" column="project_number" />
+        <result property="loanId" column="loan_id" />
+        <result property="receiveDt" column="receive_dt" />
+        <result property="actualAmt" column="actual_amt" />
+        <result property="availableBalance" column="available_balance" />
+        <result property="reconciliationAmt" column="RECONCILIATION_AMT" />
+        <result property="unReconciliationAmt" column="UN_RECONCILIATION_AMT" />
+        <result property="acctId" column="acct_id" />
+        <result property="dataVersion" column="DATA_VERSION" />
+        
+</resultMap>
+<!-- 查询未对账项目查询-->	
+<select id="getListUnReconciliation" resultMap="UnReconciliationMap" parameterType="com.xlkfinance.bms.rpc.finance.UnReconciliationCondition">
+	SELECT * FROM (SELECT W.*, ROWNUM RNUM   FROM ( 
+	select  project.pid as project_id,project.project_name,project.project_number,
+        input.pid,input.loan_id,to_char(input.receive_dt,'yyyy-MM-dd') receive_dt ,
+        input.actual_amt,input.available_balance,
+         (input.actual_amt - input.available_balance)RECONCILIATION_AMT,
+          input.available_balance AS UN_RECONCILIATION_AMT
+	  from biz_loan_input input 
+  	left join biz_loan loan on input.loan_id=loan.pid 
+  	left join biz_project project on loan.project_id=project.pid
+   	left join CUS_COM_BASE COMBASE on project.PID=COMBASE.ACCT_ID  
+   	left join CUS_ACCT ACCT on ACCT.PID=project.ACCT_ID 
+ 	 where  input.available_balance!=0  and input.status=1  
+	
+	    <if test="projectNumber != null and projectNumber != '' ">
+			AND project.PROJECT_NUMBER like '%${projectNumber}%'
+		</if>
+		<if test="projectName != null and projectName != '' ">
+			AND project.PROJECT_NAME like '%${projectName}%'
+		</if>
+		<if test="cusName != null and cusName != '' ">
+			AND pkg_common.FUN_GET_ACCT_NAME(project.acct_id) like '%${cusName}%'
+		</if>
+		<if test="ecoTrade != null and ecoTrade != -1   and ecoTrade != 0 ">
+			AND COMBASE.ECO_TRADE =#{ecoTrade} 
+		</if>
+		<if test="cusType != null and cusType != -1   and cusType != 0 ">
+			AND ACCT.CUS_TYPE = #{cusType}
+		</if>
+		<if test="receiveStartDt != null and receiveStartDt != '' ">
+			AND input.receive_dt <![CDATA[>=]]> #{receiveStartDt,jdbcType=DATE}
+		</if>
+		<if test="receiveEndDt != null and receiveEndDt != '' ">
+			AND input.receive_dt <![CDATA[<=]]> #{receiveEndDt,jdbcType=DATE}
+		</if>
+		
+	 ORDER BY input.receive_dt desc
+		) W
+         ) 
+		<![CDATA[ 
+ 		WHERE RNUM BETWEEN (((#{page}-1) * #{rows})+1) AND (#{page} * #{rows})]]>
+</select>
+<!-- 查询未对账项目总数-->
+<select id="countUnReconciliation" resultType="java.lang.Integer"  parameterType="com.xlkfinance.bms.rpc.finance.UnReconciliationCondition">
+	select  count(1)
+	  from biz_loan_input input 
+  	left join biz_loan loan on input.loan_id=loan.pid 
+ 	left join biz_project project on loan.project_id=project.pid
+    left join CUS_COM_BASE COMBASE on project.PID=COMBASE.ACCT_ID  
+    left join CUS_ACCT ACCT on ACCT.PID=project.ACCT_ID 
+    where  input.available_balance!=0  and input.status=1
+	
+	    <if test="projectNumber != null and projectNumber != '' ">
+			AND project.PROJECT_NUMBER like '%${projectNumber}%'
+		</if>
+		<if test="projectName != null and projectName != '' ">
+			AND project.PROJECT_NAME like '%${projectName}%'
+		</if>
+		<if test="cusName != null and cusName != '' ">
+			AND pkg_common.FUN_GET_ACCT_NAME(project.acct_id) like '%${cusName}%'
+		</if>
+		<if test="ecoTrade != null and ecoTrade != -1   and ecoTrade != 0 ">
+			AND COMBASE.ECO_TRADE = #{ecoTrade} 
+		</if>
+		<if test="cusType != null and cusType != -1   and cusType != 0 ">
+			AND ACCT.CUS_TYPE = #{cusType}
+		</if>
+		<if test="receiveStartDt != null and receiveStartDt != '' ">
+			AND input.receive_dt <![CDATA[>=]]> #{receiveStartDt,jdbcType=DATE}
+		</if>
+		<if test="receiveEndDt != null and receiveEndDt != '' ">
+			AND input.receive_dt <![CDATA[<=]]> #{receiveEndDt,jdbcType=DATE}
+		</if>
+</select>
+<!-- 根据收款id查询收款信息 -->
+<select id="findUnReconciliationInfo" resultMap="UnReconciliationMap" parameterType="java.lang.Integer">
+	select  project.pid as project_id,project.project_name,project.project_number,
+        input.pid,input.loan_id,to_char(input.receive_dt,'yyyy-MM-dd') receive_dt ,
+        input.actual_amt,input.available_balance,project.acct_id,
+        PKG_FINANCE_COMMON.GET_LOAN_RECONCILIATION_AMT(input.loan_id) RECONCILIATION_AMT,
+        PKG_FINANCE_COMMON.GET_LOAN_UN_RECONCILIATION_AMT(input.loan_id) UN_RECONCILIATION_AMT,
+        input.DATA_VERSION
+  from biz_loan_input input 
+  left join biz_loan loan on input.loan_id=loan.pid
+  left join biz_project project on  loan.project_id=project.pid 
+left join 
+  CUS_ACCT ACCT on ACCT.PID=project.ACCT_ID
+    left join CUS_COM_BASE COMBASE on project.acct_id=COMBASE.ACCT_ID
+  where input.status=1  and input.available_balance!=0   and  input.pid=#{inputId}
+</select>
+
+<!-- add by yql -->
+
+<!-- add by qcxian -->
+	<resultMap type="com.xlkfinance.bms.rpc.finance.FinanceReceivablesDTO"
+	id="FinanceReceivablesDTO">
+	<id property="pid" column="PID" />
+	<result property="loanId" column="LOAN_ID" />
+	<result property="paymentAmount" column="ACTUAL_AMT" />
+	<result property="paymentDttm" column="RECEIVE_DT" />
+	<result property="useBalance" column="USEBALAMT" />
+	<result property="reconciliation" column="IS_RECONCILIATION" />
+	<result property="status" column="STATUS" />
+
+</resultMap>
+
+	<resultMap type="com.xlkfinance.bms.rpc.finance.FinanceReceivablesView"
+		id="FinanceReceivablesView">
+		<result property="loanId" column="loanId" />
+		<result property="projectName" column="projectName" />
+		<result property="projectNumber" column="projectNumber" />
+		<result property="businessCatelog" column="businessCatelog" />
+		<result property="businessType" column="businessType" />
+		<result property="flowCatelog" column="flowCatelog" />
+		<result property="realName" column="realName" />
+		<result property="customerBalance" column="customerBalance" />
+		<result property="loanInterestRecord" column="loanInterestRecord" />
+		<result property="loanMgrRecord" column="loanMgrRecord" />
+		<result property="loanOtherFee" column="loanOtherFee" />
+		<result property="projectId" column="projectId" />
+		<result property="acctId" column="acctId" />
+	</resultMap>
+
+
+	<!-- 根据条件查询财务收款数据 -->
+	<select id="getFinanceReceivablesDTOList" resultMap="FinanceReceivablesDTO"
+		parameterType="com.xlkfinance.bms.rpc.finance.FinanceReceivablesCondition">
+		SELECT CCT.PID,
+		CCT.LOAN_ID,
+		CCT.ACTUAL_AMT,
+		CCT.RECEIVE_DT,
+		CCT.USE_BAL_AMT as USEBALAMT,
+		CCT.IS_RECONCILIATION,
+		CCT.STATUS
+		FROM
+		BIZ_LOAN_INPUT CCT
+		WHERE 1=1
+		<if test="pid != null">
+			AND CCT.PID = #{pid,jdbcType=INTEGER,javaType=String}
+		</if>
+		<if test="loanId != null">
+			AND CCT.LOAN_ID =
+			#{loanId,jdbcType=INTEGER,javaType=String}
+		</if>
+		<if test="paymentDttm != null">
+			AND CCT.RECEIVE_DT =
+			#{paymentDttm,jdbcType=DATE,javaType=String}
+		</if>
+		<if test="reconciliation;  != null">
+			AND CCT.IS_RECONCILIATION =
+			#{reconciliation,jdbcType=INTEGER,javaType=String}
+		</if>
+		and CCT.STATUS = 1
+	</select>
+
+	<!-- 获取财务收款需要的页面信息 -->
+	<select id="getFinanceReceivablesView" resultMap="FinanceReceivablesView"
+		parameterType="java.lang.Integer">
+		SELECT L.PID AS loanId,
+		P.PROJECT_NAME AS projectName,
+		P.PROJECT_NUMBER AS projectNumber,
+		PKG_COMMON.FUN_GET_SYS_LOOKUP_VAL(P.BUSINESS_CATELOG) AS
+		businessCatelog,
+		PKG_COMMON.FUN_GET_SYS_LOOKUP_VAL(P.BUSINESS_TYPE) AS
+		businessType,
+		PKG_COMMON.FUN_GET_SYS_LOOKUP_VAL(P.FLOW_CATELOG) AS
+		flowCatelog,
+		PKG_COMMON.FUN_GET_SYS_USER_NAME(P.PM_USER_ID) AS
+		realName,
+		PKG_FINANCE.FUN_GET_CUSTOMER_BALANCE(#{loanId,jdbcType=INTEGER},P.Acct_Id)
+		AS customerBalance,
+		P.LOAN_INTEREST_RECORD AS loanInterestRecord,
+		P.LOAN_MGR_RECORD AS loanMgrRecord,
+		P.LOAN_OTHER_FEE AS loanOtherFee,
+		p.pid as projectId,
+		p.acct_id as acctId
+		FROM BIZ_PROJECT P,biz_loan L
+		where L.PID = #{loanId,jdbcType=INTEGER}
+		AND L.project_id = p.pid and
+		L.status=1
+	</select>
+
+	<!-- 新增财务收款 -->
+	<insert id="insertFinanceReceivables"
+		parameterType="com.xlkfinance.bms.rpc.finance.FinanceReceivablesDTO">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_BIZ_LOAN_INPUT.Nextval as PID from DUAL
+		</selectKey>
+		insert into BIZ_LOAN_INPUT(
+		PID,
+		LOAN_ID,
+		ACTUAL_AMT,
+		RECEIVE_DT,
+		USE_BAL_AMT,
+		AVAILABLE_BALANCE,
+		IS_RECONCILIATION,
+		STATUS)
+		values (
+		#{pid,jdbcType=INTEGER},
+		#{loanId,jdbcType=INTEGER},
+		#{paymentAmount,jdbcType=DOUBLE},
+		#{paymentDttm,jdbcType=DATE,javaType=String},
+		#{useBalance,jdbcType=DOUBLE},
+		#{availableBalance,jdbcType=INTEGER},
+		#{reconciliation,jdbcType=INTEGER},
+		1
+		)
+	</insert>
+
+	<update id="updateFinanceReceivablesUseBalance"
+		parameterType="com.xlkfinance.bms.rpc.finance.FinanceReceivablesDTO">
+		UPDATE BIZ_LOAN_INPUT P
+		SET P.IS_RECONCILIATION = 0,
+		P.AVAILABLE_BALANCE =
+		(P.AVAILABLE_BALANCE+#{useBalance,jdbcType=DOUBLE}),
+		P.DATA_VERSION
+		=(P.DATA_VERSION + 1),
+		P.USE_BAL_AMT=(P.USE_BAL_AMT+
+		#{useBalance,jdbcType=DOUBLE})
+		WHERE P.PID = #{pid,jdbcType=INTEGER}
+		AND P.DATA_VERSION = #{version,jdbcType=INTEGER}
+	</update>
+
+	<!-- 项目中可以对账选项 -->
+	<resultMap type="com.xlkfinance.bms.rpc.finance.ReconciliationOptionsView"
+		id="ReconciliationOptions">
+		<result property="refId" column="refId" />
+		<result property="type" column="type" />
+		<result property="name" column="name" />
+		<result property="refNum" column="refNum" />
+	</resultMap>
+	<select id="getReconciliationOptions" parameterType="java.lang.Integer"
+		resultMap="ReconciliationOptions">
+		select * from(
+		SELECT P.PID AS REFID,
+		P.PLAN_CYCLE_NUM AS
+		REFNUM,
+		1 AS TYPE,
+		'收息' AS NAME, to_char(p.plan_repay_dt,'yyyy-mm-dd')
+		AS repayDt
+		FROM BIZ_LOAN_REPAYMENT_PLAN P
+		WHERE P.LOAN_INFO_ID =
+		#{loanId,jdbcType=INTEGER}
+		AND P.IS_RECONCILIATION IN (2,3)
+		AND
+		P.PLAN_VERSION =
+		PKG_FINANCE_COMMON.GET_MAX_PLAN_VERSION(#{loanId,jdbcType=INTEGER})
+		and P.status=1
+		UNION
+		SELECT T.PID AS REFID, T.OPER_TYPE AS REFNUM, 2 AS
+		TYPE, '临时' AS NAME,to_char(T.OPER_REPAY_DT,'yyyy-mm-dd') AS repayDt
+		FROM BIZ_LOAN_REALTIME_PLAN T
+		WHERE T.LOAN_ID =
+		#{loanId,jdbcType=INTEGER}
+		AND T.Plan_Version =
+		PKG_FINANCE_COMMON.FUN_REALTIME_MAX_VERSION(#{loanId,jdbcType=INTEGER})
+		AND T.IS_RECONCILIATION IN (2,3) and T.status=1) a ORDER BY a.repayDt
+	</select>
+
+	<!-- 对账单中的明细项 -->
+	<resultMap type="com.xlkfinance.bms.rpc.finance.ReconciliationItem"
+		id="ReconciliationItem">
+		<result property="pepayDt" column="pepayDt" jdbcType="DATE"
+			javaType="String" />
+		<result property="principal" column="principal" />
+		<result property="mangCost" column="mangCost" />
+		<result property="interest" column="interest" />
+		<result property="otherCost" column="otherCost" />
+		<result property="realtimePlan" column="realtimePlan" />
+		<result property="operType" column="operType" />
+		<result property="refPid" column="refPid" />
+		<result property="cycleNum" column="cycleNu m" />
+	</resultMap>
+	
+	<!-- 还款计划表中的对应费用减免 -->
+	<resultMap type="com.xlkfinance.bms.rpc.finance.LoanFeew"
+		id="loanFeew">
+		<result property="mgr" column="mgr" />
+		<result property="other" column="other" />
+		<result property="interest" column="interest" />
+		<result property="overduinterest" column="overduinterest" />
+		<result property="fineinterest" column="fineinterest" />
+		<result property="totalAmt" column="totalAmt" />
+	</resultMap>
+	
+	<!-- 获取还款计划表中的项 -->
+	<select id="getRepaymentPlanReconciliationItem" statementType="CALLABLE"
+		parameterType="java.util.Map">
+        	<![CDATA[ 
+			{ call PKG_FINANCE_RECONCILIATION.PRO_GET_PLAN_P_ITEM(#{pid, mode=IN, jdbcType=INTEGER},
+				#{results,mode=OUT,jdbcType=CURSOR,resultMap=ReconciliationItem}) } 
+			  ]]>
+	</select>
+	<!-- 获取即时发生计划表中的项 -->
+	<select id="getRealtimePlanReconciliationItem" statementType="CALLABLE"
+		parameterType="java.util.Map">
+             <![CDATA[ 
+			{ call PKG_FINANCE_RECONCILIATION.PRO_GET_Immediate_P_ITEM(#{pid, mode=IN, jdbcType=INTEGER},
+				#{results,mode=OUT,jdbcType=CURSOR,resultMap=ReconciliationItem}) } 
+			 ]]>
+	</select>
+	<!--  获取指定贷款项目和期数的费用减免 -->
+	<select id="getRepaymentPlanLoanFeew" statementType="CALLABLE"
+		parameterType="java.util.Map">
+             <![CDATA[ 
+			{ call PKG_FINANCE_RECONCILIATION.PRO_GET_LOANFEEW(#{loanId, mode=IN, jdbcType=INTEGER},
+			     #{cycleNum, mode=IN, jdbcType=INTEGER},
+				#{results,mode=OUT,jdbcType=CURSOR,resultMap=loanFeew}) } 
+			 ]]>
+	</select>
+
+	<!-- 获取还款计划表中的对应的逾期利息 -->
+	<select id="getOverdueRepaymentFine" parameterType="com.xlkfinance.bms.rpc.finance.OverdueDataCondition"
+		resultType="java.lang.Double">
+		SELECT
+		PKG_FINANCE_RECONCILIATION.GET_OVERDUE_REPAYMENT_FINE(#{pid,jdbcType=INTEGER},
+		#{type,jdbcType=INTEGER},
+		#{currentDt,jdbcType=DATE,javaType=String})
+		FROM BIZ_LOAN_REPAYMENT_PLAN P
+		WHERE P.PID = #{pid,jdbcType=INTEGER}
+		and P.status=1
+
+	</select>
+
+	<!-- 获取即时还款计划表中的对应的逾期罚息 -->
+	<select id="getOverdueRealtimeFine" parameterType="com.xlkfinance.bms.rpc.finance.OverdueDataCondition"
+		resultType="java.lang.Double">
+		SELECT
+		PKG_FINANCE_RECONCILIATION.GET_OVERDUE_REALTIME_FINE(#{pid,jdbcType=INTEGER},
+		#{type,jdbcType=INTEGER},
+		#{currentDt,jdbcType=DATE,javaType=String})
+		FROM BIZ_LOAN_REALTIME_PLAN P
+		WHERE P.PID = #{pid,jdbcType=INTEGER} and
+		P.status=1
+	</select>
+
+	<!-- 新增财务对账记录 -->
+	<insert id="insertRepaymentReconciliation"
+		parameterType="com.xlkfinance.bms.rpc.finance.RepaymentReconciliationDTO">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_BIZ_LOAN_RECONCILIATION.Nextval as PID from
+			DUAL
+		</selectKey>
+		insert into BIZ_LOAN_RECONCILIATION(
+		PID,
+		LOAN_INFO_ID,
+		RECONCILIATION_TYPE,
+		RECONCILIATION_CYCLE_NUM,
+		REALTIME_ID,
+		RECONCILIATION_AMT,
+		RECONCILIATION_DT,
+		GEN_DTTM,
+		RECONCILIATION_USER_ID,
+		RECEIVABLES_ID,
+		STATUS,
+		CREATE_USER,
+		CREATE_DATE)
+		values (
+		#{pid,jdbcType=INTEGER},
+		#{loanId,jdbcType=INTEGER},
+		#{type,jdbcType=INTEGER},
+		#{cycleNum,jdbcType=INTEGER},
+		#{realtimeId,jdbcType=INTEGER},
+		#{reconciliationAmt,jdbcType=DOUBLE},
+		#{reconciliationDt,jdbcType=DATE,javaType=String},
+		SYSDATE,
+		#{userId,jdbcType=INTEGER},
+		#{receivablesId,jdbcType=INTEGER},
+		1,
+		#{createUser},
+		#{createDate,jdbcType=DATE,javaType=String}
+		)
+	</insert>
+
+	<!-- 新增财务对账明细记录 -->
+	<insert id="insertRepaymentReconciliationDetail"
+		parameterType="com.xlkfinance.bms.rpc.finance.RepaymentReconciliationDetailDTO">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_BIZ_LOAN_RECONCILIATIO_DTL.Nextval as PID from
+			DUAL
+		</selectKey>
+		insert into BIZ_LOAN_RECONCILIATION_DTL(
+		PID,
+		RECON_ID,
+		DTL_TYPE,
+		DTL_AMT,
+		STATUS,
+		DESCRIPTION,
+		DEL_TYPE_NAME,
+		FT_BANK_ACCT_ID,
+		CREATE_USER,
+		CREATE_DATE)
+		values (
+		#{pid,jdbcType=INTEGER},
+		#{repaymentReconciliationId,jdbcType=INTEGER},
+		#{detailType,jdbcType=INTEGER},
+		#{reconciliationAmt,jdbcType=DOUBLE},
+		1,
+		#{description,jdbcType=VARCHAR},
+		#{detailTypeName,jdbcType=VARCHAR},
+		#{bankId,jdbcType=INTEGER},
+		#{createUser},
+		#{createDate,jdbcType=DATE,javaType=String}
+		)
+	</insert>
+	<!-- 新增财务交易记录表记录 -->
+	<insert id="insertFinanceTransaction"
+		parameterType="com.xlkfinance.bms.rpc.finance.FinanceTransactionDTO">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_BIZ_LOAN_FT.Nextval as pId from DUAL
+		</selectKey>
+		INSERT INTO BIZ_LOAN_FT
+		(PID,
+		REF_ID,
+		FT_TYPE,
+		TENDER_TYPE,
+		FT_AMT,
+		FT_DATE,
+		FT_BANK_ACCT_ID,
+		FT_USER_ID,
+		SPECIALTYPE,
+		remark,
+		STATUS,
+		CREATE_USER,
+		CREATE_DATE)
+		values (
+		#{pid,jdbcType=INTEGER},
+		#{refId,jdbcType=INTEGER},
+		#{ftType,jdbcType=INTEGER},
+		#{tenderType,jdbcType=VARCHAR},
+		#{ftAmt},
+		#{ftDate,jdbcType=DATE,javaType=String},
+		#{bankAcctId,jdbcType=INTEGER},
+		#{userId,jdbcType=INTEGER},
+		#{specialType,jdbcType=INTEGER},
+		#{remark},
+		1,
+		#{createUser},
+		#{createDate,jdbcType=DATE,javaType=String}
+		)
+	</insert>
+
+	<!-- 更新还款计划表中的记录完成情况 -->
+	<update id="updateRepaymentPlanReconciliation" parameterType="java.util.Map">
+		update BIZ_LOAN_REPAYMENT_PLAN
+		set
+		IS_RECONCILIATION=#{reconciliationType,jdbcType=INTEGER}
+		where PID =
+		#{pid,jdbcType=INTEGER}
+	</update>
+	<!-- 更新即时还款计划表中的记录完成情况 -->
+	<update id="updateRealtimePlanReconciliation" parameterType="java.util.Map">
+		update BIZ_LOAN_REALTIME_PLAN
+		set
+		IS_RECONCILIATION=#{reconciliationType,jdbcType=INTEGER}
+		where PID =
+		#{pid,jdbcType=INTEGER}
+	</update>
+
+	<!-- 更新财务收款表的状态 -->
+	<update id="updateReceivablesData" parameterType="java.util.Map">
+		UPDATE
+		BIZ_LOAN_INPUT P
+		SET P.IS_RECONCILIATION =
+		#{receivablesReconciliation,jdbcType=INTEGER},
+		P.AVAILABLE_BALANCE =
+		#{availableReconciliationAmount,jdbcType=DOUBLE},
+		P.DATA_VERSION
+		=(P.DATA_VERSION + 1)
+		WHERE P.PID = #{receivablesId,jdbcType=INTEGER}
+		AND P.DATA_VERSION = #{receivablesVersion,jdbcType=INTEGER}
+	</update>
+
+
+
+	<!-- 获取批量对账的一个贷款所有还款计划 -->
+	<resultMap id="batchRepaymentLoanItem"
+		type="com.xlkfinance.bms.rpc.finance.BatchRepaymentItem">
+		<result property="loanId" column="loanId" />
+		<result property="projectName" column="projectName" />
+		<result property="projectNum" column="projectNum" />
+		<result property="limitDate" column="limitDate" />
+		<result property="refPid" column="refPid" />
+		<result property="sType" column="sType" />
+		<result property="financeType" column="financeType" />
+		<result property="totalAmt" column="totalAmt" />
+		<result property="overdueDays" column="overdueDays" />
+	</resultMap>
+
+	<select id="getBatchRepaymentLoanItem" statementType="CALLABLE"
+		parameterType="java.util.Map">
+        	<![CDATA[ 
+			{ call PKG_FINANCE_RECONCILIATION.PRO_GET_LOAN_BALANCE_ITEM(#{loanId, mode=IN, jdbcType=INTEGER},
+				#{currentDate, mode=IN, jdbcType=DATE},
+				#{results,mode=OUT,jdbcType=CURSOR,resultMap=batchRepaymentLoanItem}) } 
+			  ]]>
+	</select>
+
+	<!-- 查询用户批量还款，项目中的银行账户 -->
+	<select id="getLoanBankAccountBean" parameterType="java.lang.Integer"
+		resultType="com.xlkfinance.bms.rpc.finance.LoanBankAccountBean">
+		SELECT NVL(P.LOAN_INTEREST_RECORD, 0) AS
+		LOANINTERESTRECORD,
+		NVL(P.LOAN_MGR_RECORD, 0) AS LOANMGRRECORD,
+		NVL(P.LOAN_OTHER_FEE, 0) AS LOANOTHERFEE
+		FROM BIZ_LOAN L, BIZ_PROJECT P
+		WHERE P.PID = L.PROJECT_ID
+		AND L.PID = #{loanId,jdbcType=INTEGER}
+		AND
+		L.Status=1
+		AND P.Status = 1
+	</select>
+
+	<!-- 获取批量对账的一个贷款所有还款计划 -->
+	<resultMap id="loanBaseDataBean"
+		type="com.xlkfinance.bms.rpc.finance.LoanBaseDataBean">
+		<result property="totalAmt" column="totalAmt" />
+		<result property="rprincipal" column="rprincipal" />
+		<result property="rmangCost" column="rmangCost" />
+		<result property="rinterest" column="rinterest" />
+		<result property="rotherCost" column="rotherCost" />
+		<result property="uprincipal" column="uprincipal" />
+		<result property="umangCost" column="umangCost" />
+		<result property="uinterest" column="uinterest" />
+		<result property="uotherCost" column="uotherCost" />
+	</resultMap>
+	<!-- 获取项目结清办理中的项目数据 -->
+	<select id="getLoanBaseDataBean" statementType="CALLABLE"
+		parameterType="java.util.Map">
+	        	<![CDATA[ 
+				{ call PKG_FINANCE_CUST.PRO_GET_LOAN_DATA_INFO(#{projectId, mode=IN, jdbcType=INTEGER},
+					#{results,mode=OUT,jdbcType=CURSOR,resultMap=loanBaseDataBean}) } 
+		    ]]>
+	</select>
+
+	<!-- 获取财务收款数据 -->
+	<select id="getFinanceReceivables"
+		resultType="com.xlkfinance.bms.rpc.finance.FinanceReceivablesDTO"
+		parameterType="java.lang.Integer">
+		SELECT B.PID AS PID,
+		B.LOAN_ID AS LOANID,
+		B.ACTUAL_AMT AS
+		PAYMENTAMOUNT,
+		to_char(B.RECEIVE_DT,'yyyy-MM-dd') AS PAYMENTDTTM,
+		B.USE_BAL_AMT AS USEBALANCE,
+		B.IS_RECONCILIATION AS reconciliation,
+		b.status AS status,
+		b.data_version AS version,
+		b.available_balance AS availableBalance
+		FROM
+		BIZ_LOAN_INPUT B WHERE b.pid=
+		#{financeReceivablesId,jdbcType=INTEGER}
+	</select>
+
+	<!-- 获取坏账呆账计算后要展现的数据 -->
+
+	<select id="getBadDebtDataBean" parameterType="java.lang.Integer"
+		resultType="com.xlkfinance.bms.rpc.finance.BadDebtDataBean">
+		SELECT P.OPER_COST AS TOTALAMT, P.OPER_TYPE AS OPERTYPE
+		FROM BIZ_LOAN_REALTIME_PLAN P
+		WHERE P.LOAN_ID =
+		#{loanId,jdbcType=INTEGER}
+		AND P.PLAN_VERSION
+		=pkg_finance.FUN_REALTIME_MAX_VERSION(P.LOAN_ID)
+		and P.REFUND_TYPE =3
+	</select>
+
+	<!-- 激活还款计划的最大版本 -->
+	<update id="activateRepaymentPlan" parameterType="java.lang.Integer">
+		UPDATE
+		biz_loan_repayment_plan p SET
+		p.freeze_status=1
+		WHERE
+		p.loan_info_id=#{loanId} AND p.plan_version = (SELECT
+		MAX(T.PLAN_VERSION) FROM BIZ_LOAN_REPAYMENT_PLAN T WHERE
+		T.LOAN_INFO_ID = #{loanId})
+	</update>
+	<!-- 激活即时计划的最大版本 -->
+	<update id="activateRealtimePlan" parameterType="java.lang.Integer">
+		UPDATE
+		biz_loan_realtime_plan p SET
+		p.freeze_status=1
+		WHERE p.loan_id=#{loanId}
+		AND p.plan_version = (SELECT MAX(T.plan_version)
+		FROM
+		biz_loan_realtime_plan T WHERE T.loan_id = #{loanId})
+	</update>
+	
+	<!-- 获取某一天的还款计划表的逾期利息 -->
+	<select id="getPlanOverdueByDate" parameterType="java.util.Map" resultType="java.lang.Double">
+	   SELECT PKG_FINANCE_COMMON.FUN_GET_PLAN_OVERDUE_BY_DATE(#{currentDate,jdbcType=DATE,javaType=String},#{loanId,jdbcType=INTEGER},#{pid,jdbcType=INTEGER}) FROM  DUAL
+	</select>
+	
+	<!-- 获取某一天的即时计划表的逾期罚息 -->
+	<select id="getIMMOverdueByDate" parameterType="java.util.Map" resultType="java.lang.Double">
+	   SELECT PKG_FINANCE_COMMON.FUN_GET_IMM_OVERDUE_BY_DATE(#{currentDate,jdbcType=DATE,javaType=String},#{loanId,jdbcType=INTEGER}) FROM  DUAL
+	</select>
+	
+	<!--   更新没有钱的记录为对账状态 -->
+	<update id="updateNullValuePlan" parameterType="java.lang.Integer">
+	     UPDATE BIZ_LOAN_REPAYMENT_PLAN P SET p.is_reconciliation=1
+	     WHERE P.LOAN_INFO_ID = #{loanId}
+	     AND P.is_reconciliation !=1
+	     AND p.should_principal=0
+	     AND p.should_mang_cost=0
+	     AND p.should_other_cost=0
+	     AND p.should_interest=0
+     </update>
+   
+     <!--  更新没有钱的记录为对账状态  -->
+     <update id="updateNullValueIMPlan" parameterType="java.lang.Integer">
+	     UPDATE  biz_loan_realtime_plan k SET k.is_reconciliation=1
+	     WHERE k.loan_id = #{loanId}
+	     AND k.is_reconciliation !=1
+	     AND k.oper_cost=0
+	</update>
+	<!-- add by qcxian -->
+
+  <!--    月报表相关                        -->
+ 
+  <!-- 获取还款计划表中的基本数据  -->
+  <resultMap id="monthlyReportBasePlanResult"
+		type="com.xlkfinance.bms.rpc.finance.MonthlyReportBasePlan">
+		<result property="loanId" column="loanId" />
+		<result property="repayDt" column="repayDt" />
+		<result property="cycleNmu" column="cycleNmu" />
+		<result property="principal" column="principal" />
+		<result property="mangCost" column="mangCost" />
+		<result property="otherCost" column="otherCost" />
+		<result property="interest" column="interest" />
+		<result property="pid" column="pid" />
+		<result property="planOutDt" column="planOutDt" />
+	</resultMap>
+  <select id="getMonthlyReportBasePlan" parameterType="java.lang.String" resultMap="monthlyReportBasePlanResult">
+SELECT 
+CASE 
+  WHEN L.Should_Date IS NULL 
+  THEN  P.planOutDt1
+    ELSE 
+     L.Should_Date
+     END  AS planOutDt,
+P.* FROM 
+(SELECT 
+       loan.plan_out_loan_dt planOutDt1,
+       P.LOAN_INFO_ID    AS loanId,
+       to_char(p.plan_repay_dt,'yyyy-mm-dd') AS repayDt,
+       p.plan_cycle_num AS cycleNmu,
+       P.SHOULD_PRINCIPAL  AS principal,
+       P.SHOULD_MANG_COST  AS mangCost,
+       P.SHOULD_OTHER_COST AS otherCost,
+       P.SHOULD_INTEREST   AS interest,
+       P.PID as pid
+		  FROM BIZ_LOAN_REPAYMENT_PLAN P,biz_loan loan,biz_project pr
+		 WHERE P.FREEZE_STATUS = 1
+		   AND P.IS_RECONCILIATION != 4
+		   AND P.STATUS = 1
+		   AND P.PLAN_VERSION =
+		       PKG_FINANCE_COMMON.GET_MAX_PLAN_VERSION(P.LOAN_INFO_ID)
+		   AND P.PLAN_REPAY_DT <![CDATA[ <= ]]> TO_DATE(#{limtDate}, 'yyyy-mm-dd hh24:mi:ss')
+		  AND P.Loan_Info_Id = loan.pid AND loan.status=1
+	       AND loan.project_id = pr.pid AND pr.status=1
+	       ORDER BY p.loan_info_id,p.plan_cycle_num) P LEFT JOIN (SELECT tt.loan_id,min(tt.should_date) AS should_date  FROM biz_loan_output tt WHERE tt.status=1 GROUP BY tt.loan_id) L ON
+	       P.loanID = L.Loan_Id
+  </select> 
+  
+  <!--  获取还款计划表中的基本数据    -->
+    <resultMap id="monthlyReportBasePlanImResult"
+		type="com.xlkfinance.bms.rpc.finance.MonthlyReportBasePlanIm">
+		<result property="loanId" column="loanId" />
+		<result property="repayDt" column="repayDt" />
+		<result property="opterType" column="opterType" />
+		<result property="operCost" column="operCost" />
+		<result property="refId" column="refId" />
+		<result property="pid" column="pid" />
+	</resultMap>
+  <select id="getMonthlyReportBasePlanIm" parameterType="java.lang.String" resultMap="monthlyReportBasePlanImResult">
+       SELECT P.LOAN_ID   AS loanId,
+       p.oper_repay_dt AS repayDt,
+       p.oper_type AS opterType,
+       p.oper_cost AS operCost,
+       p.ref_id AS refId,
+       p.pid AS pid
+      FROM biz_loan_realtime_plan P,biz_loan loan ,biz_project pr
+     WHERE P.FREEZE_STATUS = 1
+       AND P.IS_RECONCILIATION != 4
+       AND P.STATUS = 1
+       AND P.PLAN_VERSION =
+           PKG_FINANCE_COMMON.FUN_REALTIME_MAX_VERSION(P.LOAN_ID)
+       AND P.oper_repay_dt  <![CDATA[ <= ]]> TO_DATE(#{limtDate}, 'yyyy-mm-dd hh24:mi:ss')
+       AND P.LOAN_ID=loan.pid AND loan.project_id=pr.pid AND loan.status=1 AND pr.status=1
+       ORDER BY p.oper_repay_dt 
+  </select> 
+	  
+  
+    <!--  查询期限日期的逾期 -->
+       <resultMap id="queryOverdueReceivablesBeanResult"
+		type="com.xlkfinance.bms.rpc.finance.QueryOverdueReceivablesBean">
+		<result property="searchType" column="searchType" />
+		<result property="pid" column="pid" />
+		<result property="limtDate" column="limtDate" />
+		<result property="receivableOverdueInterest" column="receivableOverdueInterest" />
+		<result property="receivableOverduePunitive" column="receivableOverduePunitive" />
+	</resultMap>
+  	<select id="queryOverdueReceivablesBean" statementType="CALLABLE" parameterType="com.xlkfinance.bms.rpc.finance.QueryOverdueReceivablesBean">
+	    { CALL PKG_FINANCE_COMMON.PRO_queryMonthOverdue(
+			#{searchType,mode=IN,jdbcType=INTEGER},
+			#{pid,mode=IN,jdbcType=INTEGER},
+			#{limtDate,mode=IN,jdbcType=DATE},
+			#{result,mode=OUT,jdbcType=CURSOR,javaType=java.sql.ResultSet,resultMap=queryOverdueReceivablesBeanResult}
+			)} 
+	</select>
+	
+	<!--  新增月报表记录  -->
+	<insert id="addMonthlyReportRecord" parameterType="com.xlkfinance.bms.rpc.finance.MonthlyReportRecord">
+	   <selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+		SELECT SEQ_BIZ_MONTHLYREPORTRECORD.Nextval as PID from DUAL
+	</selectKey>
+		    insert into biz_monthlyreportrecord (
+			    PID, 
+			    LOAN_ID, 
+			    INTEREST,
+			    MANGCOST,
+			    OTHERCOST,
+			    THERESTCOST,
+			    TOTALCOST,
+			    STARTDATE,
+			    ENDDATE,
+			    MONTH,
+			    MARK)
+		    values (
+			    #{pid,jdbcType=INTEGER},
+			    #{loanId,jdbcType=INTEGER},
+			    #{interest,jdbcType=DOUBLE},
+			    #{mangCost,jdbcType=DOUBLE},
+			    #{otherCost,jdbcType=DOUBLE},
+			    #{theRestCost,jdbcType=DOUBLE},
+			    #{totalCost,jdbcType=DOUBLE},
+			    #{startDate,jdbcType=DATE},
+		        #{endDate,jdbcType=DATE},
+			    #{month},
+			    #{mark})
+   </insert>
+
+	<!-- 获取以前的记录 -->
+	<select id="getMonthlyReportRecords" parameterType="com.xlkfinance.bms.rpc.finance.MonthlyReportRecord"
+		resultType="com.xlkfinance.bms.rpc.finance.MonthlyReportRecord">
+		select pid,
+		LOAN_ID as loanId,
+		INTEREST,
+		MANGCOST,
+		OTHERCOST,
+		THERESTCOST,
+		TOTALCOST,
+		STARTDATE,
+		ENDDATE,
+		MONTH,
+		status,
+		mark
+		from biz_monthlyreportrecord where LOAN_ID=#{loanId} and ENDDATE  <![CDATA[ <= ]]>
+		#{endDate,jdbcType=DATE}
+	</select> 	
+	
+	<!-- 计算当前月份数据的时候，要删除以前未锁定的数据 -->
+	<delete id="deleteMonthlyReportRecords" parameterType="com.xlkfinance.bms.rpc.finance.MonthlyReportRecord">
+	   delete from biz_monthlyreportrecord where LOAN_ID=#{loanId} and MONTH=#{month} and STATUS=0
+	</delete>	
+    		
+   <!-- 页面展现报表数据  --> 		
+   <select id="listMonthlyReportRecords" parameterType="java.util.Map" resultType="com.xlkfinance.bms.rpc.finance.MonthlyReportRecord">
+   SELECT * FROM(
+	 SELECT C.*,ROWNUM RN FROM (
+         select r.pid,
+		    r.LOAN_ID as loanId,
+		    r.INTEREST,
+		    r.MANGCOST,
+		    r.OTHERCOST,
+		    r.THERESTCOST,
+		    r.TOTALCOST,
+		    r.STARTDATE,
+		    r.ENDDATE,
+		    r.MONTH,
+		    r.status,
+		    r.mark,
+		    b.project_name AS projectName,
+		    b.project_number AS projectNo,
+		    l.CREDIT_AMT AS loanAmt,
+		    u.real_name AS projectManage,
+		    to_char(l.plan_out_loan_dt,'yyyy-MM-dd') AS loanDate
+		    from biz_monthlyreportrecord r,biz_project b,biz_loan l,Sys_User u WHERE 1=1 
+		    AND l.pid=r.loan_id AND l.project_id=b.pid and u.pid=b.pm_user_id
+		    <if test="map.month != null and map.month != '' ">
+				and r.MONTH  LIKE '%${map.month}%' 
+			</if>
+			<if test="map.projectName != null and map.projectName != '' ">
+				and b.project_name LIKE '%${map.projectName}%' 
+			</if>
+		    <if test="map.projectNo != null and map.projectNo != '' ">
+				and b.project_number LIKE '%${map.projectNo}%' 
+			</if>
+			 <if test="map.projectManage != null and map.projectManage != '' ">
+				and  u.real_name LIKE '%${map.projectManage}%' 
+			</if>
+			<if test="map.assWay != null and map.assWay != '' ">
+				and b.pid in (
+					select project_id from  BIZ_PROJECT_GUARANTEE_TYPE where STATUS = 1 AND  guarantee_type in 
+					<foreach collection="map.assWay" index="index" item="item" open="(" separator="," close=")">
+						 ${item} 
+			        </foreach>
+				)
+			</if>
+	) C WHERE ROWNUM<![CDATA[<=]]>#{map.page}*#{map.rows} )
+		WHERE RN>=((#{map.page}-1)*#{map.rows})+1 ORDER BY  MONTH,projectName
+   </select>	
+   
+   <select id="listMonthlyReportRecordsTotal" parameterType="java.util.Map" resultType="java.lang.Integer">
+         select count(1)
+		    from biz_monthlyreportrecord r,biz_project b,biz_loan l,Sys_User u WHERE 1=1
+		    AND l.pid=r.loan_id AND l.project_id=b.pid and u.pid=b.pm_user_id
+		    <if test="map.month != null and map.month != '' ">
+				and r.MONTH  LIKE '%${map.month}%' 
+			</if>
+			<if test="map.projectName != null and map.projectName != '' ">
+				and b.project_name LIKE '%${map.projectName}%' 
+			</if>
+		    <if test="map.projectNo != null and map.projectNo != '' ">
+				and b.project_number LIKE '%${map.projectNo}%' 
+			</if>
+			 <if test="map.projectManage != null and map.projectManage != '' ">
+				and  u.real_name LIKE '%${map.projectManage}%' 
+			</if>
+			<if test="map.assWay != null and map.assWay != '' ">
+				and b.pid in (
+					select project_id from  BIZ_PROJECT_GUARANTEE_TYPE where STATUS = 1 AND  guarantee_type in 
+					<foreach collection="map.assWay" index="index" item="item" open="(" separator="," close=")">
+						 ${item} 
+			        </foreach>
+				)
+			</if>
+   </select>	
+   
+    <!--  更新没有钱的记录为对账状态  -->
+     <update id="updateStatusLock" parameterType="java.lang.String">
+	     UPDATE  biz_monthlyreportrecord k SET k.status = 1
+	     WHERE k.pid in
+		 <foreach item="idItem" collection="array" open="(" separator="," close=")">
+			#{idItem}
+		</foreach>
+	</update>
+	<!--  更新没有钱的记录为对账状态  -->
+    <update id="updateStatusNoLock" parameterType="java.lang.String">
+	    UPDATE  biz_monthlyreportrecord k SET k.status = 0
+	     WHERE k.pid in
+		 <foreach item="idItem" collection="array" open="(" separator="," close=")">
+			#{idItem}
+		</foreach>
+	</update>
+	
+	<!-- 应收月报表数据删除 -->
+	<delete id="deleteMonthlyReportRecordsById" parameterType="java.lang.String">
+		DELETE FROM biz_monthlyreportrecord k
+	     WHERE k.pid in
+		 <foreach item="idItem" collection="array" open="(" separator="," close=")">
+			#{idItem}
+		</foreach>
+	</delete>
+	
+	<!-- 应收月报表详情数据删除 -->
+	<delete id="deleteMonthlyReportRecordsDetailByMonthId" parameterType="java.lang.String">
+		DELETE FROM biz_MONTHLYREPORTRECORDDETAIL k
+	     WHERE k.MONTHLYREPORTRECORDID in
+		 <foreach item="idItem" collection="array" open="(" separator="," close=")">
+			#{idItem}
+		</foreach>
+	</delete>
+	
+	<!-- 新增财务应收月报表记录计算细节数据 -->
+	<insert id="addMonthlyReportRecordCalculateDetail" parameterType="com.xlkfinance.bms.rpc.finance.MonthlyReportRecordCalculateDetail">
+	  <selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+		SELECT SEQ_biz_MonthlyReportdetail.Nextval as PID from DUAL
+	</selectKey>
+		    insert into biz_MONTHLYREPORTRECORDDETAIL(
+			    PID, 
+			    MONTHLYREPORTRECORDID,
+			    LOAN_ID, 
+			    STARTDATE,
+			    ENDDATE,
+			    MONTH,
+			    CONTENT,
+			    CONTENT1)
+		    values (
+			    #{pid,jdbcType=INTEGER},
+			    #{monthlyReportRecordId,jdbcType=DOUBLE},
+			    #{loanId,jdbcType=INTEGER},
+			    #{startDate,jdbcType=DATE},
+		        #{endDate,jdbcType=DATE},
+			    #{month},
+			    #{content},
+			    #{content1})
+	</insert>
+	
+	<!-- 计算当前月份数据的时候，要删除以前未锁定的数据,以及对于的计算细节数据 -->
+	<delete id="deleteMonthlyReportRecordsDetail" parameterType="com.xlkfinance.bms.rpc.finance.MonthlyReportRecord">
+	    delete from biz_MONTHLYREPORTRECORDDETAIL where  MONTHLYREPORTRECORDID in( select pid from biz_monthlyreportrecord where LOAN_ID=#{loanId} and MONTH=#{month} and STATUS=0)
+	</delete>
+	
+	<!--  查询月报表要使用的费用减免记录 -->
+	<select id="getCostReductions" parameterType="java.lang.Integer" resultType="com.xlkfinance.bms.rpc.finance.CostReduction">
+	   SELECT F.LOAN_ID              AS LOANID,
+               L.PID,
+               L.WAIVER_CYCLE_NUM     AS CYCLENUM,
+               L.FEE_MGR              AS MANGCOST,
+               L.FEE_OTHER            AS OTHERCOST,
+               L.FEE_INTEREST         AS INTEREST,
+               L.OVERDU_LOAN_INTEREST AS OVERDUEINTEREST,
+               L.OVERDU_FINE_INTEREST AS OVERDUEPUNITIVE,
+               P.PLAN_REPAY_DT        AS REPAYDT
+          FROM BIZ_PROJECT_FEEWDTL     L,
+               BIZ_PROJECT_FEEW        F,
+               BIZ_LOAN_REPAYMENT_PLAN P
+         WHERE L.FEE_WAIVER_ID = F.PID
+           AND F.LOAN_ID =  #{loanId}
+           AND F.REQUEST_STATUS = 4
+           AND P.PLAN_CYCLE_NUM = L.WAIVER_CYCLE_NUM
+           AND P.LOAN_INFO_ID = F.LOAN_ID
+           AND P.PLAN_VERSION =
+               PKG_FINANCE_COMMON.GET_MAX_PLAN_VERSION(P.LOAN_INFO_ID)
+	</select>
+	
+	<select id="checkLoanIdByProjectNo" parameterType="java.lang.String" resultType="java.lang.Integer">
+	    SELECT l.pid FROM biz_loan l,biz_project p WHERE l.project_id=p.pid AND p.PROJECT_NUMBER=#{projectNo}
+	</select>
+	
+	<select id="getChangeIntLoanId" parameterType="java.util.Map" resultMap="monthlyReportBasePlanImResult">
+		SELECT DISTINCT LOAN.PID AS LOANID
+		  FROM BIZ_PROJECT_INT_CG CG, BIZ_LOAN LOAN, BIZ_LOAN_INTEREST INTEREST
+		 WHERE CG.PROJECT_ID = LOAN.PROJECT_ID
+		   AND INTEREST.INTEREST_CHG_ID = CG.PID
+		   AND INTEREST.STATUS = 1
+		   AND CG.STATUS = 1
+		   AND CG.REQUEST_STATUS = 4
+		   AND INTEREST.REQUEST_DTTM <![CDATA[ >= ]]>to_date(#{map.startDate},'yyyy-MM-dd')
+		   AND INTEREST.REQUEST_DTTM <![CDATA[ <= ]]>to_date(#{map.endDate},'yyyy-MM-dd')
+	</select>
+	<!-- 总账流水查询返回map -->
+	 <resultMap type="java.util.Map" id="getLoanOverdueAmtMap">
+        <result property="pAmt" column="P_AMT" />
+ </resultMap>
+	
+ <resultMap type="com.xlkfinance.bms.rpc.finance.LoanCycleNumView" id="getLoanCycleNumMap">
+        <result property="planCycleNum" column="plan_cycle_num" />
+        <result property="overdueAmt" column="OVERDUE_AMT"  />
+        <result property="rpId" column="pid" />
+ </resultMap>
+	<select id="getLoanCycleNumAndAmt" resultMap="getLoanCycleNumMap" parameterType="java.util.Map">
+		SELECT   p.pid as pid, to_char(Pkg_Finance_Common.FUN_REALTIME_MAX_VERSION(#{map.loanId}))  as plan_cycle_num ,PKG_FINANCE_COMMON.GET_LOAN_OVERDUE_AMT(#{map.loanId},#{map.currentDate,jdbcType=DATE}) as OVERDUE_AMT
+	      FROM BIZ_LOAN_REPAYMENT_PLAN P
+	     WHERE P.LOAN_INFO_ID = #{map.loanId}
+	       AND P.PLAN_VERSION = Pkg_Finance_Common.FUN_REALTIME_MAX_VERSION(#{map.loanId})
+	       AND p.status = 1
+	       AND p.is_reconciliation =3
+       </select>
+       <!-- 根据贷款id查询还有可用余额的收款记录 -->
+       <select id="getBalanceByLoanId" resultMap="AcctProjectBalanceViewMap" parameterType="java.lang.Integer">
+        SELECT I.PID AS receivables_Id,I.AVAILABLE_BALANCE,I.DATA_VERSION 
+     FROM BIZ_LOAN_INPUT I 
+	   WHERE I.Loan_Id=#{loanId,jdbcType=INTEGER} and I.Actual_Amt>0  and I.STATUS=1 and I.Is_Reconciliation=0
+	   
+</select>
+
+<update id="updateFinanceBalance"
+		parameterType="com.xlkfinance.bms.rpc.finance.FinanceReceivablesDTO">
+		UPDATE BIZ_LOAN_INPUT P
+		SET P.IS_RECONCILIATION = 1,
+		P.AVAILABLE_BALANCE =0
+		WHERE P.PID = #{pid,jdbcType=INTEGER}
+		AND P.AVAILABLE_BALANCE = #{availableBalance,jdbcType=INTEGER}
+	</update>
+	<!-- 删除收款记录，根据贷款id 用于反核销-->
+	<update id="updateLoanInputStatus"
+		parameterType="java.util.Map">
+		UPDATE BIZ_LOAN_INPUT P
+		 set status=-2,
+		 UPDATE_DATE=sysdate  ,
+		 UPDATE_USER=#{map.updateUser,jdbcType=INTEGER}
+		 where pid= #{map.inputId,jdbcType=INTEGER}
+	</update>
+	<!-- 删除收款记录，根据贷款id 用于反核销-->
+	<update id="updateLoanFtStatus"
+		parameterType="java.util.Map">
+		update  biz_loan_ft ft set ft.status=-2,
+		 ft.UPDATE_DATE=sysdate  ,
+		 ft.UPDATE_USER=#{map.updateUser,jdbcType=INTEGER}
+		where ft.ref_id =#{map.inputId,jdbcType=INTEGER} AND ft.ft_type=2
+		
+	</update>
+	<!-- 删除对账表记录记录，根据贷款id 用于反核销-->
+	<update id="updateReconciliationStatus"
+		parameterType="java.util.Map">
+		update biz_loan_reconciliation d 
+		set d.status=-2 ,
+		UPDATE_DATE=sysdate  ,
+		UPDATE_USER=#{map.updateUser,jdbcType=INTEGER}
+		where d.loan_info_id =#{map.loanId,jdbcType=INTEGER} and d.receivables_id=#{map.inputId,jdbcType=INTEGER}
+	</update>
+	<!-- 反核销 -->
+	<resultMap type="com.xlkfinance.bms.rpc.finance.RepaymentReconciliationView" id="RepaymentReconciliationViewMap">
+  		<result property="pid" column="pid"/>
+        <result property="cycleNum" column="RECONCILIATION_CYCLE_NUM" />
+        <result property="realtimeId" column="REALTIME_ID" />
+        <result property="reconciliationAmt" column="RECONCILIATION_AMT" />
+	</resultMap>
+	<!-- 查询被删除的 对账表id 用于反核销-->
+	<select id="getReconciliationId"
+		parameterType="java.util.Map" resultMap="RepaymentReconciliationViewMap"  >
+		SELECT d.pid,RECONCILIATION_CYCLE_NUM,REALTIME_ID,RECONCILIATION_AMT FROM  biz_loan_reconciliation d 
+		where d.loan_info_id =#{map.loanId,jdbcType=INTEGER} and d.receivables_id=#{map.inputId,jdbcType=INTEGER}  and d.status=1
+	</select>
+	<!--  删除对账表明细表记录，根据贷款id 用于反核销 -->
+	<update id="updateReconciliationDtl"
+		parameterType="java.util.Map"  >
+		update biz_loan_reconciliation_dtl l 
+		set l.status=-2,
+		UPDATE_DATE=sysdate  ,
+		 UPDATE_USER=#{map.updateUser,jdbcType=INTEGER}
+		 where l.recon_id =#{map.recId,jdbcType=INTEGER}
+		
+	</update>
+	<!--  删除对账表明细表记录，根据贷款id 用于反核销 -->
+	<select id="getReconciliationDtl"
+		parameterType="java.util.Map"  resultMap="RepaymentReconciliationViewMap">
+		select l.pid, l.dtl_type,l.dtl_amt as RECONCILIATION_AMT from  biz_loan_reconciliation_dtl l 		
+		 where l.recon_id =#{map.recId,jdbcType=INTEGER} and l.dtl_type in (30,7) and l.status=1
+		
+	</select>
+	<!-- 反核销 -->
+	<resultMap type="com.xlkfinance.bms.rpc.finance.LoanRealTimeDTO" id="loanRealTimeDTOMap">
+  		<result property="pid" column="pid"/>
+        <result property="total" column="total" />
+        <result property="loanId" column="loan_id" />
+
+	</resultMap>
+	<!-- 查询还款及时发生表的数据  用于反核销-->
+	<select id="getLoanRealTime"
+		resultMap="loanRealTimeDTOMap" parameterType="java.lang.Integer"  >
+		SELECT r.pid,r.total,r.loan_id  FROM  biz_loan_realtime_plan r 
+		where r.pid=#{pid,jdbcType=INTEGER}  and r.status=1 and r.freeze_status=1
+	</select>
+	<!-- 修改及时发生表对账状态  用于反核销-->
+	<update id="updateLoanRealTimeStatus"
+		parameterType="java.util.Map">
+		update biz_loan_realtime_plan r  
+		set r.is_reconciliation=#{map.isRec,jdbcType=INTEGER},
+		UPDATE_DATE=sysdate  ,
+		 UPDATE_USER=#{map.updateUser,jdbcType=INTEGER} where r.pid=#{map.rtPid,jdbcType=INTEGER} 
+		
+	</update>
+	
+	 <!-- 查询还款计划表的数据  用于反核销-->
+	<select id="getRepaymentPlan"
+		parameterType="java.util.Map" resultMap="loanRealTimeDTOMap"  >
+		 SELECT k.pid as pid,k.total,k.loan_info_id as loan_id FROM biz_loan_repayment_plan k  
+		 WHERE k.loan_info_id=#{map.loanId,jdbcType=INTEGER} and k.plan_cycle_num=#{map.cycleNum,jdbcType=INTEGER}
+		 and k.PLAN_VERSION= PKG_FINANCE_COMMON.GET_MAX_PLAN_VERSION(#{map.loanId,jdbcType=INTEGER})  and k.status=1
+	</select>
+	
+	<update id="updateRepaymentPlanStatus"
+		parameterType="java.util.Map">
+		update biz_loan_repayment_plan r  
+		set r.is_reconciliation=#{map.isRec,jdbcType=INTEGER},
+		 UPDATE_DATE=sysdate  ,
+		 UPDATE_USER=#{map.updateUser,jdbcType=INTEGER} where r.pid=#{map.rpPid,jdbcType=INTEGER} 
+	</update>
+</mapper>

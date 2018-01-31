@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.xlkfinance.com/bms/cooperationRequestProcess">
+  <process id="cooperationRequestProcess" name="合作机构合作申请工作流" isExecutable="true">
+    <userTask id="task_CooperationRequest" name="合作申请" activiti:candidateUsers="${candidateUsers}">
+      <extensionElements>
+        <activiti:formProperty id="nextRole" name="下一节点角色" type="string" default="REGIONAL_DIRECTOR" required="true"></activiti:formProperty>
+        <activiti:formProperty id="flow" name="流程走向标志" type="string" default="next" required="true"></activiti:formProperty>
+        <activiti:formProperty id="allowTurnDown" name="是否允许驳回？" type="string" default="no" required="true"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <userTask id="task_RegionalDirectorCheck" name="区总审批" activiti:candidateUsers="${candidateUsers}">
+      <extensionElements>
+        <activiti:formProperty id="nextRole" name="下一节点角色" type="string" default="CREDIT_DEPARTMENT_STAFF" required="true"></activiti:formProperty>
+        <activiti:formProperty id="flow" name="流程走向标志" type="string" default="next" required="true"></activiti:formProperty>
+        <activiti:formProperty id="allowTurnDown" name="是否允许驳回？" type="string" default="yes" required="true"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <startEvent id="startevent1" name="开始">
+      <extensionElements>
+        <activiti:formProperty id="nextRole" name="下一节点处理角色" type="string" default="JUNIOR_ACCOUNT_MANAGER" required="true"></activiti:formProperty>
+        <activiti:formProperty id="flow" name="流程走向标志" type="string" default="next" required="true"></activiti:formProperty>
+        <activiti:formProperty id="allowTurnDown" name="是否允许驳回？" type="string" default="no" required="true"></activiti:formProperty>
+      </extensionElements>
+    </startEvent>
+    <sequenceFlow id="flow11" sourceRef="startevent1" targetRef="task_CooperationRequest"></sequenceFlow>
+    <userTask id="task_CreditDepartmentCheck" name="授信部审" activiti:candidateUsers="${candidateUsers}">
+      <extensionElements>
+        <activiti:formProperty id="nextRole" name="下一节点角色" type="string" default="WIND_CONTROL_COMMISSION" required="true"></activiti:formProperty>
+        <activiti:formProperty id="flow" name="流程走向标志" type="string" default="next" required="true"></activiti:formProperty>
+        <activiti:formProperty id="allowTurnDown" name="是否允许驳回？" type="string" default="yes" required="true"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow12" sourceRef="task_RegionalDirectorCheck" targetRef="task_CreditDepartmentCheck"></sequenceFlow>
+    <userTask id="task_WindControlCommissionCheck" name="风控委员会审" activiti:candidateUsers="${candidateUsers}">
+      <extensionElements>
+        <activiti:formProperty id="allowTurnDown" name="是否允许驳回" type="string" default="string" required="true"></activiti:formProperty>
+        <activiti:formProperty id="flow" name="流程走向标志" type="string" default="next" required="true"></activiti:formProperty>
+        <activiti:formProperty id="nextRole" name="下一节点角色" type="string" default="next" required="true"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow13" sourceRef="task_CreditDepartmentCheck" targetRef="task_WindControlCommissionCheck"></sequenceFlow>
+    <endEvent id="endevent1" name="End"></endEvent>
+    <sequenceFlow id="flow14" sourceRef="task_WindControlCommissionCheck" targetRef="endevent1"></sequenceFlow>
+    <sequenceFlow id="flow15" sourceRef="task_CooperationRequest" targetRef="task_RegionalDirectorCheck"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_cooperationRequestProcess">
+    <bpmndi:BPMNPlane bpmnElement="cooperationRequestProcess" id="BPMNPlane_cooperationRequestProcess">
+      <bpmndi:BPMNShape bpmnElement="task_CooperationRequest" id="BPMNShape_task_CooperationRequest">
+        <omgdc:Bounds height="55.0" width="105.0" x="100.0" y="30.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="task_RegionalDirectorCheck" id="BPMNShape_task_RegionalDirectorCheck">
+        <omgdc:Bounds height="55.0" width="105.0" x="250.0" y="30.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="135.0" y="167.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="task_CreditDepartmentCheck" id="BPMNShape_task_CreditDepartmentCheck">
+        <omgdc:Bounds height="55.0" width="105.0" x="400.0" y="30.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="task_WindControlCommissionCheck" id="BPMNShape_task_WindControlCommissionCheck">
+        <omgdc:Bounds height="55.0" width="105.0" x="550.0" y="30.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="700.0" y="40.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow11" id="BPMNEdge_flow11">
+        <omgdi:waypoint x="152.0" y="167.0"></omgdi:waypoint>
+        <omgdi:waypoint x="152.0" y="85.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow12" id="BPMNEdge_flow12">
+        <omgdi:waypoint x="355.0" y="57.0"></omgdi:waypoint>
+        <omgdi:waypoint x="400.0" y="57.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow13" id="BPMNEdge_flow13">
+        <omgdi:waypoint x="505.0" y="57.0"></omgdi:waypoint>
+        <omgdi:waypoint x="550.0" y="57.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow14" id="BPMNEdge_flow14">
+        <omgdi:waypoint x="655.0" y="57.0"></omgdi:waypoint>
+        <omgdi:waypoint x="700.0" y="57.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow15" id="BPMNEdge_flow15">
+        <omgdi:waypoint x="205.0" y="57.0"></omgdi:waypoint>
+        <omgdi:waypoint x="250.0" y="57.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

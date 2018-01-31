@@ -1,0 +1,260 @@
+[{
+    "id": "all",
+    "text": "resource",
+    "children": [{
+        "id": 1,
+        "text": "base",
+        "children": [{
+            "id": 11,
+            "text": "reset.css"
+        }, {
+            "id": 12,
+            "text": "config.js"
+        }]
+
+    }, {
+        "id": 2,
+        "text": "img",
+        "children": [{
+            "id": 21,
+            "text": "img01.jpg"
+        }, {
+            "id": 22,
+            "text": "img02.png"
+        }, {
+            "id": 23,
+            "text": "img03.gif"
+        }, {
+            "id": 24,
+            "text": "..."
+        }]
+    }, {
+        "id": 3,
+        "text": "l",
+        "children": [{
+            "id": 31,
+            "text": "seajs",
+            "children": [{
+                "id": 311,
+                "text": "sea.js"
+            }, {
+                "id": 312,
+                "text": "sea.js.map"
+            }, {
+                "id": 313,
+                "text": "sea-debug.js"
+            }]
+        }, {
+            "id": 32,
+            "text": "jquery",
+            "children": [{
+                "id": 321,
+                "text": "jquery.js"
+            }, {
+                "id": 322,
+                "text": "jquery.min.js"
+            }]
+        }, {
+            "id": 33,
+            "text": "artDialog",
+            "children": [{
+                "id": 331,
+                "text": "artDialog相关文件..."
+            }, {
+                "id": 332,
+                "text": "..."
+            }]
+        }, {
+            "id": 34,
+            "text": "...",
+            "children": [{
+                "id": 341,
+                "text": "..."
+            }]
+        }]
+    }, {
+        "id": 4,
+        "text": "m",
+        "children": [{
+            "id": 41,
+            "text": "sea-modules01",
+            "children": [{
+                "id": 411,
+                "text": "css",
+                "children": [{
+                    "id": 4111,
+                    "text": "style.css"
+                }, {
+                    "id": 4112,
+                    "text": "..."
+                }]
+            }, {
+                "id": 412,
+                "text": "img",
+                "children": [{
+                    "id": 4121,
+                    "text": "css-sprites01.png"
+                }, {
+                    "id": 4122,
+                    "text": "css-sprites02.png"
+                }, {
+                    "id": 4122,
+                    "text": "..."
+                }]
+            }, {
+                "id": 413,
+                "text": "js",
+                "children": [{
+                    "id": 4131,
+                    "text": "init.js"
+                }, {
+                    "id": 4132,
+                    "text": "..."
+                }]
+            }, {
+                "id": 414,
+                "text": "demo.html"
+            }]
+        }, {
+            "id": 42,
+            "text": "sea-moudle02.js"
+        }, {
+            "id": 43,
+            "text": "sea-moudle03.js"
+        }, {
+            "id": 44,
+            "text": "..."
+        }]
+    }, {
+        "id": 7,
+        "text": "example",
+        "children": [{
+            "id": 71,
+            "text": "css",
+            "children": [{
+                "id": 711,
+                "text": "img",
+                "children": [{
+                    "id": 7111,
+                    "text": "img01.jpg"
+                }, {
+                    "id": 7112,
+                    "text": "..."
+                }]
+            }, {
+                "id": 712,
+                "text": "index.css"
+            }, {
+                "id": 713,
+                "text": "sub.css"
+            },{
+                "id": 714,
+                "text": "..."
+            }]
+        }, {
+            "id": 712,
+            "text": "js",
+            "children": [{
+                "id": 7121,
+                "text": "index.js"
+            }, {
+                "id": 7122,
+                "text": "sub.js"
+            }, {
+                "id": 7123,
+                "text": "..."
+            }]
+        },{
+            "id": 713,
+            "text": "images",
+            "children": [{
+                "id": 7131,
+                "text": "images01.jpg"
+            }, {
+                "id": 7132,
+                "text": "images02.jpg"
+            }, {
+                "id": 7133,
+                "text": "..."
+            }]
+        }, {
+            "id": 714,
+            "text": "index.html"
+        }, {
+            "id": 715,
+            "text": "sub.html"
+        },{
+            "id": 716,
+            "text": "..."
+        }]
+    }, {
+        "id": 5,
+        "text": "p",
+        "children": [{
+            "id": 51,
+            "text": "xlk",
+            "children": [{
+                "id": 511,
+                "text": "css",
+                "children": [{
+                    "id": 5111,
+                    "text": "img",
+                    "children": [{
+                        "id": 51111,
+                        "text": "sprites01.png"
+                    }, {
+                        "id": 51112,
+                        "text": "sprites02.png"
+                    }, {
+                        "id": 51113,
+                        "text": "..."
+                    }]
+                }, {
+                    "id": 512,
+                    "text": "index.css"
+                }, {
+                    "id": 513,
+                    "text": "sub.css"
+                }, {
+                    "id": 514,
+                    "text": "..."
+                }]
+            }, {
+                "id": 512,
+                "text": "js",
+                "children": [{
+                    "id": 5121,
+                    "text": "index.js"
+                }, {
+                    "id": 5122,
+                    "text": "sub.js"
+                }, {
+                    "id": 514,
+                    "text": "..."
+                }]
+            }, {
+                "id": 513,
+                "text": "images",
+                "children": [{
+                    "id": 5131,
+                    "text": "images01.jpg"
+                }, {
+                    "id": 5132,
+                    "text": "images02.gif"
+                }, {
+                    "id": 5133,
+                    "text": "..."
+                }]
+            }, {
+                "id": 514,
+                "text": "index.html"
+            }, {
+                "id": 515,
+                "text": "sub.html"
+            }, {
+                "id": 513,
+                "text": "..."
+            }]
+        }]
+    }]
+}]

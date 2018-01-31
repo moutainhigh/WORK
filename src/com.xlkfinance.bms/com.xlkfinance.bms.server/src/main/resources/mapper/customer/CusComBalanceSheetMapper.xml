@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.customer.mapper.CusComBalanceSheetMapper">
+  <resultMap id="CusComBalanceSheetMap" type="com.xlkfinance.bms.rpc.customer.CusComBalanceSheet">
+        <id property="pid" column="PID"/>
+        <result property="reportId" column="REPORT_ID" />
+        <result property="accountsId" column="ACCOUNTS_ID" />
+        <result property="beginVal" column="BEGIN_VAL" />
+        <result property="endVal" column="END_VAL" />
+        <result property="status" column="STATUS" />
+    </resultMap>
+    
+    <resultMap id="BalanceSheetEditDTOMap" type="com.xlkfinance.bms.rpc.customer.BalanceSheetEditDTO">
+        <id property="bsPid" column="PID"/>
+        <result property="bsReportId" column="REPORT_ID" />
+        <result property="accountsName" column="ACCOUNTS_NAME" />
+        <result property="beginVal" column="BEGIN_VAL" />
+        <result property="endVal" column="END_VAL" />
+    </resultMap>
+    
+    
+<insert id="saveCusComBalanceSheet" parameterType="com.xlkfinance.bms.rpc.customer.CusComBalanceSheet">
+   <selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+		SELECT SEQ_CUS_COM_BALANCE_SHEET.Nextval as PID from DUAL
+	</selectKey>
+    INSERT INTO CUS_COM_BALANCE_SHEET(
+    	PID, 
+    	REPORT_ID, 
+    	ACCOUNTS_ID, 
+    	BEGIN_VAL, 
+    	END_VAL, 
+    	STATUS)
+    values (
+    	#{pid,jdbcType=INTEGER}, 
+     	#{reportId,jdbcType=INTEGER},
+     	#{accountsId,jdbcType=INTEGER},
+     	#{beginVal,jdbcType=DECIMAL},
+     	#{endVal,jdbcType=DECIMAL},
+     	#{status,jdbcType=INTEGER})
+  </insert>
+  
+   <select id="selectCusComBalanceSheetByReportId" resultMap="CusComBalanceSheetMap" parameterType="java.lang.Integer">
+		SELECT 	PID, 
+    		   	REPORT_ID, 
+    	    	ACCOUNTS_ID, 
+    	 		BEGIN_VAL, 
+    	 		END_VAL, 
+    			STATUS
+		  FROM  CUS_COM_BALANCE_SHEET
+		 WHERE 1 = 1
+		   AND REPORT_ID = #{reportId,jdbcType=INTEGER}
+  	</select> 
+  	
+  	<update id="updateCusComBalanceSheet" parameterType="com.xlkfinance.bms.rpc.customer.CusComBalanceSheet">
+	    UPDATE CUS_COM_BALANCE_SHEET
+	    SET
+	     	BEGIN_VAL = #{beginVal,jdbcType=DECIMAL},
+	     	END_VAL = #{endVal,jdbcType=DECIMAL}
+	    WHERE 
+	    	PID = #{pid,jdbcType=INTEGER}
+  </update>
+  
+  <delete id="deleteCusComBalanceSheetByReportID" parameterType="java.lang.Integer">  
+        DELETE FROM CUS_COM_BALANCE_SHEET WHERE REPORT_ID = #{reportId,jdbcType=INTEGER}
+  </delete> 
+  
+  <delete id = "deleteCusComBalanceSheetByReportIDUseBatch" parameterType = "java.util.List">  
+      <![CDATA[  
+         DELETE FROM CUS_COM_BALANCE_SHEET WHERE REPORT_ID IN
+      ]]>  
+      <foreach collection="list" item = "model" open="(" separator="," close=")">#{model.pid}</foreach>  
+  </delete>  
+  
+  <select id="initLeftEditCusComBalanceSheetByReportId" resultMap="BalanceSheetEditDTOMap" parameterType="java.lang.Integer">
+	SELECT T1.PID,T2.ACCOUNTS_NAME,T1.BEGIN_VAL,T1.END_VAL
+	  FROM CUS_COM_BALANCE_SHEET T1
+	  INNER JOIN CUS_COM_BALANCE_SHEET_META T2
+	    ON T1.ACCOUNTS_ID = T2.PID
+	 WHERE T2.SHOW_POSITION='left' AND T1.REPORT_ID = #{reportId,jdbcType=INTEGER}
+	 ORDER BY PID ASC
+  </select> 
+  
+  <select id="initRightEditCusComBalanceSheetByReportId" resultMap="BalanceSheetEditDTOMap" parameterType="java.lang.Integer">
+	SELECT T1.PID,T2.ACCOUNTS_NAME,T1.BEGIN_VAL,T1.END_VAL
+	  FROM CUS_COM_BALANCE_SHEET T1
+	  INNER JOIN CUS_COM_BALANCE_SHEET_META T2
+	    ON T1.ACCOUNTS_ID = T2.PID
+	 WHERE T2.SHOW_POSITION='right' AND T1.REPORT_ID = #{reportId,jdbcType=INTEGER}
+	 ORDER BY PID ASC  
+  </select> 
+  
+  
+  
+    <resultMap id="excelCusComBalanceSheetMap" type="com.xlkfinance.bms.rpc.customer.ExcelCusComBalanceSheet">
+        <id property="pid" column="PID"/>
+        <result property="accountsCode" column="ACCOUNTS_CODE" />
+        <result property="accountsName" column="ACCOUNTS_NAME" />
+        <result property="lineNum" column="LINE_NUM" />
+        <result property="showPosition" column="SHOW_POSITION" />
+        <result property="reportId" column="REPORT_ID" />
+        <result property="beginVal" column="BEGIN_VAL" />
+        <result property="endVal" column="END_VAL" />
+    </resultMap>
+  
+  
+    
+    <select id="getExcelCusComBalanceSheet" resultMap="excelCusComBalanceSheetMap" parameterType="java.util.List">
+		SELECT A.ACCOUNTS_CODE,
+		       A.ACCOUNTS_NAME,
+		       A.LINE_NUM,
+		       A.SHOW_POSITION,
+		       B.REPORT_ID,
+		       B.BEGIN_VAL,
+		       B.END_VAL
+		  FROM CUS_COM_BALANCE_SHEET_META A, CUS_COM_BALANCE_SHEET B
+		 WHERE A.PID = B.ACCOUNTS_ID
+		   AND  B.PID IN
+        <foreach item="itemId" collection="list" open="(" separator="," close=")">
+		          #{itemId}
+		</foreach>
+		 ORDER BY A.LINE_NUM 
+  	</select> 
+  	
+</mapper>

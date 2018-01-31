@@ -1,0 +1,24 @@
+select * from biz_project_overdue a where a.project_id = 18843;
+delete from biz_project_overdue a where a.project_id in(18797);
+delete from biz_loan_repayment_record a where a.project_id in(18797);
+delete from biz_loan_repayment a where a.project_id in(18797);
+delete from biz_loan_pre_repay a where a.project_id in(18797);
+delete from BIZ_PAYMENT_INFO a where a.project_id in(18797);
+
+
+update biz_loan_repayment_plan a set a.this_status = 1 where a.project_id in(18797);
+
+
+抵押贷申请列表
+
+/projectInfoController/index.action
+
+还款管理（抵押贷）
+/repaymentController/repayment_info.action
+
+消费贷申请列表
+/consumeProjectInfoController/index.action
+
+拒单列表
+
+/reportController/toRefuseProject.action

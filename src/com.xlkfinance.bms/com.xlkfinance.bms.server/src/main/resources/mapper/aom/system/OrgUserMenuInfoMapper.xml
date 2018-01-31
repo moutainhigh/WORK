@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xlkfinance.bms.server.aom.system.mapper.OrgUserMenuInfoMapper">
+	<resultMap id="orgUserMenuInfoMap" type="com.qfang.xk.aom.rpc.system.OrgUserMenuInfo">
+		<id property="pid" column="PID" />
+		<id property="userId" column="USER_ID" />
+		<id property="orgId" column="ORG_ID" />
+		<id property="menuId" column="MENU_ID" />
+	</resultMap>
+	<sql id="column_list">
+        PID,USER_ID,ORG_ID,MENU_ID
+	</sql>
+	<!-- 查询所有 -->
+	<select id="getAll" resultMap="orgUserMenuInfoMap" parameterType="com.qfang.xk.aom.rpc.system.OrgUserMenuInfo">
+		SELECT
+		<include refid="column_list" />
+		FROM ORG_USER_MENU_INFO
+		<where>
+			<trim>
+		      <if test="pid != null and pid >0">
+	          PID=#{pid}
+	          </if>
+		      <if test="userId != null and userId >0">
+	          AND USER_ID=#{userId}
+	          </if>
+		      <if test="orgId != null and orgId >0">
+	          AND ORG_ID=#{orgId}
+	          </if>
+		      <if test="menuId != null and menuId >0">
+	          AND MENU_ID=#{menuId}
+	          </if>
+			</trim>
+		</where>
+	</select>
+	<!-- 根据id获取 -->
+	<select id="getById" resultMap="orgUserMenuInfoMap">
+		SELECT <include refid="column_list" /> FROM ORG_USER_MENU_INFO WHERE PID=#{pid}
+	</select>
+	<!-- 插入一条数据 -->
+	<insert id="insert" parameterType="com.qfang.xk.aom.rpc.system.OrgUserMenuInfo">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_ORG_USER_MENU_INFO.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO ORG_USER_MENU_INFO
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+				PID,
+			</if>
+		    <if test="userId != null and userId >0">
+				USER_ID,
+			</if>
+		    <if test="orgId != null and orgId >0">
+				ORG_ID,
+			</if>
+		    <if test="menuId != null and menuId >0">
+				MENU_ID,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+		    #{pid},
+			</if>
+		    <if test="userId != null and userId >0">
+		    #{userId},
+			</if>
+		    <if test="orgId != null and orgId >0">
+		    #{orgId},
+			</if>
+		    <if test="menuId != null and menuId >0">
+		    #{menuId},
+			</if>
+		</trim>
+	</insert>
+	<!-- 根据id删除数据 -->
+	<delete id="deleteById" parameterType="com.qfang.xk.aom.rpc.system.OrgUserMenuInfo">
+		<![CDATA[DELETE FROM ORG_USER_MENU_INFO WHERE PID=#{pid}]]>
+	</delete>
+	<!-- 根据id更新数据 -->
+		<update id="update" parameterType="com.qfang.xk.aom.rpc.system.OrgUserMenuInfo">
+		UPDATE ORG_USER_MENU_INFO
+		<set>
+		    <if test="pid != null and pid >0">
+		     PID=#{pid},
+			</if>
+		    <if test="userId != null and userId >0">
+		     USER_ID=#{userId},
+			</if>
+		    <if test="orgId != null and orgId >0">
+		     ORG_ID=#{orgId},
+			</if>
+		    <if test="menuId != null and menuId >0">
+		     MENU_ID=#{menuId},
+			</if>
+		</set>
+		WHERE PID = #{pid}
+	</update>
+	<!-- 根据传入多个id删除数据 -->
+	<delete id="deleteByIds" parameterType="java.util.List">
+		DELETE FROM ORG_USER_MENU_INFO WHERE PID in
+		<foreach collection="list" item="item" index="index" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+</mapper>

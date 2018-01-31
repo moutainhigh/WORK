@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.beforeloan.mapper.CreditMapper">
+	
+	<select id="getCreditIdByProjectId"  resultType="java.lang.Integer" parameterType="java.lang.Integer">
+		SELECT PID FROM BIZ_CREDIT WHERE PROJECT_ID = #{projectId}
+	</select>
+	
+	<!-- 获取授信的PID -->
+	<select id="getSeqBizCredit" resultType="java.lang.Integer">
+		SELECT SEQ_BIZ_CREDIT.Nextval as PID from DUAL 
+	</select>
+	
+	<!-- 新增授信 -->
+	<insert id="addCredit" parameterType="com.xlkfinance.bms.rpc.beforeloan.Credit">
+		INSERT INTO BIZ_CREDIT
+		  (PID,
+		   PROJECT_ID,
+		   STATUS,
+		   CREDIT_STATUS)
+		values (
+		    #{pid,jdbcType=INTEGER},
+		    #{projectId,jdbcType=INTEGER},
+		    #{status,jdbcType=INTEGER},
+		    #{creditStatus,jdbcType=INTEGER})
+	</insert>
+	
+	<!-- 根据项目ID修改项目授信状态为无效 -->
+	<update id="updateCreditStatusByProjectId" parameterType="java.lang.Integer">
+		UPDATE BIZ_CREDIT SET CREDIT_STATUS = 2 WHERE PROJECT_ID = #{projectId}
+	</update>
+	
+	<!-- 更新的方法 -->
+	<update id="updateByProjectId" parameterType="com.xlkfinance.bms.rpc.beforeloan.Credit">
+		UPDATE BIZ_CREDIT 
+		<trim prefix="set" suffixOverrides=",">
+			<if test="creditAmt != null and creditAmt != '' ">
+			    CREDIT_AMT = #{creditAmt},
+		    </if>
+		    <if test="credtiStartDt != null and credtiStartDt != '' ">
+			    CREDTI_START_DT = #{credtiStartDt,jdbcType=DATE,javaType=String},
+		    </if>
+		    <if test="credtiEndDt != null and credtiEndDt != '' ">
+			    CREDTI_END_DT = #{credtiEndDt,jdbcType=DATE,javaType=String},
+		    </if>
+		    <if test="isHoop != null and isHoop != -1 ">
+			    IS_HOOP = #{isHoop},
+		    </if>
+		    <if test="creditStatus != null and creditStatus != -1 ">
+			    CREDIT_STATUS = #{creditStatus},
+		    </if>
+		</trim>
+		WHERE PROJECT_ID = #{projectId,jdbcType=INTEGER}
+	</update>  
+	
+</mapper>

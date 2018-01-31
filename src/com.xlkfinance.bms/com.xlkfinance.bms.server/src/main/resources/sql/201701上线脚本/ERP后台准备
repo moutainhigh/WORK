@@ -1,0 +1,11 @@
+
+添加菜单
+机构业务列表    /bizProjectController/orgProjectIndex.action
+
+REJECT_TYPE 拒单类型
+1 黑名单
+2 其他原因
+
+原贷款类型 LOAN_TYPE
+1、抵押贷
+2、装修贷

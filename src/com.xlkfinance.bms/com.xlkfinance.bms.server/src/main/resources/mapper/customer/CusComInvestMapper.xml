@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.customer.mapper.CusComInvestMapper">
+	 <resultMap id="searchCusComInvestsMap"  type="com.xlkfinance.bms.rpc.common.GridViewDTO">
+	    <id property="pid" column="pid"/>
+        <result property="value1" column="INV_OBJ" />
+        <result property="value2" column="INV_WAY" />
+        <result property="value3" column="INV_MONEY" />
+        <result property="value4" column="INV_START_DATE" jdbcType="DATE" javaType="String"/>
+        <result property="value5" column="INV_END_DATE" jdbcType="DATE" javaType="String"/>
+        <result property="value6" column="PAY_INVEST" />
+        <result property="value7" column="INV_EARN" />
+	 </resultMap>
+	 
+	  <resultMap id="searchCusComInvestsById"  type="com.xlkfinance.bms.rpc.customer.CusComInvest">
+	    <id property="pid" column="pid"/>
+        <result property="invObj" column="INV_OBJ" />
+        <result property="invMoney" column="INV_MONEY" />
+        <result property="invWay" column="INV_WAY" />
+        <result property="preEarn" column="PRE_EARN" />
+        <result property="invStartDate" column="INV_START_DATE" />
+        <result property="realEarn" column="REAL_EARN" />
+        <result property="invEndDate" column="INV_END_DATE" />
+        <result property="priorPreEarn" column="PRIOR_PRE_EARN" />
+        <result property="priorRealEarn" column="PRIOR_REAL_EARN" />
+        <result property="payInvest" column="PAY_INVEST" />
+        <result property="invEarn" column="INV_EARN" />
+        <result property="remark" column="REMARK" />
+	 </resultMap>
+	 
+	 <select id="getCusComInvests" resultMap="searchCusComInvestsMap" parameterType="com.xlkfinance.bms.rpc.customer.CusComInvest">
+	        select * from(	
+	      SELECT rownum rn,
+	      		 CCI.PID,
+      		     CCI.INV_OBJ,
+          (SELECT SLV.LOOKUP_VAL
+        	  FROM SYS_LOOKUP_VAL SLV WHERE SLV.PID=CCI.INV_WAY) INV_WAY,
+       CCI.INV_MONEY,
+       CCI.INV_START_DATE,
+       CCI.INV_END_DATE,
+       CCI.PAY_INVEST,
+       CCI.INV_EARN
+  	FROM  CUS_COM_INVEST CCI
+ 	WHERE  1 = 1
+    AND  CCI.STATUS = 1
+	and   CCI.CUS_COM_ID=#{cusComBase.pid,jdbcType=INTEGER}
+	AND rownum<![CDATA[<=]]>#{page}*#{rows})zA
+    WHERE rn>=((#{page}-1)*#{rows})+1
+  	</select>
+<!--   	查询总记录数 -->
+	<select id="getTotalInvest" parameterType="com.xlkfinance.bms.rpc.customer.CusComInvest" resultType="java.lang.Integer">
+	   SELECT COUNT(PID) FROM (
+		    SELECT CCI.PID,
+	      		   CCI.INV_OBJ,
+	          (SELECT SLV.LOOKUP_VAL
+	        	  FROM SYS_LOOKUP_VAL SLV WHERE SLV.PID=CCI.INV_WAY) INV_WAY,
+	       CCI.INV_MONEY,
+	       CCI.INV_START_DATE,
+	       CCI.INV_END_DATE,
+	       CCI.PAY_INVEST,
+	       CCI.INV_EARN
+  	FROM  CUS_COM_INVEST CCI
+ 	WHERE  1 = 1
+    AND  CCI.STATUS = 1
+	and   CCI.CUS_COM_ID=#{cusComBase.pid,jdbcType=INTEGER})
+	</select>
+  	
+  	 <select id="selectByPrimaryKey" resultMap="searchCusComInvestsById" parameterType="java.lang.Integer">
+	       SELECT T.PID,
+	       	   T.INV_OBJ,
+               T.INV_MONEY,
+               T.INV_WAY,
+               T.PRE_EARN,
+               T.INV_START_DATE,
+               T.REAL_EARN,
+               T.INV_END_DATE,
+               T.PRIOR_PRE_EARN,
+               T.PRIOR_REAL_EARN,
+               T.PAY_INVEST,
+               T.INV_EARN,
+               T.REMARK
+            FROM CUS_COM_INVEST T
+		   WHERE 1 = 1
+		   AND   T.STATUS =1
+		   and   T.PID= #{pid,jdbcType=INTEGER}
+  	</select> 
+
+<insert id="insert" parameterType="com.xlkfinance.bms.rpc.customer.CusComInvest">
+   <selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+		SELECT SEQ_CUS_COM_INVEST.Nextval as PID from DUAL
+	</selectKey>
+     insert into cus_com_invest (
+    	PID, 
+    	CUS_COM_ID,
+    	INV_OBJ, 
+    	INV_MONEY, 
+    	INV_WAY, 
+    	PRE_EARN, 
+    	INV_START_DATE, 
+    	INV_END_DATE, 
+    	REAL_EARN, 
+    	PRIOR_PRE_EARN, 
+    	PRIOR_REAL_EARN, 
+    	PAY_INVEST, 
+    	INV_EARN, 
+    	REMARK,
+    	STATUS)
+    values (
+    	#{pid,jdbcType=INTEGER}, 
+    	#{cusComBase.pid,jdbcType=INTEGER}, 
+    	#{invObj,jdbcType=VARCHAR}, 
+    	#{invMoney,jdbcType=DOUBLE}, 
+     	#{invWay,jdbcType=INTEGER}, 
+     	#{preEarn,jdbcType=DOUBLE},
+     	#{invStartDate,jdbcType=DATE},
+      	#{invEndDate,jdbcType=DATE}, 
+      	#{realEarn,jdbcType=DOUBLE},
+      	#{priorPreEarn,jdbcType=DOUBLE},
+      	#{priorRealEarn,jdbcType=DOUBLE}, 
+      	#{payInvest,jdbcType=DOUBLE}, 
+      	#{invEarn,jdbcType=DOUBLE},
+      	#{remark,jdbcType=VARCHAR},
+      	#{status,jdbcType=INTEGER})
+  </insert>
+  <!-- 更新的方法 -->
+	<update id="updateByPrimaryKey" parameterType="com.xlkfinance.bms.rpc.customer.CusComInvest">
+		update cus_com_invest
+		<set>
+		<if test="invObj != null">
+			INV_OBJ = #{invObj,jdbcType=VARCHAR}, 
+		</if>
+		<if test="invMoney != null">
+			INV_MONEY = #{invMoney,jdbcType=DOUBLE},
+		</if>
+		<if test="invWay != null">
+			INV_WAY = #{invWay,jdbcType=INTEGER}, 
+		</if>
+		<if test="preEarn != null">
+			PRE_EARN = #{preEarn,jdbcType=DOUBLE},
+		</if>
+		<if test="invStartDate != null">
+			INV_START_DATE = #{invStartDate,jdbcType=DATE},
+		</if>
+		<if test="invEndDate != null">
+			INV_END_DATE = #{invEndDate,jdbcType=DATE}, 
+		</if>
+		<if test="realEarn != null">
+			REAL_EARN = #{realEarn,jdbcType=DOUBLE},
+		</if>
+		<if test="priorPreEarn != null">
+			PRIOR_PRE_EARN = #{priorPreEarn,jdbcType=DOUBLE},
+		</if>
+		<if test="priorRealEarn != null">
+			PRIOR_REAL_EARN = #{priorRealEarn,jdbcType=DOUBLE},
+		</if>
+		<if test="payInvest != null">
+			PAY_INVEST = #{payInvest,jdbcType=DOUBLE},
+		</if>
+		<if test="invEarn != null">
+			INV_EARN = #{invEarn,jdbcType=DOUBLE},
+		</if>
+		<if test="remark != null">
+			REMARK = #{remark,jdbcType=VARCHAR},
+		</if>
+		<if test="status != null">
+			STATUS = #{status,jdbcType=INTEGER},
+		</if>
+		</set> 
+		where pid = #{pid,jdbcType=INTEGER}
+	</update>
+	
+	<!-- 	删除 -->
+	<update id="delete" parameterType="java.util.List">
+		update cus_com_invest
+		set
+		status=0
+		where pid in 
+		<foreach item="itemId" collection="list" open="(" separator="," close=")">
+		          #{itemId}
+		</foreach>
+	</update>
+</mapper>

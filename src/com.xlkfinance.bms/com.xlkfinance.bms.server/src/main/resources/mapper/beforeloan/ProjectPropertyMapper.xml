@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.beforeloan.mapper.ProjectPropertyMapper">
+			<resultMap id="projectPropertyMapper" type="com.xlkfinance.bms.rpc.beforeloan.ProjectProperty">
+			<result property="pid" column="PID" />
+			<result property="projectId" column="PROJECT_ID" />
+			<result property="houseName" column="HOUSE_NAME" />
+			<result property="area" column="AREA" />
+			<result property="costMoney" column="COST_MONEY" />
+			<result property="tranasctionMoney" column="TRANASCTION_MONEY" />
+			<result property="sellerName" column="SELLER_NAME" />
+			<result property="sellerCardNo" column="SELLER_CARD_NO" />
+			<result property="sellerPhone" column="SELLER_PHONE" />
+			<result property="sellerAddress" column="SELLER_ADDRESS" />
+			<result property="buyerName" column="BUYER_NAME" />
+			<result property="buyerCardNo" column="BUYER_CARD_NO" />
+			<result property="buyerPhone" column="BUYER_PHONE" />
+			<result property="buyerAddress" column="BUYER_ADDRESS" />
+			<result property="housePropertyCard" column="HOUSE_PROPERTY_CARD" />
+			<result property="evaluationPrice" column="EVALUATION_PRICE" />
+			<result property="foreRate" column="FORE_RATE" />
+			<result property="purpose" column="PURPOSE" />
+			<result property="evaluationNet" column="EVALUATION_NET" />
+			<result property="houseRentTotal" column="HOUSE_RENT_TOTAL" />
+			
+			</resultMap>
+	<sql id="Property_Column_List">
+	   PID pid,
+       PROJECT_ID projectId,
+       HOUSE_NAME houseName,
+       AREA area,
+       COST_MONEY costMoney,
+       TRANASCTION_MONEY tranasctionMoney,
+       SELLER_NAME sellerName,
+       SELLER_CARD_NO sellerCardNo,
+       SELLER_PHONE sellerPhone,
+       SELLER_ADDRESS sellerAddress,
+       BUYER_NAME buyerName,
+       BUYER_CARD_NO buyerCardNo,
+       BUYER_PHONE buyerPhone,
+       BUYER_ADDRESS buyerAddress,
+       HOUSE_PROPERTY_CARD housePropertyCard,
+       EVALUATION_PRICE evaluationPrice,
+       FORE_RATE foreRate,
+       PURPOSE purpose,
+       EVALUATION_NET evaluationNet,
+       HOUSE_RENT_TOTAL houseRentTotal
+    </sql>
+	<!-- 根据项目ID查询项目担保信息 -->
+	<select id="getPropertyByProjectId"  resultType="com.xlkfinance.bms.rpc.beforeloan.ProjectProperty" parameterType="java.lang.Integer">
+		SELECT 
+		<include refid="Property_Column_List" /> 
+		FROM BIZ_PROJECT_PROPERTY WHERE PROJECT_ID = #{projectId}
+	</select>
+	
+	<!-- 查询物业信息PID -->
+	<select id="getSeqBizProjectProperty" resultType="java.lang.Integer">
+		SELECT SEQ_BIZ_PROJECT_PROPERTY.Nextval as PID from DUAL
+	</select>
+	
+	
+	<!-- 新增物业信息 -->
+	<insert id="insertProperty" parameterType="com.xlkfinance.bms.rpc.beforeloan.ProjectProperty">
+		INSERT INTO BIZ_PROJECT_PROPERTY
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			PID,
+			<if test="projectId != null and projectId >0 ">
+				PROJECT_ID,
+			</if>
+			<if test="houseName != null and houseName!='' ">
+				HOUSE_NAME,
+			</if>
+			<if test="area != null and area !=-1 ">
+				AREA,
+			</if>
+			<if test="costMoney != null and costMoney!=-1">
+				COST_MONEY,
+			</if>
+			<if test="tranasctionMoney != null and tranasctionMoney!=-1">
+				TRANASCTION_MONEY,
+			</if>
+			<if test="sellerName != null and sellerName!=''">
+				SELLER_NAME,
+			</if>
+			<if test="sellerCardNo != null and sellerCardNo!=''">
+				SELLER_CARD_NO,
+			</if>
+			<if test="sellerPhone != null and sellerPhone!=''">
+				SELLER_PHONE,
+			</if>
+			<if test="sellerAddress != null and sellerAddress!=''">
+				SELLER_ADDRESS,
+			</if>
+			<if test="buyerName != null and buyerName != ''">
+				BUYER_NAME,
+			</if>
+			
+			<if test="buyerCardNo != null and buyerCardNo != ''">
+				BUYER_CARD_NO,
+			</if>
+			<if test="buyerPhone != null and buyerPhone != ''">
+				BUYER_PHONE,
+			</if>
+			<if test="buyerAddress != null and buyerAddress != ''">
+				BUYER_ADDRESS,
+			</if>
+			<if test="housePropertyCard != null and housePropertyCard != ''">
+				HOUSE_PROPERTY_CARD,
+			</if>
+			<if test="evaluationPrice != null and evaluationPrice!=-1  ">
+				EVALUATION_PRICE,
+			</if>
+			<if test="foreRate != null and foreRate!=-1  ">
+				FORE_RATE,
+			</if>
+			<if test="purpose != null and purpose != ''">
+				PURPOSE,
+			</if>
+			<if test="evaluationNet != null and evaluationNet != -1">
+				EVALUATION_NET,
+			</if>
+			<if test="houseRentTotal != null and houseRentTotal != -1">
+			   HOUSE_RENT_TOTAL,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+				#{pid},
+			<if test="projectId != null and projectId >0 ">
+				#{projectId},
+			</if>
+			<if test="houseName != null and houseName!='' ">
+				#{houseName},
+			</if>
+			<if test="area != null and area !=-1 ">
+				#{area},
+			</if>
+			<if test="costMoney != null and costMoney!=-1">
+				#{costMoney},
+			</if>
+			<if test="tranasctionMoney != null and tranasctionMoney!=-1">
+				#{tranasctionMoney},
+			</if>
+			<if test="sellerName != null and sellerName!=''">
+				#{sellerName},
+			</if>
+			<if test="sellerCardNo != null and sellerCardNo!=''">
+				#{sellerCardNo},
+			</if>
+			<if test="sellerPhone != null and sellerPhone!=''">
+				#{sellerPhone},
+			</if>
+			<if test="sellerAddress != null and sellerAddress!=''">
+				#{sellerAddress},
+			</if>
+			<if test="buyerName != null and buyerName != ''">
+				#{buyerName},
+			</if>
+			
+			<if test="buyerCardNo != null and buyerCardNo != ''">
+				#{buyerCardNo},
+			</if>
+			<if test="buyerPhone != null and buyerPhone != ''">
+				#{buyerPhone},
+			</if>
+			<if test="buyerAddress != null and buyerAddress != ''">
+				#{buyerAddress},
+			</if>
+			<if test="housePropertyCard != null and housePropertyCard != ''">
+				#{housePropertyCard},
+			</if>
+			<if test="evaluationPrice != null and evaluationPrice!=-1  ">
+				#{evaluationPrice},
+			</if>
+			<if test="foreRate != null and foreRate!=-1  ">
+				#{foreRate},
+			</if>
+			<if test="purpose != null and purpose != ''">
+				#{purpose},
+			</if>
+			<if test="evaluationNet != null and evaluationNet != -1">
+				#{evaluationNet},
+			</if>
+			<if test="houseRentTotal != null and houseRentTotal != -1">
+			   #{houseRentTotal},
+			</if>
+		</trim>
+	</insert>
+	
+	<!-- 修改项目担保信息 -->
+	<update id="updateByPrimaryKey" parameterType="com.xlkfinance.bms.rpc.beforeloan.ProjectGuarantee">
+		UPDATE BIZ_PROJECT_PROPERTY
+		<trim prefix="set" suffixOverrides=",">
+			<if test="houseName != null ">
+				HOUSE_NAME = #{houseName},
+			</if>
+			<if test="area != null and area !=-1 ">
+				AREA = #{area},
+			</if>
+			<if test="costMoney != null and costMoney!=-1">
+				COST_MONEY = #{costMoney},
+			</if>
+			<if test="tranasctionMoney != null and tranasctionMoney!=-1">
+				TRANASCTION_MONEY = #{tranasctionMoney},
+			</if>
+			<if test="sellerName != null">
+				SELLER_NAME = #{sellerName},
+			</if>
+			<if test="sellerCardNo != null">
+				SELLER_CARD_NO = #{sellerCardNo},
+			</if>
+			<if test="sellerPhone != null">
+				SELLER_PHONE = #{sellerPhone},
+			</if>
+			<if test="sellerAddress != null">
+				SELLER_ADDRESS = #{sellerAddress},
+			</if>
+			<if test="buyerName != null">
+				BUYER_NAME = #{buyerName},
+			</if>
+			
+			<if test="buyerCardNo != null">
+				BUYER_CARD_NO = #{buyerCardNo},
+			</if>
+			<if test="buyerPhone != null">
+				BUYER_PHONE = #{buyerPhone},
+			</if>
+			<if test="buyerAddress != null">
+				BUYER_ADDRESS=#{buyerAddress},
+			</if>
+			<if test="housePropertyCard != null">
+				HOUSE_PROPERTY_CARD = #{housePropertyCard},
+			</if>
+			<if test="evaluationPrice != null and evaluationPrice!=-1  ">
+				EVALUATION_PRICE = #{evaluationPrice},
+			</if>
+			<if test="foreRate != null and foreRate!=-1">
+				FORE_RATE = #{foreRate},
+			</if>
+			<if test="purpose != null">
+				PURPOSE = #{purpose},
+			</if>
+			<if test="evaluationNet != null and evaluationNet != -1">
+				EVALUATION_NET = #{evaluationNet},
+			</if>
+			<if test="houseRentTotal != null and houseRentTotal != -1">
+				HOUSE_RENT_TOTAL = #{houseRentTotal},
+			</if>
+			
+		</trim>
+		WHERE PID = #{pid}
+	</update>
+</mapper>

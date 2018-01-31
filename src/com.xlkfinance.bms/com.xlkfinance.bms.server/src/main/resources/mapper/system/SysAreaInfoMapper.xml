@@ -1,0 +1,161 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.system.mapper.SysAreaInfoMapper">
+
+	<resultMap type="com.xlkfinance.bms.rpc.system.SysAreaInfo" id="baseResultMap">
+  		<id property="areaCode" column="AREA_CODE"/>
+  		<id property="areaName" column="AREA_NAME"/>
+  		<id property="parentCode" column="PARENT_CODE"/>
+  		<id property="levelNo" column="LEVEL_NO"/>
+  		<id property="areaTelCode" column="AREA_TEL_CODE"/>
+  		<id property="center" column="CENTER"/>
+  		<id property="oldAreaCode" column="AREA_CODE"/>
+	</resultMap>
+
+ 
+
+	<!-- 查询列表 -->
+	<select id="getSysAreaInfo" resultMap="baseResultMap" parameterType="com.xlkfinance.bms.rpc.system.SysAreaInfo">
+		 SELECT AREA_CODE ,AREA_NAME,PARENT_CODE ,LEVEL_NO ,AREA_TEL_CODE ,CENTER FROM SYS_AREA_INFO 
+			 WHERE 	1 = 1 
+			<if test="areaCode != null and areaCode != ''">
+		    		AND AREA_CODE = #{areaCode}
+		    </if>
+			<if test="areaName != null and areaName != ''">
+		    		AND AREA_NAME = #{areaName}
+		    </if>
+			<if test="parentCode != null and parentCode != ''">
+		    		AND PARENT_CODE = #{parentCode}
+		    </if>
+			<if test="levelNo != null and levelNo != ''">
+		    		AND LEVEL_NO = #{levelNo}
+		    </if>
+			<if test="areaTelCode != null and areaTelCode != ''">
+		    		AND AREA_TEL_CODE = #{areaTelCode}
+		    </if>
+			<if test="center != null and center != ''">
+		    		AND CENTER = #{center}
+		    </if>
+	</select>
+	
+	
+	<!-- 查询一个对象 -->
+	<select id="getSysAreaInfoByCode" resultMap="baseResultMap" parameterType="java.lang.String">
+		 SELECT AREA_CODE ,AREA_NAME,PARENT_CODE ,LEVEL_NO ,AREA_TEL_CODE ,CENTER FROM SYS_AREA_INFO 
+			 WHERE AREA_CODE = #{areaCode}
+	</select>
+	
+	<!-- 查询一个对象 -->
+	<select id="getSysAreaInfoByName" resultMap="baseResultMap" parameterType="java.lang.String">
+		 SELECT AREA_CODE ,AREA_NAME,PARENT_CODE ,LEVEL_NO ,AREA_TEL_CODE ,CENTER FROM SYS_AREA_INFO 
+			 WHERE AREA_NAME = #{areaName}
+	</select>
+
+	<!-- 查询一个对象 -->
+	<select id="getSysAreaInfoByUserId" resultMap="baseResultMap" parameterType="com.xlkfinance.bms.rpc.system.SysAreaInfo">    
+	 SELECT C.* FROM SYS_AREA_INFO C 
+     LEFT JOIN SYS_ORG_INFO B  ON B.CODE = C.AREA_CODE
+     LEFT JOIN SYS_USER A ON A.ORG_ID = B.ID
+     WHERE A.PID = ${userId}
+	</select>
+	
+	<!-- 分页查询地区信息列表（根据传入条件查询省、市、 区信息） -->
+	<select id="queryPagedAreaInfo" resultMap="baseResultMap" parameterType="com.xlkfinance.bms.rpc.system.SysAreaInfo">
+		SELECT D.* FROM (
+			SELECT T.*, ROWNUM RN FROM (
+				SELECT AREA_CODE ,AREA_NAME,PARENT_CODE ,LEVEL_NO ,AREA_TEL_CODE ,CENTER FROM SYS_AREA_INFO
+				<trim prefix="WHERE" prefixOverrides="AND">
+					<if test="areaCode != null and areaCode != ''">
+						AND AREA_CODE = #{areaCode}
+					</if>
+					<if test="areaName != null and areaName != ''">
+						AND AREA_NAME LIKE '%' || #{areaName} || '%'
+					</if>
+					<if test="parentCode != null and parentCode != ''">
+						AND PARENT_CODE = #{parentCode}
+					</if>
+					<if test="levelNo != null and levelNo != ''">
+						AND LEVEL_NO = #{levelNo}
+					</if>
+					<if test="areaTelCode != null and areaTelCode != ''">
+						AND AREA_TEL_CODE = #{areaTelCode}
+					</if>
+				</trim>
+				ORDER BY AREA_CODE ASC
+			) T
+			WHERE ROWNUM <![CDATA[<=]]> #{page}*#{rows}
+		) D
+		WHERE D.RN > (#{page} - 1) * #{rows}
+	</select>
+	
+	<!-- 查询地区总数（根据传入条件查询省、市、 区信息） -->
+	<select id="countAreaInfo" resultType="Integer" parameterType="com.xlkfinance.bms.rpc.system.SysAreaInfo">
+		SELECT COUNT(1) FROM SYS_AREA_INFO
+		<trim prefix="WHERE" prefixOverrides="AND">
+			<if test="areaCode != null and areaCode != ''">
+				AND AREA_CODE = #{areaCode}
+			</if>
+			<if test="areaName != null and areaName != ''">
+				AND AREA_NAME LIKE '%' || #{areaName} || '%'
+			</if>
+			<if test="parentCode != null and parentCode != ''">
+				AND PARENT_CODE = #{parentCode}
+			</if>
+			<if test="levelNo != null and levelNo != ''">
+				AND LEVEL_NO = #{levelNo}
+			</if>
+			<if test="areaTelCode != null and areaTelCode != ''">
+				AND AREA_TEL_CODE = #{areaTelCode}
+			</if>
+		</trim>
+		ORDER BY AREA_CODE ASC
+	</select>
+	
+	<!-- 保存地区信息（有则修改，无则新增，根据areaCode作为主键） -->
+	<insert id="saveAreaInfo" parameterType="com.xlkfinance.bms.rpc.system.SysAreaInfo">
+		MERGE INTO
+			SYS_AREA_INFO m
+		USING (
+			SELECT
+				(SELECT ROWID FROM SYS_AREA_INFO WHERE AREA_CODE = #{oldAreaCode,jdbcType=VARCHAR}) RID,
+				#{areaCode,jdbcType=VARCHAR} AREA_CODE,
+				#{areaName,jdbcType=VARCHAR} AREA_NAME,
+				#{parentCode,jdbcType=VARCHAR} PARENT_CODE,
+				#{levelNo,jdbcType=VARCHAR} LEVEL_NO,
+				#{areaTelCode,jdbcType=VARCHAR} AREA_TEL_CODE
+			FROM DUAL
+			) t
+		ON (m.ROWID = t.RID)
+		WHEN MATCHED THEN
+			UPDATE SET
+				m.AREA_CODE = t.AREA_CODE,
+				m.AREA_NAME = t.AREA_NAME,
+				m.PARENT_CODE = t.PARENT_CODE,
+				m.LEVEL_NO = t.LEVEL_NO,
+				m.AREA_TEL_CODE = t.AREA_TEL_CODE
+		WHEN NOT MATCHED THEN
+			INSERT
+			(
+				m.AREA_CODE,
+				m.AREA_NAME,
+				m.PARENT_CODE,
+				m.LEVEL_NO,
+				m.AREA_TEL_CODE
+			)
+			VALUES
+			(
+				t.AREA_CODE,
+				t.AREA_NAME,
+				t.PARENT_CODE,
+				t.LEVEL_NO,
+				t.AREA_TEL_CODE
+			)
+	</insert>
+	
+	<!-- 删除系统配置 -->
+	<delete id="batchDelete" parameterType="java.lang.String">
+		DELETE FROM SYS_AREA_INFO WHERE AREA_CODE IN
+		<foreach item="areaCode" collection="array" open="(" separator="," close=")">
+			#{areaCode,jdbcType=VARCHAR}
+		</foreach>
+	</delete>
+</mapper>

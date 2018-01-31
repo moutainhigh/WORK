@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.customer.mapper.CusComContactMapper">
+   <resultMap id="contactResultMap" type="com.xlkfinance.bms.rpc.common.GridViewDTO">
+        <id property="pid" column="pid" />
+        <result property="value1" column="CTT_NAME" />
+        <result property="value2" column="DUTY" />
+        <result property="value3" column="FIXED_PHONE" />
+        <result property="value4" column="MOVE_PHONE" />
+        <result property="value5" column="MAIN_CTT" />
+        <result property="value6" column="FAMILY_ADDR" />
+    </resultMap>
+<!--     根据id查询 -->
+
+    <resultMap id="contactResultMaps" type="com.xlkfinance.bms.rpc.customer.CusComContact">
+        <id property="pid" column="pid" />
+        <result property="cttName" column="CTT_NAME" />
+        <result property="duty" column="DUTY" />
+        <result property="fixedPhone" column="FIXED_PHONE" />
+        <result property="movePhone" column="MOVE_PHONE" />
+        <result property="mainCtt" column="MAIN_CTT" />
+        <result property="comPhone" column="COM_PHONE" />
+        <result property="familyAddr" column="FAMILY_ADDR" />
+        <result property="department" column="DEPTMENT" />
+        <result property="remark" column="REMARK" />
+    </resultMap>
+    
+<insert id="insert" parameterType="com.xlkfinance.bms.rpc.customer.CusComContact">
+  <selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+		SELECT SEQ_CUS_COM_CONTACT.Nextval as PID from DUAL
+	</selectKey>
+    insert into cus_com_contact (
+	    PID, 
+	    <if test="cusComBase.pid !=null">
+	    CUS_COM_ID, 
+	    </if>
+	    <if test="cttName !=null and cttName !=''">
+	    CTT_NAME, 
+	    </if>
+	    <if test="mainCtt !=null">
+	    MAIN_CTT, 
+	    </if>
+	    <if test="duty !=null and duty !=''">
+	    DUTY, 
+	    </if>
+	    <if test="department !=null and department !=''">
+	    DEPTMENT, 
+	    </if>
+	    <if test="movePhone !=null and movePhone !=''">
+	    MOVE_PHONE, 
+	    </if>
+	    <if test="fixedPhone !=null and fixedPhone !=''">
+	    FIXED_PHONE, 
+	    </if>
+	    <if test="familyAddr !=null and familyAddr !=''">
+	    FAMILY_ADDR, 
+	    </if>
+	    <if test="remark !=null and remark !=''">
+	    REMARK,
+	    </if>
+	    <if test="comPhone !=null and comPhone !=''">
+	    COM_PHONE,
+	    </if>
+	    STATUS)
+    values (
+    	#{pid,jdbcType=INTEGER}, 
+    	<if test="cusComBase.pid !=null">
+    	#{cusComBase.pid,jdbcType=INTEGER}, 
+    	</if>
+    	<if test="cttName !=null and cttName !=''">
+    	#{cttName,jdbcType=VARCHAR}, 
+    	</if>
+    	<if test="mainCtt !=null">
+    	#{mainCtt,jdbcType=INTEGER}, 
+    	</if>
+    	<if test="duty !=null and duty !=''">
+     	#{duty,jdbcType=VARCHAR}, 
+     	</if>
+     	<if test="department !=null and department !=''">
+     	#{department,jdbcType=VARCHAR},
+     	</if>
+     	<if test="movePhone !=null and movePhone !=''">
+      	#{movePhone,jdbcType=VARCHAR}, 
+      	</if>
+      	<if test="fixedPhone !=null and fixedPhone !=''">
+      	#{fixedPhone,jdbcType=VARCHAR},
+      	</if>
+      	<if test="familyAddr !=null and familyAddr !=''">
+      	#{familyAddr,jdbcType=VARCHAR},
+      	</if>
+      	<if test="remark !=null and remark !=''">
+     	#{remark,jdbcType=VARCHAR},
+     	</if>
+     	<if test="comPhone !=null and comPhone !=''">
+     	#{comPhone,jdbcType=VARCHAR},
+		</if>
+     	#{status,jdbcType=INTEGER}
+     	)
+  </insert>
+<!--   查询列表数据 -->
+  <select id="getCusComContacts" resultMap="contactResultMap" parameterType="com.xlkfinance.bms.rpc.customer.CusComContact">
+	  	select * from( 
+	  	SELECT rownum rn, 
+	  	   CUS.PID,
+	  	   CUS.CUS_COM_ID,
+	  	   CUS.CTT_NAME,
+	       CUS.DUTY,
+	       CUS.FIXED_PHONE,
+	       CUS.MOVE_PHONE,
+	       CASE CUS.MAIN_CTT
+                   WHEN 1 THEN
+                    '是'
+                   WHEN 2 THEN
+                    '否'
+                 END MAIN_CTT,
+	       CUS.COM_PHONE,
+	       CUS.FAMILY_ADDR
+	  FROM CUS_COM_CONTACT CUS
+	    WHERE 1=1 
+	    AND	  CUS.STATUS = 1
+	    AND   CUS.CUS_COM_ID=#{cusComBase.pid,jdbcType=INTEGER}
+	    AND rownum<![CDATA[<=]]>#{page}*#{rows})
+	     WHERE rn>=((#{page}-1)*#{rows})+1
+  </select> 
+  <select id="getTotal" parameterType="com.xlkfinance.bms.rpc.customer.CusComContact" resultType="java.lang.Integer">
+      SELECT COUNT(PID) FROM (
+      	SELECT CUS.PID,
+	  	   CUS.CUS_COM_ID,
+	  	   CUS.CTT_NAME,
+	       CUS.DUTY,
+	       CUS.FIXED_PHONE,
+	       CUS.MOVE_PHONE,
+	       CASE CUS.MAIN_CTT
+                   WHEN 1 THEN
+                    '是'
+                   WHEN 2 THEN
+                    '否'
+                 END MAIN_CTT,
+	       CUS.COM_PHONE,
+	       CUS.FAMILY_ADDR
+	  FROM CUS_COM_CONTACT CUS
+	    WHERE 1=1 
+	    AND	  CUS.STATUS = 1
+	    AND   CUS.CUS_COM_ID=#{cusComBase.pid,jdbcType=INTEGER})
+  </select>
+   
+
+<!--   根据ID来查 -->
+  <select id="selectByPrimaryKey" resultMap="contactResultMaps" parameterType="java.lang.Integer">
+	  	   SELECT CUS.PID,
+	         CUS.CTT_NAME,
+	         CUS.DUTY,
+	         CUS.FIXED_PHONE,
+	         CUS.MOVE_PHONE,
+	         CUS.MAIN_CTT,
+	         CUS.COM_PHONE,
+	         CUS.FAMILY_ADDR,
+	         CUS.DEPTMENT,
+	         CUS.REMARK
+	    FROM CUS_COM_CONTACT CUS
+	        WHERE  1=1
+	   	    and  CUS.STATUS = 1
+	   	    and  CUS.PID = #{cusComBase.pid,jdbcType=INTEGER}
+   	  
+  </select>
+   
+   <!-- 更新的方法 -->
+	<update id="updateByPrimaryKey" parameterType="com.xlkfinance.bms.rpc.customer.CusComContact">
+		update cus_com_contact
+		<set>
+		<if test="cusComBase.pid != null">
+		    CUS_COM_ID = #{cusComBase.pid,jdbcType=INTEGER}, 
+		</if>
+		<if test="cttName != null">
+			CTT_NAME = #{cttName,jdbcType=VARCHAR}, 
+		</if>
+		<if test="mainCtt != null">
+			MAIN_CTT = #{mainCtt,jdbcType=INTEGER}, 
+		</if>
+		<if test="duty != null">
+     		DUTY = #{duty,jdbcType=VARCHAR}, 
+     	</if>
+     	<if test="department != null">
+     		DEPTMENT = #{department,jdbcType=VARCHAR},
+     	</if>
+     	<if test="movePhone != null">
+      		MOVE_PHONE = #{movePhone,jdbcType=VARCHAR}, 
+      	</if>
+      	<if test="fixedPhone != null">
+      		FIXED_PHONE = #{fixedPhone,jdbcType=VARCHAR},
+      	</if>
+      	<if test="familyAddr != null">
+      		FAMILY_ADDR = #{familyAddr,jdbcType=VARCHAR},
+      	</if>
+      	<if test="remark != null">
+     		REMARK = #{remark,jdbcType=VARCHAR},
+     	</if>
+     		STATUS = 1
+		</set>
+		where pid = #{pid,jdbcType=INTEGER}
+	</update>
+	
+<!-- 	根据ID更新企业联系人  -->
+	<update id="updateCusComContacts" parameterType="com.xlkfinance.bms.rpc.customer.CusComContact">
+		update cus_com_contact
+		<set>
+		<if test="cttName != null">
+			CTT_NAME = #{cttName,jdbcType=VARCHAR}, 
+		</if>
+		<if test="mainCtt != null">
+			MAIN_CTT = #{mainCtt,jdbcType=INTEGER}, 
+		</if>
+		<if test="duty != null">
+     		DUTY = #{duty,jdbcType=VARCHAR}, 
+     	</if>
+     	<if test="department != null">
+     		DEPTMENT = #{department,jdbcType=VARCHAR},
+     	</if>
+     	<if test="movePhone != null">
+      		MOVE_PHONE = #{movePhone,jdbcType=VARCHAR}, 
+      	</if>
+      	<if test="fixedPhone != null">
+      		FIXED_PHONE = #{fixedPhone,jdbcType=VARCHAR},
+      	</if>
+      	<if test="familyAddr != null">
+      		FAMILY_ADDR = #{familyAddr,jdbcType=VARCHAR},
+      	</if>
+      	<if test="comPhone != null">
+     		COM_PHONE = #{comPhone,jdbcType=VARCHAR},
+     	</if>
+      	<if test="remark != null">
+     		REMARK = #{remark,jdbcType=VARCHAR},
+     	</if>
+		</set> 
+		where pid = #{pid,jdbcType=INTEGER}
+	</update>
+	
+	
+	<update id="deleteComContact" parameterType="java.util.List">
+		update cus_com_contact
+		set
+		status=0
+		where pid in 
+		<foreach item="itemId" collection="list" open="(" separator="," close=")">
+		          #{itemId}
+		</foreach>
+	</update>
+</mapper>

@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xlkfinance.bms.server.project.mapper.BizProjectOverdueMapper">
+	<resultMap id="bizProjectOverdueMap" type="com.xlkfinance.bms.rpc.project.BizProjectOverdue">
+		<id property="pid" column="PID" />
+		<id property="projectId" column="PROJECT_ID" />
+		<id property="loanPlanId" column="LOAN_PLAN_ID" />
+		<id property="overdueMoney" column="OVERDUE_MONEY" />
+		<id property="shouldPenalty" column="SHOULD_PENALTY" />
+		<id property="actualPenalty" column="ACTUAL_PENALTY" />
+		<id property="actualPenaltyTime" column="ACTUAL_PENALTY_TIME" />
+		<id property="actualOverdueMoney" column="ACTUAL_OVERDUE_MONEY" />
+		<id property="shouldOverdueMoney" column="SHOULD_OVERDUE_MONEY" />
+		<id property="createDate" column="CREATE_DATE" />
+		<id property="createrId" column="CREATER_ID" />
+		<id property="updateId" column="UPDATE_ID" />
+		<id property="updateDate" column="UPDATE_DATE" />
+		<id property="overdueRate" column="OVERDUE_RATE" />
+		<id property="overdueDay" column="OVERDUE_DAY" />
+		<id property="remark" column="REMARK" />
+	</resultMap>
+	<sql id="column_list">
+        PID,PROJECT_ID,LOAN_PLAN_ID,OVERDUE_MONEY,SHOULD_PENALTY,ACTUAL_PENALTY,ACTUAL_PENALTY_TIME,ACTUAL_OVERDUE_MONEY,SHOULD_OVERDUE_MONEY,
+        CREATE_DATE,CREATER_ID,UPDATE_ID,UPDATE_DATE,OVERDUE_RATE,OVERDUE_DAY,REMARK
+	</sql>
+	<!-- 查询所有 -->
+	<select id="getAll" resultMap="bizProjectOverdueMap" parameterType="com.xlkfinance.bms.rpc.project.BizProjectOverdue">
+		SELECT
+		<include refid="column_list" />
+		FROM BIZ_PROJECT_OVERDUE
+		<where>
+			<trim>
+		      <if test="pid != null and pid >0">
+	          PID=#{pid}
+	          </if>
+		      <if test="projectId != null and projectId >0">
+	          AND PROJECT_ID=#{projectId}
+	          </if>
+		      <if test="loanPlanId != null and loanPlanId >0">
+	          AND LOAN_PLAN_ID=#{loanPlanId}
+	          </if>
+		      <if test="overdueMoney != null and overdueMoney >0">
+	          AND OVERDUE_MONEY=#{overdueMoney}
+	          </if>
+		      <if test="shouldPenalty != null">
+	          AND SHOULD_PENALTY=#{shouldPenalty}
+	          </if>
+		      <if test="actualPenalty != null">
+	          AND ACTUAL_PENALTY=#{actualPenalty}
+	          </if>
+		      <if test="actualPenaltyTime != null and actualPenaltyTime !=''">
+	          AND ACTUAL_PENALTY_TIME=#{actualPenaltyTime}
+	          </if>
+		      <if test="actualOverdueMoney != null">
+	          AND ACTUAL_OVERDUE_MONEY=#{actualOverdueMoney}
+	          </if>
+		      <if test="shouldOverdueMoney != null">
+	          AND SHOULD_OVERDUE_MONEY=#{shouldOverdueMoney}
+	          </if>
+		      <if test="createDate != null and createDate !=''">
+	          AND CREATE_DATE=#{createDate}
+	          </if>
+		      <if test="createrId != null and createrId >0">
+	          AND CREATER_ID=#{createrId}
+	          </if>
+		      <if test="updateId != null and updateId >0">
+	          AND UPDATE_ID=#{updateId}
+	          </if>
+		      <if test="updateDate != null and updateDate !=''">
+	          AND UPDATE_DATE=#{updateDate}
+	          </if>
+		      <if test="overdueRate != null and overdueRate >0">
+	          AND OVERDUE_RATE=#{overdueRate}
+	          </if>
+		      <if test="overdueDay != null and overdueDay >0">
+	          AND OVERDUE_DAY=#{overdueDay}
+	          </if>
+			</trim>
+		</where>
+	</select>
+	<!-- 根据id获取 -->
+	<select id="getById" resultMap="bizProjectOverdueMap">
+		SELECT <include refid="column_list" /> FROM BIZ_PROJECT_OVERDUE WHERE PID=#{pid}
+	</select>
+	<!-- 插入一条数据 -->
+	<insert id="insert" parameterType="com.xlkfinance.bms.rpc.project.BizProjectOverdue">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_BIZ_PROJECT_OVERDUE.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_PROJECT_OVERDUE
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+				PID,
+			</if>
+		    <if test="projectId != null and projectId >0">
+				PROJECT_ID,
+			</if>
+		    <if test="loanPlanId != null and loanPlanId >0">
+				LOAN_PLAN_ID,
+			</if>
+		    <if test="overdueMoney != null and overdueMoney >0">
+				OVERDUE_MONEY,
+			</if>
+		    <if test="shouldPenalty != null">
+				SHOULD_PENALTY,
+			</if>
+		    <if test="actualPenalty != null">
+				ACTUAL_PENALTY,
+			</if>
+		    <if test="actualPenaltyTime != null and actualPenaltyTime !=''">
+				ACTUAL_PENALTY_TIME,
+			</if>
+		    <if test="actualOverdueMoney != null">
+				ACTUAL_OVERDUE_MONEY,
+			</if>
+		    <if test="shouldOverdueMoney != null">
+				SHOULD_OVERDUE_MONEY,
+			</if>
+				CREATE_DATE,
+		    <if test="createrId != null and createrId >0">
+				CREATER_ID,
+			</if>
+		    <if test="overdueRate != null and overdueRate >0">
+				OVERDUE_RATE,
+			</if>
+		    <if test="overdueDay != null and overdueDay >0">
+				OVERDUE_DAY,
+			</if>
+			<if test="remark != null and remark!=''">
+				REMARK,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+		    #{pid},
+			</if>
+		    <if test="projectId != null and projectId >0">
+		    #{projectId},
+			</if>
+		    <if test="loanPlanId != null and loanPlanId >0">
+		    #{loanPlanId},
+			</if>
+		    <if test="overdueMoney != null and overdueMoney >0">
+		    #{overdueMoney},
+			</if>
+		    <if test="shouldPenalty != null">
+		    #{shouldPenalty},
+			</if>
+		    <if test="actualPenalty != null">
+		    #{actualPenalty},
+			</if>
+		    <if test="actualPenaltyTime != null and actualPenaltyTime !=''">
+		    #{actualPenaltyTime,jdbcType= DATE,javaType= java.lang.String},
+			</if>
+		    <if test="actualOverdueMoney != null">
+		    #{actualOverdueMoney},
+			</if>
+		    <if test="shouldOverdueMoney != null">
+		    #{shouldOverdueMoney},
+			</if>
+		    SYSDATE,
+		    <if test="createrId != null and createrId >0">
+		    #{createrId},
+			</if>
+		    <if test="overdueRate != null and overdueRate >0">
+		    #{overdueRate},
+			</if>
+		    <if test="overdueDay != null and overdueDay >0">
+		    #{overdueDay},
+			</if>
+			<if test="remark != null and remark!=''">
+				#{remark},
+			</if>
+		</trim>
+	</insert>
+	<!-- 根据id删除数据 -->
+	<delete id="deleteById" parameterType="com.xlkfinance.bms.rpc.project.BizProjectOverdue">
+		<![CDATA[DELETE FROM BIZ_PROJECT_OVERDUE WHERE PID=#{pid}]]>
+	</delete>
+	<!-- 根据id更新数据 -->
+		<update id="update" parameterType="com.xlkfinance.bms.rpc.project.BizProjectOverdue">
+		UPDATE BIZ_PROJECT_OVERDUE
+		<set>
+		    <if test="pid != null and pid >0">
+		     PID=#{pid},
+			</if>
+		    <if test="projectId != null and projectId >0">
+		     PROJECT_ID=#{projectId},
+			</if>
+		    <if test="loanPlanId != null and loanPlanId >0">
+		     LOAN_PLAN_ID=#{loanPlanId},
+			</if>
+		    <if test="overdueMoney != null and overdueMoney >0">
+		     OVERDUE_MONEY=#{overdueMoney},
+			</if>
+		    <if test="shouldPenalty != null">
+		     SHOULD_PENALTY=#{shouldPenalty},
+			</if>
+		    <if test="actualPenalty != null">
+		     ACTUAL_PENALTY=#{actualPenalty},
+			</if>
+		    <if test="actualPenaltyTime != null and actualPenaltyTime !=''">
+		     ACTUAL_PENALTY_TIME=#{actualPenaltyTime,jdbcType= DATE,javaType= java.lang.String},
+			</if>
+		    <if test="actualOverdueMoney != null">
+		     ACTUAL_OVERDUE_MONEY=#{actualOverdueMoney},
+			</if>
+		    <if test="shouldOverdueMoney != null">
+		     SHOULD_OVERDUE_MONEY=#{shouldOverdueMoney},
+			</if>
+		    <if test="updateId != null and updateId >0">
+		     UPDATE_ID=#{updateId},
+			</if>
+		     UPDATE_DATE=SYSDATE,
+		    <if test="overdueRate != null and overdueRate >0">
+		     OVERDUE_RATE=#{overdueRate},
+			</if>
+		    <if test="overdueDay != null and overdueDay >0">
+		     OVERDUE_DAY=#{overdueDay},
+			</if>
+			<if test="remark != null and remark!=''">
+				REMARK = #{remark},
+			</if>
+		</set>
+		WHERE PID = #{pid}
+	</update>
+	<!-- 根据传入多个id删除数据 -->
+	<delete id="deleteByIds" parameterType="java.util.List">
+		DELETE FROM BIZ_PROJECT_OVERDUE WHERE PID in
+		<foreach collection="list" item="item" index="index" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+	
+	
+  <!-- 批量更新的方法 -->
+<update id="updateOverdues" parameterType="java.util.List">
+	BEGIN
+	 <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+		UPDATE BIZ_PROJECT_OVERDUE A
+		<set>
+		<if test="item.shouldPenalty != null and item.shouldPenalty>0">
+		     A.SHOULD_PENALTY=#{item.shouldPenalty,jdbcType=DOUBLE},
+		</if>
+		<if test="item.overdueRate != null and item.overdueRate >0">
+		     A.OVERDUE_RATE=#{item.overdueRate,jdbcType=DOUBLE},
+		</if>
+	    <if test="item.overdueDay != null and item.overdueDay >0">
+	         A.OVERDUE_DAY=#{item.overdueDay,jdbcType=INTEGER},
+		</if>
+		<if test="item.actualPenalty != null and item.actualPenalty >0">
+	         A.ACTUAL_PENALTY=#{item.actualPenalty,jdbcType=DOUBLE},
+		</if>
+		<if test="item.actualPenaltyTime != null and item.actualPenaltyTime !=''">
+		     A.ACTUAL_PENALTY_TIME=#{item.actualPenaltyTime,jdbcType= DATE,javaType= java.lang.String},
+		</if>
+		<if test="item.actualOverdueMoney != null and item.actualOverdueMoney>0">
+		     A.ACTUAL_OVERDUE_MONEY=#{item.actualOverdueMoney,jdbcType=DOUBLE},
+		</if>
+		A.UPDATE_DATE=SYSDATE,
+		</set> 
+		WHERE A.PID = #{item.pid,jdbcType=INTEGER}
+	 </foreach>
+	 ;END;
+</update>
+<!-- 批量新增的方法 -->
+<insert id="insertOverdues" parameterType="java.util.List">
+	INSERT INTO BIZ_PROJECT_OVERDUE(
+		 PID,
+       PROJECT_ID,
+       LOAN_PLAN_ID,
+       OVERDUE_MONEY,
+       SHOULD_PENALTY,
+       SHOULD_OVERDUE_MONEY,
+       CREATE_DATE,
+       CREATER_ID,
+       OVERDUE_RATE,
+       OVERDUE_DAY)
+	select SEQ_BIZ_PROJECT_OVERDUE.Nextval,A.* from(
+        <foreach collection="list" item="item" index="index"
+            separator="UNION">
+            SELECT
+            #{item.projectId,jdbcType=INTEGER},
+            #{item.loanPlanId,jdbcType=INTEGER},
+	    	#{item.overdueMoney,javaType=DOUBLE},
+	    	#{item.shouldPenalty,jdbcType=DOUBLE}, 
+	     	#{item.shouldOverdueMoney,jdbcType=DOUBLE}, 
+	     	SYSDATE,
+	     	#{item.createrId,jdbcType=INTEGER},
+	     	#{item.overdueRate,jdbcType=DOUBLE},
+	     	#{item.overdueDay,jdbcType=INTEGER}
+            from dual 
+             </foreach>
+        ) A
+</insert>
+	
+	
+</mapper>

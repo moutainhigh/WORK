@@ -1,0 +1,285 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.partner.mapper.ProjectPartnerFileMapper">
+
+<resultMap type="com.xlkfinance.bms.rpc.partner.ProjectPartnerFile" id="baseResultMap">
+  		<id property="pid" column="PID"/>
+  		<id property="projectId" column="PROJECT_ID"/>
+  		<id property="partnerNo" column="PARTNER_NO"/>
+  		<id property="accessoryType" column="ACCESSORY_TYPE"/>
+  		<id property="fileName" column="FILE_NAME"/>
+  		<id property="fileType" column="FILE_TYPE"/>
+  		<id property="fileSize" column="FILE_SIZE"/>
+  		<id property="fileUrl" column="FILE_URL"/>
+  		<id property="updateTime" column="UPDATE_TIME" jdbcType="TIMESTAMP" javaType="String"/>
+  		<id property="status" column="STATUS"/>
+  		<id property="remark" column="REMARK"/>
+  		<id property="accessoryChildType" column="ACCESSORY_CHILD_TYPE"/>
+  		<id property="thirdFileUrl" column="THIRD_FILE_URL"/>
+  		<id property="partnerId" column="PARTNER_ID"/>
+</resultMap>
+
+<!-- 获取项目合作机构附件的PID -->
+<select id="getSeqBizProjectPartnerFile" resultType="java.lang.Integer">
+	SELECT SEQ_BIZ_PROJECT_PARTNER_FILE.Nextval as PID from DUAL 
+</select>
+
+<!-- 查询列表 -->
+<select id="findAllProjectPartnerFile" resultMap="baseResultMap" parameterType="com.xlkfinance.bms.rpc.partner.ProjectPartnerFile">
+	 
+	 select PID,PROJECT_ID,PARTNER_NO,ACCESSORY_TYPE,FILE_NAME,FILE_TYPE,
+	 		FILE_SIZE,FILE_URL,UPDATE_TIME,STATUS,REMARK,ACCESSORY_CHILD_TYPE,
+	 		THIRD_FILE_URL,PARTNER_ID
+	 		
+	 	from BIZ_PROJECT_PARTNER_FILE 
+	 where 	STATUS = 1 
+	 
+	<if test="pid != null and pid > 0">
+    		AND PID = #{pid}
+    </if>
+	<if test="projectId != null and projectId > 0">
+    		AND PROJECT_ID = #{projectId}
+    </if>
+	<if test="partnerNo != null and partnerNo != ''">
+    		AND PARTNER_NO = #{partnerNo}
+    </if>
+	<if test="accessoryType != null and accessoryType != ''">
+    		AND ACCESSORY_TYPE = #{accessoryType}
+    </if>
+	<if test="fileName != null and fileName != ''">
+    		AND FILE_NAME = #{fileName}
+    </if>
+	<if test="fileType != null and fileType != ''">
+    		AND FILE_TYPE = #{fileType}
+    </if>
+	<if test="pidList!=null and pidList.size()>0">
+			AND	PID in
+		<foreach item="itemId" collection="pidList" open="(" separator="," close=")">
+		          #{itemId}
+		</foreach>
+	</if>
+	<if test="partnerId != null and partnerId != 0 ">
+    		AND PARTNER_ID = #{partnerId}
+    </if>
+    
+</select>
+
+
+<!-- 查询列表数量 -->
+<select id="findAllProjectPartnerFileCount" resultType="java.lang.Integer" parameterType="com.xlkfinance.bms.rpc.partner.ProjectPartnerFile">
+	 
+	select count(0) from BIZ_PROJECT_PARTNER_FILE
+	 	
+	 where 	STATUS = 1 
+	<if test="pid != null and pid > 0">
+    		AND PID = #{pid}
+    </if>
+	<if test="projectId != null and projectId > 0">
+    		AND PROJECT_ID = #{projectId}
+    </if>
+	<if test="partnerNo != null and partnerNo != ''">
+    		AND PARTNER_NO = #{partnerNo}
+    </if>
+	<if test="accessoryType != null and accessoryType != ''">
+    		AND ACCESSORY_TYPE = #{accessoryType}
+    </if>
+	<if test="fileName != null and fileName != ''">
+    		AND FILE_NAME = #{fileName}
+    </if>
+	<if test="fileType != null and fileType != ''">
+    		AND FILE_TYPE = #{fileType}
+    </if>
+	<if test="pidList!=null and pidList.size()>0">
+			AND	PID in
+		<foreach item="itemId" collection="pidList" open="(" separator="," close=")">
+		          #{itemId}
+		</foreach>
+	</if>
+	<if test="partnerId != null and partnerId != 0 ">
+    		AND PARTNER_ID = #{partnerId}
+    </if>
+</select>
+
+<!-- 新增附件 -->
+<insert id="addProjectPartnerFile" parameterType="com.xlkfinance.bms.rpc.partner.ProjectPartnerFile">
+ 
+	INSERT INTO BIZ_PROJECT_PARTNER_FILE
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+        PID, 
+		<if test="projectId != null and projectId > 0">
+	    		PROJECT_ID , 
+	    </if>
+		<if test="partnerNo != null and partnerNo != ''">
+	    		PARTNER_NO, 
+	    </if>
+		<if test="accessoryType != null and accessoryType != ''">
+	    		ACCESSORY_TYPE, 
+	    </if>
+		<if test="fileName != null and fileName != ''">
+	    		FILE_NAME, 
+	    </if>
+		<if test="fileType != null and fileType != ''">
+	    		FILE_TYPE, 
+	    </if>
+		<if test="fileSize != null and fileSize > 0">
+	    		FILE_SIZE, 
+	    </if>
+		<if test="fileUrl != null and fileUrl != ''">
+	    		FILE_URL, 
+	    </if>
+		<if test="updateTime != null and updateTime != ''">
+	    		UPDATE_TIME, 
+	    </if>
+		<if test="status != null and status > 0">
+	    		STATUS, 
+	    </if>
+		<if test="remark != null and remark != ''">
+	    		REMARK, 
+	    </if>
+		<if test="accessoryChildType != null and accessoryChildType != ''">
+	    		ACCESSORY_CHILD_TYPE, 
+	    </if>
+		<if test="thirdFileUrl != null and thirdFileUrl != ''">
+	    		THIRD_FILE_URL, 
+	    </if>
+		<if test="partnerId != null and partnerId >0">
+	    		PARTNER_ID, 
+	    </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+    		#{pid,jdbcType=INTEGER}, 
+		<if test="projectId != null and projectId > 0">
+	    	#{projectId,jdbcType=INTEGER}, 
+	    </if>
+		<if test="partnerNo != null and partnerNo != ''">
+	    	#{partnerNo}, 
+	    </if>
+		<if test="accessoryType != null and accessoryType != ''">
+	    	#{accessoryType}, 
+	    </if>
+		<if test="fileName != null and fileName != ''">
+	    	#{fileName}, 
+	    </if>
+		<if test="fileType != null and fileType != ''">
+	    	#{fileType}, 
+	    </if>
+		<if test="fileSize != null and fileSize > 0">
+	    	#{fileSize,jdbcType=INTEGER}, 
+	    </if>
+		<if test="fileUrl != null and fileUrl != ''">
+	    	#{fileUrl}, 
+	    </if>
+		<if test="updateTime != null and updateTime != ''">
+	    	#{updateTime,javaType=String, jdbcType=TIMESTAMP}, 
+	    </if>
+		<if test="status != null and status > 0">
+	    	#{status,jdbcType=INTEGER}, 
+	    </if>
+		<if test="remark != null and remark != ''">
+	    	#{remark}, 
+	    </if>
+		<if test="accessoryChildType != null and accessoryChildType != ''">
+	    	#{accessoryChildType}, 
+	    </if>
+		<if test="thirdFileUrl != null and thirdFileUrl != ''">
+	    	#{thirdFileUrl}, 
+	    </if>
+		<if test="partnerId != null and partnerId >0">
+	    	#{partnerId}, 
+	    </if>
+    </trim>
+</insert>
+
+
+<!-- 修改附件 -->
+<update id="updateProjectPartnerFile" parameterType="com.xlkfinance.bms.rpc.partner.ProjectPartnerFile">
+	UPDATE BIZ_PROJECT_PARTNER_FILE
+	<set>
+		<if test="projectId != null and projectId > 0">
+	    	PROJECT_ID = #{projectId,jdbcType=INTEGER}, 
+	    </if>
+		<if test="partnerNo != null and partnerNo != ''">
+	    	PARTNER_NO = #{partnerNo}, 
+	    </if>
+		<if test="accessoryType != null and accessoryType != ''">
+	    	ACCESSORY_TYPE = #{accessoryType}, 
+	    </if>
+		<if test="fileName != null and fileName != ''">
+	    	FILE_NAME = #{fileName}, 
+	    </if>
+		<if test="fileType != null and fileType != ''">
+	    	FILE_TYPE = #{fileType}, 
+	    </if>
+		<if test="fileSize != null and fileSize > 0 ">
+	    	FILE_SIZE = #{fileSize,jdbcType=INTEGER}, 
+	    </if>
+		<if test="fileUrl != null and fileUrl != ''">
+	    	FILE_URL = #{fileUrl}, 
+	    </if>
+		<if test="updateTime != null and updateTime != ''">
+	    	UPDATE_TIME = #{updateTime,javaType=String, jdbcType=TIMESTAMP}, 
+	    </if>
+		<if test="status != null and status > 0">
+	    	STATUS = #{status,jdbcType=INTEGER}, 
+	    </if>
+		<if test="remark != null and remark != ''">
+	    	REMARK = #{remark}, 
+	    </if>
+		<if test="accessoryChildType != null and accessoryChildType != ''">
+	    		ACCESSORY_CHILD_TYPE =#{accessoryChildType}, 
+	    </if>
+		<if test="thirdFileUrl != null">
+	    		THIRD_FILE_URL =#{thirdFileUrl}, 
+	    </if>
+		<if test="partnerId != null and partnerId >0">
+	    	PARTNER_ID = #{partnerId}, 
+	    </if>
+	</set>
+	where
+		<!-- pid 和pidList 有且只能共存一个，防止条件缺失，全量更新 -->
+		<if test="pid!=null and pid > 0 ">
+			PID =#{pid}
+		</if>
+		<if test="pid== 0 and pidList!=null and pidList.size()>0">
+			PID in
+			<foreach item="itemId" collection="pidList" open="(" separator="," close=")">
+			          #{itemId}
+			</foreach>
+		</if>
+</update>
+
+
+	<!-- 根据id获取 -->
+	<select id="getById" resultMap="baseResultMap">
+		SELECT PID,PROJECT_ID,PARTNER_NO,ACCESSORY_TYPE,FILE_NAME,FILE_TYPE,
+	 		FILE_SIZE,FILE_URL,UPDATE_TIME,STATUS,REMARK,ACCESSORY_CHILD_TYPE,
+	 		THIRD_FILE_URL,PARTNER_ID
+	 	 FROM BIZ_PROJECT_PARTNER_FILE 
+	 	WHERE PID=#{pid}
+	</select>
+	
+	
+<!-- 清空项目机构所有附件上传第三方路径 -->
+<update id="updateAllFileUploadEmpty" parameterType="com.xlkfinance.bms.rpc.partner.ProjectPartnerFile">
+	UPDATE BIZ_PROJECT_PARTNER_FILE
+	<set>
+		THIRD_FILE_URL = null, 
+		<if test="updateTime != null and updateTime != ''">
+	    	UPDATE_TIME = #{updateTime,javaType=String, jdbcType=TIMESTAMP}, 
+	    </if>
+	</set>
+	WHERE
+		PARTNER_ID = #{partnerId}
+		<if test="pid!=null and pid > 0 ">
+			AND PID =#{pid}
+		</if>
+		<if test="pid== 0 and pidList!=null and pidList.size()>0">
+			AND PID in
+			<foreach item="itemId" collection="pidList" open="(" separator="," close=")">
+			          #{itemId}
+			</foreach>
+		</if>
+</update>
+	
+	
+
+</mapper>

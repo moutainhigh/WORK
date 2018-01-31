@@ -1,0 +1,1050 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.repayment.mapper.LoanExtensionMapper">
+	<!-- 展期申请 -->
+	<resultMap id="loanExtensionMaps"
+		type="com.xlkfinance.bms.rpc.repayment.LoanExtensionView">
+		<result property="projectId" column="PROJECT_ID" />
+		<result property="projectNum" column="PROJECT_NUMBER" />
+		<result property="projectName" column="PROJECT_NAME" />
+		<result property="projectType" column="PROJECT_TYPE" />
+		<result property="pmUserName" column="PM_USER_NAME" />
+		<result property="cusType" column="CUS_TYPE" />
+		<result property="creditAmt" column="CREDIT_AMT" />
+		<result property="requestDttm" column="REQUEST_DTTM" />
+		<result property="planOutLoanDt" column="PLAN_OUT_LOAN_DT" />
+		<result property="planRepayLoanDt" column="PLAN_REPAY_LOAN_DT" />
+	</resultMap>
+
+	<!-- 展期申请列表 -->
+	<resultMap id="loanExtensionBaseMaps"
+		type="com.xlkfinance.bms.rpc.repayment.LoanExtensionBaseView">
+		<result property="pid" column="pid" />
+		<result property="extensionProjectId" column="EXTENSION_PROJECT_ID" />
+		<result property="projectId" column="PROJECT_ID" />
+		<result property="projectNum" column="PROJECT_NUMBER" />
+		<result property="projectName" column="PROJECT_NAME" />
+		<result property="pmUserName" column="PM_USER_NAME" />
+		<result property="cusType" column="CUS_TYPE" />
+		<result property="creditAmt" column="CREDIT_AMT" />
+		<result property="planOutLoanDt" column="PLAN_OUT_LOAN_DT" />
+		<result property="planRepayLoanDt" column="PLAN_REPAY_LOAN_DT" />
+		<result property="requestStatus" column="REQUEST_STATUS" />
+		<result property="requestStatusVal" column="REQUEST_STATUS_VAL" />
+		<result property="requestDttm" column="REQUEST_DTTM" />
+		
+		<result property="extensionFee" column="EXTENSION_FEE" />
+		<result property="extensionDate" column="EXTENSION_DATE" />
+		<result property="extensionRate" column="EXTENSION_RATE" />
+		<result property="extensionDays" column="EXTENSION_DAYS" />
+		<result property="pmUserId" column="PM_USER_ID" />
+		
+		<result property="chargeAmount" column="CHARGE_AMOUNT" />
+	</resultMap>	
+	
+	<!-- 未对账的还款期数以及本金 -->
+	<resultMap id="noReconciliationMaps"
+		type="com.xlkfinance.bms.rpc.repayment.RepayNoReconciliationView">
+		<result property="extensionNum" column="EXTENSION_NUM" />
+		<result property="extensionNumName" column="EXTENSION_NUM_NAME" />
+		<result property="noReconciliationAmt" column="NO_RECONCILIATION_AMT" />
+	</resultMap>	
+	
+	<!-- 展期表 -->
+	<resultMap id="projectExtensionMaps"
+		type="com.xlkfinance.bms.rpc.repayment.ProjectExtensionView">
+		<result property="pid" column="PID" />
+		<result property="projectId" column="PROJECT_ID" />
+		<result property="selectCycleNum" column="SELECT_CYCLE_NUM" />
+		<result property="extensionAmt" column="EXTENSION_AMT" />
+		<result property="extensionProjectId" column="EXTENSION_PROJECT_ID" />
+		<result property="status" column="STATUS" />
+		<result property="extensionDate" column="EXTENSION_DATE" />
+		<result property="extensionFee" column="EXTENSION_FEE" />
+		<result property="extensionRate" column="EXTENSION_RATE" />
+		<result property="extensionDays" column="EXTENSION_DAYS" />
+	</resultMap>	
+	
+	<!-- 展期表文件-->
+	<resultMap id="getExtensionFileMaps"
+		type="com.xlkfinance.bms.rpc.repayment.LoanExtensionFileView">
+		<result property="fileName" column="FILE_NAME" />
+		<result property="fileType" column="FILE_TYPE" />
+		<result property="fileSize" column="FILE_SIZE" />
+		<result property="uploadDttm" column="UPLOAD_DTTM" />
+		<result property="fileDesc" column="FILE_DESC" />
+		<result property="fileUrl" column="FILE_URL" />
+		<result property="fileId" column="FILE_ID" />
+		<result property="pid" column="pid" />
+		<result property="fileCategory" column="FILE_CATEGORY" />
+		<result property="fileCategoryName" column="FILE_CATEGORY_NAME" />
+	</resultMap>	
+	
+	
+	<insert id="insert" parameterType="com.xlkfinance.bms.rpc.repayment.ProjectExtension">
+		<!-- 获取序列号 -->
+		<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+			SELECT SEQ_BIZ_PROJECT_EXTENSION.Nextval as pid from DUAL
+		</selectKey>
+		
+		INSERT INTO BIZ_PROJECT_EXTENSION
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			PID,
+			<if test="projectId != null and projectId != -1 ">
+				PROJECT_ID,
+			</if>
+			<if test="selectCycleNum != null and selectCycleNum != -1 ">
+				SELECT_CYCLE_NUM,
+			</if>
+			<if test="extensionAmt != null and extensionAmt != -1 ">
+				EXTENSION_AMT,
+			</if>
+			<if test="status != null and status != -1 ">
+				STATUS,
+			</if>
+			<if test="extensionProjectId != null and extensionProjectId != '' ">
+				EXTENSION_PROJECT_ID,
+			</if>
+			<if test="extensionFee != null and extensionFee>0 ">
+				EXTENSION_FEE,
+			</if>
+			<if test="extensionDate != null and extensionDate != '' ">
+				EXTENSION_DATE,
+			</if>
+			<if test="extensionRate != null and extensionRate>0 ">
+				EXTENSION_RATE,
+			</if>
+			<if test="extensionDays != null and extensionDays>0 ">
+				EXTENSION_DAYS,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+				#{pid},
+			<if test="projectId != null and projectId != -1 ">
+				#{projectId},
+			</if>
+			<if test="selectCycleNum != null and selectCycleNum != -1 ">
+				#{selectCycleNum},
+			</if>
+			<if test="extensionAmt != null and extensionAmt != -1 ">
+				#{extensionAmt},
+			</if>
+			<if test="status != null and status != -1 ">
+				#{status},
+			</if>
+			<if test="extensionProjectId != null and extensionProjectId != -1 ">
+				#{extensionProjectId},
+			</if>
+			<if test="extensionFee != null and extensionFee>0 ">
+				#{extensionFee},
+			</if>
+			<if test="extensionDate != null and extensionDate != '' ">
+				#{extensionDate,jdbcType=DATE,javaType=String},
+			</if>
+			<if test="extensionRate != null and extensionRate>0 ">
+				#{extensionRate},
+			</if>
+			<if test="extensionDays != null and extensionDays>0 ">
+				#{extensionDays},
+			</if>
+		</trim>
+	</insert>
+	
+	<update id="updateByPrimaryKey" parameterType="com.xlkfinance.bms.rpc.repayment.ProjectExtensionDTO">
+       UPDATE BIZ_PROJECT_EXTENSION B
+   			<set>
+			<if test="selectCycleNum != null and selectCycleNum >0 ">
+				SELECT_CYCLE_NUM = #{selectCycleNum},
+			</if>
+			<if test="extensionAmt != null and extensionAmt >0 ">
+				EXTENSION_AMT = #{extensionAmt},
+			</if>
+			<if test="extensionFee != null and extensionFee>0 ">
+				EXTENSION_FEE = #{extensionFee},
+			</if>
+			<if test="extensionDate != null and extensionDate != '' ">
+				 EXTENSION_DATE = #{extensionDate,jdbcType=DATE,javaType=String},
+			</if>
+			<if test="extensionRate != null and extensionRate>0 ">
+				EXTENSION_RATE = #{extensionRate},
+			</if>
+			<if test="extensionDays != null and extensionDays>0 ">
+				EXTENSION_DAYS = #{extensionDays},
+			</if>
+			</set>
+			WHERE PID = #{pid}
+	</update>
+	
+	<!-- 删除展期申请 -->
+	<update id="batchDelete" parameterType="java.lang.String">
+        UPDATE BIZ_PROJECT_EXTENSION SET
+       	STATUS = 0 
+        WHERE PID in 
+        <foreach item="idItem" collection="array" open="(" separator="," close=")">
+			#{idItem}
+		</foreach>
+	</update>
+	
+	<!-- 查询展期申请 -->
+	<select id="getProjectExtensionList" resultMap="projectExtensionMaps"
+		parameterType="com.xlkfinance.bms.rpc.repayment.ProjectExtensionDTO">
+		SELECT PID,
+		       PROJECT_ID,
+		       SELECT_CYCLE_NUM,
+		       EXTENSION_AMT,
+		       STATUS,
+		       EXTENSION_PROJECT_ID,
+		       EXTENSION_DATE,
+		       EXTENSION_FEE,
+		       EXTENSION_RATE,
+		       EXTENSION_DAYS
+		  FROM BIZ_PROJECT_EXTENSION WHERE 1 = 1 AND STATUS = 1
+
+		 
+		 <if test="pid != null and pid != '' ">
+			 AND PID = #{pid}
+		 </if>
+		 <if test="projectId != null and projectId != '' ">
+			 AND PROJECT_ID = #{projectId}
+		 </if>
+		 <if test="selectCycleNum != null and selectCycleNum != '' ">
+			 AND SELECT_CYCLE_NUM = #{selectCycleNum}
+		 </if>
+		 <if test="extensionAmt != null and extensionAmt != '' ">
+			 AND EXTENSION_AMT = #{extensionAmt}
+		 </if>
+		 <if test="extensionProjectId != null and extensionProjectId != '' ">
+			 AND EXTENSION_PROJECT_ID = #{extensionProjectId}
+		 </if>
+	</select>
+	
+	
+	<!-- 根据被展期项目ID 查询在申请中的展期项目 -->
+	<select id="getByExtensionProjectId" resultMap="projectExtensionMaps"
+		parameterType="java.lang.Integer">
+		SELECT  EXTEN.PID,
+		        EXTEN.PROJECT_ID,
+		        EXTEN.SELECT_CYCLE_NUM,
+		        EXTEN.EXTENSION_AMT,
+		        EXTEN.STATUS,
+		        EXTEN.EXTENSION_PROJECT_ID,
+		        EXTEN.EXTENSION_DATE,
+		        EXTEN.EXTENSION_FEE,
+		        EXTENSION_RATE,
+		        EXTENSION_DAYS
+		  FROM BIZ_PROJECT_EXTENSION EXTEN , BIZ_PROJECT PRO 
+		  	WHERE 1 = 1 
+		  	AND EXTEN.PROJECT_ID = PRO.PID
+		  	AND PRO.STATUS = 1 
+		  	AND PRO.REQUEST_STATUS != 4 
+		  	AND EXTEN.STATUS = 1
+		    AND EXTEN.EXTENSION_PROJECT_ID = #{extensionProjectId}
+	</select>
+
+	<!-- 展期申请查询 -->
+	<select id="selectLoanExtensionList" resultMap="loanExtensionMaps"
+		parameterType="com.xlkfinance.bms.rpc.repayment.LoanExtensionDTO">
+		SELECT * FROM(
+			SELECT C.*,ROWNUM RN FROM (
+			  SELECT DISTINCT PROJEC.PID AS PROJECT_ID,
+		           PROJEC.PROJECT_NAME,
+		           PROJEC.PROJECT_NUMBER,
+		           PROJEC.PROJECT_TYPE,
+		           SYS.REAL_NAME AS PM_USER_NAME,
+		           CAST(LOAN.CREDIT_AMT AS DECIMAL(18, 2)) AS CREDIT_AMT,
+		           ACCT.CUS_TYPE,
+		           TO_CHAR(LOAN.PLAN_REPAY_LOAN_DT, 'yyyy-MM-dd') AS PLAN_REPAY_LOAN_DT,
+		           TO_CHAR(PROJEC.REQUEST_DTTM, 'yyyy-MM-dd') AS REQUEST_DTTM,
+		           TO_CHAR(LOAN.PLAN_OUT_LOAN_DT, 'yyyy-MM-dd') AS PLAN_OUT_LOAN_DT
+		      FROM BIZ_LOAN LOAN
+		      LEFT JOIN BIZ_PROJECT PROJEC
+		        ON LOAN.PROJECT_ID = PROJEC.PID
+		      LEFT JOIN CUS_ACCT ACCT
+		        ON PROJEC.ACCT_ID = ACCT.PID
+		      LEFT JOIN SYS_USER SYS
+		        ON PROJEC.PM_USER_ID = SYS.PID
+		      LEFT JOIN CUS_COM_BASE COMBASE
+		        ON LOAN.PROJECT_ID = PROJEC.PID
+		       AND PROJEC.ACCT_ID = COMBASE.ACCT_ID
+		      LEFT JOIN CUS_PERSON PERSON
+		        ON LOAN.PROJECT_ID = PROJEC.PID
+		       AND PROJEC.ACCT_ID = PERSON.ACCT_ID
+		       LEFT JOIN  BIZ_PRODUCT PDU
+			 ON PROJEC.PRODUCT_ID = PDU.PID
+		     WHERE PROJEC.STATUS = 1
+		       AND LOAN.STATUS = 1
+		       AND ( PROJEC.PROJECT_TYPE = 2 OR  PROJEC.PROJECT_TYPE = 3 OR  PROJEC.PROJECT_TYPE = 4 OR  PROJEC.PROJECT_TYPE = 5 )
+	       	   AND PROJEC.REQUEST_STATUS = 4 
+	       	   AND PROJEC.IS_REJECTED = 0 
+	       	   AND PROJEC.PID NOT IN (
+		       	   	SELECT BPC.PROJECT_ID
+					  FROM BIZ_PROJECT_COMPLETE BPC
+					 WHERE BPC.IS_COMPLETE = 1
+					   AND BPC.STATUS = 1
+					   AND BPC.PROJECT_ID = PROJEC.PID
+	       	   )
+	       	   AND PDU.product_type = 1
+	       	   AND PROJEC.PM_USER_ID IN (
+			        SELECT t.pid FROM SYS_USER t START WITH t.pid = #{pmUserId} 
+			        CONNECT BY t.superior_user_id = PRIOR t.pid
+		  		)
+			<if test="projectNum != null and projectNum != '' ">
+				AND PROJEC.PROJECT_NUMBER like '%${projectNum}%'
+			</if>
+			<if test="projectName != null and projectName != '' ">
+				AND PROJEC.PROJECT_NAME like '%${projectName}%'
+			</if>
+			<!-- <if test="cusName != null and cusName != '' ">
+				AND PERSON.CHINA_NAME like '%${cusName}%'
+			</if>-->
+			<if test="cusName != null and cusName != '' ">
+			AND pkg_common.FUN_GET_ACCT_NAME(PERSON.ACCT_ID) like '%${cusName}%'
+			</if>
+			<if test="cusType != null and cusType != '' ">
+				AND ACCT.CUS_TYPE like '%${cusType}%'
+			</if>
+			<if test="ecoTrade != null and ecoTrade != '' ">
+				AND COMBASE.ECO_TRADE like '%${ecoTrade}%'
+			</if>
+			<if test="requestDttm != null and requestDttm != '' ">
+				AND TO_DATE(TO_CHAR(PROJEC.REQUEST_DTTM,'yyyy-MM-dd'),'yyyy-MM-dd') <![CDATA[>=]]> to_date(#{requestDttm},'yyyy-mm-dd')
+			</if>
+			<if test="requestDttmLast != null and requestDttmLast != '' ">
+				AND TO_DATE(TO_CHAR(PROJEC.REQUEST_DTTM,'yyyy-MM-dd'),'yyyy-MM-dd') <![CDATA[<=]]> to_date(#{requestDttmLast},'yyyy-mm-dd')+1
+			</if>
+			<if test="overdueStartDay != null and overdueStartDay != '' ">
+				AND PKG_COMMON.FUN_GET_LOAN_OVERDUE_DAYS(LOAN.Pid,SYSDATE) <![CDATA[>=]]>#{overdueStartDay}
+			</if>
+			<if test="overdueEndDay != null and overdueEndDay != '' ">
+				AND PKG_COMMON.FUN_GET_LOAN_OVERDUE_DAYS(LOAN.Pid,SYSDATE) <![CDATA[<=]]>#{overdueEndDay}+1
+			</if>
+	
+			<if
+				test="(planRepayDt != null and planRepayDt != '') or  (planRepayDtLast != null and planRepayDtLast != '')">
+				AND LOAN.Pid IN (
+				SELECT LOAN_INFO_ID FROM BIZ_LOAN_REPAYMENT_PLAN r
+				WHERE 1=1
+				<if test="planRepayDt != null and planRepayDt != '' ">
+					AND r.PLAN_REPAY_DT <![CDATA[>=]]>to_date(#{planRepayDt},'yyyy-mm-dd')
+				</if>
+				<if test="planRepayDtLast != null and planRepayDtLast != '' ">
+					AND r.PLAN_REPAY_DT <![CDATA[<=]]>to_date(#{planRepayDtLast},'yyyy-mm-dd')+1
+				</if>
+				)
+			</if>
+			ORDER BY PROJEC.PID DESC 
+		) C WHERE ROWNUM<![CDATA[<=]]>#{page}*#{rows} )
+		WHERE RN>=((#{page}-1)*#{rows})+1
+	</select>
+	
+	<select id="selectLoanExtensionListTotal" resultType="java.lang.Integer"
+		parameterType="com.xlkfinance.bms.rpc.repayment.LoanExtensionDTO">
+		  SELECT COUNT(1) FROM ( 
+		  	SELECT DISTINCT PROJEC.PID AS PROJECT_ID,
+		           PROJEC.PROJECT_NAME,
+		           PROJEC.PROJECT_NUMBER,
+		           SYS.REAL_NAME AS PM_USER_NAME,
+		           CAST(LOAN.CREDIT_AMT AS DECIMAL(18, 2)) AS CREDIT_AMT,
+		           ACCT.CUS_TYPE,
+		           TO_CHAR(LOAN.PLAN_REPAY_LOAN_DT, 'yyyy-MM-dd') AS PLAN_REPAY_LOAN_DT,
+		           TO_CHAR(PROJEC.REQUEST_DTTM, 'yyyy-MM-dd') AS REQUEST_DTTM,
+		           TO_CHAR(LOAN.PLAN_OUT_LOAN_DT, 'yyyy-MM-dd') AS PLAN_OUT_LOAN_DT
+		      FROM BIZ_LOAN LOAN
+		      LEFT JOIN BIZ_PROJECT PROJEC
+		        ON LOAN.PROJECT_ID = PROJEC.PID
+		      LEFT JOIN CUS_ACCT ACCT
+		        ON PROJEC.ACCT_ID = ACCT.PID
+		      LEFT JOIN SYS_USER SYS
+		        ON PROJEC.PM_USER_ID = SYS.PID
+		      LEFT JOIN CUS_COM_BASE COMBASE
+		        ON LOAN.PROJECT_ID = PROJEC.PID
+		       AND PROJEC.ACCT_ID = COMBASE.ACCT_ID
+		      LEFT JOIN CUS_PERSON PERSON
+		        ON LOAN.PROJECT_ID = PROJEC.PID
+		       AND PROJEC.ACCT_ID = PERSON.ACCT_ID
+		       LEFT JOIN  BIZ_PRODUCT PDU
+			 ON PROJEC.PRODUCT_ID = PDU.PID
+		     WHERE PROJEC.STATUS = 1
+		       AND LOAN.STATUS = 1
+		       AND ( PROJEC.PROJECT_TYPE = 2 OR  PROJEC.PROJECT_TYPE = 3 OR  PROJEC.PROJECT_TYPE = 4 OR  PROJEC.PROJECT_TYPE = 5 )
+	       	   AND PROJEC.REQUEST_STATUS = 4 
+	       	   AND PROJEC.IS_REJECTED = 0 
+	       	   AND PROJEC.PID NOT IN (
+		       	   	SELECT BPC.PROJECT_ID
+					  FROM BIZ_PROJECT_COMPLETE BPC
+					 WHERE BPC.IS_COMPLETE = 1
+					   AND BPC.STATUS = 1
+					   AND BPC.PROJECT_ID = PROJEC.PID
+	       	   )
+	       	   AND PDU.PRODUCT_TYPE =1
+	       	   AND PROJEC.PM_USER_ID IN (
+			        SELECT t.pid FROM SYS_USER t START WITH t.pid = #{pmUserId} 
+			        CONNECT BY t.superior_user_id = PRIOR t.pid
+		  		)
+			<if test="projectNum != null and projectNum != '' ">
+				AND PROJEC.PROJECT_NUMBER like '%${projectNum}%'
+			</if>
+			<if test="projectName != null and projectName != '' ">
+				AND PROJEC.PROJECT_NAME like '%${projectName}%'
+			</if>
+			<!-- <if test="cusName != null and cusName != '' ">
+				AND PERSON.CHINA_NAME like '%${cusName}%'
+			</if>-->
+			<if test="cusName != null and cusName != '' ">
+			AND pkg_common.FUN_GET_ACCT_NAME(PERSON.ACCT_ID) like '%${cusName}%'
+			</if>
+			<if test="cusType != null and cusType != '' ">
+				AND ACCT.CUS_TYPE like '%${cusType}%'
+			</if>
+			<if test="ecoTrade != null and ecoTrade != '' ">
+				AND COMBASE.ECO_TRADE like '%${ecoTrade}%'
+			</if>
+			<if test="requestDttm != null and requestDttm != '' ">
+				AND TO_DATE(TO_CHAR(PROJEC.REQUEST_DTTM,'yyyy-MM-dd'),'yyyy-MM-dd') <![CDATA[>=]]> to_date(#{requestDttm},'yyyy-mm-dd')
+			</if>
+			<if test="requestDttmLast != null and requestDttmLast != '' ">
+				AND TO_DATE(TO_CHAR(PROJEC.REQUEST_DTTM,'yyyy-MM-dd'),'yyyy-MM-dd') <![CDATA[<=]]> to_date(#{requestDttmLast},'yyyy-mm-dd')+1
+			</if>
+			<if test="overdueStartDay != null and overdueStartDay != '' ">
+				AND PKG_COMMON.FUN_GET_LOAN_OVERDUE_DAYS(LOAN.Pid,SYSDATE) <![CDATA[>=]]>#{overdueStartDay}
+			</if>
+			<if test="overdueEndDay != null and overdueEndDay != '' ">
+				AND PKG_COMMON.FUN_GET_LOAN_OVERDUE_DAYS(LOAN.Pid,SYSDATE) <![CDATA[<=]]>#{overdueEndDay}+1
+			</if>
+	
+			<if
+				test="(planRepayDt != null and planRepayDt != '') or  (planRepayDtLast != null and planRepayDtLast != '')">
+				AND LOAN.Pid IN (
+				SELECT LOAN_INFO_ID FROM BIZ_LOAN_REPAYMENT_PLAN r
+				WHERE 1=1
+				<if test="planRepayDt != null and planRepayDt != '' ">
+					AND r.PLAN_REPAY_DT <![CDATA[>=]]>to_date(#{planRepayDt},'yyyy-mm-dd')
+				</if>
+				<if test="planRepayDtLast != null and planRepayDtLast != '' ">
+					AND r.PLAN_REPAY_DT <![CDATA[<=]]>to_date(#{planRepayDtLast},'yyyy-mm-dd')+1
+				</if>
+				)
+			</if>
+			)
+	</select>
+
+	<!-- 展期申请列表 -->
+	<select id="selectLoanExtensionBaseList" resultMap="loanExtensionBaseMaps"
+		parameterType="com.xlkfinance.bms.rpc.repayment.LoanExtensionBaseDTO">
+		SELECT * FROM(
+		  SELECT C.*,ROWNUM RN FROM (
+			SELECT DISTINCT EXTEN.PID ,
+				   EXTEN.EXTENSION_PROJECT_ID,
+				   PROJEC.PID AS PROJECT_ID,
+			       PROJEC.ACCT_ID,
+			       PROJEC.PROJECT_NAME,
+			       PROJEC.PROJECT_NUMBER,
+			       PROJEC.REQUEST_STATUS,
+			       CASE
+			         WHEN PROJEC.REQUEST_STATUS = 1 AND PROJEC.IS_REJECTED = 0 THEN
+			          '申请中'
+			         WHEN PROJEC.REQUEST_STATUS = 2 AND PROJEC.IS_REJECTED = 0 THEN
+			          '审核中'
+			         WHEN PROJEC.REQUEST_STATUS = 3 AND PROJEC.IS_REJECTED = 0  THEN
+			          '已放款'
+			         WHEN PROJEC.REQUEST_STATUS = 4 AND PROJEC.IS_REJECTED = 0  THEN
+			          '已归档'
+			         WHEN PROJEC.IS_REJECTED = 1 THEN
+			          '已否决'
+			       END REQUEST_STATUS_VAL,
+			       TO_CHAR(PROJEC.REQUEST_DTTM, 'yyyy-MM-dd') AS REQUEST_DTTM,
+			       SYS.REAL_NAME AS PM_USER_NAME,
+			       CAST(LOAN.CREDIT_AMT AS DECIMAL(18, 2)) AS CREDIT_AMT,
+			       ACCT.CUS_TYPE,
+			       TO_CHAR(LOAN.PLAN_REPAY_LOAN_DT, 'yyyy-MM-dd') AS PLAN_REPAY_LOAN_DT,
+			       TO_CHAR(LOAN.PLAN_OUT_LOAN_DT, 'yyyy-MM-dd') AS PLAN_OUT_LOAN_DT
+			  FROM BIZ_PROJECT_EXTENSION EXTEN
+			  LEFT JOIN BIZ_PROJECT PROJEC
+			    ON EXTEN.PROJECT_ID = PROJEC.PID
+			  LEFT JOIN BIZ_LOAN LOAN
+			    ON EXTEN.PROJECT_ID = LOAN.PROJECT_ID
+			   AND LOAN.STATUS = 1
+			  LEFT JOIN CUS_ACCT ACCT
+			    ON PROJEC.ACCT_ID = ACCT.PID
+			   AND ACCT.STATUS = 1
+			  LEFT JOIN SYS_USER SYS
+			    ON PROJEC.PM_USER_ID = SYS.PID
+			   AND SYS.STATUS = 1
+			  LEFT JOIN CUS_COM_BASE COMBASE
+			    ON PROJEC.ACCT_ID = COMBASE.ACCT_ID
+			   AND COMBASE.STATUS = 1
+			  LEFT JOIN CUS_PERSON PERSON
+			    ON PROJEC.ACCT_ID = PERSON.ACCT_ID
+			   AND PERSON.STATUS = 1
+			LEFT JOIN  BIZ_PRODUCT PDU
+			 ON PROJEC.PRODUCT_ID = PDU.PID
+			 WHERE PROJEC.STATUS = 1
+			   AND EXTEN.STATUS = 1
+			   AND PROJEC.PROJECT_TYPE = 4
+			   AND PROJEC.PM_USER_ID IN (
+			        SELECT t.pid FROM SYS_USER t START WITH t.pid = #{pmUserId} 
+			        CONNECT BY t.superior_user_id = PRIOR t.pid
+		  		)
+		  		AND PDU.PRODUCT_TYPE = 1
+			<if test="projectNum != null and projectNum != '' ">
+				AND PROJEC.PROJECT_NUMBER like '%${projectNum}%'
+			</if>
+			<if test="projectName != null and projectName != '' ">
+				AND PROJEC.PROJECT_NAME like '%${projectName}%'
+			</if>
+			<!--  <if test="cusName != null and cusName != '' ">
+				AND PERSON.CHINA_NAME like '%${cusName}%'
+			</if>-->
+			<if test="cusName != null and cusName != '' ">
+			AND pkg_common.FUN_GET_ACCT_NAME(PERSON.ACCT_ID) like '%${cusName}%'
+			</if>
+			<if test="cusType != null and cusType != 0 ">
+				AND ACCT.CUS_TYPE = #{cusType}
+			</if>
+			<if test="ecoTrade != null and ecoTrade != 0 ">
+				AND COMBASE.ECO_TRADE  = #{ecoTrade}
+			</if>
+			<if test="requestStatus != null and requestStatus != -1 and requestStatus != 0">
+				<choose>
+					<when test="requestStatus == 7">
+						AND PROJEC.IS_REJECTED = 1
+					</when>
+					<otherwise>
+						AND PROJEC.REQUEST_STATUS = #{requestStatus} 
+						AND PROJEC.IS_REJECTED =0
+					</otherwise>
+				</choose>
+		   </if>
+		   <if test="requestDttm != null and requestDttm != '' ">
+				AND TO_DATE(TO_CHAR(PROJEC.REQUEST_DTTM,'yyyy-MM-dd'),'yyyy-MM-dd') <![CDATA[>=]]> to_date(#{requestDttm},'yyyy-mm-dd')
+		   </if>
+			<if test="requestDttmLast != null and requestDttmLast != '' ">
+				AND TO_DATE(TO_CHAR(PROJEC.REQUEST_DTTM,'yyyy-MM-dd'),'yyyy-MM-dd') <![CDATA[<=]]> to_date(#{requestDttmLast},'yyyy-mm-dd')+1
+			</if>
+			ORDER BY EXTEN.PID DESC
+		) C WHERE ROWNUM<![CDATA[<=]]>#{page}*#{rows} )
+		WHERE RN>=((#{page}-1)*#{rows})+1
+	</select>
+	
+	<select id="selectLoanExtensionBaseListTotal" resultType="java.lang.Integer"
+		parameterType="com.xlkfinance.bms.rpc.repayment.LoanExtensionBaseDTO">
+			SELECT COUNT(1) 
+			  FROM (SELECT DISTINCT EXTEN.PID,
+			                        EXTEN.EXTENSION_PROJECT_ID,
+			                        PROJEC.PID AS PROJECT_ID,
+			                        PROJEC.ACCT_ID,
+			                        PROJEC.PROJECT_NAME,
+			                        PROJEC.PROJECT_NUMBER,
+			                        PROJEC.REQUEST_STATUS,
+			                        CASE
+							         WHEN PROJEC.REQUEST_STATUS = 1 AND PROJEC.IS_REJECTED = 0 THEN
+							          '申请中'
+							         WHEN PROJEC.REQUEST_STATUS = 2 AND PROJEC.IS_REJECTED = 0 THEN
+							          '审核中'
+							         WHEN PROJEC.REQUEST_STATUS = 3 AND PROJEC.IS_REJECTED = 0  THEN
+							          '已放款'
+							         WHEN PROJEC.REQUEST_STATUS = 4 AND PROJEC.IS_REJECTED = 0  THEN
+							          '已归档'
+							         WHEN PROJEC.IS_REJECTED = 1 THEN
+							          '已否决'
+							       END REQUEST_STATUS_VAL,
+			                        TO_CHAR(PROJEC.REQUEST_DTTM, 'yyyy-MM-dd') AS REQUEST_DTTM,
+			                        SYS.REAL_NAME AS PM_USER_NAME,
+			                        CAST(LOAN.CREDIT_AMT AS DECIMAL(18, 2)) AS CREDIT_AMT,
+			                        ACCT.CUS_TYPE,
+			                        TO_CHAR(LOAN.PLAN_REPAY_LOAN_DT, 'yyyy-MM-dd') AS PLAN_REPAY_LOAN_DT,
+			                        TO_CHAR(LOAN.PLAN_OUT_LOAN_DT, 'yyyy-MM-dd') AS PLAN_OUT_LOAN_DT
+			          FROM BIZ_PROJECT_EXTENSION EXTEN
+			          LEFT JOIN BIZ_PROJECT PROJEC
+			            ON EXTEN.PROJECT_ID = PROJEC.PID
+			          LEFT JOIN BIZ_LOAN LOAN
+			            ON EXTEN.PROJECT_ID = LOAN.PROJECT_ID
+			           AND LOAN.STATUS = 1
+			          LEFT JOIN CUS_ACCT ACCT
+			            ON PROJEC.ACCT_ID = ACCT.PID
+			           AND ACCT.STATUS = 1
+			          LEFT JOIN SYS_USER SYS
+			            ON PROJEC.PM_USER_ID = SYS.PID
+			           AND SYS.STATUS = 1
+			          LEFT JOIN CUS_COM_BASE COMBASE
+			            ON PROJEC.ACCT_ID = COMBASE.ACCT_ID
+			           AND COMBASE.STATUS = 1
+			          LEFT JOIN CUS_PERSON PERSON
+			            ON PROJEC.ACCT_ID = PERSON.ACCT_ID
+			           AND PERSON.STATUS = 1
+			        LEFT JOIN  BIZ_PRODUCT PDU
+			 		ON PROJEC.PRODUCT_ID = PDU.PID
+			         WHERE PROJEC.STATUS = 1
+			           AND EXTEN.STATUS = 1
+			           AND PROJEC.PROJECT_TYPE = 4
+					   AND PROJEC.PM_USER_ID IN (
+					        SELECT t.pid FROM SYS_USER t START WITH t.pid = #{pmUserId} 
+					        CONNECT BY t.superior_user_id = PRIOR t.pid
+				  	   )
+				  	   AND PDU.PRODUCT_TYPE = 1
+				<if test="projectNum != null and projectNum != '' ">
+					AND PROJEC.PROJECT_NUMBER like '%${projectNum}%'
+				</if>
+				<if test="projectName != null and projectName != '' ">
+					AND PROJEC.PROJECT_NAME like '%${projectName}%'
+				</if>
+				
+				<!-- <if test="cusName != null and cusName != '' ">
+				AND PERSON.CHINA_NAME like '%${cusName}%'
+			</if>-->
+			<if test="cusName != null and cusName != '' ">
+			AND pkg_common.FUN_GET_ACCT_NAME(PERSON.ACCT_ID) like '%${cusName}%'
+			</if>
+				<if test="cusType != null and cusType != 0 ">
+					AND ACCT.CUS_TYPE = #{cusType}
+				</if>
+				<if test="ecoTrade != null and ecoTrade != 0 ">
+					AND COMBASE.ECO_TRADE  = #{ecoTrade}
+				</if>
+				<if test="requestStatus != null and requestStatus != -1 and requestStatus != 0">
+					<choose>
+						<when test="requestStatus == 7">
+							AND PROJEC.IS_REJECTED = 1
+						</when>
+						<otherwise>
+							AND PROJEC.REQUEST_STATUS = #{requestStatus} 
+							AND PROJEC.IS_REJECTED =0
+						</otherwise>
+					</choose>
+			   </if>
+			   <if test="requestDttm != null and requestDttm != '' ">
+					AND TO_DATE(TO_CHAR(PROJEC.REQUEST_DTTM,'yyyy-MM-dd'),'yyyy-MM-dd') <![CDATA[>=]]> to_date(#{requestDttm},'yyyy-mm-dd')
+			   </if>
+				<if test="requestDttmLast != null and requestDttmLast != '' ">
+					AND TO_DATE(TO_CHAR(PROJEC.REQUEST_DTTM,'yyyy-MM-dd'),'yyyy-MM-dd') <![CDATA[<=]]> to_date(#{requestDttmLast},'yyyy-mm-dd')+1
+				</if>
+			)
+	</select>
+	
+	<select id="getRepayNoReconciliationList" resultMap="noReconciliationMaps"
+		parameterType="com.xlkfinance.bms.rpc.repayment.RepayNoReconciliationDTO">
+		
+		SELECT DISTINCT PLAN_CYCLE_NUM AS EXTENSION_NUM,
+		                PLAN_CYCLE_NUM || '期本金' AS EXTENSION_NUM_NAME,
+		                NO_RECONCILIATION_AMT
+		  FROM (SELECT REPAY.PLAN_CYCLE_NUM,
+		               PKG_REPAYMENT.FUN_GET_NO_RECONCILIATION_AMT(REPAY.LOAN_INFO_ID,
+		                                                           REPAY.PLAN_CYCLE_NUM,
+		                                                           REPAY.SHOULD_PRINCIPAL) AS NO_RECONCILIATION_AMT
+		          FROM BIZ_LOAN_REPAYMENT_PLAN REPAY
+		         WHERE REPAY.LOAN_INFO_ID =
+		               (SELECT PID
+		                  FROM BIZ_LOAN LOAN
+		                 WHERE LOAN.PROJECT_ID = #{projectId}
+		                   AND LOAN.STATUS = 1)
+		           AND REPAY.PLAN_CYCLE_NUM NOT IN
+		               (SELECT EXTEN.SELECT_CYCLE_NUM
+		                  FROM BIZ_PROJECT_EXTENSION EXTEN, BIZ_PROJECT PROJEC
+		                 WHERE EXTEN.PROJECT_ID = PROJEC.PID
+		                   AND PROJEC.STATUS = 1
+		                   AND PROJEC.IS_REJECTED = 0
+		                   AND EXTEN.EXTENSION_PROJECT_ID = #{projectId}
+		                   AND EXTEN.STATUS = 1)
+		           AND REPAY.PLAN_VERSION = PKG_FINANCE.FUN_MAX_FREEZE_VERSION(REPAY.LOAN_INFO_ID)
+		           AND REPAY.STATUS = 1
+		           AND (REPAY.IS_RECONCILIATION = 2 OR REPAY.IS_RECONCILIATION = 3)
+		           AND REPAY.FREEZE_STATUS = 1)
+		 WHERE NO_RECONCILIATION_AMT > 0
+		 ORDER BY EXTENSION_NUM ASC
+		 
+		<if test="planCycleNum != null and planCycleNum != '' ">
+			AND PLAN_CYCLE_NUM = #{planCycleNum}
+		</if>
+		
+	</select>
+	
+	<!-- 查询展期文件信息 -->
+	<select id="getExtensionFileList" resultMap="getExtensionFileMaps"
+		parameterType="com.xlkfinance.bms.rpc.repayment.LoanExtensionFileDTO">
+		SELECT * FROM(
+		  SELECT C.*,ROWNUM RN FROM (
+			SELECT F.FILE_NAME,
+			       F.FILE_TYPE,
+			       F.FILE_SIZE,
+			       TO_CHAR(F.UPLOAD_DTTM,'yyyy-MM-dd') as UPLOAD_DTTM,
+			       E.FILE_DESC,
+			       E.FILE_CATEGORY,
+			       (SELECT LOOKUP_VAL FROM SYS_LOOKUP_VAL  WHERE PID = E.FILE_CATEGORY) AS FILE_CATEGORY_NAME,
+			       F.FILE_URL,
+			       F.PID         AS FILE_ID,
+			       E.PID
+			  FROM BIZ_PROJECT_EXTENSION_FILE E, BIZ_FILE F
+			 WHERE E.FILE_ID = F.PID
+			   AND E.STATUS = 1
+			   AND F.STATUS = 1
+			   AND E.EXTENSION_ID = #{extensionId}
+			   ORDER BY F.PID 
+			) C WHERE ROWNUM<![CDATA[<=]]>#{page}*#{rows} )
+		WHERE RN>=((#{page}-1)*#{rows})+1
+	</select>
+	
+	<select id="getExtensionFileListTotal" resultType="java.lang.Integer"
+		parameterType="com.xlkfinance.bms.rpc.repayment.LoanExtensionFileDTO">
+		SELECT COUNT(1) FROM (
+			SELECT F.FILE_NAME,
+			       F.FILE_TYPE,
+			       F.FILE_SIZE,
+			       TO_CHAR(F.UPLOAD_DTTM,'yyyy-MM-dd') as UPLOAD_DTTM,
+			       E.FILE_DESC,
+			       (SELECT LOOKUP_VAL FROM SYS_LOOKUP_VAL  WHERE PID = E.FILE_CATEGORY) AS FILE_CATEGORY,
+			       F.FILE_URL,
+			       F.PID         AS FILE_ID,
+			       E.PID
+			  FROM BIZ_PROJECT_EXTENSION_FILE E, BIZ_FILE F
+			 WHERE E.FILE_ID = F.PID
+			   AND E.STATUS = 1
+			   AND F.STATUS = 1
+			   AND E.EXTENSION_ID = #{extensionId}
+		)
+	</select>
+	
+	<!-- 新增展期文件  -->
+	<insert id="insertFile" parameterType="com.xlkfinance.bms.rpc.repayment.LoanExtensionFileDTO">
+		<!-- 获取序列号 -->
+		<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+			SELECT SEQ_BIZ_PROJECT_EXTENSION.Nextval as pid from DUAL
+		</selectKey>
+		
+		INSERT INTO BIZ_PROJECT_EXTENSION_FILE
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			PID,STATUS,
+			<if test="extensionId != null and extensionId != -1 ">
+				EXTENSION_ID,
+			</if>
+			<if test="fileId != null and fileId != -1 ">
+				FILE_ID,
+			</if>
+			<if test="fileDesc != null and fileDesc != '' ">
+				FILE_DESC,
+			</if>
+			<if test="fileCategory != null and fileCategory != '' ">
+				FILE_CATEGORY
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+				#{pid},1,
+			<if test="extensionId != null and extensionId != -1 ">
+				#{extensionId},
+			</if>
+			<if test="fileId != null and fileId != -1 ">
+				#{fileId},
+			</if>
+			<if test="fileDesc != null and fileDesc != '' ">
+				#{fileDesc},
+			</if>
+			<if test="fileCategory != null and fileCategory != '' ">
+				#{fileCategory}
+			</if>
+		</trim>
+	</insert>
+	
+	<!-- 修改展期文件 -->
+	<update id="updateFile" parameterType="com.xlkfinance.bms.rpc.repayment.LoanExtensionFileDTO">
+       UPDATE BIZ_PROJECT_EXTENSION_FILE B
+   			SET 
+   			<trim prefix=" " suffix=" " suffixOverrides=",">
+	   			<if test="fileDesc != null and fileDesc != '' ">
+					FILE_DESC = #{fileDesc},
+				</if>
+	   			<if test="fileCategory != null and fileCategory != '' ">
+					FILE_CATEGORY = #{fileCategory},
+				</if>
+			</trim>
+			WHERE PID = #{pid}
+	</update>
+	
+	<!-- 删除展期文件-->
+	<update id="batchDeleteFile" parameterType="java.lang.String">
+        UPDATE BIZ_PROJECT_EXTENSION_FILE SET
+       	STATUS = 0 
+        WHERE PID in 
+        <foreach item="idItem" collection="array" open="(" separator="," close=")">
+			#{idItem}
+		</foreach>
+	</update>
+	
+	<!-- 根据展期项目ID查询 展期目标历史项目ID -->
+	<select id="getHisProjectIds" resultType="java.lang.String"
+		parameterType="java.lang.Integer">
+		SELECT pkg_repayment.fun_get_extension_id( #{projectId} ) FROM dual 
+	</select>
+	
+	<select id="getCycNumByProjectId" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+		SELECT EXTEN.SELECT_CYCLE_NUM
+		  FROM BIZ_PROJECT_EXTENSION EXTEN
+	  	 WHERE EXTEN.STATUS = 1
+	       AND EXTEN.Project_Id = #{project}
+	</select>
+	
+	<!-- 赎楼可展期项目查询 -->
+	<select id="selectForeLoanExtensionList" resultMap="loanExtensionMaps"
+		parameterType="com.xlkfinance.bms.rpc.repayment.LoanExtensionDTO">
+	SELECT * FROM(
+			SELECT C.*,ROWNUM RN FROM (	
+			SELECT PROJEC.PID AS PROJECT_ID,PROJEC.PROJECT_NAME,SYS.REAL_NAME AS PM_USER_NAME,
+			PROJEC.PROJECT_NUMBER,CAST(G.LOAN_MONEY AS DECIMAL(18, 2)) AS CREDIT_AMT,
+			TO_CHAR(PROJEC.REQUEST_DTTM,'YYYY-MM-DD') AS REQUEST_DTTM ,
+			TO_CHAR(F.RECE_DATE,'YYYY-MM-DD') AS PLAN_OUT_LOAN_DT,
+			TO_CHAR(F.PAYMENT_DATE,'YYYY-MM-DD') AS PLAN_REPAY_LOAN_DT,PROJEC.PROJECT_TYPE
+			 FROM BIZ_PROJECT PROJEC 
+			 LEFT JOIN  BIZ_PRODUCT PDU
+			 ON PROJEC.PRODUCT_ID = PDU.PID
+			 LEFT JOIN SYS_USER SYS
+			 ON PROJEC.PM_USER_ID = SYS.PID
+			 LEFT JOIN BIZ_PROJECT_GUARANTEE G
+			 ON PROJEC.PID = G.PROJECT_ID
+			 LEFT JOIN BIZ_PROJECT_FORECLOSURE F
+			 ON PROJEC.PID = F.PROJECT_ID
+			 LEFT JOIN BIZ_LOAN_REPAYMENT LR
+       		 ON PROJEC.PID = LR.PROJECT_ID
+			 WHERE PROJEC.STATUS = 1
+		       AND PROJEC.PROJECT_TYPE IN (2,3,4,5,6)
+	       	   AND PROJEC.FORECLOSURE_STATUS IN (11,12)
+	       	   AND PROJEC.IS_REJECTED = 0 
+             AND PROJEC.IS_CHECHAN = 0
+             AND (LR.STATUS IS NULL OR LR.STATUS =1)
+	       	   AND PROJEC.PID NOT IN (
+		       	   	SELECT BPC.PROJECT_ID
+					  FROM BIZ_PROJECT_COMPLETE BPC
+					 WHERE BPC.IS_COMPLETE = 1
+					   AND BPC.STATUS = 1
+					   AND BPC.PROJECT_ID = PROJEC.PID
+	       	   )
+             AND PDU.PRODUCT_TYPE = 2
+             <if test="projectNum != null and projectNum != '' ">
+				AND PROJEC.PROJECT_NUMBER like '%${projectNum}%'
+			</if>
+			<if test="projectName != null and projectName != '' ">
+				AND PROJEC.PROJECT_NAME like '%${projectName}%'
+			</if>
+			<if test="requestDttm != null and requestDttm != '' ">
+				AND TO_DATE(TO_CHAR(PROJEC.REQUEST_DTTM,'yyyy-MM-dd'),'yyyy-MM-dd') <![CDATA[>=]]> to_date(#{requestDttm},'yyyy-mm-dd')
+			</if>
+			<if test="requestDttmLast != null and requestDttmLast != '' ">
+				AND TO_DATE(TO_CHAR(PROJEC.REQUEST_DTTM,'yyyy-MM-dd'),'yyyy-MM-dd') <![CDATA[<=]]> to_date(#{requestDttmLast},'yyyy-mm-dd')+1
+			</if>
+			<!-- 数据权限 -->
+			<if test="userIds!=null and userIds.size()>0">
+				AND	PROJEC.PM_USER_ID IN
+			<foreach item="itemId" collection="userIds" open="(" separator="," close=")">
+			          #{itemId}
+			</foreach>
+			</if>
+             ORDER BY PROJEC.PID DESC 
+		) C WHERE ROWNUM<![CDATA[<=]]>#{page}*#{rows} )
+		WHERE RN>=((#{page}-1)*#{rows})+1
+	</select>
+	
+	<select id="selectForeLoanExtensionListTotal" resultType="java.lang.Integer"
+		parameterType="com.xlkfinance.bms.rpc.repayment.LoanExtensionDTO">
+			SELECT count(1) FROM (	
+			SELECT PROJEC.PID AS PROJECT_ID,PROJEC.PROJECT_NAME,SYS.REAL_NAME AS PM_USER_NAME,
+			PROJEC.PROJECT_NUMBER,CAST(G.LOAN_MONEY AS DECIMAL(18, 2)) AS CREDIT_AMT,
+			TO_CHAR(PROJEC.REQUEST_DTTM,'YYYY-MM-DD') AS REQUEST_DTTM ,
+			TO_CHAR(F.RECE_DATE,'YYYY-MM-DD') AS PLAN_OUT_LOAN_DT,
+			TO_CHAR(F.PAYMENT_DATE,'YYYY-MM-DD') AS PLAN_REPAY_LOAN_DT,PROJEC.PROJECT_TYPE
+			 FROM BIZ_PROJECT PROJEC 
+			 LEFT JOIN  BIZ_PRODUCT PDU
+			 ON PROJEC.PRODUCT_ID = PDU.PID
+			 LEFT JOIN SYS_USER SYS
+			 ON PROJEC.PM_USER_ID = SYS.PID
+			 LEFT JOIN BIZ_PROJECT_GUARANTEE G
+			 ON PROJEC.PID = G.PROJECT_ID
+			 LEFT JOIN BIZ_PROJECT_FORECLOSURE F
+			 ON PROJEC.PID = F.PROJECT_ID
+			 LEFT JOIN BIZ_LOAN_REPAYMENT LR
+       		 ON PROJEC.PID = LR.PROJECT_ID
+			 WHERE PROJEC.STATUS = 1
+		       AND PROJEC.PROJECT_TYPE IN (2,3,4,5,6)
+	       	   AND PROJEC.FORECLOSURE_STATUS IN (11,12)
+	       	   AND PROJEC.IS_REJECTED = 0 
+             AND PROJEC.IS_CHECHAN = 0
+             AND (LR.STATUS IS NULL OR LR.STATUS =1)
+	       	   AND PROJEC.PID NOT IN (
+		       	   	SELECT BPC.PROJECT_ID
+					  FROM BIZ_PROJECT_COMPLETE BPC
+					 WHERE BPC.IS_COMPLETE = 1
+					   AND BPC.STATUS = 1
+					   AND BPC.PROJECT_ID = PROJEC.PID
+	       	   )
+             AND PDU.PRODUCT_TYPE = 2
+             <if test="projectNum != null and projectNum != '' ">
+				AND PROJEC.PROJECT_NUMBER like '%${projectNum}%'
+			</if>
+			<if test="projectName != null and projectName != '' ">
+				AND PROJEC.PROJECT_NAME like '%${projectName}%'
+			</if>
+			<if test="requestDttm != null and requestDttm != '' ">
+				AND TO_DATE(TO_CHAR(PROJEC.REQUEST_DTTM,'yyyy-MM-dd'),'yyyy-MM-dd') <![CDATA[>=]]> to_date(#{requestDttm},'yyyy-mm-dd')
+			</if>
+			<if test="requestDttmLast != null and requestDttmLast != '' ">
+				AND TO_DATE(TO_CHAR(PROJEC.REQUEST_DTTM,'yyyy-MM-dd'),'yyyy-MM-dd') <![CDATA[<=]]> to_date(#{requestDttmLast},'yyyy-mm-dd')+1
+			</if>
+			<!-- 数据权限 -->
+			<if test="userIds!=null and userIds.size()>0">
+				AND	PROJEC.PM_USER_ID IN
+			<foreach item="itemId" collection="userIds" open="(" separator="," close=")">
+			          #{itemId}
+			</foreach>
+			</if>
+			)
+	</select>
+	
+	<!-- 展期申请列表 -->
+	<select id="selectForeLoanExtensionBaseList" resultMap="loanExtensionBaseMaps"
+		parameterType="com.xlkfinance.bms.rpc.repayment.LoanExtensionBaseDTO">
+		SELECT * FROM(
+		  SELECT C.*,ROWNUM RN FROM (
+			SELECT EXTEN.PID, PROJEC.pid AS PROJECT_ID,PROJEC.PROJECT_NAME,
+			SYS.REAL_NAME AS PM_USER_NAME,PROJEC.ACCT_ID,PROJEC.PROJECT_NUMBER,
+			CAST(G.LOAN_MONEY AS DECIMAL(18, 2)) AS CREDIT_AMT,
+			TO_CHAR(PROJEC.REQUEST_DTTM,'yyyy-mm-dd') AS REQUEST_DTTM ,
+			TO_CHAR(F.PAYMENT_DATE,'yyyy-mm-dd') AS PLAN_OUT_LOAN_DT,
+			TO_CHAR(EXTEN.EXTENSION_DATE,'yyyy-mm-dd') AS PLAN_REPAY_LOAN_DT,
+			PROJEC.FORECLOSURE_STATUS AS REQUEST_STATUS,EXTEN.EXTENSION_PROJECT_ID,
+			 EXTEN.EXTENSION_FEE,TO_CHAR(EXTEN.EXTENSION_DATE,'yyyy-mm-dd') AS EXTENSION_DATE,
+			 PROJEC.PROJECT_SOURCE AS CUS_TYPE,
+			 EXTEN.EXTENSION_DAYS AS EXTENSION_DAYS,
+			 PROJEC.PM_USER_ID,
+			 (SELECT A.REC_MONEY
+			  FROM BIZ_LOAN_APPLY_FINANCE_HANDLE A
+			 INNER JOIN BIZ_LOAN_FINANCE_HANDLE B
+			    ON A.FINANCE_HANDLE_ID = B.PID
+			 WHERE B.PROJECT_ID = EXTEN.PROJECT_ID
+			   AND A.REC_PRO = 8)AS CHARGE_AMOUNT
+			 
+			 FROM BIZ_PROJECT_EXTENSION EXTEN
+			  LEFT JOIN BIZ_PROJECT PROJEC
+			    ON EXTEN.PROJECT_ID = PROJEC.PID
+				 LEFT JOIN  BIZ_PRODUCT PDU
+				 ON PROJEC.PRODUCT_ID = PDU.PID
+				 LEFT JOIN SYS_USER SYS
+				 ON PROJEC.PM_USER_ID = SYS.PID
+				 LEFT JOIN BIZ_PROJECT_GUARANTEE G
+				 ON PROJEC.PID = G.PROJECT_ID
+				 LEFT JOIN BIZ_PROJECT_FORECLOSURE F
+				 ON PROJEC.PID = F.PROJECT_ID
+				 WHERE PROJEC.STATUS = 1
+           AND   PROJEC.PROJECT_TYPE = 4
+              AND PROJEC.IS_REJECTED = 0 
+             AND PROJEC.IS_CHECHAN = 0
+              AND PROJEC.PID NOT IN (
+                  SELECT BPC.PROJECT_ID
+            FROM BIZ_PROJECT_COMPLETE BPC
+           WHERE BPC.IS_COMPLETE = 1
+             AND BPC.STATUS = 1
+             AND BPC.PROJECT_ID = PROJEC.PID
+              )
+             AND PDU.PRODUCT_TYPE = 2
+			<if test="projectNum != null and projectNum != '' ">
+				AND PROJEC.PROJECT_NUMBER LIKE '%${projectNum}%'
+			</if>
+			<if test="projectName != null and projectName != '' ">
+				AND PROJEC.PROJECT_NAME LIKE '%${projectName}%'
+			</if>
+			<if test="requestDttm != null and requestDttm != '' ">
+				AND TO_DATE(TO_CHAR(PROJEC.REQUEST_DTTM,'yyyy-MM-dd'),'yyyy-MM-dd') <![CDATA[>=]]> to_date(#{requestDttm},'yyyy-mm-dd')
+			</if>
+			<if test="requestDttmLast != null and requestDttmLast != '' ">
+				AND TO_DATE(TO_CHAR(PROJEC.REQUEST_DTTM,'yyyy-MM-dd'),'yyyy-MM-dd') <![CDATA[<=]]> to_date(#{requestDttmLast},'yyyy-mm-dd')+1
+			</if>
+			<if test="requestStatus != null and requestStatus != -1 and requestStatus != 0">
+				AND PROJEC.FORECLOSURE_STATUS = #{requestStatus} 
+			 </if>
+			<!-- 数据权限 -->
+			<if test="userIds!=null and userIds.size()>0">
+				AND	PROJEC.PM_USER_ID IN
+			<foreach item="itemId" collection="userIds" open="(" separator="," close=")">
+			          #{itemId}
+			</foreach>
+			</if>
+			ORDER BY EXTEN.PID DESC
+		) C WHERE ROWNUM<![CDATA[<=]]>#{page}*#{rows} )
+		WHERE RN>=((#{page}-1)*#{rows})+1
+	</select>
+	
+	<select id="selectForeLoanExtensionBaseListTotal" resultType="java.lang.Integer"
+		parameterType="com.xlkfinance.bms.rpc.repayment.LoanExtensionBaseDTO">
+			SELECT COUNT(1) 
+			  FROM (SELECT EXTEN.PID, PROJEC.pid AS PROJECT_ID,PROJEC.PROJECT_NAME,
+			  SYS.REAL_NAME AS PM_USER_NAME,PROJEC.ACCT_ID,PROJEC.PROJECT_NUMBER,
+			CAST(G.LOAN_MONEY AS DECIMAL(18, 2)) AS CREDIT_AMT,
+			to_char(PROJEC.REQUEST_DTTM,'yyyy-mm-dd') AS REQUEST_DTTM ,
+			to_char(F.RECE_DATE,'yyyy-mm-dd') AS PLAN_REPAY_LOAN_DT,
+			to_char(F.PAYMENT_DATE,'yyyy-mm-dd') AS PLAN_OUT_LOAN_DT,
+			PROJEC.FORECLOSURE_STATUS AS REQUEST_STATUS,EXTEN.EXTENSION_PROJECT_ID,
+			 EXTEN.EXTENSION_FEE,to_char(EXTEN.EXTENSION_DATE,'yyyy-mm-dd') AS EXTENSION_DATE
+			 from BIZ_PROJECT_EXTENSION EXTEN
+			  LEFT JOIN BIZ_PROJECT PROJEC
+			    ON EXTEN.PROJECT_ID = PROJEC.PID
+			 LEFT JOIN  BIZ_PRODUCT PDU
+			 ON PROJEC.PRODUCT_ID = PDU.PID
+			 LEFT JOIN SYS_USER SYS
+			 ON PROJEC.PM_USER_ID = SYS.PID
+			 LEFT JOIN BIZ_PROJECT_GUARANTEE G
+			 ON PROJEC.PID = G.PROJECT_ID
+			 LEFT JOIN BIZ_PROJECT_FORECLOSURE F
+			 ON PROJEC.PID = F.PROJECT_ID
+			 WHERE PROJEC.STATUS = 1
+           AND   PROJEC.PROJECT_TYPE = 4
+              AND PROJEC.IS_REJECTED = 0 
+             AND PROJEC.IS_CHECHAN = 0
+              AND PROJEC.PID NOT IN (
+                  SELECT BPC.PROJECT_ID
+            FROM BIZ_PROJECT_COMPLETE BPC
+           WHERE BPC.IS_COMPLETE = 1
+             AND BPC.STATUS = 1
+             AND BPC.PROJECT_ID = PROJEC.PID
+              )
+             AND PDU.PRODUCT_TYPE = 2
+			<if test="projectNum != null and projectNum != '' ">
+				AND PROJEC.PROJECT_NUMBER like '%${projectNum}%'
+			</if>
+			<if test="projectName != null and projectName != '' ">
+				AND PROJEC.PROJECT_NAME like '%${projectName}%'
+			</if>
+			<if test="requestDttm != null and requestDttm != '' ">
+				AND TO_DATE(TO_CHAR(PROJEC.REQUEST_DTTM,'yyyy-MM-dd'),'yyyy-MM-dd') <![CDATA[>=]]> to_date(#{requestDttm},'yyyy-mm-dd')
+			</if>
+			<if test="requestDttmLast != null and requestDttmLast != '' ">
+				AND TO_DATE(TO_CHAR(PROJEC.REQUEST_DTTM,'yyyy-MM-dd'),'yyyy-MM-dd') <![CDATA[<=]]> to_date(#{requestDttmLast},'yyyy-mm-dd')+1
+			</if>
+			<if test="requestStatus != null and requestStatus != -1 and requestStatus != 0">
+				AND PROJEC.FORECLOSURE_STATUS = #{requestStatus} 
+			 </if>
+			<!-- 数据权限 -->
+			<if test="userIds!=null and userIds.size()>0">
+				AND	PROJEC.PM_USER_ID in
+			<foreach item="itemId" collection="userIds" open="(" separator="," close=")">
+			          #{itemId}
+			</foreach>
+			</if>
+			)
+	</select>
+	
+	<!-- 根据客户ID查询当前客户是否存在正在进行的展期申请 -->
+	<select id="getCountForeExtensionByAcctId"  resultType="java.lang.Integer" parameterType="java.lang.Integer">
+		SELECT COUNT(*) 
+		FROM BIZ_PROJECT p
+		WHERE P.ACCT_ID = #{acctId}
+		AND P.IS_REJECTED = 0
+		AND P.PROJECT_TYPE = 4
+		AND P.FORECLOSURE_STATUS IN(1,2,3,4,5,6,7,8,9,14,10)
+		AND P.STATUS = 1
+		AND P.IS_CHECHAN = 0
+	</select>
+	<!-- 根据项目ID判断当前该项目的展期次数 -->
+	<select id="getForeExtensionByPid" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+		SELECT COUNT(*) FROM BIZ_PROJECT PRO,BIZ_PROJECT_EXTENSION EXTEN
+		WHERE EXTEN.PROJECT_ID = PRO.PID
+        AND PRO.STATUS = 1 
+		  	AND Pro.FORECLOSURE_STATUS IN(1,2,3,4,5,6,7,8,9,14,10)
+		  	AND EXTEN.STATUS = 1
+		    AND EXTEN.EXTENSION_PROJECT_ID =#{projectId}
+	</select>
+</mapper>

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.xlkfinance.bms.server.inloan.mapper.BizDynamicEvaluateMapper">
+	<resultMap id="bizDynamicEvaluateInfoMap"
+		type="com.xlkfinance.bms.rpc.inloan.BizDynamicEvaluateInfo">
+		<id property="pid" column="PID" />
+		<id property="projectId" column="PROJECT_ID" />
+		<id property="bizMangerId" column="BIZ_MANGER_ID" />
+		<id property="handleDynamicId" column="HANDLE_DYNAMIC_ID" />
+		<id property="category" column="CATEGORY" />
+		<id property="createDate" column="CREATE_DATE" />
+	</resultMap>
+	<resultMap id="bizEvaluateResultMap"
+		type="com.xlkfinance.bms.rpc.inloan.BizEvaluateMap">
+		<id property="like" column="LIKE" />
+		<id property="disLike" column="DIS_LIKE" />
+	</resultMap>
+	<!-- 添加评分 -->
+	<insert id="addEvaluate"
+		parameterType="com.xlkfinance.bms.rpc.inloan.BizDynamicEvaluateInfo">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_BIZ_DYNAMIC_EVALUATE.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_DYNAMIC_EVALUATE_INFO
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			PID,
+			<if test="projectId != null and projectId >0">
+				PROJECT_ID,
+			</if>
+			<if test="bizMangerId != null and bizMangerId >0">
+				BIZ_MANGER_ID,
+			</if>
+			<if test="handleDynamicId != null and handleDynamicId >0">
+				HANDLE_DYNAMIC_ID,
+			</if>
+			<if test="category != null and category >0">
+				CATEGORY,
+			</if>
+			CREATE_DATE
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{pid},
+			<if test="projectId != null and projectId >0">
+				#{projectId},
+			</if>
+			<if test="bizMangerId != null and bizMangerId >0">
+				#{bizMangerId},
+			</if>
+			<if test="handleDynamicId != null and handleDynamicId >0">
+				#{handleDynamicId},
+			</if>
+			<if test="category != null and category >0">
+				#{category},
+			</if>
+			SYSDATE
+		</trim>
+	</insert>
+	<!-- 根据用户id和办理动态id检查是否已经评分，返回值大于0，则已经评分 -->
+	<select id="checkIsEvaluate" resultType="int"
+		parameterType="com.xlkfinance.bms.rpc.inloan.BizDynamicEvaluateInfo">
+		SELECT COUNT(1)
+		FROM BIZ_DYNAMIC_EVALUATE_INFO T
+		WHERE
+		T.HANDLE_DYNAMIC_ID =#{handleDynamicId}
+		AND T.BIZ_MANGER_ID
+		=#{bizMangerId}
+	</select>
+	<!-- 查询办理动态的差评和点赞数量 -->
+	<select id="queryBizEvaluateMap" resultMap="bizEvaluateResultMap"
+		parameterType="int">
+		SELECT COUNT(CASE T.CATEGORY
+		WHEN 1 THEN
+		1
+		ELSE
+		NULL
+		END) AS "LIKE",
+		COUNT(CASE T.CATEGORY
+		WHEN 2 THEN
+		2
+		ELSE
+		NULL
+		END) AS "DIS_LIKE"
+		FROM BIZ_DYNAMIC_EVALUATE_INFO T
+		where T.HANDLE_DYNAMIC_ID=#{handleDynamicId}
+	</select>
+	<!-- 根据ID更新评分 -->
+	<update id="updateEvaluate"
+		parameterType="com.xlkfinance.bms.rpc.inloan.BizDynamicEvaluateInfo">
+		UPDATE BIZ_DYNAMIC_EVALUATE_INFO
+		<set>
+			<if test="projectId != null and projectId >0">
+				PROJECT_ID=#{projectId},
+			</if>
+			<if test="bizMangerId != null and bizMangerId >0">
+				BIZ_MANGER_ID=#{bizMangerId},
+			</if>
+			<if test="handleDynamicId != null and handleDynamicId >0">
+				HANDLE_DYNAMIC_ID=#{handleDynamicId},
+			</if>
+			<if test="category != null and category >0">
+				CATEGORY=#{category},
+			</if>
+		</set>
+		where pid = #{pid}
+	</update>
+</mapper>

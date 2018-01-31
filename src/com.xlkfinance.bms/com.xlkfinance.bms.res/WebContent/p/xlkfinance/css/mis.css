@@ -1,0 +1,27 @@
+/*** 弹出窗表单样式 ***/
+#fm{
+    margin:0;
+    padding:10px 30px;
+}
+/***弹出窗标题样式 ***/
+.ftitle{
+    font-size:14px;
+    font-weight:bold;
+    padding:5px 0;
+    margin-bottom:10px;
+    border-bottom:1px solid #ccc;
+}
+/***弹出窗行样式样式  ***/
+.fitem{
+    margin-bottom:5px;
+}
+/***弹出窗label样式  ***/
+.fitem label{
+    display:inline-block;
+    width:80px;
+}
+input[readonly]{
+	border:1px solid #DDD;
+	background-color:#EEEEEE;
+	color:#000;
+}

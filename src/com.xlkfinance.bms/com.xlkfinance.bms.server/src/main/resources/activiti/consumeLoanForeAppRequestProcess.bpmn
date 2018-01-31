@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.xlkfinance.com/bms/consumeLoanForeAppRequestProcess">
+  <process id="consumeLoanForeAppRequestProcess" name="消费贷贷前申请工作流" isExecutable="true">
+    <startEvent id="startevent" name="Start"></startEvent>
+    <userTask id="task_ConsumeLoanRequest" name="消费贷申请" activiti:candidateUsers="${candidateUsers}">
+      <extensionElements>
+        <activiti:formProperty id="nextRole" name="下一个处理节点" type="string" default="CONSUME_RISK_ONE" required="true"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <exclusiveGateway id="exclusivegatewayFisrtTrial" name="风控初审网关分支，下户或结束"></exclusiveGateway>
+    <userTask id="task_InvestigationCheck" name="下户" activiti:candidateUsers="${candidateUsers}">
+      <extensionElements>
+        <activiti:formProperty id="nextRole" name="下一个处理节点" type="string" default="CONSUME_RISK_TWO" required="true"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow4" name="下户" sourceRef="exclusivegatewayFisrtTrial" targetRef="task_InvestigationCheck">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${router > 0}]]></conditionExpression>
+    </sequenceFlow>
+    <endEvent id="endevent" name="End"></endEvent>
+    <sequenceFlow id="flow5" name="初审拒单" sourceRef="exclusivegatewayFisrtTrial" targetRef="endevent">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${router <= 0}]]></conditionExpression>
+    </sequenceFlow>
+    <userTask id="task_RiskTwoCheck" name="风控复审" activiti:candidateUsers="${candidateUsers}">
+      <extensionElements>
+        <activiti:formProperty id="allowTurnDown" name="是否允许驳回" type="string" default="yes" required="true"></activiti:formProperty>
+        <activiti:formProperty id="nextRole" name="下一个处理节点" type="string" default="next" required="true"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow6" sourceRef="task_InvestigationCheck" targetRef="task_RiskTwoCheck"></sequenceFlow>
+    <sequenceFlow id="flow7" sourceRef="task_RiskTwoCheck" targetRef="endevent"></sequenceFlow>
+    <sequenceFlow id="flow8" sourceRef="startevent" targetRef="task_ConsumeLoanRequest"></sequenceFlow>
+    <userTask id="task_ConsumeLoanFirstTrial" name="风控初审" activiti:candidateUsers="${candidateUsers}">
+      <extensionElements>
+        <activiti:formProperty id="allowTurnDown" name="是否允许驳回" default="yes" required="true"></activiti:formProperty>
+        <activiti:formProperty id="nextRole" name="下一个处理节点" default="CONSUME_INVESTIGATION" required="true"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow10" sourceRef="task_ConsumeLoanRequest" targetRef="task_ConsumeLoanFirstTrial"></sequenceFlow>
+    <sequenceFlow id="flow11" sourceRef="task_ConsumeLoanFirstTrial" targetRef="exclusivegatewayFisrtTrial"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_consumeLoanForeAppRequestProcess">
+    <bpmndi:BPMNPlane bpmnElement="consumeLoanForeAppRequestProcess" id="BPMNPlane_consumeLoanForeAppRequestProcess">
+      <bpmndi:BPMNShape bpmnElement="startevent" id="BPMNShape_startevent">
+        <omgdc:Bounds height="35.0" width="35.0" x="110.0" y="120.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="task_ConsumeLoanRequest" id="BPMNShape_task_ConsumeLoanRequest">
+        <omgdc:Bounds height="55.0" width="105.0" x="190.0" y="110.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegatewayFisrtTrial" id="BPMNShape_exclusivegatewayFisrtTrial">
+        <omgdc:Bounds height="40.0" width="40.0" x="490.0" y="118.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="task_InvestigationCheck" id="BPMNShape_task_InvestigationCheck">
+        <omgdc:Bounds height="55.0" width="105.0" x="718.0" y="110.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent" id="BPMNShape_endevent">
+        <omgdc:Bounds height="35.0" width="35.0" x="493.0" y="250.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="task_RiskTwoCheck" id="BPMNShape_task_RiskTwoCheck">
+        <omgdc:Bounds height="55.0" width="133.0" x="704.0" y="241.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="task_ConsumeLoanFirstTrial" id="BPMNShape_task_ConsumeLoanFirstTrial">
+        <omgdc:Bounds height="55.0" width="105.0" x="340.0" y="108.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+        <omgdi:waypoint x="530.0" y="138.0"></omgdi:waypoint>
+        <omgdi:waypoint x="718.0" y="137.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="24.0" x="579.0" y="142.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
+        <omgdi:waypoint x="510.0" y="158.0"></omgdi:waypoint>
+        <omgdi:waypoint x="510.0" y="250.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="48.0" x="461.0" y="199.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow6" id="BPMNEdge_flow6">
+        <omgdi:waypoint x="770.0" y="165.0"></omgdi:waypoint>
+        <omgdi:waypoint x="770.0" y="241.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow7" id="BPMNEdge_flow7">
+        <omgdi:waypoint x="704.0" y="268.0"></omgdi:waypoint>
+        <omgdi:waypoint x="528.0" y="267.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow8" id="BPMNEdge_flow8">
+        <omgdi:waypoint x="145.0" y="137.0"></omgdi:waypoint>
+        <omgdi:waypoint x="190.0" y="137.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow10" id="BPMNEdge_flow10">
+        <omgdi:waypoint x="295.0" y="137.0"></omgdi:waypoint>
+        <omgdi:waypoint x="340.0" y="135.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow11" id="BPMNEdge_flow11">
+        <omgdi:waypoint x="445.0" y="135.0"></omgdi:waypoint>
+        <omgdi:waypoint x="490.0" y="138.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

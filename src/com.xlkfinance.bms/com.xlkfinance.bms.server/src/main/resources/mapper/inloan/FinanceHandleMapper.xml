@@ -1,0 +1,1364 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.inloan.mapper.FinanceHandleMapper">
+<resultMap type="financeIndexDTO" id="financeIndexMap">
+  		<id property="pid" column="PID"/>
+  		<id property="projectId" column="PROJECT_ID"/>
+  		<id property="projectNumber" column="PROJECT_NUMBER"/>
+  		<id property="projectName" column="PROJECT_NAME"/>
+  		<id property="projectType" column="PROJECT_TYPE"/>
+  		<id property="isNeedHandle" column="IS_NEED_HANDLE"/>
+  		<id property="extensionFee" column="EXTENSION_FEE"/>
+  		<id property="status" column="STATUS"/>
+  		<id property="createrId" column="CREATER_ID"/>
+  		<id property="createrDate" column="CREATER_DATE"/>
+  		<id property="houseClerkId" column="HOUSE_CLERK_ID"/>
+  		<id property="houseClerkName" column="HOUSE_CLERK_NAME"/>
+  		<id property="realLoan" column="REAL_LOAN"/>
+  		<id property="loanMoney" column="LOAN_MONEY"/>
+  		<id property="projectStatus" column="PROJECT_STATUS"/>
+  		<id property="checkLitigationApprovalStatus" column="LITIGATION_APPROVAL_STATUS"/>
+  		<id property="checkDocumentApprovalStatus" column="CHECK_DOCUMENT_APPROVAL_STATUS"/>
+  		<id property="projectSource" column="PROJECT_SOURCE"/>
+  		<id property="bizHandleId" column="BIZ_HANDLE_ID"/>
+  		<id property="foreclosureStatus" column="FORECLOSURE_STATUS"/>
+  		<id property="foreclosureTurnDownRemark" column="FORECLOSURE_TURN_DOWN_REMARK"/>
+  		<id property="reCheckStatus" column="RE_CHECK_STATUS"/>
+  		
+  		<id property="houseName" column="HOUSE_NAME"/>
+  		<id property="buyerName" column="BUYER_NAME"/>
+  		<id property="sellerName" column="SELLER_NAME"/>
+  		<id property="isChechan" column="IS_CHECHAN"/>
+  		<id property="makeLoansApplyFinanceId" column="MAKE_LOANS_APPLY_FINANCE_ID"/>
+  		<id property="makeLoansApplyFinanceApplyStatus" column="MAKE_LOANS_APPLY_STATUS"/>
+  		
+  		<id property="accountManager" column="ACCOUNT_MAMAGER"/>
+  		<id property="accountDepartment" column="ACCOUNT_DEPARTMENT"/>
+  		<id property="orgLoanDate" column="ORG_LOAN_DATE"/>
+  		<id property="isNeedFinancial" column="IS_NEED_FINANCIAL"/>
+  		<id property="productName" column="PRODUCT_NAME"/>
+  		<id property="productNumber" column="PRODUCT_NUM"/>
+  		<id property="makeApplyFinanceIdTwo" column="MAKE_APPLY_FINANCE_ID_TWO"/> 
+  		<id property="makeApplyStatusTwo" column="MAKE_APPLY_STATUS_TWO"/>
+  		<id property="collectFeeStatus" column="COLLECT_FEE_STATUS"/>
+  		<id property="collectFeeType" column="COLLECT_FEE_TYPE"/>
+  		<id property="poundage" column="POUNDAGE"/>
+  		<id property="mortgageStatus" column="MORTGAGE_STATUS"/>
+  		
+  		
+</resultMap>
+<resultMap type="financeHandleDTO" id="financeHandleMap">
+  		<id property="pid" column="PID"/>
+  		<id property="projectId" column="PROJECT_ID"/>
+  		<id property="projectNumber" column="PROJECT_NUMBER"/>
+  		<id property="projectName" column="PROJECT_NAME"/>
+  		<id property="status" column="STATUS"/>
+  		<id property="createrId" column="CREATER_ID"/>
+  		<id property="createrDate" column="CREATER_DATE"/>
+  		<id property="houseClerkId" column="HOUSE_CLERK_ID"/>
+  		<id property="houseClerkName" column="HOUSE_CLERK_NAME"/>
+  		<id property="collectFeeStatus" column="COLLECT_FEE_STATUS"/>
+</resultMap>
+<resultMap type="applyFinanceHandleDTO" id="applyFinanceHandleMap">
+  		<id property="pid" column="PID"/>
+  		<id property="financeHandleId" column="FINANCE_HANDLE_ID"/>
+  		<id property="recPro" column="REC_PRO"/>
+  		<id property="recMoney" column="REC_MONEY"/>
+  		<id property="recAccount" column="REC_ACCOUNT"/>
+  		<id property="recDate" column="REC_DATE"/>
+  		<id property="resource" column="PRO_RESOURCE"/>
+  		<id property="operator" column="OPERATOR"/>
+  		<id property="updateDate" column="UPDATE_DATE"/>
+  		<id property="resourceStr" column="RESOURCE_STR"/>
+  		
+  		<id property="resourceMoney" column="PRO_RESOURCE_MONEY"/>
+  		<id property="resource2" column="PRO_RESOURCE_2"/>
+  		<id property="resourceStr2" column="PRO_RESOURCE_STR2"/>
+  		<id property="resourceMoney2" column="PRO_RESOURCE_MONEY_2"/>
+  		<id property="applyStatus" column="APPLY_STATUS"/>
+  		<id property="fundManagerRemark" column="FUND_MANAGER_REMARK"/>
+  		<id property="financeDirectorRemark" column="FINANCE_DIRECTOR_REMARK"/>
+  		<id property="feeRate" column="FEE_RATE"/>
+  		<id property="updateDate" column="UPDATE_DATE"/>
+  		<id property="projectType" column="PROJECT_TYPE"/>
+  		
+</resultMap>
+<!-- 放款分页查询 -->
+<select id="queryFinanceIndex" resultMap="financeIndexMap"
+	parameterType="financeIndexDTO">
+	SELECT D.* FROM (SELECT T.*, ROWNUM RN
+	FROM (
+	SELECT * FROM(SELECT B.PID,
+                               B.PROJECT_ID,
+                               B.STATUS,
+                               B.COLLECT_FEE_STATUS,
+                               A.PROJECT_NAME,
+                               A.PROJECT_NUMBER,
+                               A.PROJECT_SOURCE,
+                               A.PROJECT_TYPE,
+                               A.IS_CHECHAN,
+                               A.IS_NEED_HANDLE,
+                               A.IS_NEED_FINANCIAL,
+                               B.CREATER_ID,
+                               B.CREATER_DATE,
+                               B.HOUSE_CLERK_ID,
+                               C.REAL_NAME AS HOUSE_CLERK_NAME,
+                               L.ACCOUNT_MAMAGER,
+                               L.ACCOUNT_DEPARTMENT,
+                               AFH.PID AS MAKE_LOANS_APPLY_FINANCE_ID,
+                               AFH.APPLY_STATUS AS  MAKE_LOANS_APPLY_STATUS,
+                               A.FORECLOSURE_STATUS AS PROJECT_STATUS,
+                               E.LOAN_MONEY,
+                               E.CHARGES_TYPE AS COLLECT_FEE_TYPE,
+                               D.APPROVAL_STATUS AS CHECK_DOCUMENT_APPROVAL_STATUS,
+                               D.RE_CHECK_STATUS,
+                               G.APPROVAL_STATUS AS LITIGATION_APPROVAL_STATUS,
+                               AFH1.EXTENSION_FEE,
+                               AFH1.REAL_LOAN,
+                               F.PID AS BIZ_HANDLE_ID,
+                               F.FORECLOSURE_STATUS,
+                               F.FORECLOSURE_TURN_DOWN_REMARK,
+                               EH.HOUSE_NAME,
+                               K.BUYER_NAME,
+                               K.SELLER_NAME,
+                               PP.ORG_LOAN_DATE,
+                               BP.PRODUCT_NAME,
+                               BP.PRODUCT_NUM,
+                               AFH2.PID AS MAKE_APPLY_FINANCE_ID_TWO,
+                               AFH2.APPLY_STATUS AS  MAKE_APPLY_STATUS_TWO,
+                               BII.MORTGAGE_STATUS
+                          FROM BIZ_PROJECT A
+                         INNER JOIN BIZ_LOAN_FINANCE_HANDLE B
+                            ON A.PID = B.PROJECT_ID
+                            LEFT JOIN V_HOUSE_NAME EH ON EH.PROJECT_ID = A.PID
+                         LEFT JOIN BIZ_PRODUCT BP ON A.PRODUCT_ID = BP.PID
+                          LEFT JOIN SYS_USER C
+                            ON C.PID = B.HOUSE_CLERK_ID
+                          LEFT JOIN BIZ_CHECK_DOCUMENT D
+                            ON D.PROJECT_ID = A.PID
+                         INNER JOIN BIZ_PROJECT_GUARANTEE E
+                            ON E.PROJECT_ID = A.PID
+                          LEFT JOIN BIZ_LOAN_HANDLE_INFO F
+                            ON F.PROJECT_ID = A.PID
+                          LEFT JOIN BIZ_CHECK_LITIGATION G
+                            ON G.PROJECT_ID = A.PID
+                          LEFT JOIN BIZ_PROJECT_PROPERTY K
+                            ON K.PROJECT_ID = A.PID
+                          LEFT JOIN (SELECT U.PID       AS USER_ID,
+                                           O.NAME      AS ACCOUNT_DEPARTMENT,
+                                           U.REAL_NAME AS ACCOUNT_MAMAGER
+                                      FROM SYS_USER U
+                                      LEFT JOIN SYS_ORG_INFO O
+                                        ON U.ORG_ID = O.ID) L
+                            ON L.USER_ID = A.PM_USER_ID
+                         LEFT JOIN  
+                         (SELECT FINANCE_HANDLE_ID,APPLY_STATUS,PID
+                          FROM BIZ_LOAN_APPLY_FINANCE_HANDLE
+                          WHERE REC_PRO = 3
+                          )  AFH
+                         ON  AFH.FINANCE_HANDLE_ID = B.PID
+                        LEFT JOIN  
+                         (SELECT FINANCE_HANDLE_ID,APPLY_STATUS,PID
+                          FROM BIZ_LOAN_APPLY_FINANCE_HANDLE
+                          WHERE REC_PRO = 9
+                          )  AFH2
+                         ON  AFH2.FINANCE_HANDLE_ID = B.PID
+                         LEFT JOIN 
+                         (SELECT FINANCE_HANDLE_ID,
+                                 SUM(CASE WHEN REC_PRO IN (3, 4, 5, 6,9) THEN REC_MONEY ELSE 0 END) REAL_LOAN,
+                                 SUM(CASE WHEN REC_PRO IN (8) THEN REC_MONEY ELSE 0 END) EXTENSION_FEE
+                          FROM BIZ_LOAN_APPLY_FINANCE_HANDLE
+                          WHERE REC_PRO IN (3, 4, 5, 6,8,9) AND APPLY_STATUS =5
+                          GROUP BY FINANCE_HANDLE_ID
+                          ) AFH1 
+                           ON  AFH1.FINANCE_HANDLE_ID = B.PID
+                         LEFT JOIN 
+                         (SELECT PROJECT_ID,(CASE
+                                         WHEN PP.PARTNER_NO = '统联' THEN
+                                          PP.PARTNER_LOAN_DATE
+                                         ELSE
+                                          PP.LOAN_RESULT_TIME
+                                       END) ORG_LOAN_DATE
+                                  FROM BIZ_PROJECT_PARTNER PP
+                                 WHERE LOAN_STATUS = 4
+                          ) PP ON PP.PROJECT_ID = A.PID
+                          LEFT JOIN BIZ_INTERVIEW_INFO BII
+                               ON BII.PROJECT_ID = A.PID
+                          
+	<where>
+		<trim>
+			<if test="userIds!=null and userIds.size()>0">
+				AND A.PM_USER_ID IN
+				<foreach item="itemId" collection="userIds" open="("
+					separator="," close=")">
+					#{itemId}
+				</foreach>
+			</if>
+			<if test="1==1 ">
+				AND 
+				(
+			       <!--赎楼贷 -->
+					((D.RE_CHECK_STATUS =3 OR F.FORECLOSURE_STATUS=3 OR(A.PROJECT_TYPE=6 AND A.IS_NEED_HANDLE=2))
+				    AND A.FORECLOSURE_STATUS IN(10,11,12,13)
+				    AND A.IS_CHECHAN=0 AND B.STATUS IN(2,3,4,5))
+				   <!--房抵贷：待放款申请 -->
+				    OR
+				    (A.FORECLOSURE_STATUS IN(8,9,10,11,12) AND A.PROJECT_TYPE =8)
+			    )
+			</if>
+			<if test="status!=null and status>0">
+				AND B.STATUS = #{status}
+			</if>
+			<if test="collectFeeStatus!=null and collectFeeStatus>0">
+				AND B.COLLECT_FEE_STATUS = #{collectFeeStatus}
+			</if>
+			<if test="projectStatus !=null and projectStatus>0">
+				AND A.FORECLOSURE_STATUS = #{projectStatus}
+			</if>
+			<if test="productId != null and productId >0">
+				AND A.PRODUCT_ID = #{productId}
+			</if>
+			<if test="statusList !=null and statusList.size()>0">
+				AND B.STATUS IN
+				<foreach item="itemId" collection="statusList" open="("
+					separator="," close=")">
+					#{itemId}
+				</foreach>
+			</if>
+			<if test="projectName!=null and projectName!=''">
+				AND A.PROJECT_NAME LIKE '%${projectName}%'
+			</if>
+			<if test="projectNumber!=null and projectNumber!=''">
+				AND A.PROJECT_NUMBER LIKE '%${projectNumber}%'
+			</if>
+           <if test="houseName !=null and houseName !=''">
+			   AND EH.HOUSE_NAME LIKE '%${houseName}%'
+		   </if>
+		    <if test="buyerName !=null and buyerName !=''">
+			   AND K.BUYER_NAME LIKE '%${buyerName}%'
+		   </if>
+		   <if test="sellerName !=null and sellerName !=''">
+			   AND K.SELLER_NAME LIKE '%${sellerName}%'
+		   </if>
+			<if test="projectId!=null and projectId >0">
+				AND A.PID = #{projectId}
+			</if>
+			<if test="houseClerkId !=null and houseClerkId >0">
+				AND B.HOUSE_CLERK_ID = #{houseClerkId}
+			</if>
+			<if test="pid!=null and pid>0">
+				AND B.PID = #{pid}
+			</if>
+		</trim>
+	</where>
+	<!-- 如果是小科用户查询则会查询万通推单的数据 -->
+	<if test="queryUserSource==2">
+	UNION
+	SELECT B.PID,
+                               B.PROJECT_ID,
+                               B.STATUS,
+                               B.COLLECT_FEE_STATUS,
+                               A.PROJECT_NAME,
+                               A.PROJECT_NUMBER,
+                               A.PROJECT_SOURCE,
+                               A.PROJECT_TYPE,
+                               A.IS_CHECHAN,
+                               A.IS_NEED_HANDLE,
+                               A.IS_NEED_FINANCIAL,
+                               B.CREATER_ID,
+                               B.CREATER_DATE,
+                               B.HOUSE_CLERK_ID,
+                               C.REAL_NAME AS HOUSE_CLERK_NAME,
+                               L.ACCOUNT_MAMAGER,
+                               L.ACCOUNT_DEPARTMENT,
+                               AFH.PID AS MAKE_LOANS_APPLY_FINANCE_ID,
+                               AFH.APPLY_STATUS AS  MAKE_LOANS_APPLY_STATUS,
+                               A.FORECLOSURE_STATUS AS PROJECT_STATUS,
+                               E.LOAN_MONEY,
+                               E.CHARGES_TYPE AS COLLECT_FEE_TYPE,
+                               D.APPROVAL_STATUS AS CHECK_DOCUMENT_APPROVAL_STATUS,
+                               D.RE_CHECK_STATUS,
+                               G.APPROVAL_STATUS AS LITIGATION_APPROVAL_STATUS,
+                               AFH1.EXTENSION_FEE,
+                               AFH1.REAL_LOAN,
+                               F.PID AS BIZ_HANDLE_ID,
+                               F.FORECLOSURE_STATUS,
+                               F.FORECLOSURE_TURN_DOWN_REMARK,
+                               EH.HOUSE_NAME,
+                               K.BUYER_NAME,
+                               K.SELLER_NAME,
+                               PP.ORG_LOAN_DATE,
+                               BP.PRODUCT_NAME,
+                               BP.PRODUCT_NUM,
+                               AFH2.PID AS MAKE_APPLY_FINANCE_ID_TWO,
+                               AFH2.APPLY_STATUS AS  MAKE_APPLY_STATUS_TWO,
+                               BII.MORTGAGE_STATUS
+                          FROM BIZ_PROJECT A
+                         INNER JOIN BIZ_LOAN_FINANCE_HANDLE B
+                            ON A.PID = B.PROJECT_ID
+                            LEFT JOIN V_HOUSE_NAME EH ON EH.PROJECT_ID = A.PID
+                          LEFT JOIN SYS_USER C
+                            ON C.PID = B.HOUSE_CLERK_ID
+                          LEFT JOIN BIZ_PRODUCT BP ON A.PRODUCT_ID = BP.PID
+                          LEFT JOIN BIZ_CHECK_DOCUMENT D
+                            ON D.PROJECT_ID = A.PID
+                         INNER JOIN BIZ_PROJECT_GUARANTEE E
+                            ON E.PROJECT_ID = A.PID
+                          LEFT JOIN BIZ_LOAN_HANDLE_INFO F
+                            ON F.PROJECT_ID = A.PID
+                          LEFT JOIN BIZ_CHECK_LITIGATION G
+                            ON G.PROJECT_ID = A.PID
+                          LEFT JOIN BIZ_PROJECT_PROPERTY K
+                            ON K.PROJECT_ID = A.PID
+                          LEFT JOIN (SELECT U.PID       AS USER_ID,
+                                           O.NAME      AS ACCOUNT_DEPARTMENT,
+                                           U.REAL_NAME AS ACCOUNT_MAMAGER
+                                      FROM SYS_USER U
+                                      LEFT JOIN SYS_ORG_INFO O
+                                        ON U.ORG_ID = O.ID) L
+                            ON L.USER_ID = A.PM_USER_ID
+                         LEFT JOIN  
+                         (SELECT FINANCE_HANDLE_ID,APPLY_STATUS,PID
+                          FROM BIZ_LOAN_APPLY_FINANCE_HANDLE
+                          WHERE REC_PRO = 3
+                          )  AFH
+                         ON  AFH.FINANCE_HANDLE_ID = B.PID
+                         LEFT JOIN  
+                         (SELECT FINANCE_HANDLE_ID,APPLY_STATUS,PID
+                          FROM BIZ_LOAN_APPLY_FINANCE_HANDLE
+                          WHERE REC_PRO = 9
+                          )  AFH2
+                         ON  AFH2.FINANCE_HANDLE_ID = B.PID
+                         LEFT JOIN 
+                         (SELECT FINANCE_HANDLE_ID,
+                                 SUM(CASE WHEN REC_PRO IN (3, 4, 5, 6,9) THEN REC_MONEY ELSE 0 END) REAL_LOAN,
+                                 SUM(CASE WHEN REC_PRO IN (8) THEN REC_MONEY ELSE 0 END) EXTENSION_FEE
+                          FROM BIZ_LOAN_APPLY_FINANCE_HANDLE
+                          WHERE REC_PRO IN (3, 4, 5, 6,8,9) AND APPLY_STATUS =5
+                          GROUP BY FINANCE_HANDLE_ID
+                          ) AFH1
+                           ON  AFH1.FINANCE_HANDLE_ID = B.PID
+                         LEFT JOIN 
+                         (SELECT PROJECT_ID,(CASE
+                                         WHEN PP.PARTNER_NO = '统联' THEN
+                                          PP.PARTNER_LOAN_DATE
+                                         ELSE
+                                          PP.LOAN_RESULT_TIME
+                                       END) ORG_LOAN_DATE
+                                  FROM BIZ_PROJECT_PARTNER PP
+                                 WHERE LOAN_STATUS = 4
+                          ) PP ON PP.PROJECT_ID = A.PID
+                          LEFT JOIN BIZ_INTERVIEW_INFO BII
+                               ON BII.PROJECT_ID = A.PID
+	<where>
+		<trim>
+			<if test="1==1 ">
+				AND A.IS_NEED_FINANCIAL =2
+				AND (F.FORECLOSURE_STATUS=3 OR 1=1)
+			    AND A.FORECLOSURE_STATUS IN(10,11,12,13)
+			    AND A.IS_CHECHAN=0
+			    AND B.STATUS IN(2,3,4,5)
+			</if>
+			<if test="status!=null and status>0">
+				AND B.STATUS = #{status}
+			</if>
+			<if test="collectFeeStatus!=null and collectFeeStatus>0">
+				AND B.COLLECT_FEE_STATUS = #{collectFeeStatus}
+			</if>
+			<if test="projectStatus !=null and projectStatus>0">
+				AND A.FORECLOSURE_STATUS = #{projectStatus}
+			</if>			
+			<if test="productId != null and productId >0">
+				AND A.PRODUCT_ID = #{productId}
+			</if>
+			<if test="projectName!=null and projectName!=''">
+				AND A.PROJECT_NAME LIKE '%${projectName}%'
+			</if>
+			<if test="projectNumber!=null and projectNumber!=''">
+				AND A.PROJECT_NUMBER LIKE '%${projectNumber}%'
+			</if>
+           <if test="houseName !=null and houseName !=''">
+			   AND EH.HOUSE_NAME LIKE '%${houseName}%'
+		   </if>
+		    <if test="buyerName !=null and buyerName !=''">
+			   AND K.BUYER_NAME LIKE '%${buyerName}%'
+		   </if>
+		   <if test="sellerName !=null and sellerName !=''">
+			   AND K.SELLER_NAME LIKE '%${sellerName}%'
+		   </if>
+			<if test="projectId!=null and projectId >0">
+				AND A.PID = #{projectId}
+			</if>
+			<if test="houseClerkId !=null and houseClerkId >0">
+				AND B.HOUSE_CLERK_ID = #{houseClerkId}
+			</if>
+			<if test="pid!=null and pid>0">
+				AND B.PID = #{pid}
+			</if>
+		</trim>
+	</where>
+	</if>
+    )
+	<![CDATA[
+	ORDER BY CREATER_DATE DESC,PID DESC
+	) T
+	WHERE ROWNUM <=#{page}*#{rows}
+	) D
+	WHERE D.RN > ((#{page}-1)*#{rows})
+	]]>
+</select>
+<!--放款分页查询总数  -->
+	<select id="getFinanceIndexTotal" parameterType="financeIndexDTO"
+		resultType="Integer">
+	SELECT COUNT(1) FROM
+			(
+			SELECT B.PID
+	FROM BIZ_PROJECT A
+	INNER JOIN BIZ_LOAN_FINANCE_HANDLE B
+	ON A.PID = B.PROJECT_ID
+	LEFT JOIN V_HOUSE_NAME EH ON EH.PROJECT_ID = A.PID
+	LEFT JOIN SYS_USER C
+	ON C.PID = B.HOUSE_CLERK_ID
+	LEFT JOIN BIZ_CHECK_DOCUMENT D
+	ON D.PROJECT_ID = A.PID
+	INNER JOIN BIZ_PROJECT_GUARANTEE E
+	ON E.PROJECT_ID = A.PID
+	LEFT JOIN BIZ_LOAN_HANDLE_INFO F
+	ON F.PROJECT_ID = A.PID
+	LEFT JOIN BIZ_CHECK_LITIGATION G
+	ON G.PROJECT_ID = A.PID
+	LEFT JOIN BIZ_PROJECT_PROPERTY K
+	ON K.PROJECT_ID=A.PID
+	LEFT JOIN BIZ_PRODUCT QQ ON QQ.PID =A.PRODUCT_ID
+	<where>
+		<trim>
+			<if test="userIds!=null and userIds.size()>0">
+				AND A.PM_USER_ID IN
+				<foreach item="itemId" collection="userIds" open="("
+					separator="," close=")">
+					#{itemId}
+				</foreach>
+			</if>
+			<if test="1==1 ">
+				AND 
+				(
+			       <!--赎楼贷 -->
+					((D.RE_CHECK_STATUS =3 OR F.FORECLOSURE_STATUS=3 OR(A.PROJECT_TYPE=6 AND A.IS_NEED_HANDLE=2))
+				    AND A.FORECLOSURE_STATUS IN(10,11,12,13)
+				    AND B.STATUS IN(2,3,4,5)
+				    AND A.IS_CHECHAN=0)
+				   <!--房抵贷：待放款申请 -->
+				    OR
+				    (A.FORECLOSURE_STATUS IN(8,9,10,11,12) AND A.PROJECT_TYPE =8)
+			    )
+			</if>
+			<if test="status!=null and status>0">
+				AND B.STATUS = #{status}
+			</if>
+			<if test="collectFeeStatus!=null and collectFeeStatus>0">
+				AND B.COLLECT_FEE_STATUS = #{collectFeeStatus}
+			</if>
+			<if test="productId != null and productId >0">
+				AND A.PRODUCT_ID = #{productId}
+			</if>
+			<if test="statusList !=null and statusList.size()>0">
+				AND B.STATUS IN
+				<foreach item="itemId" collection="statusList" open="("
+					separator="," close=")">
+					#{itemId}
+				</foreach>
+			</if>
+			<if test="projectName!=null and projectName!=''">
+				AND A.PROJECT_NAME LIKE '%${projectName}%'
+			</if>
+			<if test="projectNumber!=null and projectNumber!=''">
+				AND A.PROJECT_NUMBER LIKE '%${projectNumber}%'
+			</if>
+           <if test="houseName !=null and houseName !=''">
+			   AND EH.HOUSE_NAME LIKE '%${houseName}%'
+		   </if>
+		    <if test="buyerName !=null and buyerName !=''">
+			   AND K.BUYER_NAME LIKE '%${buyerName}%'
+		   </if>
+		   <if test="sellerName !=null and sellerName !=''">
+			   AND K.SELLER_NAME LIKE '%${sellerName}%'
+		   </if>
+			<if test="projectId!=null and projectId >0">
+				AND A.PID = #{projectId}
+			</if>
+			<if test="houseClerkId !=null and houseClerkId >0">
+				AND B.HOUSE_CLERK_ID = #{houseClerkId}
+			</if>
+			<if test="pid!=null and pid>0">
+				AND B.PID = #{pid}
+			</if>
+		</trim>
+	</where>
+	<if test="queryUserSource==2">
+	UNION
+	SELECT B.PID
+	FROM BIZ_PROJECT A
+	INNER JOIN BIZ_LOAN_FINANCE_HANDLE B
+	ON A.PID = B.PROJECT_ID
+	LEFT JOIN V_HOUSE_NAME EH ON EH.PROJECT_ID = A.PID
+	LEFT JOIN SYS_USER C
+	ON C.PID = B.HOUSE_CLERK_ID
+	LEFT JOIN BIZ_CHECK_DOCUMENT D
+	ON D.PROJECT_ID = A.PID
+	INNER JOIN BIZ_PROJECT_GUARANTEE E
+	ON E.PROJECT_ID = A.PID
+	LEFT JOIN BIZ_LOAN_HANDLE_INFO F
+	ON F.PROJECT_ID = A.PID
+	LEFT JOIN BIZ_CHECK_LITIGATION G
+	ON G.PROJECT_ID = A.PID
+	LEFT JOIN BIZ_PROJECT_PROPERTY K
+	ON K.PROJECT_ID=A.PID
+	LEFT JOIN BIZ_PRODUCT QQ ON QQ.PID =A.PRODUCT_ID
+	<where>
+		<trim>
+			<if test="1==1 ">
+				AND A.IS_NEED_FINANCIAL =2
+				AND (F.FORECLOSURE_STATUS=3 OR 1=1)
+			    AND A.FORECLOSURE_STATUS IN(10,11,12,13)
+			    AND A.IS_CHECHAN=0
+			    AND B.STATUS IN(2,3,4,5)
+			</if>
+			<if test="status!=null and status>0">
+				AND B.STATUS = #{status}
+			</if>
+			<if test="collectFeeStatus!=null and collectFeeStatus>0">
+				AND B.COLLECT_FEE_STATUS = #{collectFeeStatus}
+			</if>
+			<if test="productId != null and productId >0">
+				AND A.PRODUCT_ID = #{productId}
+			</if>
+			<if test="projectName!=null and projectName!=''">
+				AND A.PROJECT_NAME LIKE '%${projectName}%'
+			</if>
+			<if test="projectNumber!=null and projectNumber!=''">
+				AND A.PROJECT_NUMBER LIKE '%${projectNumber}%'
+			</if>
+           <if test="houseName !=null and houseName !=''">
+			   AND EH.HOUSE_NAME LIKE '%${houseName}%'
+		   </if>
+		    <if test="buyerName !=null and buyerName !=''">
+			   AND K.BUYER_NAME LIKE '%${buyerName}%'
+		   </if>
+		   <if test="sellerName !=null and sellerName !=''">
+			   AND K.SELLER_NAME LIKE '%${sellerName}%'
+		   </if>
+			<if test="projectId!=null and projectId >0">
+				AND A.PID = #{projectId}
+			</if>
+			<if test="houseClerkId !=null and houseClerkId >0">
+				AND B.HOUSE_CLERK_ID = #{houseClerkId}
+			</if>
+			<if test="pid!=null and pid>0">
+				AND B.PID = #{pid}
+			</if>
+		</trim>
+	</where>
+	</if>
+		) T
+	</select>
+<!-- 财务收费分页查询 -->
+<select id="queryFinanceCollectFeeIndex" resultMap="financeIndexMap"
+	parameterType="financeIndexDTO">
+	<![CDATA[
+	SELECT D.* FROM (SELECT T.*, ROWNUM RN
+	        FROM (SELECT B.PID,
+       B.PROJECT_ID,
+       B.STATUS,
+       B.COLLECT_FEE_STATUS,
+       A.PROJECT_NAME,
+       QQ.PRODUCT_NAME,
+       QQ.PRODUCT_NUM,
+       A.PROJECT_NUMBER,
+       A.PROJECT_SOURCE,
+       A.PROJECT_TYPE,
+       A.IS_CHECHAN,
+       A.IS_NEED_HANDLE,
+       A.IS_NEED_FINANCIAL,
+       B.CREATER_ID,
+       B.CREATER_DATE,
+       B.HOUSE_CLERK_ID,
+       C.REAL_NAME AS HOUSE_CLERK_NAME,
+       L.ACCOUNT_MAMAGER,
+       L.ACCOUNT_DEPARTMENT,
+       AFH1.REAL_LOAN,
+       AFH.PID AS MAKE_LOANS_APPLY_FINANCE_ID,
+       AFH.APPLY_STATUS AS MAKE_LOANS_APPLY_STATUS,
+       A.FORECLOSURE_STATUS AS PROJECT_STATUS,
+       E.LOAN_MONEY,
+       E.POUNDAGE,
+       D.APPROVAL_STATUS AS CHECK_DOCUMENT_APPROVAL_STATUS,
+       D.RE_CHECK_STATUS,
+       G.APPROVAL_STATUS AS LITIGATION_APPROVAL_STATUS,
+       AFH1.EXTENSION_FEE,
+       F.PID AS BIZ_HANDLE_ID,
+       F.FORECLOSURE_STATUS,
+       F.FORECLOSURE_TURN_DOWN_REMARK,
+       EH.HOUSE_NAME,
+       K.BUYER_NAME,
+       K.SELLER_NAME,
+       PP.ORG_LOAN_DATE
+  FROM BIZ_PROJECT A
+ INNER JOIN BIZ_LOAN_FINANCE_HANDLE B
+    ON A.PID = B.PROJECT_ID
+    LEFT JOIN V_HOUSE_NAME EH ON EH.PROJECT_ID = A.PID
+  LEFT JOIN SYS_USER C
+    ON C.PID = B.HOUSE_CLERK_ID
+  LEFT JOIN BIZ_CHECK_DOCUMENT D
+    ON D.PROJECT_ID = A.PID
+ INNER JOIN BIZ_PROJECT_GUARANTEE E
+    ON E.PROJECT_ID = A.PID
+  LEFT JOIN BIZ_LOAN_HANDLE_INFO F
+    ON F.PROJECT_ID = A.PID
+ LEFT JOIN BIZ_CHECK_LITIGATION G
+    ON G.PROJECT_ID = A.PID
+ LEFT JOIN BIZ_PROJECT_PROPERTY K
+    ON K.PROJECT_ID=A.PID
+ LEFT JOIN (SELECT U.PID       AS USER_ID,
+                    O.NAME      AS ACCOUNT_DEPARTMENT,
+                    U.REAL_NAME AS ACCOUNT_MAMAGER
+               FROM SYS_USER U
+               LEFT JOIN SYS_ORG_INFO O
+                 ON U.ORG_ID = O.ID) L
+    ON L.USER_ID = A.PM_USER_ID
+LEFT JOIN  
+ (SELECT FINANCE_HANDLE_ID,APPLY_STATUS,PID
+  FROM BIZ_LOAN_APPLY_FINANCE_HANDLE
+  WHERE REC_PRO = 3
+  )  AFH
+ ON  AFH.FINANCE_HANDLE_ID = B.PID
+ LEFT JOIN 
+ (SELECT FINANCE_HANDLE_ID,
+         SUM(CASE WHEN REC_PRO IN (3, 4, 5, 6) THEN REC_MONEY ELSE 0 END) REAL_LOAN,
+         SUM(CASE WHEN REC_PRO IN (8) THEN REC_MONEY ELSE 0 END) EXTENSION_FEE
+  FROM BIZ_LOAN_APPLY_FINANCE_HANDLE
+  WHERE REC_PRO IN (3, 4, 5, 6,8)
+  GROUP BY FINANCE_HANDLE_ID
+  ) AFH1 
+ON  AFH1.FINANCE_HANDLE_ID = B.PID
+LEFT JOIN 
+(SELECT PROJECT_ID,(CASE WHEN PP.PARTNER_NO = '统联' THEN PP.PARTNER_LOAN_DATE ELSE PP.LOAN_RESULT_TIME END) ORG_LOAN_DATE
+  FROM BIZ_PROJECT_PARTNER PP
+ WHERE LOAN_STATUS = 4 
+) PP
+ON PP.PROJECT_ID=A.PID
+ LEFT JOIN BIZ_LOAN_REPAYMENT H
+ ON H.PROJECT_ID=A.PID
+ LEFT JOIN BIZ_PRODUCT QQ ON QQ.PID =A.PRODUCT_ID
+	]]>
+	<where>
+		<trim>
+			<if test="1==1">
+			     AND A.IS_CHECHAN=0 AND A.IS_CLOSED=2 
+			     <!-- 如果是一般贷款的收费，则回款之前都显示，如果是展期收费，则收完费就不显示 -->
+			     AND((A.PROJECT_TYPE IN(2,6,8) AND (H.STATUS = 1 OR H.STATUS IS NULL)) OR (PROJECT_TYPE=4 AND B.STATUS=1))
+			</if>
+			<if test="userIds!=null and userIds.size()>0">
+				AND A.PM_USER_ID IN
+				<foreach item="itemId" collection="userIds" open="("
+					separator="," close=")">
+					#{itemId}
+				</foreach>
+			</if>
+			<if test="productId!=null and productId>0">
+				AND QQ.PID = #{productId}
+			</if>
+			<if test="status!=null and status>0">
+				AND B.STATUS = #{status}
+			</if>
+			<if test="collectFeeStatus!=null and collectFeeStatus>0">
+				AND B.COLLECT_FEE_STATUS = #{collectFeeStatus}
+			</if>
+			<if test="statusList !=null and statusList.size()>0">
+				AND B.STATUS IN
+				<foreach item="itemId" collection="statusList" open="("
+					separator="," close=")">
+					#{itemId}
+				</foreach>
+			</if>
+			<if test="projectName!=null and projectName!=''">
+				AND A.PROJECT_NAME LIKE '%${projectName}%'
+			</if>
+			<if test="projectNumber!=null and projectNumber!=''">
+				AND A.PROJECT_NUMBER LIKE '%${projectNumber}%'
+			</if>
+           <if test="houseName !=null and houseName !=''">
+			   AND EH.HOUSE_NAME LIKE '%${houseName}%'
+		   </if>
+		    <if test="buyerName !=null and buyerName !=''">
+			   AND K.BUYER_NAME LIKE '%${buyerName}%'
+		   </if>
+		   <if test="sellerName !=null and sellerName !=''">
+			   AND K.SELLER_NAME LIKE '%${sellerName}%'
+		   </if>
+			<if test="projectId!=null and projectId >0">
+				AND A.PID = #{projectId}
+			</if>
+			<if test="houseClerkId !=null and houseClerkId >0">
+				AND B.HOUSE_CLERK_ID = #{houseClerkId}
+			</if>
+			<if test="pid!=null and pid>0">
+				AND B.PID = #{pid}
+			</if>
+		</trim>
+	</where>
+	<![CDATA[
+	ORDER BY B.STATUS ASC,B.CREATER_DATE DESC,B.PID DESC
+	) T
+	WHERE ROWNUM <=#{page}*#{rows}
+	) D
+	WHERE D.RN > ((#{page}-1)*#{rows})
+	]]>
+</select>
+<!-- 财务收费分页总数 -->
+	<select id="getFinanceCollectFeeIndexTotal" parameterType="financeIndexDTO"
+		resultType="Integer">
+	<![CDATA[
+	SELECT COUNT(1) FROM
+			(SELECT A.PID
+  FROM BIZ_PROJECT A
+ INNER JOIN BIZ_LOAN_FINANCE_HANDLE B
+    ON A.PID = B.PROJECT_ID
+    LEFT JOIN V_HOUSE_NAME EH ON EH.PROJECT_ID = A.PID
+  LEFT JOIN SYS_USER C
+    ON C.PID = B.HOUSE_CLERK_ID
+  LEFT JOIN BIZ_CHECK_DOCUMENT D
+    ON D.PROJECT_ID = A.PID
+ INNER JOIN BIZ_PROJECT_GUARANTEE E
+    ON E.PROJECT_ID = A.PID
+  LEFT JOIN BIZ_LOAN_HANDLE_INFO F
+    ON F.PROJECT_ID = A.PID
+ LEFT JOIN BIZ_CHECK_LITIGATION G
+    ON G.PROJECT_ID = A.PID
+ LEFT JOIN BIZ_PROJECT_PROPERTY K
+    ON K.PROJECT_ID=A.PID
+ LEFT JOIN BIZ_LOAN_REPAYMENT H
+    ON H.PROJECT_ID=A.PID
+ LEFT JOIN BIZ_PRODUCT QQ ON QQ.PID =A.PRODUCT_ID
+	]]>
+		<where>
+			<trim>
+			<if test="1==1">
+			     AND A.IS_CHECHAN=0 AND A.IS_CLOSED=2  
+			     <!-- 如果是一般贷款的收费，则回款之前都显示，如果是展期收费，则收完费就不显示 -->
+			     AND((A.PROJECT_TYPE IN(2,6,8) AND (H.STATUS = 1 OR H.STATUS IS NULL)) OR (PROJECT_TYPE=4 AND B.STATUS=1))
+			</if>
+			<if test="userIds!=null and userIds.size()>0">
+				AND A.PM_USER_ID IN
+				<foreach item="itemId" collection="userIds" open="("
+					separator="," close=")">
+					#{itemId}
+				</foreach>
+			</if>
+			<if test="status!=null and status>0">
+				AND B.STATUS = #{status}
+			</if>
+			<if test="collectFeeStatus!=null and collectFeeStatus>0">
+				AND B.COLLECT_FEE_STATUS = #{collectFeeStatus}
+			</if>
+			<if test="productId!=null and productId>0">
+				AND QQ.PID = #{productId}
+			</if>
+			<if test="statusList !=null and statusList.size()>0">
+				AND B.STATUS IN
+				<foreach item="itemId" collection="statusList" open="("
+					separator="," close=")">
+					#{itemId}
+				</foreach>
+			</if>
+			<if test="projectName!=null and projectName!=''">
+				AND A.PROJECT_NAME LIKE '%${projectName}%'
+			</if>
+			<if test="projectNumber!=null and projectNumber!=''">
+				AND A.PROJECT_NUMBER LIKE '%${projectNumber}%'
+			</if>
+           <if test="houseName !=null and houseName !=''">
+			   AND EH.HOUSE_NAME LIKE '%${houseName}%'
+		   </if>
+		    <if test="buyerName !=null and buyerName !=''">
+			   AND K.BUYER_NAME LIKE '%${buyerName}%'
+		   </if>
+		   <if test="sellerName !=null and sellerName !=''">
+			   AND K.SELLER_NAME LIKE '%${sellerName}%'
+		   </if>
+			<if test="projectId!=null and projectId >0">
+				AND A.PID = #{projectId}
+			</if>
+			<if test="houseClerkId !=null and houseClerkId >0">
+				AND B.HOUSE_CLERK_ID = #{houseClerkId}
+			</if>
+			<if test="pid!=null and pid>0">
+				AND B.PID = #{pid}
+			</if>
+		</trim>
+		</where>
+		) T
+	</select>
+<!-- 添加财务受理信息 -->
+<insert id="addFinanceHandle" parameterType="financeHandleDTO">
+  	<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+		SELECT SEQ_FINANCE_HANDLE.Nextval as PID from DUAL
+	</selectKey>
+	INSERT INTO BIZ_LOAN_FINANCE_HANDLE 
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+        PID, 
+    	<if test="projectId != null and projectId >0">
+    	PROJECT_ID, 
+    	</if>
+    	<if test="status != null and status >=-1">
+    	STATUS,
+    	</if>
+    	<if test="collectFeeStatus != null and collectFeeStatus >0">
+    	COLLECT_FEE_STATUS,
+    	</if>
+    	<if test="houseClerkId != null and houseClerkId >0">
+    	HOUSE_CLERK_ID,
+    	</if>
+    	<if test="createrId != null and createrId >0">
+    	CREATER_ID,
+    	</if>
+    	CREATER_DATE
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+    		#{pid}, 
+    	<if test="projectId != null and projectId >0">
+    		#{projectId},
+    	</if> 
+    	<if test="status != null and status >=-1">
+    		#{status},
+    	</if> 
+    	<if test="collectFeeStatus != null and collectFeeStatus >0">
+    	    #{collectFeeStatus},
+    	</if>
+    	<if test="houseClerkId != null and houseClerkId >0">
+    	  #{houseClerkId},
+    	</if>
+    	<if test="createrId != null and createrId >0">
+    	    #{createrId},
+    	</if>
+    	SYSDATE
+    </trim>
+</insert>
+
+<!-- 根据id跟新 财务受理信息-->
+<update id="updateFinanceHandle" parameterType="financeHandleDTO">
+	UPDATE BIZ_LOAN_FINANCE_HANDLE
+	<set>
+		<if test="projectId != null and projectId >0">
+    		PROJECT_ID=#{projectId},
+    	</if> 
+    	<if test="status != null and status >=-1">
+    		STATUS=#{status},
+    	</if> 
+    	<if test="collectFeeStatus != null and collectFeeStatus >0">
+    		COLLECT_FEE_STATUS=#{collectFeeStatus},
+    	</if> 
+    	<if test="createrId != null and createrId >0">
+    		CREATER_ID=#{createrId},
+    	</if> 
+    	<if test="createrDate != null and createrDate !=''">
+    		CREATER_DATE=#{createrDate,jdbcType=DATE,javaType=String},
+    	</if> 
+    	 <if test="houseClerkId != null and houseClerkId >0">
+    	  HOUSE_CLERK_ID=#{houseClerkId}
+    	</if>
+	</set>
+	where pid = #{pid}
+</update>
+<!-- 根据ID进行查询 -->
+<select id="getFinanceHandleById" resultMap="financeHandleMap"
+	parameterType="int">
+	<![CDATA[SELECT
+	F.PID,F.PROJECT_ID,F.STATUS,F.COLLECT_FEE_STATUS,P.PROJECT_NAME,P.PROJECT_NUMBER,F.CREATER_ID,F.HOUSE_CLERK_ID
+	FROM BIZ_PROJECT P,BIZ_LOAN_FINANCE_HANDLE F
+	WHERE P.PID=F.PROJECT_ID AND F.PID = #{pid}
+	]]>
+</select>
+<!-- 根据项目ID进行查询 -->
+<select id="getFinanceHandleByProjectId" resultMap="financeHandleMap"
+	parameterType="int">
+	<![CDATA[SELECT
+	F.PID,F.PROJECT_ID,F.STATUS,F.COLLECT_FEE_STATUS,P.PROJECT_NAME,P.PROJECT_NUMBER,F.CREATER_ID,F.HOUSE_CLERK_ID
+	FROM BIZ_PROJECT P,BIZ_LOAN_FINANCE_HANDLE F
+	WHERE P.PID=F.PROJECT_ID AND F.PROJECT_ID = #{projectId}
+	]]>
+</select>
+<!-- 分页查询 -->
+<select id="findAllFinanceHandle" resultMap="financeHandleMap"
+	parameterType="financeHandleDTO">
+	<![CDATA[
+	SELECT D.* FROM (SELECT T.*, ROWNUM RN
+	        FROM (SELECT B.PID,
+       B.PROJECT_ID,
+       B.STATUS,
+       B.COLLECT_FEE_STATUS,
+       A.PROJECT_NAME,
+       A.PROJECT_NUMBER,
+       B.CREATER_ID,
+       B.CREATER_DATE,
+       B.HOUSE_CLERK_ID,
+       C.REAL_NAME AS HOUSE_CLERK_NAME
+  FROM BIZ_PROJECT A
+ INNER JOIN BIZ_LOAN_FINANCE_HANDLE B
+    ON A.PID = B.PROJECT_ID
+  LEFT JOIN SYS_USER C
+    ON C.PID = B.HOUSE_CLERK_ID
+ LEFT JOIN BIZ_CHECK_DOCUMENT D
+    ON D.PROJECT_ID = A.PID
+	]]>
+	<where>
+		<trim>
+			<if test="userIds!=null and userIds.size()>0">
+				AND B.CREATER_ID IN
+				<foreach item="itemId" collection="userIds" open="("
+					separator="," close=")">
+					#{itemId}
+				</foreach>
+			</if>
+			<if test="status!=null and status>0">
+				AND B.STATUS = #{status}
+			</if>
+			<if test="collectFeeStatus!=null and collectFeeStatus>0">
+				AND B.COLLECT_FEE_STATUS = #{collectFeeStatus}
+			</if>
+			<if test="statusList !=null and statusList.size()>0">
+				AND B.STATUS IN
+				<foreach item="itemId" collection="statusList" open="("
+					separator="," close=")">
+					#{itemId}
+				</foreach>
+			</if>
+			<if test="projectName!=null and projectName!=''">
+				AND A.PROJECT_NAME LIKE '%${projectName}%'
+			</if>
+			<if test="projectNumber!=null and projectNumber!=''">
+				AND A.PROJECT_NUMBER LIKE '%${projectNumber}%'
+			</if>
+			<if test="projectId!=null and projectId >0">
+				AND A.PID = #{projectId}
+			</if>
+			<if test="houseClerkId !=null and houseClerkId >0">
+				AND B.HOUSE_CLERK_ID = #{houseClerkId}
+			</if>
+			<if test="pid!=null and pid>0">
+				AND B.PID = #{pid}
+			</if>
+		</trim>
+	</where>
+	<![CDATA[
+	ORDER BY B.CREATER_DATE DESC,B.PID DESC
+	) T
+	WHERE ROWNUM <=#{page}*#{rows}
+	) D
+	WHERE D.RN > ((#{page}-1)*#{rows})
+	]]>
+</select>
+	<select id="getFinanceHandleTotal" parameterType="financeHandleDTO"
+		resultType="Integer">
+	<![CDATA[
+	SELECT COUNT(1) FROM
+			(SELECT B.PID,
+       B.PROJECT_ID,
+       B.STATUS,
+       A.PROJECT_NAME,
+       A.PROJECT_NUMBER,
+       B.CREATER_ID,
+       B.CREATER_DATE,
+       B.HOUSE_CLERK_ID,
+       C.REAL_NAME AS HOUSE_CLERK_NAME
+  FROM BIZ_PROJECT A
+ INNER JOIN BIZ_LOAN_FINANCE_HANDLE B
+    ON A.PID = B.PROJECT_ID
+  LEFT JOIN SYS_USER C
+    ON C.PID = B.HOUSE_CLERK_ID
+ LEFT JOIN BIZ_CHECK_DOCUMENT D
+    ON D.PROJECT_ID = A.PID
+	]]>
+		<where>
+			<trim>
+				<if test="userIds!=null and userIds.size()>0">
+					AND B.CREATER_ID IN
+					<foreach item="itemId" collection="userIds" open="("
+						separator="," close=")">
+						#{itemId}
+					</foreach>
+				</if>
+				<if test="status!=null and status>0">
+					AND B.STATUS = #{status}
+				</if>
+				<if test="collectFeeStatus!=null and collectFeeStatus>0">
+					AND B.COLLECT_FEE_STATUS = #{collectFeeStatus}
+				</if>
+				<if test="statusList !=null and statusList.size()>0">
+					AND B.STATUS IN
+					<foreach item="itemId" collection="statusList" open="("
+						separator="," close=")">
+						#{itemId}
+					</foreach>
+				</if>
+				<if test="projectName!=null and projectName!=''">
+					AND A.PROJECT_NAME LIKE '%${projectName}%'
+				</if>
+				<if test="projectNumber!=null and projectNumber!=''">
+					AND A.PROJECT_NUMBER LIKE '%${projectNumber}%'
+				</if>
+				<if test="projectId!=null and projectId >0">
+					AND A.PID = #{projectId}
+				</if>
+				<if test="houseClerkId !=null and houseClerkId >0">
+					AND B.HOUSE_CLERK_ID = #{houseClerkId}
+				</if>
+				<if test="pid!=null and pid>0">
+					AND B.PID = #{pid}
+				</if>
+			</trim>
+		</where>
+		) T
+	</select>
+<!-- 添加 申请财务受理基本信息-->
+<insert id="addApplyFinanceHandle" parameterType="applyFinanceHandleDTO">
+  	<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+		SELECT SEQ_APPLY_FINANCE_HANDLE.Nextval as PID from DUAL
+	</selectKey>
+	INSERT INTO BIZ_LOAN_APPLY_FINANCE_HANDLE 
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+        PID, 
+    	<if test="financeHandleId != null and financeHandleId >0">
+    	FINANCE_HANDLE_ID, 
+    	</if>
+    	<if test="recPro != null and recPro!=''">
+    	REC_PRO, 
+    	</if>
+    	<if test="recMoney != null and recMoney>0">
+    	REC_MONEY, 
+    	</if>
+    	<if test="recAccount != null and recAccount!=''">
+    	REC_ACCOUNT, 
+    	</if>
+    	<if test="recDate != null and recDate!=''">
+    	REC_DATE, 
+    	</if>
+    	<if test="resource != null and resource!=''">
+    	PRO_RESOURCE, 
+    	</if>
+    	<if test="operator != null and operator!=''">
+    	OPERATOR,
+    	</if>
+    	<if test="createrId != null and createrId >0">
+    	CREATER_ID,
+    	</if>
+    	UPDATE_DATE
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+    		#{pid}, 
+    	<if test="financeHandleId != null and financeHandleId >0">
+    		#{financeHandleId},
+    	</if> 
+    	<if test="recPro != null and recPro!=''">
+    		#{recPro},
+    	</if> 
+    	<if test="recMoney != null and recMoney>0">
+    		#{recMoney},
+    	</if> 
+    	<if test="recAccount != null and recAccount!=''">
+    		#{recAccount},
+    	</if> 
+    	<if test="recDate != null and recDate!=''">
+    		#{recDate,jdbcType=DATE,javaType=String},
+    	</if> 
+    	<if test="resource != null and resource!=''">
+    		#{resource},
+    	</if> 
+    	<if test="operator != null and operator!=''">
+    		#{operator},
+    	</if> 
+    	<if test="createrId != null and createrId >0">
+    	    #{createrId},
+    	</if>
+    	SYSDATE
+    </trim>
+</insert>
+<!-- 根据id更新申请财务受理基本信息 -->
+<update id="updateApplyFinanceHandle" parameterType="applyFinanceHandleDTO">
+	UPDATE BIZ_LOAN_APPLY_FINANCE_HANDLE
+	<set>
+		<if test="financeHandleId != null and financeHandleId >0">
+    		FINANCE_HANDLE_ID=#{financeHandleId},
+    	</if> 
+    	<if test="recPro != null and recPro!=''">
+    		REC_PRO=#{recPro},
+    	</if> 
+    	<if test="recMoney != null and recMoney>0">
+    		REC_MONEY=#{recMoney},
+    	</if> 
+    	<if test="recAccount != null and recAccount!=''">
+    		REC_ACCOUNT=#{recAccount},
+    	</if> 
+    	<if test="recDate != null and recDate!=''">
+    		REC_DATE=#{recDate,jdbcType=DATE,javaType=String},
+    	</if> 
+    	<if test="resource != null">
+    		PRO_RESOURCE=#{resource},
+    	</if> 
+    	<if test="operator != null and operator!=''">
+    		OPERATOR=#{operator},
+    	</if> 
+    	<if test="remark != null">
+    		REMARK=decode(#{remark},null,'',#{remark}),
+    	</if> 
+    	<if test="createrId != null and createrId >0">
+    		CREATER_ID=#{createrId},
+    	</if>
+    	
+    	<if test="resourceMoney != null and resourceMoney >=0">
+    		PRO_RESOURCE_MONEY=#{resourceMoney},
+    	</if>
+    	<if test="resource2 != null and resource2 !=''">
+    		PRO_RESOURCE_2=#{resource2},
+    	</if>
+    	<if test="resourceMoney2 != null and resourceMoney2 >=0">
+    		PRO_RESOURCE_MONEY_2=#{resourceMoney2},
+    	</if>
+    	<if test="applyStatus != null and applyStatus >0">
+    		APPLY_STATUS=#{applyStatus},
+    	</if>
+    	<if test="fundManagerRemark != null and fundManagerRemark !=''">
+    		FUND_MANAGER_REMARK=#{fundManagerRemark},
+    	</if>
+    	<if test="financeDirectorRemark != null and financeDirectorRemark !=''">
+    		FINANCE_DIRECTOR_REMARK=#{financeDirectorRemark},
+    	</if>
+    	UPDATE_DATE=SYSDATE
+	</set>
+	where pid = #{pid}
+</update>
+<sql id="applyFinanceHandle_Column_List">
+       PID,
+       FINANCE_HANDLE_ID,
+       REC_PRO,
+       REC_MONEY,
+       REC_ACCOUNT,
+       TO_CHAR(REC_DATE, 'yyyy-MM-dd') REC_DATE,
+       PRO_RESOURCE,
+       OPERATOR,
+       REMARK,
+       TO_CHAR(UPDATE_DATE,'YYYY-MM-DD HH24:MI:SS') AS UPDATE_DATE,
+       (SELECT L.LOOKUP_DESC
+          FROM SYS_LOOKUP_VAL L LEFT JOIN SYS_LOOKUP LK ON LK.PID=L.LOOKUP_ID
+         WHERE LK.LOOKUP_TYPE='LOAN_SOURCES_OF_FUNDS' AND L.LOOKUP_VAL = F.PRO_RESOURCE ) AS RESOURCE_STR,
+         PRO_RESOURCE_MONEY,
+         PRO_RESOURCE_MONEY_2,
+         PRO_RESOURCE_2,
+         (SELECT L.LOOKUP_DESC
+          FROM SYS_LOOKUP_VAL L LEFT JOIN SYS_LOOKUP LK ON LK.PID=L.LOOKUP_ID
+         WHERE LK.LOOKUP_TYPE='LOAN_SOURCES_OF_FUNDS' AND L.LOOKUP_VAL = F.PRO_RESOURCE_2 ) AS PRO_RESOURCE_STR2,
+         APPLY_STATUS,
+         FUND_MANAGER_REMARK,
+         FINANCE_DIRECTOR_REMARK
+         </sql>
+<!-- 根据ID进行查询 -->
+<select id="getApplyFinanceHandleById" resultMap="applyFinanceHandleMap"
+	parameterType="int">
+	SELECT <include refid="applyFinanceHandle_Column_List" /> 
+  FROM BIZ_LOAN_APPLY_FINANCE_HANDLE F
+				where F.PID = #{pid}
+</select>
+<!-- 根据项目ID和收款项目进行查询 -->
+<select id="getByProjectIdAndRecPro" resultMap="applyFinanceHandleMap"
+	parameterType="java.util.Map">
+	SELECT <include refid="applyFinanceHandle_Column_List" /> 
+  FROM BIZ_LOAN_APPLY_FINANCE_HANDLE F
+				WHERE F.REC_PRO=#{recPro} 
+				      AND F.FINANCE_HANDLE_ID = (SELECT B.PID
+                                FROM BIZ_PROJECT A
+                               INNER JOIN BIZ_LOAN_FINANCE_HANDLE B
+                                  ON A.PID = B.PROJECT_ID
+                               WHERE A.PID =#{projectId})
+</select>
+<!-- 根据项目id获取最新的回款信息，如果有第二次回款则返回第二次，没有则返回第一次回款信息 -->
+<select id="getNewRecApplyFinance" resultMap="applyFinanceHandleMap"
+	parameterType="int">
+	<![CDATA[
+	SELECT *
+  FROM (SELECT AFH.*
+          FROM BIZ_LOAN_FINANCE_HANDLE FH
+         INNER JOIN BIZ_LOAN_APPLY_FINANCE_HANDLE AFH
+            ON FH.PID = AFH.FINANCE_HANDLE_ID
+         WHERE FH.PROJECT_ID = #{projectId}
+           AND ((AFH.REC_PRO = 5 AND AFH.REC_DATE IS NOT NULL AND AFH.REC_MONEY>0) OR
+               AFH.REC_PRO = 3)
+         ORDER BY AFH.REC_PRO DESC)
+ WHERE ROWNUM = 1
+	]]>
+</select>
+<select id="findAllApplyFinanceHandle" resultMap="applyFinanceHandleMap"
+	parameterType="applyFinanceHandleDTO">
+	SELECT D.* FROM (SELECT T.*, ROWNUM RN
+	        FROM ( SELECT F.PID,
+       F.FINANCE_HANDLE_ID,
+       F.REC_PRO,
+       (CASE
+         WHEN FH.STATUS = 1 AND F.REC_PRO = 1 THEN
+          PG.GUARANTEE_FEE
+         WHEN FH.STATUS = 1 AND F.REC_PRO = 2 THEN
+          PG.POUNDAGE
+         WHEN FH.STATUS = 1 AND F.REC_PRO = 7 THEN
+          PG.RECE_MONEY
+         ELSE
+          REC_MONEY
+       END) AS REC_MONEY,
+       REC_ACCOUNT,
+       TO_CHAR(F.REC_DATE, 'YYYY-MM-DD') REC_DATE,
+       F.PRO_RESOURCE,
+       F.OPERATOR,
+       F.REMARK,
+       TO_CHAR(F.UPDATE_DATE, 'YYYY-MM-DD HH24:MI:SS') AS UPDATE_DATE,
+       (SELECT L.LOOKUP_DESC
+          FROM SYS_LOOKUP_VAL L
+          LEFT JOIN SYS_LOOKUP LK
+            ON LK.PID = L.LOOKUP_ID
+         WHERE LK.LOOKUP_TYPE = 'LOAN_SOURCES_OF_FUNDS'
+           AND L.LOOKUP_VAL = F.PRO_RESOURCE) AS RESOURCE_STR,
+       F.PRO_RESOURCE_MONEY,
+       F.PRO_RESOURCE_MONEY_2,
+       F.PRO_RESOURCE_2,
+       (SELECT L.LOOKUP_DESC
+          FROM SYS_LOOKUP_VAL L
+          LEFT JOIN SYS_LOOKUP LK
+            ON LK.PID = L.LOOKUP_ID
+         WHERE LK.LOOKUP_TYPE = 'LOAN_SOURCES_OF_FUNDS'
+           AND L.LOOKUP_VAL = F.PRO_RESOURCE_2) AS PRO_RESOURCE_STR2,
+       F.APPLY_STATUS,
+       F.FUND_MANAGER_REMARK,
+       F.FINANCE_DIRECTOR_REMARK,
+       PG.FEE_RATE AS FEE_RATE,
+       P.PROJECT_TYPE
+  FROM BIZ_LOAN_APPLY_FINANCE_HANDLE F
+  LEFT JOIN BIZ_LOAN_FINANCE_HANDLE FH
+    ON F.FINANCE_HANDLE_ID = FH.PID
+  LEFT JOIN BIZ_PROJECT_GUARANTEE PG
+    ON FH.PROJECT_ID = PG.PROJECT_ID
+  LEFT JOIN BIZ_PROJECT P
+    ON FH.PROJECT_ID=P.PID
+	<where>
+		<trim>
+			<if test="userIds!=null and userIds.size()>0">
+				AND F.CREATER_ID IN
+				<foreach item="itemId" collection="userIds" open="("
+					separator="," close=")">
+					#{itemId}
+				</foreach>
+			</if>
+			<if test="recProList !=null and recProList.size()>0">
+				AND F.REC_PRO IN
+				<foreach item="itemId" collection="recProList" open="("
+					separator="," close=")">
+					#{itemId}
+				</foreach>
+			</if>
+			<if test="projectId !=null and projectId >0">
+				AND F.FINANCE_HANDLE_ID = (SELECT FH.PID FROM BIZ_LOAN_FINANCE_HANDLE FH WHERE FH.PROJECT_ID=#{projectId})
+			</if>
+			<if test="pid!=null and pid>0">
+				AND F.PID = #{pid}
+			</if>
+			<if test="financeHandleId!=null and financeHandleId>0">
+				AND F.FINANCE_HANDLE_ID = #{financeHandleId}
+			</if>
+			<if test="recPro!=null and recPro>0">
+				AND F.REC_PRO = #{recPro}
+			</if>
+		</trim>
+	</where>
+	<![CDATA[
+	) T
+	WHERE ROWNUM <=#{page}*#{rows}
+	) D
+	WHERE D.RN > ((#{page}-1)*#{rows})
+	]]>
+</select>
+<select id="getApplyFinanceHandleTotal" resultType="Integer"
+	parameterType="applyFinanceHandleDTO">
+	<![CDATA[
+	SELECT COUNT(1) FROM
+			(SELECT PID,FINANCE_HANDLE_ID,REC_PRO,REC_MONEY,REC_ACCOUNT,REC_DATE,PRO_RESOURCE,OPERATOR,REMARK 
+          FROM BIZ_LOAN_APPLY_FINANCE_HANDLE F
+	]]>
+	<where>
+		<trim>
+			<if test="userIds!=null and userIds.size()>0">
+			 AND F.CREATER_ID IN
+			<foreach item="itemId" collection="userIds" open="(" separator=","
+				close=")">
+				#{itemId}
+			</foreach>		
+			</if>
+			<if test="recProList !=null and recProList.size()>0">
+				AND F.REC_PRO IN
+				<foreach item="itemId" collection="recProList" open="("
+					separator="," close=")">
+					#{itemId}
+				</foreach>
+			</if>
+			<if test="projectId !=null and projectId >0">
+				AND F.FINANCE_HANDLE_ID = (SELECT FH.PID FROM BIZ_LOAN_FINANCE_HANDLE FH WHERE FH.PROJECT_ID=#{projectId})
+			</if>
+			<if test="pid!=null and pid>0">
+				AND F.PID = #{pid}
+			</if>
+			<if test="financeHandleId!=null and financeHandleId>0">
+				AND F.FINANCE_HANDLE_ID = #{financeHandleId}
+			</if>
+			<if test="recPro!=null and recPro>0">
+				AND F.REC_PRO = #{recPro}
+			</if>
+		</trim>
+	</where>
+	) T
+</select>
+<select id="getRecMoney" resultType="double"
+	parameterType="java.util.Map">
+  SELECT CASE
+          WHEN SUM(B.REC_MONEY) > 0 THEN
+           SUM(B.REC_MONEY)
+          ELSE
+           0
+        END
+   FROM BIZ_LOAN_FINANCE_HANDLE A
+  INNER JOIN BIZ_LOAN_APPLY_FINANCE_HANDLE B
+     ON A.PID = B.FINANCE_HANDLE_ID
+	<where>
+		<trim>
+			<if test="recPros !=null and recPros.size()>0">
+				AND B.REC_PRO IN
+				<foreach item="itemId" collection="recPros" open="("
+					separator="," close=")">
+					#{itemId}
+				</foreach>
+			</if>
+			<if test="projectId !=null and projectId >0">
+				AND A.PROJECT_ID = #{projectId}
+			</if>
+		</trim>
+	</where>
+</select>
+<!--  根据项目id查询放款记录-->
+<select id="getLoanHisByProjectId" resultMap="applyFinanceHandleMap" parameterType="java.util.Map">
+     SELECT B.FINANCE_HANDLE_ID, B.REC_MONEY,B.REC_PRO,
+     TO_CHAR(B.REC_DATE,'YYYY-MM-DD') AS UPDATE_DATE
+                  FROM BIZ_LOAN_APPLY_FINANCE_HANDLE B
+                  LEFT JOIN BIZ_LOAN_FINANCE_HANDLE A ON A.PID=B.FINANCE_HANDLE_ID
+                 WHERE A.PROJECT_ID = ${projectId}
+			<if test="productNum == 'JYYSLTFD' or productNum == 'FJYYSLTFD'">
+				AND B.REC_PRO in(3,9)
+			</if>
+			<if test="productNum != 'JYYSLTFD' and productNum != 'FJYYSLTFD'">
+				AND B.REC_PRO in(3)
+			</if>
+               ORDER BY REC_PRO 
+</select>
+</mapper>

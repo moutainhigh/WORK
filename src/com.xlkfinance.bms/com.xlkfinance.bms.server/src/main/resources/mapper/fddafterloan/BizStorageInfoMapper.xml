@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xlkfinance.bms.server.fddafterloan.mapper.BizStorageInfoMapper">
+	<resultMap id="bizStorageInfoMap" type="com.xlkfinance.bms.rpc.fddafterloan.BizStorageInfo">
+		<id property="pid" column="PID" />
+		<id property="projectId" column="PROJECT_ID" />
+		<id property="mortgageId" column="MORTGAGE_ID" />
+		<id property="fileName" column="FILE_NAME" />
+		<id property="registerTime" column="REGISTER_TIME" />
+		<id property="fileDesc" column="FILE_DESC" />
+		<id property="createId" column="CREATE_ID" />
+		<id property="createName" column="CREATE_NAME" />
+		<id property="createDate" column="CREATE_DATE" />
+		<id property="status" column="STATUS" />
+	</resultMap>
+	<sql id="column_list">
+        PID,PROJECT_ID,MORTGAGE_ID,FILE_NAME,REGISTER_TIME,FILE_DESC,CREATE_ID,CREATE_DATE,STATUS
+	</sql>
+	<!-- 查询所有 -->
+	<select id="getAll" resultMap="bizStorageInfoMap" parameterType="com.xlkfinance.bms.rpc.fddafterloan.BizStorageInfo">
+		SELECT
+		<include refid="column_list" />
+		FROM BIZ_STORAGE_INFO
+		<where>
+			<trim>
+		      <if test="pid != null and pid >0">
+	          PID=#{pid}
+	          </if>
+		      <if test="projectId != null and projectId >0">
+	          AND PROJECT_ID=#{projectId}
+	          </if>
+		      <if test="mortgageId != null and mortgageId >0">
+	          AND MORTGAGE_ID=#{mortgageId}
+	          </if>
+		      <if test="fileName != null and fileName !=''">
+	          AND FILE_NAME=#{fileName}
+	          </if>
+		      <if test="registerTime != null and registerTime !=''">
+	          AND REGISTER_TIME=#{registerTime}
+	          </if>
+		      <if test="fileDesc != null and fileDesc !=''">
+	          AND FILE_DESC=#{fileDesc}
+	          </if>
+		      <if test="createId != null and createId >0">
+	          AND CREATE_ID=#{createId}
+	          </if>
+		      <if test="createDate != null and createDate !=''">
+	          AND CREATE_DATE=#{createDate}
+	          </if>
+		      <if test="status != null and status >0">
+	          AND STATUS=#{status}
+	          </if>
+			</trim>
+		</where>
+	</select>
+	<!-- 根据id获取 -->
+	<select id="getById" resultMap="bizStorageInfoMap">
+		SELECT <include refid="column_list" /> FROM BIZ_STORAGE_INFO WHERE PID=#{pid}
+	</select>
+	<!-- 插入一条数据 -->
+	<insert id="insert" parameterType="com.xlkfinance.bms.rpc.fddafterloan.BizStorageInfo">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_BIZ_STORAGE_INFO.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_STORAGE_INFO
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+				PID,
+			</if>
+		    <if test="projectId != null and projectId >0">
+				PROJECT_ID,
+			</if>
+		    <if test="mortgageId != null and mortgageId >0">
+				MORTGAGE_ID,
+			</if>
+		    <if test="fileName != null and fileName !=''">
+				FILE_NAME,
+			</if>
+		    <if test="registerTime != null and registerTime !=''">
+				REGISTER_TIME,
+			</if>
+		    <if test="fileDesc != null and fileDesc !=''">
+				FILE_DESC,
+			</if>
+		    <if test="createId != null and createId >0">
+				CREATE_ID,
+			</if>
+				CREATE_DATE,
+		    <if test="status != null and status >0">
+				STATUS,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+		    #{pid},
+			</if>
+		    <if test="projectId != null and projectId >0">
+		    #{projectId},
+			</if>
+		    <if test="mortgageId != null and mortgageId >0">
+		    #{mortgageId},
+			</if>
+		    <if test="fileName != null and fileName !=''">
+		    #{fileName},
+			</if>
+		    <if test="registerTime != null and registerTime !=''">
+		    #{registerTime,jdbcType=DATE,javaType=String},
+			</if>
+		    <if test="fileDesc != null and fileDesc !=''">
+		    #{fileDesc},
+			</if>
+		    <if test="createId != null and createId >0">
+		    #{createId},
+			</if>
+		    SYSDATE,
+		    <if test="status != null and status >0">
+		    #{status},
+			</if>
+		</trim>
+	</insert>
+	<!-- 根据id删除数据 -->
+	<delete id="deleteById" parameterType="com.xlkfinance.bms.rpc.fddafterloan.BizStorageInfo">
+		<![CDATA[DELETE FROM BIZ_STORAGE_INFO WHERE PID=#{pid}]]>
+	</delete>
+	<!-- 根据id更新数据 -->
+		<update id="update" parameterType="com.xlkfinance.bms.rpc.fddafterloan.BizStorageInfo">
+		UPDATE BIZ_STORAGE_INFO
+		<set>
+		    <if test="pid != null and pid >0">
+		     PID=#{pid},
+			</if>
+		    <if test="projectId != null and projectId >0">
+		     PROJECT_ID=#{projectId},
+			</if>
+		    <if test="mortgageId != null and mortgageId >0">
+		     MORTGAGE_ID=#{mortgageId},
+			</if>
+		    <if test="fileName != null and fileName !=''">
+		     FILE_NAME=#{fileName},
+			</if>
+		    <if test="registerTime != null and registerTime !=''">
+		     REGISTER_TIME=#{registerTime,jdbcType=DATE,javaType=String},
+			</if>
+		    <if test="fileDesc != null and fileDesc !=''">
+		     FILE_DESC=#{fileDesc},
+			</if>
+		    <if test="status != null and status >0">
+		     STATUS=#{status},
+			</if>
+		</set>
+		WHERE PID = #{pid}
+	</update>
+	<!-- 根据传入多个id删除数据 -->
+	<delete id="deleteByIds" parameterType="java.util.List">
+		DELETE FROM BIZ_STORAGE_INFO WHERE PID in
+		<foreach collection="list" item="item" index="index" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+	<!-- 入库材料清单（分页查询） -->
+	<select id="queryStorageInfo" resultMap="bizStorageInfoMap"
+		parameterType="com.xlkfinance.bms.rpc.fddafterloan.BizStorageInfo">
+		<if test="page!=-1">
+			SELECT D.* FROM (SELECT T.*, ROWNUM RN
+			FROM (
+		</if>
+			SELECT A.PID,
+			       A.PROJECT_ID,
+			       A.MORTGAGE_ID,
+			       A.FILE_NAME,
+			       A.REGISTER_TIME,
+			       A.FILE_DESC,
+			       A.CREATE_ID,
+			       B.REAL_NAME AS CREATE_NAME,
+			       TO_CHAR(A.CREATE_DATE,'yyyy-mm-ddhh24:mi:ss') AS CREATE_DATE,
+			       A.STATUS
+			  FROM BIZ_STORAGE_INFO A
+			  LEFT JOIN SYS_USER B
+			  ON A.CREATE_ID=B.PID
+		<where>
+			<trim>
+				<if test="projectId != null and projectId >0">
+					AND A.PROJECT_ID=#{projectId}
+				</if>
+			</trim>
+		</where>
+		<if test="page!=-1">
+	<![CDATA[
+	ORDER BY A.CREATE_DATE DESC
+	) T
+	WHERE ROWNUM <=#{page}*#{rows}
+	) D
+	WHERE D.RN > ((#{page}-1)*#{rows})
+	]]>
+		</if>
+	</select>
+	<!--入库材料清单条数（分页查询） -->
+	<select id="getStorageInfoTotal" resultType="Integer"
+		parameterType="com.xlkfinance.bms.rpc.fddafterloan.BizStorageInfo">
+	<![CDATA[
+	SELECT COUNT(1) FROM
+			(		SELECT A.PID
+			  FROM BIZ_STORAGE_INFO A
+			  LEFT JOIN SYS_USER B
+			  ON A.CREATE_ID=B.PID
+	]]>
+		<where>
+			<trim>
+				<if test="projectId != null and projectId >0">
+					AND A.PROJECT_ID=#{projectId}
+				</if>
+			</trim>
+		</where>
+		) T
+	</select>
+</mapper>

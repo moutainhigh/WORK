@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xlkfinance.bms.server.system.mapper.OrgCapitalCostMapper">
+	<resultMap id="orgCapitalCostMap" type="com.xlkfinance.bms.rpc.system.OrgCapitalCost">
+		<id property="pid" column="PID" />
+		<id property="orgId" column="ORG_ID" />
+		<id property="yearRate" column="YEAR_RATE" />
+		<id property="stepAmount" column="STEP_AMOUNT" />
+		<id property="createDate" column="CREATE_DATE" />
+		<id property="createId" column="CREATE_ID" />
+		<id property="updateId" column="UPDATE_ID" />
+		<id property="updateDate" column="UPDATE_DATE" />
+	</resultMap>
+	<sql id="column_list">
+        PID,ORG_ID,YEAR_RATE,STEP_AMOUNT,CREATE_DATE,CREATE_ID,UPDATE_ID,UPDATE_DATE
+	</sql>
+	<!-- 查询所有 -->
+	<select id="getAll" resultMap="orgCapitalCostMap" parameterType="com.xlkfinance.bms.rpc.system.OrgCapitalCost">
+		SELECT
+		<include refid="column_list" />
+		FROM ORG_CAPITAL_COST
+		<where>
+			<trim>
+		      <if test="pid != null and pid >0">
+	          PID=#{pid}
+	          </if>
+		      <if test="orgId != null and orgId >0">
+	          AND ORG_ID=#{orgId}
+	          </if>
+		      <if test="yearRate != null and yearRate >0">
+	          AND YEAR_RATE=#{yearRate}
+	          </if>
+		      <if test="stepAmount != null and stepAmount >= 0">
+	          AND STEP_AMOUNT=#{stepAmount}
+	          </if>
+		      <if test="createDate != null and createDate >0">
+	          AND CREATE_DATE=#{createDate}
+	          </if>
+		      <if test="createId != null and createId !=''">
+	          AND CREATE_ID=#{createId}
+	          </if>
+		      <if test="updateId != null and updateId >0">
+	          AND UPDATE_ID=#{updateId}
+	          </if>
+		      <if test="updateDate != null and updateDate !=''">
+	          AND UPDATE_DATE=#{updateDate}
+	          </if>
+			</trim>
+		</where>
+		ORDER BY STEP_AMOUNT 
+	</select>
+	<!-- 根据id获取 -->
+	<select id="getById" resultMap="orgCapitalCostMap">
+		SELECT <include refid="column_list" /> FROM ORG_CAPITAL_COST WHERE PID=#{pid}
+	</select>
+	<!-- 插入一条数据 -->
+	<insert id="insert" parameterType="com.xlkfinance.bms.rpc.system.OrgCapitalCost">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_ORG_CAPITAL_COST.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO ORG_CAPITAL_COST
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+				PID,
+			</if>
+		    <if test="orgId != null and orgId >0">
+				ORG_ID,
+			</if>
+		    <if test="yearRate != null">
+				YEAR_RATE,
+			</if>
+		    <if test="stepAmount != null">
+				STEP_AMOUNT,
+			</if>
+				CREATE_DATE,
+		    <if test="createId != null and createId !=''">
+				CREATE_ID,
+			</if>
+		    <if test="updateId != null and updateId >0">
+				UPDATE_ID,
+			</if>
+		    <if test="updateDate != null and updateDate !=''">
+				UPDATE_DATE,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+		    #{pid},
+			</if>
+		    <if test="orgId != null and orgId >0">
+		    #{orgId},
+			</if>
+		    <if test="yearRate != null">
+		    #{yearRate},
+			</if>
+		    <if test="stepAmount != null">
+		    #{stepAmount},
+			</if>
+		    SYSDATE,
+		    <if test="createId != null and createId !=''">
+		    #{createId},
+			</if>
+		    <if test="updateId != null and updateId >0">
+		    #{updateId},
+			</if>
+		    <if test="updateDate != null and updateDate !=''">
+		    #{updateDate,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		</trim>
+	</insert>
+
+	<!-- 根据id更新数据 -->
+		<update id="update" parameterType="com.xlkfinance.bms.rpc.system.OrgCapitalCost">
+		UPDATE ORG_CAPITAL_COST
+		<set>
+		    <if test="pid != null and pid >0">
+		     PID=#{pid},
+			</if>
+		    <if test="orgId != null and orgId >0">
+		     ORG_ID=#{orgId},
+			</if>
+		    <if test="yearRate != null">
+		     YEAR_RATE=#{yearRate},
+			</if>
+		    <if test="stepAmount != null">
+		     STEP_AMOUNT=#{stepAmount},
+			</if>
+		    <if test="updateId != null and updateId >0">
+		     UPDATE_ID=#{updateId},
+			</if>
+		     UPDATE_DATE=SYSDATE
+		</set>
+		WHERE PID = #{pid}
+	</update>
+	<!-- 删除资金成本 -->
+	<delete id="delCapitionCost"  parameterType="java.lang.Integer">
+		DELETE FROM ORG_CAPITAL_COST WHERE PID = #{pid,jdbcType=INTEGER}
+	</delete>
+	<!-- 查询 -->
+	<select id="getYearRate" parameterType="java.lang.Integer"  resultMap="orgCapitalCostMap">
+		SELECT B.* FROM CAPITAL_ORG_INFO A 
+		INNER JOIN ORG_CAPITAL_COST B ON A.PID = B.ORG_ID 
+		WHERE A.LOAN_MONEY_TOTAL >=B.STEP_AMOUNT AND A.PID = #{pid,jdbcType=INTEGER} ORDER BY B.STEP_AMOUNT
+	</select>
+</mapper>

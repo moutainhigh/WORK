@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.customer.mapper.CusEstOptionMapper">
+
+
+<resultMap id="selectAllResultMap" type="com.xlkfinance.bms.rpc.customer.CusEstOption" >
+   	<id column="PID" property="pid" jdbcType="INTEGER" />
+   	<result column="QUOTA_ID" property="cusEstQuota.pid" jdbcType="INTEGER" />
+   	<result column="OPTION_NAME" property="optionName" jdbcType="VARCHAR" />
+   	<result column="SCORE" property="score" jdbcType="DOUBLE" />
+   	<result column="REMARK" property="remark" jdbcType="VARCHAR" />
+   	<result column="STATUS" property="status" jdbcType="INTEGER" />
+   	
+</resultMap>
+
+<select id="getCusEstOptions" resultMap="selectAllResultMap" parameterType="java.lang.Integer">
+  		SELECT 
+         	PID, 
+	    	QUOTA_ID, 
+	    	OPTION_NAME, 
+	    	SCORE, 
+	    	REMARK,
+	    	STATUS
+ 		FROM 
+         CUS_EST_option
+ 		WHERE 
+ 			status=1
+		and quota_id=#{quotaId,jdbcType=INTEGER}
+  	</select>
+
+<select id="selectByPrimaryKey" resultMap="selectAllResultMap" parameterType="java.lang.Integer">
+	select * from cus_est_option where pid=#{pid,jdbcType=INTEGER}
+</select>  	
+  	
+<insert id="insert" parameterType="com.xlkfinance.bms.rpc.customer.CusEstOption">
+  <selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+		SELECT SEQ_CUS_EST_OPTION.Nextval as PID from DUAL
+	</selectKey>
+    insert into cus_est_option (
+    	PID, 
+    	QUOTA_ID, 
+    	OPTION_NAME, 
+    	SCORE, 
+    	REMARK,
+    	STATUS)
+    values (
+    	#{pid,jdbcType=INTEGER}, 
+    	#{cusEstQuota.pid,jdbcType=INTEGER}, 
+    	#{optionName,jdbcType=VARCHAR}, 
+      	#{score,jdbcType=DOUBLE}, 
+      	#{remark,jdbcType=VARCHAR},
+      	1)
+  </insert>
+  
+ <!-- 批量增加 -->  
+<insert id="insertCusEstOptions" parameterType="java.util.List">
+    insert into cus_est_option (
+    	PID, 
+    	QUOTA_ID, 
+    	OPTION_NAME, 
+    	SCORE, 
+    	REMARK,
+    	STATUS)
+	select SEQ_CUS_EST_OPTION.Nextval,A.* from(
+    <foreach collection="list" item="item" index="index" separator="UNION">
+        SELECT
+	    	#{item.cusEstQuota.pid,jdbcType=INTEGER}, 
+	    	#{item.optionName,jdbcType=VARCHAR}, 
+	      	#{item.score,jdbcType=DOUBLE}, 
+	      	#{item.remark,jdbcType=VARCHAR},
+	      	1
+      	from dual 
+     </foreach>
+        ) A
+
+</insert>
+
+  <!-- 更新的方法 -->
+	<update id="updateByPrimaryKey" parameterType="com.xlkfinance.bms.rpc.customer.CusEstOption">
+		update cus_est_option
+		<set>
+		<if test="cusEstQuota != null">
+		    QUOTA_ID = #{cusEstQuota.pid,jdbcType=INTEGER}, 
+		</if>
+		<if test="optionName != null">
+		    OPTION_NAME = #{optionName,jdbcType=VARCHAR},  
+		</if>
+    	<if test="score != null">
+      		SCORE = #{score,jdbcType=DOUBLE}, 
+      	</if>
+      	<if test="remark != null">
+      		REMARK = #{remark,jdbcType=VARCHAR},
+      	</if>
+      	<if test="status != null">
+      		STATUS = 1,
+      	</if>
+		</set>
+		where pid = #{pid,jdbcType=INTEGER}
+	</update>
+	
+<update id="updateCusEstOptions" parameterType="java.util.List">
+	begin
+	 <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+		update cus_est_option
+		<set>
+			<if test="item.cusEstQuota.pid != null">
+			    QUOTA_ID = #{item.cusEstQuota.pid,jdbcType=INTEGER}, 
+			</if>
+			<if test="item.optionName != null">
+			    OPTION_NAME = #{item.optionName,jdbcType=VARCHAR},  
+			</if>
+	    	<if test="item.score != null">
+	      		SCORE = #{item.score,jdbcType=DOUBLE}, 
+	      	</if>
+	      	<if test="item.remark != null">
+	      		REMARK = #{item.remark,jdbcType=VARCHAR},
+	      	</if>
+		</set>
+		where pid = #{item.pid,jdbcType=INTEGER}
+	</foreach>
+	;end;
+</update>
+
+<update id="deleteEstOptions" parameterType="java.util.List">
+  	UPDATE CUS_EST_OPTION
+	   SET STATUS = 0
+	 WHERE QUOTA_ID =#{list[0].cusEstQuota.pid}
+	   AND PID NOT IN
+	<foreach item="item" collection="list" open="(" separator="," close=")">
+	          #{item.pid}
+	</foreach>
+</update>
+	
+</mapper>

@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.beforeloan.mapper.ProjectSurveyReportMapper">
+	<resultMap id="ProjectSurveyReportResultMap" type="com.xlkfinance.bms.rpc.beforeloan.ProjectSurveyReport">
+		<id column="PID" property="pid"/>
+		<result column="PROJECT_ID" property="projectId"/>
+		<result column="INTRODUCTION" property="introduction"/>
+		<result column="PROJECT_SOURCE" property="projectSource"/>
+		<result column="FINANCIAL_STATUS" property="financialStatus"/>
+		<result column="LOAN_PURPOSES" property="loanPurposes"/>
+		<result column="REPAY_ANALYSIS" property="repayAnalysis"/>
+		<result column="RISK_WARNING" property="riskWarning"/>
+		<result column="ASSURANCE_MEASURES" property="assuranceMeasures"/>
+		<result column="SURVEY_RESULTS" property="surveyResults"/>
+		<result column="STATUS" property="status"/>
+		
+		<result column="SPECIAL_DESC" property="specialDesc"/>
+	</resultMap>
+    
+    <!-- 根据项目ID查询尽职调查报告 -->
+    <select id="getSurveyReportByProjectId" resultMap="ProjectSurveyReportResultMap" parameterType="java.lang.Integer">
+		SELECT PID,PROJECT_ID,INTRODUCTION,PROJECT_SOURCE,FINANCIAL_STATUS,LOAN_PURPOSES,REPAY_ANALYSIS,RISK_WARNING,
+		ASSURANCE_MEASURES,SURVEY_RESULTS,STATUS,SPECIAL_DESC
+		FROM BIZ_PROJECT_SURVEY_REPORT 
+		WHERE PROJECT_ID = #{projectId} 
+  	</select>
+	
+	<!-- 查询尽职调查报告PID -->
+	<select id="getSeqBizProjectSurveyReport" resultType="java.lang.Integer">
+		SELECT SEQ_BIZ_PROJECT_SURVEY_REPORT.Nextval as PID from DUAL
+	</select>
+	
+	<!-- 添加尽职调查报告 -->
+	<insert id="insert" parameterType="com.xlkfinance.bms.rpc.beforeloan.ProjectSurveyReport">
+		INSERT INTO BIZ_PROJECT_SURVEY_REPORT
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			PID,
+			<if test="projectId != null and projectId != -1 ">
+				PROJECT_ID,
+			</if>
+			<if test="introduction != null and introduction != '' ">
+				INTRODUCTION,
+			</if>
+			<if test="projectSource != null and projectSource != '' ">
+				PROJECT_SOURCE,
+			</if>
+			<if test="financialStatus != null and financialStatus != '' ">
+				FINANCIAL_STATUS,
+			</if>
+			<if test="loanPurposes != null and loanPurposes != '' ">
+				LOAN_PURPOSES,
+			</if>
+			<if test="repayAnalysis != null and repayAnalysis != '' ">
+				REPAY_ANALYSIS,
+			</if>
+			<if test="riskWarning != null and riskWarning != '' ">
+				RISK_WARNING,
+			</if>
+			<if test="assuranceMeasures != null and assuranceMeasures != '' ">
+				ASSURANCE_MEASURES,
+			</if>
+			<if test="surveyResults != null and surveyResults != '' ">
+				SURVEY_RESULTS,
+			</if>
+			<if test="status != null and status != -1 ">
+				STATUS,
+			</if>
+			<if test="specialDesc != null">
+				SPECIAL_DESC,
+			</if>
+			
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+				#{pid},
+			<if test="projectId != null and projectId != -1 ">
+				#{projectId},
+			</if>
+			<if test="introduction != null and introduction != '' ">
+				#{introduction},
+			</if>
+			<if test="projectSource != null and projectSource != '' ">
+				#{projectSource},
+			</if>
+			<if test="financialStatus != null and financialStatus != '' ">
+				#{financialStatus},
+			</if>
+			<if test="loanPurposes != null and loanPurposes != '' ">
+				#{loanPurposes},
+			</if>
+			<if test="repayAnalysis != null and repayAnalysis != '' ">
+				#{repayAnalysis},
+			</if>
+			<if test="riskWarning != null and riskWarning != '' ">
+				#{riskWarning},
+			</if>
+			<if test="assuranceMeasures != null and assuranceMeasures != '' ">
+				#{assuranceMeasures},
+			</if>
+			<if test="surveyResults != null and surveyResults != '' ">
+				#{surveyResults},
+			</if>
+			<if test="status != null and status != -1 ">
+				#{status},
+			</if>
+			<if test="specialDesc != null">
+				#{specialDesc},
+			</if>
+		</trim>
+	</insert>
+	
+	<!-- 修改尽职调查报告 -->
+	<update id="updateByPrimaryKey" parameterType="com.xlkfinance.bms.rpc.beforeloan.ProjectSurveyReport">
+		UPDATE BIZ_PROJECT_SURVEY_REPORT 
+        <trim prefix="set" suffixOverrides=",">
+			<if test="projectId != null">
+				PROJECT_ID = #{projectId},
+			</if>
+			<if test="introduction != null">
+				INTRODUCTION = #{introduction},
+			</if>
+			<if test="projectSource != null">
+				PROJECT_SOURCE = #{projectSource},
+			</if>
+			<if test="financialStatus != null">
+				FINANCIAL_STATUS = #{financialStatus},
+			</if>
+			<if test="loanPurposes != null">
+				LOAN_PURPOSES = #{loanPurposes},
+			</if>
+			<if test="repayAnalysis != null">
+				REPAY_ANALYSIS = #{repayAnalysis},
+			</if>
+			<if test="riskWarning != null">
+				RISK_WARNING = #{riskWarning},
+			</if>
+			<if test="assuranceMeasures != null">
+				ASSURANCE_MEASURES = #{assuranceMeasures},
+			</if>
+			<if test="surveyResults != null">
+				SURVEY_RESULTS = #{surveyResults},
+			</if>
+			<if test="status != null">
+				STATUS = #{status},
+			</if>
+			<if test="specialDesc != null">
+				SPECIAL_DESC = #{specialDesc},
+			</if>	
+		</trim>
+		WHERE PID = #{pid}
+	</update>
+</mapper>

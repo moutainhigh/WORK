@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xlkfinance.bms.server.inloan.mapper.CheckDocumentHisMapper">
+	<resultMap id="checkDocumentHisMap" type="com.xlkfinance.bms.rpc.inloan.CheckDocumentDTO">
+		<id property="pid" column="PID" />
+		<id property="projectId" column="PROJECT_ID" />
+		<id property="houseId" column="HOUSE_ID" />
+		<id property="checkStatus" column="CHECK_STATUS" />
+		<id property="checkStatusStr" column="CHECK_STATUS_STR" />
+		<id property="approvalStatus" column="APPROVAL_STATUS" />
+		<id property="checkDate" column="CHECK_DATE" />
+		<id property="checkWay" column="CHECK_WAY" />
+		<id property="remark" column="REMARK" />
+		<id property="attachmentId" column="ATTACHMENT_ID" />
+		<id property="createrDate" column="CREATER_DATE" />
+		<id property="createrId" column="CREATER_ID" />
+		<id property="updateId" column="UPDATE_ID" />
+		<id property="updateDate" column="UPDATE_DATE" />
+		<id property="createrName" column="CREATER_NAME" />
+		<id property="houseName" column="HOUSE_NAME" />
+		<id property="housePropertyCard" column="HOUSE_PROPERTY_CARD" />
+	</resultMap>
+	<sql id="column_list">
+        PID,PROJECT_ID,HOUSE_ID,CHECK_STATUS,APPROVAL_STATUS,
+        TO_CHAR(CHECK_DATE, 'yyyy-mm-dd') as CHECK_DATE,
+        CHECK_WAY,REMARK,ATTACHMENT_ID,CREATER_DATE,CREATER_ID,UPDATE_ID,UPDATE_DATE
+	</sql>
+	<!-- 查询所有 -->
+	<select id="getAll" resultMap="checkDocumentHisMap" parameterType="com.xlkfinance.bms.rpc.inloan.CheckDocumentDTO">
+		SELECT
+		<include refid="column_list" />
+		FROM BIZ_CHECK_DOCUMENT_HIS
+		<where>
+			<trim>
+		      <if test="pid != null and pid >0">
+	          PID=#{pid}
+	          </if>
+		      <if test="projectId != null and projectId >0">
+	          AND PROJECT_ID=#{projectId}
+	          </if>
+		      <if test="houseId != null and houseId >0">
+	          AND HOUSE_ID=#{houseId}
+	          </if>
+		      <if test="checkStatus != null and checkStatus >0">
+	          AND CHECK_STATUS=#{checkStatus}
+	          </if>
+		      <if test="approvalStatus != null and approvalStatus >0">
+	          AND APPROVAL_STATUS=#{approvalStatus}
+	          </if>
+		      <if test="checkDate != null and checkDate !=''">
+	          AND CHECK_DATE=#{checkDate}
+	          </if>
+		      <if test="checkWay != null and checkWay >0">
+	          AND CHECK_WAY=#{checkWay}
+	          </if>
+		      <if test="remark != null and remark !=''">
+	          AND REMARK=#{remark}
+	          </if>
+		      <if test="attachmentId != null and attachmentId >0">
+	          AND ATTACHMENT_ID=#{attachmentId}
+	          </if>
+		      <if test="createrDate != null and createrDate !=''">
+	          AND CREATER_DATE=#{createrDate}
+	          </if>
+		      <if test="createrId != null and createrId >0">
+	          AND CREATER_ID=#{createrId}
+	          </if>
+		      <if test="updateId != null and updateId >0">
+	          AND UPDATE_ID=#{updateId}
+	          </if>
+		      <if test="updateDate != null and updateDate !=''">
+	          AND UPDATE_DATE=#{updateDate}
+	          </if>
+			</trim>
+		</where>
+	</select>
+	
+	<!-- 根据id获取 -->
+	<select id="getById" resultMap="checkDocumentHisMap">
+		SELECT <include refid="column_list" /> FROM BIZ_CHECK_DOCUMENT_HIS WHERE PID=#{pid}
+	</select>
+	<!-- 插入一条数据 -->
+	<insert id="insert" parameterType="com.xlkfinance.bms.rpc.inloan.CheckDocumentDTO">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_CHECK_DOCUMENT_HIS.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_CHECK_DOCUMENT_HIS
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+				PID,
+			</if>
+		    <if test="projectId != null and projectId >0">
+				PROJECT_ID,
+			</if>
+		    <if test="houseId != null and houseId >0">
+				HOUSE_ID,
+			</if>
+		    <if test="checkStatus != null and checkStatus >0">
+				CHECK_STATUS,
+			</if>
+		    <if test="approvalStatus != null and approvalStatus >0">
+				APPROVAL_STATUS,
+			</if>
+		    <if test="checkDate != null and checkDate !=''">
+				CHECK_DATE,
+			</if>
+		    <if test="checkWay != null and checkWay >0">
+				CHECK_WAY,
+			</if>
+		    <if test="remark != null and remark !=''">
+				REMARK,
+			</if>
+		    <if test="attachmentId != null and attachmentId >0">
+				ATTACHMENT_ID,
+			</if>
+				CREATER_DATE,
+		    <if test="createrId != null and createrId >0">
+				CREATER_ID,
+			</if>
+		    <if test="updateId != null and updateId >0">
+				UPDATE_ID,
+			</if>
+				UPDATE_DATE
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+		    #{pid},
+			</if>
+		    <if test="projectId != null and projectId >0">
+		    #{projectId},
+			</if>
+		    <if test="houseId != null and houseId >0">
+		    #{houseId},
+			</if>
+		    <if test="checkStatus != null and checkStatus >0">
+		    #{checkStatus},
+			</if>
+		    <if test="approvalStatus != null and approvalStatus >0">
+		    #{approvalStatus},
+			</if>
+		    <if test="checkDate != null and checkDate !=''">
+		    #{checkDate,jdbcType=TIMESTAMP},
+			</if>
+		    <if test="checkWay != null and checkWay >0">
+		    #{checkWay},
+			</if>
+		    <if test="remark != null and remark !=''">
+		    #{remark},
+			</if>
+		    <if test="attachmentId != null and attachmentId >0">
+		    #{attachmentId},
+			</if>
+		    SYSDATE,
+		    <if test="createrId != null and createrId >0">
+		    #{createrId},
+			</if>
+		    <if test="updateId != null and updateId >0">
+		    #{updateId},
+			</if>
+		    SYSDATE
+		</trim>
+	</insert>
+	<!-- 根据id删除数据 -->
+	<delete id="deleteById" parameterType="com.xlkfinance.bms.rpc.inloan.CheckDocumentDTO">
+		<![CDATA[DELETE FROM BIZ_CHECK_DOCUMENT_HIS WHERE PID=#{pid}]]>
+	</delete>
+	<!-- 根据id更新数据 -->
+		<update id="update" parameterType="com.xlkfinance.bms.rpc.inloan.CheckDocumentDTO">
+		UPDATE BIZ_CHECK_DOCUMENT_HIS
+		<set>
+		    <if test="pid != null and pid >0">
+		     PID=#{pid},
+			</if>
+		    <if test="projectId != null and projectId >0">
+		     PROJECT_ID=#{projectId},
+			</if>
+		    <if test="houseId != null and houseId >0">
+		     HOUSE_ID=#{houseId},
+			</if>
+		    <if test="checkStatus != null and checkStatus >0">
+		     CHECK_STATUS=#{checkStatus},
+			</if>
+		    <if test="approvalStatus != null and approvalStatus >0">
+		     APPROVAL_STATUS=#{approvalStatus},
+			</if>
+		    <if test="checkDate != null and checkDate !=''">
+		     CHECK_DATE=#{checkDate,jdbcType= DATE,javaType= java.lang.String},
+			</if>
+		    <if test="checkWay != null and checkWay >0">
+		     CHECK_WAY=#{checkWay},
+			</if>
+		    <if test="remark != null and remark !=''">
+		     REMARK=#{remark},
+			</if>
+		    <if test="attachmentId != null and attachmentId >0">
+		     ATTACHMENT_ID=#{attachmentId},
+			</if>
+		    <if test="updateId != null and updateId >0">
+		     UPDATE_ID=#{updateId},
+			</if>
+		     UPDATE_DATE=SYSDATE
+		</set>
+		WHERE PID = #{pid}
+	</update>
+	<!-- 根据传入多个id删除数据 -->
+	<delete id="deleteByIds" parameterType="java.util.List">
+		DELETE FROM BIZ_CHECK_DOCUMENT_HIS WHERE PID in
+		<foreach collection="list" item="item" index="index" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+	<!-- 查档历史列表(分页查询) -->
+	<select id="queryCheckDocumentHisIndex" resultMap="checkDocumentHisMap"
+		parameterType="com.xlkfinance.bms.rpc.inloan.CheckDocumentDTO">
+		<if test="page!=-1">
+			SELECT D.* FROM (SELECT T.*, ROWNUM RN
+			FROM (
+		</if>
+		    SELECT A.PID,
+			       A.PROJECT_ID,
+			       A.HOUSE_ID,
+			       A.CHECK_STATUS,
+			       LK.CHECK_STATUS AS CHECK_STATUS_STR,
+			       A.APPROVAL_STATUS,
+			       TO_CHAR(A.CHECK_DATE, 'YYYY-MM-DD HH24')  AS CHECK_DATE,
+			       A.CHECK_WAY,
+			       A.REMARK,
+			       A.ATTACHMENT_ID,
+			       A.CREATER_DATE,
+			       A.CREATER_ID,
+			       A.UPDATE_ID,
+			       A.UPDATE_DATE,
+			       B.HOUSE_NAME,
+			       B.HOUSE_PROPERTY_CARD,
+			       (SELECT U.REAL_NAME FROM SYS_USER U WHERE U.PID = A.CREATER_ID) AS CREATER_NAME
+			  FROM BIZ_CHECK_DOCUMENT_HIS A
+			  LEFT JOIN BIZ_PROJECT_ESTATE B
+			    ON A.HOUSE_ID = B.PID
+			  LEFT JOIN (SELECT LOOKUP_VAL,lv.LOOKUP_DESC AS CHECK_STATUS
+					FROM SYS_LOOKUP L,SYS_LOOKUP_VAL LV
+					WHERE LV.STATUS = 1  AND L.PID = LV.LOOKUP_ID  
+					AND L.LOOKUP_TYPE = 'CHECK_DOCUMENT_STATUS') LK
+                ON LK.LOOKUP_VAL=A.CHECK_STATUS
+		<where>
+			<trim>
+				<if test="houseId != null and houseId >0">
+					AND A.HOUSE_ID=#{houseId}
+				</if>
+				<if test="projectId != null and projectId >0">
+					AND A.PROJECT_ID=#{projectId}
+				</if>
+				<if test="checkWay != null and checkWay >0">
+	                AND CHECK_WAY = #{checkWay}
+	             </if>
+			</trim>
+		</where>
+		ORDER BY A.CREATER_DATE DESC
+		<if test="page!=-1">
+	<![CDATA[
+	) T
+	WHERE ROWNUM <=#{page}*#{rows}
+	) D
+	WHERE D.RN > ((#{page}-1)*#{rows})
+	]]>
+		</if>
+	</select>
+	<!--查档历史列表总数 -->
+	<select id="getCheckDocumentHisIndexTotal" resultType="Integer"
+		parameterType="com.xlkfinance.bms.rpc.inloan.CheckDocumentDTO">
+	<![CDATA[
+	SELECT COUNT(1) FROM
+			(SELECT A.PID
+		  FROM BIZ_CHECK_DOCUMENT_HIS A
+		  LEFT JOIN BIZ_PROJECT_ESTATE B
+		    ON A.HOUSE_ID = B.PID
+	]]>
+		<where>
+			<trim>
+				<if test="houseId != null and houseId >0">
+					AND A.HOUSE_ID=#{houseId}
+				</if>
+				<if test="projectId != null and projectId >0">
+					AND A.PROJECT_ID=#{projectId}
+				</if>
+				<if test="checkWay != null and checkWay >0">
+	                AND CHECK_WAY = #{checkWay}
+	             </if>
+			</trim>
+		</where>
+		) T
+	</select>
+	
+	<!-- 查档历史列表(对于单个物业和多个物业的查档，取最小的查档时间校验24和48小时) -->
+	<select id="queryCheckDocumentHisIndex1" resultMap="checkDocumentHisMap"
+	parameterType="com.xlkfinance.bms.rpc.inloan.CheckDocumentDTO">
+	SELECT PROJECT_ID,TO_CHAR(MIN(CHECK_DATE), 'YYYY-MM-DD HH24') CHECK_DATE
+	FROM
+	(
+	SELECT A.PID,
+	A.PROJECT_ID,
+	A.HOUSE_ID,
+	A.CHECK_WAY,
+	MAX(A.CHECK_DATE) OVER(PARTITION BY A.HOUSE_ID)  AS CHECK_DATE
+	FROM BIZ_CHECK_DOCUMENT_HIS A
+	LEFT JOIN BIZ_PROJECT_ESTATE B ON A.HOUSE_ID = B.PID
+	LEFT JOIN BIZ_PROJECT_ESTATE C ON C.PID=A.HOUSE_ID
+	LEFT JOIN (SELECT LOOKUP_VAL,LV.LOOKUP_DESC AS CHECK_STATUS
+	FROM SYS_LOOKUP L,SYS_LOOKUP_VAL LV
+	WHERE LV.STATUS = 1 AND L.PID = LV.LOOKUP_ID
+	AND L.LOOKUP_TYPE = 'CHECK_DOCUMENT_STATUS') LK
+	ON LK.LOOKUP_VAL=A.CHECK_STATUS
+
+	<where>
+		<trim>
+			<if test="houseId != null and houseId >0">
+				AND A.HOUSE_ID = #{houseId}
+			</if>
+			<if test="projectId != null and projectId >0">
+				AND A.PROJECT_ID = #{projectId}
+			</if>
+			<if test="checkWay != null and checkWay >0">
+				AND CHECK_WAY = #{checkWay}
+			</if>
+		</trim>
+	</where>
+	)
+	GROUP BY PROJECT_ID
+	</select>
+	
+</mapper>

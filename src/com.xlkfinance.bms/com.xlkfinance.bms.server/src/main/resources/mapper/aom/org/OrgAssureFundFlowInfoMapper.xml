@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xlkfinance.bms.server.aom.org.mapper.OrgAssureFundFlowInfoMapper">
+	<resultMap id="orgAssureFundFlowInfoMap" type="com.qfang.xk.aom.rpc.org.OrgAssureFundFlowInfo">
+		<id property="pid" column="PID" />
+		<id property="applyId" column="APPLY_ID" />
+		<id property="oldAssureMoney" column="OLD_ASSURE_MONEY" />
+		<id property="curAssureMoney" column="CUR_ASSURE_MONEY" />
+		<id property="updateDate" column="UPDATE_DATE" />
+		<id property="operator" column="OPERATOR" />
+		<id property="createdDateTime" column="CREATED_DATETIME" />
+		<id property="audit" column="AUDIT" />
+		<id property="auditDate" column="AUDIT_DATE" />
+		<id property="auditId" column="AUDIT_ID" />
+		<id property="status" column="STATUS" />
+		<id property="oldCreditLimit" column="OLD_CREDIT_LIMIT" />
+		<id property="curCreditLimit" column="CUR_CREDIT_LIMIT" />
+	</resultMap>
+	
+	<resultMap id="orgAssureFundFlowDTOMap" type="com.qfang.xk.aom.rpc.org.OrgAssureFundFlowDTO">
+		<id property="pid" column="PID" />
+		<id property="applyId" column="APPLY_ID" />
+		<id property="orgName" column="ORG_NAME" />
+		<id property="orgCode" column="ORG_CODE" />
+		<id property="contact" column="CONTACT" />
+		<id property="phone" column="PHONE" />
+		<id property="oldAssureMoney" column="OLD_ASSURE_MONEY" />
+		<id property="curAssureMoney" column="CUR_ASSURE_MONEY" />
+		<id property="createdDateTime" column="CREATED_DATETIME" />
+		<id property="status" column="STATUS" />
+	</resultMap>
+	<sql id="column_list">
+        PID,APPLY_ID,OLD_ASSURE_MONEY,CUR_ASSURE_MONEY,UPDATE_DATE,OPERATOR,CREATED_DATETIME,"AUDIT",AUDIT_DATE,AUDIT_ID,STATUS,OLD_CREDIT_LIMIT,CUR_CREDIT_LIMIT
+	</sql>
+	<!-- 查询所有 -->
+	<select id="getAll" resultMap="orgAssureFundFlowInfoMap" parameterType="com.qfang.xk.aom.rpc.org.OrgAssureFundFlowInfo">
+		SELECT
+		<include refid="column_list" />
+		FROM ORG_ASSURE_FUND_FLOW_INFO
+		<where>
+			<trim>
+		      <if test="pid != null and pid >0">
+	          PID=#{pid}
+	          </if>
+		      <if test="applyId != null and applyId >0">
+	          AND APPLY_ID=#{applyId}
+	          </if>
+		      <if test="oldAssureMoney != null and oldAssureMoney >0">
+	          AND OLD_ASSURE_MONEY=#{oldAssureMoney}
+	          </if>
+		      <if test="curAssureMoney != null and curAssureMoney >0">
+	          AND CUR_ASSURE_MONEY=#{curAssureMoney}
+	          </if>
+		      <if test="updateDate != null and updateDate !=''">
+	          AND UPDATE_DATE=#{updateDate}
+	          </if>
+		      <if test="operator != null and operator >0">
+	          AND OPERATOR=#{operator}
+	          </if>
+		      <if test="createdDateTime != null and createdDateTime !=''">
+	          AND CREATED_DATETIME=#{createdDateTime}
+	          </if>
+		      <if test="audit != null and audit !=''">
+	          AND AUDIT=#{audit}
+	          </if>
+		      <if test="auditDate != null and auditDate !=''">
+	          AND AUDIT_DATE=#{auditDate}
+	          </if>
+		      <if test="auditId != null and auditId >0">
+	          AND AUDIT_ID=#{auditId}
+	          </if>
+		      <if test="status != null and status >0">
+	          AND STATUS=#{status}
+	          </if>
+			</trim>
+		</where>
+	</select>
+	<!-- 根据id获取 -->
+	<select id="getById" resultMap="orgAssureFundFlowInfoMap">
+		SELECT <include refid="column_list" /> FROM ORG_ASSURE_FUND_FLOW_INFO WHERE PID=#{pid}
+	</select>
+	<!-- 获取申请中的保证金变更信息 -->
+	<select id="getApplyOrgFundFlow" resultMap="orgAssureFundFlowInfoMap">
+		SELECT <include refid="column_list" /> 
+		FROM ORG_ASSURE_FUND_FLOW_INFO A
+		WHERE A.STATUS = 1 AND
+		A.APPLY_ID IN
+       (SELECT B.PID FROM ORG_COOPERAT_COMPANY_APPLY_INF B WHERE B.ORG_ID =#{orgId})
+	</select>
+	<!-- 插入一条数据 -->
+	<insert id="insert" parameterType="com.qfang.xk.aom.rpc.org.OrgAssureFundFlowInfo">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_ORG_ASSURE_FUND_FLOW_INFO.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO ORG_ASSURE_FUND_FLOW_INFO
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+				PID,
+			</if>
+		    <if test="applyId != null and applyId >0">
+				APPLY_ID,
+			</if>
+		    <if test="oldAssureMoney != null and oldAssureMoney !=-1">
+				OLD_ASSURE_MONEY,
+			</if>
+		    <if test="curAssureMoney != null and curAssureMoney !=-1">
+				CUR_ASSURE_MONEY,
+			</if>
+		    <if test="updateDate != null and updateDate !=''">
+				UPDATE_DATE,
+			</if>
+		    <if test="operator != null and operator >0">
+				OPERATOR,
+			</if>
+				CREATED_DATETIME,
+		    <if test="audit != null and audit !=''">
+				"AUDIT",
+			</if>
+		    <if test="auditDate != null and auditDate !=''">
+				AUDIT_DATE,
+			</if>
+		    <if test="auditId != null and auditId >0">
+				AUDIT_ID,
+			</if>
+		    <if test="status != null and status >0">
+				STATUS,
+			</if>
+			<if test="oldCreditLimit != null and oldCreditLimit !=-1">
+				OLD_CREDIT_LIMIT,
+			</if>
+			<if test="curCreditLimit != null and curCreditLimit !=-1">
+				CUR_CREDIT_LIMIT,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+		    #{pid},
+			</if>
+		    <if test="applyId != null and applyId >0">
+		    #{applyId},
+			</if>
+		    <if test="oldAssureMoney != null and oldAssureMoney !=-1">
+		    #{oldAssureMoney},
+			</if>
+		    <if test="curAssureMoney != null and curAssureMoney !=-1">
+		    #{curAssureMoney},
+			</if>
+		    <if test="updateDate != null and updateDate !=''">
+		    #{updateDate,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		    <if test="operator != null and operator >0">
+		    #{operator},
+			</if>
+		    SYSDATE,
+		    <if test="audit != null and audit !=''">
+		    #{audit},
+			</if>
+		    <if test="auditDate != null and auditDate !=''">
+		    #{auditDate,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		    <if test="auditId != null and auditId >0">
+		    #{auditId},
+			</if>
+		    <if test="status != null and status >0">
+		    #{status},
+			</if>
+			<if test="oldCreditLimit != null and oldCreditLimit !=-1">
+				#{oldCreditLimit},
+			</if>
+			<if test="curCreditLimit != null and curCreditLimit !=-1">
+				#{curCreditLimit},
+			</if>
+		</trim>
+	</insert>
+
+	<!-- 根据id更新数据 -->
+		<update id="update" parameterType="com.qfang.xk.aom.rpc.org.OrgAssureFundFlowInfo">
+		UPDATE ORG_ASSURE_FUND_FLOW_INFO
+		<set>
+		    <if test="oldAssureMoney != null and oldAssureMoney !=-1">
+		     OLD_ASSURE_MONEY=#{oldAssureMoney},
+			</if>
+		    <if test="curAssureMoney != null and curAssureMoney !=-1">
+		     CUR_ASSURE_MONEY=#{curAssureMoney},
+			</if>
+		     UPDATE_DATE=SYSDATE,
+		    <if test="operator != null and operator >0">
+		     OPERATOR=#{operator},
+			</if>
+		    <if test="audit != null and audit !=''">
+		     "AUDIT"=#{audit},
+			</if>
+		    <if test="auditDate != null and auditDate !=''">
+		     AUDIT_DATE=#{auditDate,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		    <if test="auditId != null and auditId >0">
+		     AUDIT_ID=#{auditId},
+			</if>
+		    <if test="status != null and status >0">
+		     STATUS=#{status},
+			</if>
+			<if test="oldCreditLimit != null and oldCreditLimit !=-1">
+				OLD_CREDIT_LIMIT = #{oldCreditLimit},
+			</if>
+			<if test="curCreditLimit != null and curCreditLimit !=-1">
+				CUR_CREDIT_LIMIT = #{curCreditLimit},
+			</if>
+		</set>
+		WHERE PID = #{pid}
+	</update>
+
+	<!-- 分页查询保证金流水记录 -->
+	<select id="getOrgAssureFundByPage" resultMap="orgAssureFundFlowDTOMap" parameterType="com.qfang.xk.aom.rpc.org.OrgAssureFundFlowDTO">
+		<![CDATA[SELECT D.* FROM (SELECT T.*, ROWNUM RN
+	        	FROM (
+		SELECT OSF.PID,OSF.APPLY_ID,OAC.ORG_NAME,OAC.CODE AS ORG_CODE,OAC.CONTACT,OAC.PHONE,
+				OSF.OLD_ASSURE_MONEY,OSF.CUR_ASSURE_MONEY,OSF.STATUS,
+				TO_CHAR(OSF.CREATED_DATETIME,'yyyy-mm-dd hh24:mi:ss') AS createdDateTime
+ 		FROM ORG_ASSURE_FUND_FLOW_INFO OSF
+              LEFT JOIN ORG_COOPERAT_COMPANY_APPLY_INF OCC
+              ON OSF.APPLY_ID = OCC.PID
+              LEFT JOIN ORG_ASSETS_COOPERATION_INFO OAC
+              ON OCC.ORG_ID = OAC.PID
+              LEFT JOIN ORG_BIZ_ADVISER_ALLOCATION_INF D
+               ON OAC.PID= D.SERVICE_OBJ_ID
+              WHERE D.PID >0
+              ]]>
+			<if test="orgName != null and orgName != ''">
+				AND OAC.ORG_NAME LIKE '%${orgName}%'
+			</if>
+			<if test="orgCode != null and orgCode != ''">
+				AND OAC.CODE LIKE '%${orgCode}%'
+			</if>
+             <if test="contact != null and contact != ''">
+				AND OAC.CONTACT LIKE '%${contact}%'
+			</if>
+			<if test="status != null and status >0">
+		     	AND OSF.STATUS=#{status}
+			</if>
+			<!-- 数据权限 -->
+			<if test="userIds!=null and userIds.size()>0">
+				AND	D.BIZ_ADVISER_ID IN
+			<foreach item="itemId" collection="userIds" open="(" separator="," close=")">
+			          #{itemId}
+			</foreach>
+			</if>
+			<![CDATA[ORDER BY OSF.CREATED_DATETIME DESC) T
+			WHERE ROWNUM <=#{page}*#{rows}
+			) D
+		WHERE D.RN > ((#{page}-1)*#{rows})]]>
+	</select>
+	<!-- 查询保证金流水总数 -->
+	<select id="getOrgAssureFundCount" parameterType="com.qfang.xk.aom.rpc.org.OrgAssureFundFlowDTO" resultType="Integer">
+		SELECT COUNT(*) FROM (
+		SELECT OSF.PID,OSF.APPLY_ID,OAC.ORG_NAME,OAC.CODE AS ORG_CODE,OAC.CONTACT,OAC.PHONE,
+				OSF.OLD_ASSURE_MONEY,OSF.CUR_ASSURE_MONEY,OSF.STATUS,
+				TO_CHAR(OSF.CREATED_DATETIME,'yyyy-mm-dd hh24:mi:ss')
+ 		FROM ORG_ASSURE_FUND_FLOW_INFO OSF
+              LEFT JOIN ORG_COOPERAT_COMPANY_APPLY_INF OCC
+              ON OSF.APPLY_ID = OCC.PID
+              LEFT JOIN ORG_ASSETS_COOPERATION_INFO OAC
+              ON OCC.ORG_ID = OAC.PID
+              LEFT JOIN ORG_BIZ_ADVISER_ALLOCATION_INF D
+               ON OAC.PID= D.SERVICE_OBJ_ID
+              WHERE D.PID >0
+              
+			<if test="orgName != null and orgName != ''">
+				AND OAC.ORG_NAME LIKE '%${orgName}%'
+			</if>
+			<if test="orgCode != null and orgCode != ''">
+				AND OAC.CODE LIKE '%${orgCode}%'
+			</if>
+             <if test="contact != null and contact != ''">
+				AND OAC.CONTACT LIKE '%${contact}%'
+			</if>
+			<if test="status != null and status >0">
+		     	AND OSF.STATUS=#{status}
+			</if>
+			<!-- 数据权限 -->
+			<if test="userIds!=null and userIds.size()>0">
+				AND	D.BIZ_ADVISER_ID IN
+			<foreach item="itemId" collection="userIds" open="(" separator="," close=")">
+			          #{itemId}
+			</foreach>
+			</if>
+			) DP
+	</select>
+</mapper>

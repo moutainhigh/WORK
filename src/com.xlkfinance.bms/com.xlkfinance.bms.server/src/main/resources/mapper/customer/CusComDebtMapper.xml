@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.customer.mapper.CusComDebtMapper">
+    <resultMap id="seacherCusComDebtById" type="com.xlkfinance.bms.rpc.customer.CusComDebt">
+        <id property="pid" column="pid" />
+        <result property="debtPerson" column="DEBT_PERSON" />
+        <result property="loanMoney" column="LOAN_MONEY" />
+        <result property="repay" column="REPAY" />
+        <result property="loanSurplu" column="LOAN_SURPLU" />
+        <result property="monthPay" column="MONTH_PAY" />
+        <result property="loadEndDate" column="LOAN_END_DATE" jdbcType="DATE" javaType="String"/>
+        <result property="vouchercWay" column="VOUCHER_WAY" />
+        <result property="repayWayVal" column="REPAY_WAY_VALUE" />
+        <result property="warWayVal" column="WAR_WAY_VALUE" />
+        <result property="remark" column="REMARK" />
+        <result property="loanStartDate" column="LOAN_START_DATE" jdbcType="DATE" javaType="String"/>
+        <result property="lastRepayDate" column="LAST_REPAY_DATE" jdbcType="DATE" javaType="String"/>
+        <result property="warWay" column="WAR_WAY" />
+        <result property="repayWay" column="REPAY_WAY"/>
+        <result property="debtExpl" column="DEBT_EXPL"/>
+        <result property="assPayMoney" column="ASS_PAY_MONEY"/>
+    </resultMap>
+<!--     债务的查询列表  -->
+    <resultMap id="seacrchCusComDebtResultMap" type="com.xlkfinance.bms.rpc.common.GridViewDTO">
+        <id property="pid" column="pid" />
+        <result property="value1" column="DEBT_PERSON" />
+        <result property="value2" column="LOAN_MONEY" />
+        <result property="value3" column="REPAY" />
+        <result property="value4" column="LOAN_SURPLU" />
+        <result property="value5" column="MONTH_PAY" />
+        <result property="value6" column="LOAN_END_DATE" jdbcType="DATE" javaType="String"/>
+        <result property="value7" column="REPAY_WAY"/>
+        <result property="value8" column="WAR_WAY" />
+    </resultMap>
+    <!--     债权的查询列表  -->
+    <resultMap id="seacrchCusComDebtResultMaps" type="com.xlkfinance.bms.rpc.common.GridViewDTO">
+        <id property="pid" column="pid" />
+        <result property="value1" column="DEBT_PERSON" />
+        <result property="value2" column="LOAN_MONEY" />
+        <result property="value3" column="REPAY" />
+        <result property="value4" column="LOAN_SURPLU" />
+        <result property="value6" column="REPAY_WAY"/>
+        <result property="value5" column="LOAN_END_DATE" jdbcType="DATE" javaType="String"/>
+        <result property="value7" column="VOUCHER_WAY" />
+        <result property="value8" column="WAR_WAY" />
+    </resultMap>
+    <!--     债权的担保方式  -->
+    <resultMap id="deptGuaranteeTypeResultMaps" type="com.xlkfinance.bms.rpc.customer.CusComGuaranteeType">
+        <id property="pid" column="pid" />
+        <result property="comAssureId" column="COM_ASSURE_ID" />
+        <result property="guaranteeType" column="GUARANTEE_TYPE" />
+        <result property="status" column="STATUS" />
+    </resultMap>
+    
+    
+<!--     根据Id查债务 -->
+    <select id="selectByPrimaryKey" resultMap="seacherCusComDebtById" parameterType="java.lang.Integer">
+	        SELECT CCD.PID,
+	        	   CCD.DEBT_TYPE,
+			  	   CCD.DEBT_PERSON,
+			       CCD.LOAN_MONEY,
+			       CCD.DEBT_EXPL,
+			       CCD.REPAY,
+			       CCD.LOAN_START_DATE,
+			       CCD.Last_Repay_Date,
+			       CCD.LOAN_SURPLU,
+			       CCD.MONTH_PAY,
+			       CCD.LOAN_END_DATE,
+			       CCD.REPAY_WAY,
+		      	   CCD.ASS_PAY_MONEY,
+             	   CCD.REMARK
+		      FROM CUS_COM_DEBT CCD
+		      WHERE CCD.DEBT_TYPE=1
+		      AND CCD.PID = #{pid,jdbcType=INTEGER}
+    </select>
+    
+    <!--     根据Id查债权 -->
+    <select id="selectByPrimaryKeys" resultMap="seacherCusComDebtById" parameterType="java.lang.Integer">
+	        SELECT CCD.PID,
+	        	   CCD.DEBT_TYPE,
+			  	   CCD.DEBT_PERSON,
+			       CCD.LOAN_MONEY,
+			       CCD.DEBT_EXPL,
+			       CCD.REPAY,
+			       CCD.LOAN_START_DATE,
+			       CCD.Last_Repay_Date,
+			       CCD.LOAN_SURPLU,
+			       CCD.MONTH_PAY,
+			       CCD.LOAN_END_DATE,
+		      	   CCD.VOUCHER_WAY,
+		      	   CCD.WAR_WAY,
+		      	   CCD.REPAY_WAY,
+		      	   CCD.ASS_PAY_MONEY,
+             	   CCD.REMARK
+		      FROM CUS_COM_DEBT CCD
+		      WHERE CCD.DEBT_TYPE=2
+		      AND CCD.PID = #{pid,jdbcType=INTEGER}
+    </select>
+<!--     查询债务列表 -->
+    <select id="getCusComDebts" resultMap="seacrchCusComDebtResultMap" parameterType="com.xlkfinance.bms.rpc.customer.CusComDebt">
+	  	 select * from( 
+	  	 with tmp as
+			 (SELECT CCGT.Com_Assure_Id, TO_CHAR(wm_concat(SLV.LOOKUP_VAL)) wcv
+    	FROM SYS_LOOKUP_VAL SLV, CUS_COM_GUARANTEE_TYPE CCGT
+   		WHERE SLV.pid = CCGT.GUARANTEE_TYPE
+  		 group by Com_Assure_Id)
+	SELECT rownum rn, CCD.PID,CCD.DEBT_TYPE, CCD.DEBT_PERSON, CCD.LOAN_MONEY, CCD.REPAY, CCD.LOAN_SURPLU, CCD.MONTH_PAY, CCD.LOAN_END_DATE,(
+	SELECT SLV.LOOKUP_VAL
+  FROM SYS_LOOKUP_VAL SLV
+ WHERE slv.pid = ccd.REPAY_WAY) REPAY_WAY, tmp.wcv WAR_WAY
+  FROM CUS_COM_DEBT CCD, tmp
+ WHERE 1 = 1 
+ and ccd.pid = tmp.Com_Assure_Id
+  AND CCD.STATUS = 1
+  AND CCD.DEBT_TYPE=#{debtType,jdbcType=VARCHAR}
+  AND CCD.CUS_COM_ID=#{cusComBase.pid,jdbcType=INTEGER}  	 
+  AND rownum<![CDATA[<=]]>#{page}*#{rows})zA
+ WHERE rn>=((#{page}-1)*#{rows})+1  	 
+  </select> 
+<!--   债务的分页的总计数 -->
+  <select id="getTotalDept" parameterType="com.xlkfinance.bms.rpc.customer.CusComDebt" resultType="java.lang.Integer">
+   SELECT COUNT(PID) FROM (
+   		SELECT CCD.PID,
+	  	   CCD.DEBT_TYPE,
+	  	   CCD.DEBT_PERSON,
+	       CCD.LOAN_MONEY,
+	       CCD.REPAY,
+	       CCD.LOAN_SURPLU,
+	       CCD.MONTH_PAY,
+	       CCD.LOAN_END_DATE,
+	     (SELECT SLV.LOOKUP_VAL FROM SYS_LOOKUP_VAL SLV WHERE slv.pid=ccd.REPAY_WAY) REPAY_WAY,
+         (SELECT SLV.LOOKUP_VAL FROM SYS_LOOKUP_VAL SLV WHERE SLV.pid=CCD.WAR_WAY) WAR_WAY
+	  FROM CUS_COM_DEBT CCD
+	  WHERE	1=1
+	  AND CCD.DEBT_TYPE=#{debtType,jdbcType=VARCHAR}
+	  AND CCD.STATUS=1
+	  AND CCD.CUS_COM_ID=#{cusComBase.pid,jdbcType=INTEGER})
+  </select>
+  
+<!--   查询债权列表 -->
+    <select id="getCusComDebtss" resultMap="seacrchCusComDebtResultMaps" parameterType="com.xlkfinance.bms.rpc.customer.CusComDebt">
+				 select * from( 
+				  	 with tmp as
+						 (SELECT CCGT.Com_Assure_Id, TO_CHAR(wm_concat(SLV.LOOKUP_VAL)) wcv
+			    	FROM SYS_LOOKUP_VAL SLV, CUS_COM_GUARANTEE_TYPE CCGT
+			   		WHERE SLV.pid = CCGT.GUARANTEE_TYPE
+			  		 group by Com_Assure_Id)
+		SELECT rownum rn,
+			    CCD.PID,
+			    CCD.DEBT_TYPE, 
+			    CCD.DEBT_PERSON,
+			     CCD.LOAN_MONEY, 
+			     CCD.REPAY, 
+			     CCD.LOAN_SURPLU,
+			     CCD.MONTH_PAY,
+			     CCD.LOAN_END_DATE,
+			     (SELECT SLV.LOOKUP_DESC FROM SYS_LOOKUP_VAL SLV  WHERE SLV.PID=CCD.VOUCHER_WAY) VOUCHER_WAY,
+			     (SELECT SLV.LOOKUP_VAL FROM  SYS_LOOKUP_VAL SLV WHERE slv.pid = ccd.REPAY_WAY) REPAY_WAY, 
+			   tmp.wcv WAR_WAY
+	    FROM   CUS_COM_DEBT CCD, tmp
+			 WHERE 1 = 1 
+			 and ccd.pid = tmp.Com_Assure_Id
+			  AND CCD.STATUS = 1
+			  AND CCD.DEBT_TYPE=#{debtType,jdbcType=VARCHAR}
+			  AND CCD.CUS_COM_ID=#{cusComBase.pid,jdbcType=INTEGER}  	 
+			  AND rownum<![CDATA[<=]]>#{page}*#{rows})zA
+			 WHERE rn>=((#{page}-1)*#{rows})+1  
+  </select> 
+  <select id="getTotalDepts" parameterType="com.xlkfinance.bms.rpc.customer.CusComDebt" resultType="java.lang.Integer">
+  		SELECT COUNT(PID) FROM (
+	  		SELECT CCD.PID,
+		  	   CCD.DEBT_TYPE,
+		  	   CCD.DEBT_PERSON,
+		       CCD.LOAN_MONEY,
+		       CCD.REPAY,
+		       CCD.LOAN_SURPLU,
+		       CCD.MONTH_PAY,
+		       CCD.LOAN_END_DATE,
+		       (SELECT SLV.LOOKUP_VAL FROM SYS_LOOKUP_VAL SLV WHERE slv.pid=ccd.VOUCHER_WAY) VOUCHER_WAY,
+		       (SELECT SLV.LOOKUP_VAL FROM SYS_LOOKUP_VAL SLV WHERE slv.pid=ccd.REPAY_WAY) REPAY_WAY,
+	          (SELECT SLV.LOOKUP_VAL FROM SYS_LOOKUP_VAL SLV WHERE SLV.pid=CCD.War_Way) WAR_WAY
+		  FROM CUS_COM_DEBT CCD
+		  WHERE	1=1
+		  AND CCD.DEBT_TYPE=#{debtType,jdbcType=VARCHAR}
+		  AND CCD.STATUS=1
+		  AND CCD.CUS_COM_ID=#{cusComBase.pid,jdbcType=INTEGER})
+  </select>
+  
+  
+<insert id="insert" parameterType="com.xlkfinance.bms.rpc.customer.CusComDebt">
+    <selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+		SELECT SEQ_CUS_COM_DEBT.Nextval as PID from DUAL
+	</selectKey>
+    insert into cus_com_debt (
+    	PID, 
+    	<if test="cusComBase.pid !=null">
+    	CUS_COM_ID, 
+    	</if>
+    	<if test="debtType !=null and debtType !=''">
+    	DEBT_TYPE, 
+    	</if>
+    	<if test="debtPerson !=null and debtPerson !=''">
+    	DEBT_PERSON, 
+    	</if>
+    	<if test="loanMoney !=null and loanMoney !=''">
+    	LOAN_MONEY, 
+    	</if>
+    	<if test="debtExpl !=null and debtExpl !=''">
+    	DEBT_EXPL, 
+    	</if>
+    	<if test="loanStartDate !=null and loanStartDate !=''">
+    	LOAN_START_DATE, 
+    	</if>
+    	<if test="loadEndDate !=null and loadEndDate !=''">
+    	LOAN_END_DATE, 
+    	</if>
+    	<if test="repay !=null and repay !=''">
+    	REPAY, 
+    	</if>
+    	<if test="loanSurplu !=null and loanSurplu !=''">
+    	LOAN_SURPLU, 
+    	</if>
+    	<if test="lastRepayDate !=null and lastRepayDate !=''">
+    	LAST_REPAY_DATE, 
+    	</if>
+    	<if test="repayWay !=null">
+    	REPAY_WAY, 
+    	</if>
+    	<if test="assPayMoney !=null and assPayMoney !=''">
+    	ASS_PAY_MONEY, 
+    	</if>
+    	<if test="monthPay !=null and monthPay !=''">
+    	MONTH_PAY, 
+    	</if>
+<!--     	<if test="warWay !=null"> -->
+<!--     	WAR_WAY,  -->
+<!--     	</if> -->
+    	<if test="vouchercWay !=null">
+    	VOUCHER_WAY,
+    	</if>
+    	<if test="remark !=null and remark !=''">
+    	REMARK,
+    	</if>
+    	STATUS)
+    values (
+    	#{pid,jdbcType=INTEGER}, 
+    	<if test="cusComBase.pid !=null">
+    	#{cusComBase.pid,jdbcType=INTEGER}, 
+    	</if>
+    	<if test="debtType !=null and debtType !=''">
+    	#{debtType,jdbcType=VARCHAR}, 
+    	</if>
+    	<if test="debtPerson !=null and debtPerson !=''">
+    	#{debtPerson,jdbcType=VARCHAR}, 
+    	</if>
+    	<if test="loanMoney !=null and loanMoney !=''">
+     	#{loanMoney,jdbcType=DOUBLE}, 
+     	</if>
+     	<if test="debtExpl !=null and debtExpl !=''">
+     	#{debtExpl,jdbcType=VARCHAR},
+     	</if>
+     	<if test="loanStartDate !=null and loanStartDate !=''">
+     	#{loanStartDate,jdbcType=DATE,javaType=String},
+     	</if>
+     	<if test="loadEndDate !=null and loadEndDate !=''">
+     	#{loadEndDate,jdbcType=DATE,javaType=String},
+     	</if>
+     	<if test="repay !=null and repay !=''">
+      	#{repay,jdbcType=DOUBLE},
+      	</if>
+      	<if test="loanSurplu !=null and loanSurplu !=''">
+      	#{loanSurplu,jdbcType=DOUBLE},
+      	</if>
+      	<if test="lastRepayDate !=null and lastRepayDate !=''">
+     	#{lastRepayDate,jdbcType=DATE,javaType=String},
+     	</if>
+     	<if test="repayWay !=null">
+      	#{repayWay,jdbcType=INTEGER},
+      	</if>
+      	<if test="assPayMoney !=null and assPayMoney !=''">
+      	#{assPayMoney,jdbcType=DOUBLE},
+      	</if>
+      	<if test="monthPay !=null and monthPay !=''">
+      	#{monthPay,jdbcType=DOUBLE}, 
+      	</if>
+<!--       	<if test="warWay !=null"> -->
+<!--       	#{warWay,jdbcType=INTEGER}, -->
+<!--       	</if> -->
+      	<if test="vouchercWay !=null">
+      	#{vouchercWay,jdbcType=INTEGER},
+      	</if>
+      	<if test="remark !=null and remark !=''">
+      	#{remark,jdbcType=VARCHAR},
+      	</if>
+      	#{status,jdbcType=INTEGER})
+  </insert>
+  
+  <!-- 更新的方法 -->
+	<update id="updateByPrimaryKey" parameterType="com.xlkfinance.bms.rpc.customer.CusComDebt">
+		update cus_com_debt
+		<set>
+		<if test="cusComBase.pid != null">
+		    CUS_COM_ID = #{cusComBase.pid,jdbcType=INTEGER},  
+		</if>
+		<if test="debtType != null">
+			DEBT_TYPE = #{debtType,jdbcType=VARCHAR},  
+		</if>
+		<if test="debtPerson != null">
+			DEBT_PERSON = #{debtPerson,jdbcType=VARCHAR}, 
+		</if>
+		<if test="loanMoney != null">
+     		LOAN_MONEY = #{loanMoney,jdbcType=DOUBLE}, 
+     	</if>
+     	<if test="debtExpl != null">
+     		DEBT_EXPL = #{debtExpl,jdbcType=VARCHAR},
+     	</if>
+     	<if test="loanStartDate != null">
+      		LOAN_START_DATE = #{loanStartDate,jdbcType=DATE},
+      	</if>
+      	<if test="loadEndDate != null">
+      		LOAN_END_DATE = #{loadEndDate,jdbcType=DATE},
+      	</if>
+      	<if test="repay != null">
+      		REPAY = #{repay,jdbcType=DOUBLE},
+      	</if>
+      	<if test="loanSurplu != null">
+     		LOAN_SURPLU = #{loanSurplu,jdbcType=DOUBLE},
+     	</if>
+     	<if test="lastRepayDate != null">
+     		LAST_REPAY_DATE = #{lastRepayDate,jdbcType=DATE},
+     	</if>
+     	<if test="repayWay != null">
+     		REPAY_WAY = #{repayWay,jdbcType=INTEGER},
+     	</if>
+     	<if test="assPayMoney != null">
+     		ASS_PAY_MONEY = #{assPayMoney,jdbcType=DOUBLE},
+     	</if>
+     	<if test="monthPay != null">
+     		MONTH_PAY = #{monthPay,jdbcType=DOUBLE}, 
+     	</if>
+     	<if test="remark != null">
+     		REMARK = #{remark,jdbcType=VARCHAR},
+     	</if>
+     	<if test="vouchercWay !=null">
+    	VOUCHER_WAY=#{vouchercWay,jdbcType=INTEGER},
+    	</if>
+     	<if test="status != null">
+     		STATUS = 1,
+     	</if>
+		</set> 
+		where pid = #{pid,jdbcType=INTEGER}
+	</update>
+<!-- 	删除 -->
+	<delete id="deleteCusDebt" parameterType="java.util.List">
+		update cus_com_debt
+			set
+			status=0
+			where pid in 
+		<foreach item="itemId" collection="list" open="(" separator="," close=")">
+		          #{itemId}
+		</foreach>
+	</delete>
+<!-- 	插入担保方式表 -->
+	<insert id="insertDebtGuarType" parameterType="com.xlkfinance.bms.rpc.customer.CusComGuaranteeType">
+	    <selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+		  SELECT SEQ_CUS_COM_GUARANTEE_TYPE.Nextval as PID from DUAL
+	</selectKey>
+	insert into CUS_COM_GUARANTEE_TYPE(
+		pid,
+		com_assure_id,
+		guarantee_type,
+		status)
+	values
+	(
+		#{pid,jdbcType=INTEGER}, 
+		#{comAssureId,jdbcType=INTEGER}, 
+		#{guaranteeType,jdbcType=INTEGER}, 
+		1
+	)
+	</insert>
+<!-- 	修改担保方式表的数据,先删后插 -->
+   <delete id="deleteDebtGuarType" parameterType="java.lang.Integer">
+       delete CUS_COM_GUARANTEE_TYPE CCGT 
+         where CCGT.COM_ASSURE_ID = #{comAssureId,jdbcType=INTEGER}
+   </delete>
+	<select id="getGuaranteeTypeBycusComBasePid" resultMap="deptGuaranteeTypeResultMaps" parameterType="java.lang.Integer" >
+	      SELECT PID,
+	             COM_ASSURE_ID,
+	             GUARANTEE_TYPE,
+	             STATUS
+			FROM CUS_COM_GUARANTEE_TYPE CCGT
+					WHERE CCGT.COM_ASSURE_ID = #{cusComBasePid} 
+	</select>
+</mapper>

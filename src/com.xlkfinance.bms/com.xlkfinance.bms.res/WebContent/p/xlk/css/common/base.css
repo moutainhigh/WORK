@@ -1,0 +1,42 @@
+a{color:#6d6d6d;}
+a:hover{color:#f60;}
+/*标题*/
+.hd{border-bottom:solid 1px #0080FF;}
+
+/*顶部*/
+.header{background:#f4f4f4;height:100px;border-bottom:solid 1px #C4C4C4;}
+.logo{margin:27px 0 0 10px;}
+.site_operate{margin-top:20px;width:600px;}
+.top_links{margin-left:15px;}
+.top_links a{margin:0 8px;}
+
+/*顶部搜索框
+.top_search{width:160px;height:20px;padding:2px;background:url(../img/sprites.png) no-repeat;}
+.top_search .txt{background:transparent;border:none;width:135px;}
+.top_search .btn{background:none;border:none;cursor:pointer;text-indent:-9999em;width:25px;height:20px;}*/
+
+/*主导航*/
+.navigation{width:710px;margin:17px 0 0;}
+.navigation li{margin-left:35px;display:inline;font-size:16px;}
+.navigation li a{color:#333;text-decoration:none;}
+
+/*主容器*/
+.container{margin:10px auto 30px;min-height:750px;}
+
+/*右侧内容*/
+.content{float:right;width:770px;}
+.content .hd{padding:5px 0;margin-bottom:15px;}
+.content .hd h3{font-size:14px;color:#1d6ec0;}
+
+/*底部*/
+.footer{background:#F6F6F6;padding:25px 0 15px;line-height:22px;}
+.authentication{padding:0 0 10px;border-bottom:solid 1px #dcdcdc;}
+.authentication a{display:inline-block;padding:0 10px;border-left:solid 1px #e4e4e4;}
+.authentication a.a1{border:none;}
+.copyright{text-align:left;line-height:24px;margin-top:10px;margin-left:200px;}
+.copyright a{margin:0 5px;}
+.copyright span{margin-left:15px;}
+.copyright .p2{padding-left:5px;}
+.footer select,.footer .f_logo{position:absolute;}
+.footer select{right:0px;bottom:15px;}
+.footer .f_logo{left:0;top:62px;}

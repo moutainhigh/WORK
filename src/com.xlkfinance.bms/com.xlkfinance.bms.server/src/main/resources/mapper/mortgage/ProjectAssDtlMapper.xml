@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.mortgage.mapper.ProjectAssDtlMapper">
+	<resultMap id="ProjectAssDtlResultMap" type="com.xlkfinance.bms.rpc.mortgage.ProjectAssDtl">
+		<id column="PID" property="pid" jdbcType="INTEGER"/>
+		<result column="BASE_ID" property="baseId"  />
+		<result column="LOOKUP_ID" property="lookupId"  />
+		<result column="LOOKUP_VAL" property="lookupVal" />
+		<result column="LOOKUP_DESC" property="lookupDesc" />
+		<result column="INFO_VAL" property="infoVal" />
+		<result column="STATUS" property="status" />
+	</resultMap>
+	
+	<resultMap type="com.xlkfinance.bms.rpc.mortgage.ProjectAssFile" id="ProjectAssDtlFileMap">
+		<result property="pid" column="PID"/>
+		<result property="fileSourceText"/>
+		<result property="fileType" column="FILE_TYPE"/>
+		<result property="fileSize" column="FILE_SIZE"/>
+		<result property="fileName" column="FILE_NAME"/>
+		<result property="uploadDttm" column="UPLOAD_DTTM"/>
+		<result property="fileDesc" column="FILE_DESC"/>
+		<result property="fileUrl" column="FILE_URL"/>
+		<result property="fileProperty" column="FILE_PROPERTY"/>
+	</resultMap>
+	
+	<!-- 根据抵质押物ID查询抵质押物详情信息集合 -->
+	<select id="getProjectAssDtlByBaseId" resultMap="ProjectAssDtlResultMap" parameterType="java.lang.Integer">
+		SELECT PAD.PID,PAD.BASE_ID,PAD.LOOKUP_ID,PAD.LOOKUP_VAL,
+       	LV.LOOKUP_DESC,PAD.INFO_VAL,LV.SHOW_INDEX
+  		FROM BIZ_PROJECT_ASS_DTL PAD, SYS_LOOKUP LK, SYS_LOOKUP_VAL LV
+ 		WHERE PAD.LOOKUP_ID = LK.PID
+	   	AND LK.PID = LV.LOOKUP_ID
+	   	AND lv.lookup_id = pad.lookup_id
+	   	AND pad.lookup_val = lv.lookup_val
+	   	AND PAD.STATUS = 1
+	   	AND lk.STATUS = 1
+	   	AND LV.STATUS = 1
+	   	AND PAD.BASE_ID = #{baseId}
+	 	ORDER BY LV.SHOW_INDEX
+	</select>
+	
+	<!-- 插入抵质押物详细表数据 -->
+	<insert id="addProjectAssDtls" parameterType="java.util.List">
+		insert into BIZ_PROJECT_ASS_DTL (
+	    	PID, 
+			BASE_ID,
+	    	LOOKUP_ID, 
+			LOOKUP_VAL, 
+			INFO_VAL, 
+	    	STATUS) 
+		select Seq_BIZ_PROJECT_ASS_DTL.Nextval,A.* from(
+	        <foreach collection="list" item="item" index="index"
+	            separator="UNION">
+	            SELECT
+					#{item.baseId,jdbcType=INTEGER},
+			    	#{item.lookupId,jdbcType=INTEGER}, 
+					#{item.lookupVal,jdbcType=VARCHAR}, 
+					#{item.infoVal,jdbcType=VARCHAR}, 
+					#{item.status,jdbcType=VARCHAR}
+	            from dual 
+	        </foreach>
+    	) A
+	</insert>
+	
+	<!-- 编辑抵质押物详细 -->
+	<update id="updateProjectAssDtls" parameterType="java.util.List">
+		begin
+			<foreach collection="list" item="item" index="index" open="" close="" separator=";">
+	            UPDATE BIZ_PROJECT_ASS_DTL
+				<set>
+					<if test="item.parameterVal != null and item.parameterVal != ''">
+					    PARAMETER_VAL = #{item.parameterVal,jdbcType=VARCHAR}
+					</if>
+				</set> 
+				WHERE  CONTRACT_ID = #{item.contractId,jdbcType=INTEGER}
+				AND PARAMETER_ID = #{item.parameterId,jdbcType=INTEGER}
+	       </foreach>
+	    ;end;
+	</update>
+	
+	<!-- 删除当前抵质押物下的所有担保详细信息  -->
+	<delete id="deleteProjectAssDtlByBaseId" parameterType="java.lang.Integer">
+		DELETE BIZ_PROJECT_ASS_DTL 
+    	WHERE BASE_ID = #{baseId}
+	</delete>
+	
+	
+	<insert id="saveProjectAssFile" parameterType="com.xlkfinance.bms.rpc.mortgage.ProjectAssFile">
+	<selectKey order="BEFORE" resultType="java.lang.Integer" keyProperty="pid">
+		SELECT SEQ_BIZ_PROJECT_ASS_FILE.Nextval as PID from DUAL
+	</selectKey>
+		INSERT INTO BIZ_PROJECT_ASS_FILE
+						   (PID,
+                            BASE_ID,
+                            FILE_TYPE,
+                            FILE_ID,
+                            FILE_SOURCE,
+                            FILE_PROPERTY,
+                            FILE_DESC,
+                            STATUS) 
+                         VALUES
+                          (#{pid}, 
+                           #{baseId}, 
+                           #{fileType}, 
+                           #{fileId}, 
+                           0, 
+                           #{fileProperty}, 
+                           #{fileDesc}, 
+                           1)
+	</insert>
+	
+	
+	<select id="getProjectAssFile" parameterType="java.util.Map" resultMap="ProjectAssDtlFileMap">
+		SELECT BF.FILE_NAME,
+		       BF.FILE_TYPE,
+		       BF.FILE_SIZE,
+		       BF.UPLOAD_DTTM,
+		       BPAF.FILE_DESC,
+		       BF.FILE_URL,
+		       BPAF.PID,
+		       BPAF.FILE_PROPERTY
+		  FROM BIZ_PROJECT_ASS_FILE BPAF, BIZ_FILE BF
+		 WHERE BPAF.FILE_ID = BF.PID
+		 		AND BPAF.BASE_ID = #{baseId}
+		 		AND BPAF.STATUS =1
+		 		<if test="fileType!=null and fileType!=''">
+		 			AND BPAF.FILE_TYPE = #{fileType}
+		 		</if>
+	</select>
+	
+	
+	<update id="editProjectAssFile" parameterType="com.xlkfinance.bms.rpc.mortgage.ProjectAssFile">
+		UPDATE BIZ_PROJECT_ASS_FILE
+		<set>
+			<if test="fileDesc!=null and fileDesc!=''">
+				FILE_DESC = #{fileDesc},
+			</if>
+			<if test="fileId!=null and fileId!='' and fileId!=0">
+				FILE_ID = #{fileId},
+			</if>
+		</set>
+		WHERE pid = #{pid}
+	</update>
+	
+	<update id="delProjectAssFile" parameterType="java.lang.Integer">
+		UPDATE BIZ_PROJECT_ASS_FILE
+		SET STATUS = 0
+		WHERE pid = #{pid}
+	</update>
+</mapper>

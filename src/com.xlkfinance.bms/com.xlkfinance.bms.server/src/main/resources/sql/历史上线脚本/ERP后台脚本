@@ -1,0 +1,36 @@
+菜单 
+1、机构信息管理  /orgAssetsCooperationController/orgIndex.action
+2、机构待分配管理 /orgAssetsCooperationController/orgAllocation.action
+3、机构合作管理 /orgCooperatCompanyApplyController/cooperateIndex.action
+4、机构保证金记录  /orgAssureFundRecordController/index.action
+5、保证金变更管理 /orgAssureFundFlowController/index.action
+6、合伙人信息管理 /orgPartnerInfoController/index.action
+7、合伙人合作管理 /orgPartnerInfoController/cooperateIndex.action
+8、业务分配管理 /bizProjectController/assignedIndex.action
+9、业务申请管理 /bizProjectController/index.action
+10、费用结算 /orgFeeSettleController/index.action
+11、机构合作传签管理 /orgCooperatCompanyApplyController/applyIndex.action
+
+资金机构管理
+/capitalOrgInfoController/index.action
+数据字典：
+COOPERATION_CITY  合作城市
+440300 深圳
+440100 广州
+
+ORG_COOPERATE_CONTRACT_TYPE 合同类型
+10 合作合同
+20 授信合同
+
+1、上传息费计算的导出模板
+2、修改菜单权限的名称
+3、添加风控委员会人员、运营人员，授信部人员、区总
+
+insert into ORG_CAPITAL_COST (PID, ORG_ID, YEAR_RATE, STEP_AMOUNT, CREATE_DATE, CREATE_ID, UPDATE_ID, UPDATE_DATE)
+values (SEQ_ORG_CAPITAL_COST.NEXTVAL, '1', '12', '0', SYSDATE, '20084', null, null);
+
+insert into ORG_CAPITAL_COST (PID, ORG_ID, YEAR_RATE, STEP_AMOUNT, CREATE_DATE, CREATE_ID, UPDATE_ID, UPDATE_DATE)
+values (SEQ_ORG_CAPITAL_COST.NEXTVAL, '2', '9.8', '0', SYSDATE, '20084', null, null);
+
+insert into ORG_CAPITAL_COST (PID, ORG_ID, YEAR_RATE, STEP_AMOUNT, CREATE_DATE, CREATE_ID, UPDATE_ID, UPDATE_DATE)
+values (SEQ_ORG_CAPITAL_COST.NEXTVAL, '3', '10.2', '0', SYSDATE, '20084', null, null);

@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.beforeloan.mapper.OfflineMeetingMapper">
+	<resultMap id="BizFileMap" type="com.xlkfinance.bms.rpc.system.BizFile">
+		<id property="pid" column="PID"/>
+        <result property="fileName" column="FILE_NAME" />
+        <result property="fileType" column="FILE_TYPE" />
+        <result property="fileSize" column="FILE_SIZE" />
+        <result property="uploadDttm" column="UPLOAD_DTTM" />
+        <result property="uploadUserId" column="UPLOAD_USER_ID" />
+        <result property="fileUrl" column="FILE_URL" />
+        <result property="status" column="STATUS" />
+	</resultMap>
+	
+	<resultMap id="BizProjectMeetingMap" type="com.xlkfinance.bms.rpc.beforeloan.BizProjectMeeting">
+		<id property="pid" column="PID"/>
+        <result property="recordUserId" column="CONVENE_USER_ID" />
+        <result property="meetingResult" column="MEETING_DESC" />
+        <result property="meetingNum" column="MEETING_NUM"/>
+	</resultMap>
+	
+	<resultMap id="BizProjectMeetingRSTMap" type="com.xlkfinance.bms.rpc.beforeloan.BizProjectMeetingRST">
+		<id property="pid" column="PID"/>
+        <result property="meetingId" column="MEETING_ID" />
+        <result property="meetingDttm" column="MEETING_DTTM" />
+        <result property="recordUserId" column="RECORD_USER_ID" />
+        <result property="meetingLocation" column="MEETING_LOCATION" />
+        <result property="meetingResult" column="MEETING_RESULT" />
+        <result property="meetingNum" column="MEETING_NUM"/>
+	</resultMap>
+	
+	<resultMap id="BizMeetingMinutesMemberMap" type="com.xlkfinance.bms.rpc.beforeloan.BizMeetingMinutesMember">
+		<id property="pid" column="PID"/>
+        <result property="meetingId" column="MEETING_ID" />
+        <result property="meetingMemberUserId" column="MEETING_MEMBER_USER_ID" />
+        <result property="participateStatus" column="PARTICIPATE_STATUS" />
+        <result property="status" column="STATUS" />
+	</resultMap>
+	
+	<insert id="saveBizMeetingMinutesFile" parameterType="com.xlkfinance.bms.rpc.beforeloan.BizMeetingMinutesFile">
+	   <selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+			SELECT SEQ_BIZ_MEETING_MINUTES_FILE.Nextval as PID from DUAL
+		</selectKey>
+		    INSERT INTO BIZ_MEETING_MINUTES_FILE(
+		    	PID, 
+		    	MEETING_ID, 
+		    	FILE_ID, 
+		    	STATUS)
+		    values (
+		    	#{pid,jdbcType=INTEGER}, 
+		     	#{meetingId,jdbcType=INTEGER},
+		     	#{fileId,jdbcType=DATE},
+		     	#{status,jdbcType=INTEGER})
+  	</insert>
+  	
+  	<insert id="saveBizMeetingMinutesMember" parameterType="com.xlkfinance.bms.rpc.beforeloan.BizMeetingMinutesMember">
+	   <selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+			SELECT SEQ_BIZ_MEETING_MINUTES_MEMBER.Nextval as PID from DUAL
+		</selectKey>
+		    INSERT INTO BIZ_MEETING_MINUTES_MEMBER(
+		    	PID, 
+		    	MEETING_ID, 
+		    	MEETING_MEMBER_USER_ID, 
+		    	STATUS)
+		    values (
+		    	#{pid,jdbcType=INTEGER}, 
+		     	#{meetingId,jdbcType=INTEGER},
+		     	#{meetingMemberUserId,jdbcType=INTEGER},
+		     	#{status,jdbcType=INTEGER})
+  </insert>
+  
+  <insert id="saveBizProjectMeeting" parameterType="com.xlkfinance.bms.rpc.beforeloan.BizProjectMeeting">
+	   <selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+			SELECT SEQ_BIZ_PROJECT_MEETING.Nextval as PID from DUAL
+		</selectKey>
+		    INSERT INTO BIZ_PROJECT_MEETING(
+		    	PID, 
+		    	PROJECT_ID, 
+		    	CONVENE_USER_ID, 
+		    	MEETING_DESC,
+		    	MEETING_NUM,
+		    	STATUS)
+		    values (
+		    	#{pid,jdbcType=INTEGER}, 
+		     	#{projectId,jdbcType=INTEGER},
+		     	#{recordUserId,jdbcType=INTEGER},
+		     	#{meetingResult,jdbcType=VARCHAR},
+		     	#{meetingNum,jdbcType=VARCHAR},
+		     	#{status,jdbcType=INTEGER})
+  	</insert>
+  	<!-- 修改贷审会信息 -->
+  	<update id="updateProjectMeetingInfo" parameterType="com.xlkfinance.bms.rpc.beforeloan.BizProjectMeeting">
+		UPDATE BIZ_PROJECT_MEETING BPM 
+			SET BPM.CONVENE_USER_ID = #{recordUserId} ,
+			BPM.MEETING_DESC = #{meetingResult}
+			<if test="meetingNum != null">
+				,MEETING_NUM = #{meetingNum}
+			</if>
+		WHERE BPM.PID = #{pid}
+  	</update>
+  	
+  	
+  	  	<!-- 修改贷审会信息 -->
+	<update id="updateProjectMeetingRstInfo" parameterType="com.xlkfinance.bms.rpc.beforeloan.BizProjectMeetingRST">
+		UPDATE BIZ_PROJECT_MEETING_RST BPMR
+			SET BPMR.MEETING_DTTM =  #{meetingDttm,jdbcType=DATE,javaType=String},
+			BPMR.RECORD_USER_ID = #{recordUserId},
+			BPMR.MEETING_LOCATION = #{meetingLocation},
+			BPMR.MEETING_RESULT = #{meetingResult}
+		WHERE BPMR.MEETING_ID = #{meetingId}
+  	</update>
+  	
+  	<!-- 删除贷审会人员信息 -->
+  	<delete id="deleteMeetingMinutesMemberInfo" parameterType="java.lang.Integer">
+  		DELETE FROM BIZ_MEETING_MINUTES_MEMBER BM WHERE BM.MEETING_ID = #{meetingId} 
+  	</delete>
+  	
+  	 <insert id="saveBizProjectMeetingRST" parameterType="com.xlkfinance.bms.rpc.beforeloan.BizProjectMeetingRST">
+	   <selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+			SELECT SEQ_BIZ_PROJECT_MEETING_RST.Nextval as PID from DUAL
+		</selectKey>
+		    INSERT INTO BIZ_PROJECT_MEETING_RST(
+		    	PID, 
+		    	MEETING_ID, 
+		    	MEETING_DTTM, 
+		    	RECORD_USER_ID,
+		    	MEETING_LOCATION,
+		    	MEETING_RESULT,
+		    	STATUS)
+		    values (
+		    	#{pid,jdbcType=INTEGER}, 
+		     	#{meetingId,jdbcType=INTEGER},
+		     	#{meetingDttm,jdbcType=TIMESTAMP},
+		     	#{recordUserId,jdbcType=INTEGER},
+		     	#{meetingLocation,jdbcType=VARCHAR},
+		     	#{meetingResult,jdbcType=VARCHAR},
+		     	#{status,jdbcType=INTEGER})
+  	</insert>
+	
+	<select id="obtainBizFileForOfflineMeeting" resultMap="BizFileMap" parameterType="java.lang.Integer">
+		    SELECT BF.PID,
+		           BF.FILE_NAME,
+		           BF.FILE_TYPE,
+		           BF.FILE_SIZE,
+		           to_char(BF.UPLOAD_DTTM,'yyyy-MM-DD HH24-mi-ss') UPLOAD_DTTM,
+		           BF.UPLOAD_USER_ID,
+		           BF.FILE_URL,
+		           BF.PID,
+		           BF.STATUS
+		      FROM BIZ_PROJECT_MEETING      PM,
+		           BIZ_MEETING_MINUTES_FILE MMF,
+		           BIZ_FILE                 BF
+		     WHERE PM.PID = MMF.MEETING_ID
+		       AND MMF.FILE_ID = BF.PID
+		       AND PM.PROJECT_ID = #{projectId,jdbcType=INTEGER}
+		       AND 1 = 1
+  	</select> 
+  	
+  	<select id="obtainBizProjectMeetingByProjectId" resultMap="BizProjectMeetingMap" parameterType="java.lang.Integer">
+		    
+		       SELECT *
+				  FROM (SELECT BPM.PID, BPM.CONVENE_USER_ID, BPM.MEETING_DESC,BPM.MEETING_NUM
+				          FROM BIZ_PROJECT_MEETING BPM
+				         WHERE BPM.PROJECT_ID = #{projectId,jdbcType=INTEGER}
+				           AND 1 = 1) TAB
+				 WHERE PID = (SELECT MAX(PID)
+				                FROM (SELECT BPM.PID, BPM.CONVENE_USER_ID, BPM.MEETING_DESC
+				                        FROM BIZ_PROJECT_MEETING BPM
+				                       WHERE BPM.PROJECT_ID = #{projectId,jdbcType=INTEGER}
+				                         AND 1 = 1))
+  	</select> 
+  	<!-- 通过项目id得出贷审会信息 -->
+	 <select id="queryBizProjectMeetingInfo" resultMap="BizProjectMeetingMap" parameterType="java.lang.Integer">
+		
+			SELECT BPM.PID, BPM.CONVENE_USER_ID, BPM.MEETING_DESC,BPM.MEETING_NUM
+			FROM BIZ_PROJECT_MEETING BPM
+			WHERE BPM.PROJECT_ID = #{projectId,jdbcType=INTEGER}
+				           
+  	</select> 
+  	<!-- 通过贷审会Id得出线下决议会议纪要 -->
+  	<select id="queryBizProjectMeetingRstInfo" resultMap="BizProjectMeetingRSTMap" parameterType="java.lang.Integer">
+		SELECT BPMR.PID,
+		BPMR.MEETING_ID,
+		BPMR.MEETING_DTTM,
+		BPMR.RECORD_USER_ID,
+		BPMR.MEETING_LOCATION,
+		BPMR.MEETING_RESULT
+		FROM BIZ_PROJECT_MEETING_RST BPMR
+		WHERE BPMR.MEETING_ID = #{meetingId,jdbcType=INTEGER}
+				           
+  	</select> 
+  	
+  	<select id="obtainBizProjectMeetingRSTByMeetingId" resultMap="BizProjectMeetingRSTMap" parameterType="java.lang.Integer">
+		    
+		    SELECT BPMR.PID,
+			       BPMR.MEETING_ID,
+			       to_char(BPMR.MEETING_DTTM,'yyyy-MM-DD HH24-mi-ss') MEETING_DTTM,
+			       BPMR.RECORD_USER_ID,
+			       BPMR.MEETING_LOCATION,
+			       BPMR.MEETING_RESULT
+			  FROM BIZ_PROJECT_MEETING_RST BPMR
+			 WHERE BPMR.MEETING_ID = #{meetingId,jdbcType=INTEGER}
+			   AND 1=1
+  	</select>
+  	
+  	<select id="obtainBizMeetingMinutesMemberByMeetingId" resultMap="BizMeetingMinutesMemberMap" parameterType="java.lang.Integer">
+		    
+			SELECT BMMM.PID,
+			       BMMM.MEETING_ID,
+			       BMMM.MEETING_MEMBER_USER_ID,
+			       BMMM.PARTICIPATE_STATUS
+			  FROM BIZ_MEETING_MINUTES_MEMBER BMMM
+			 WHERE BMMM.MEETING_ID = #{meetingId,jdbcType=INTEGER}
+			   AND 1=1
+		   
+  	</select>
+  	
+  	<update id="updateBizProjectMeeting" parameterType="com.xlkfinance.bms.rpc.beforeloan.BizProjectMeeting">
+		UPDATE BIZ_PROJECT_MEETING
+		<trim prefix="set" suffixOverrides=",">
+			<if test="projectId != null">
+				PROJECT_ID = #{projectId},
+			</if>
+			<if test="recordUserId != null">
+				CONVENE_USER_ID = #{recordUserId},
+			</if>
+			<if test="meetingResult != null">
+				MEETING_DESC = #{meetingResult},
+			</if>
+		</trim>
+		WHERE PID = #{pid}
+	</update>
+	
+	
+	<update id="updateBizProjectMeetingRST" parameterType="com.xlkfinance.bms.rpc.beforeloan.BizProjectMeetingRST">
+		UPDATE BIZ_PROJECT_MEETING_RST
+		<trim prefix="set" suffixOverrides=",">
+			<if test="meetingDttm != null">
+				MEETING_DTTM = #{meetingDttm},
+			</if>
+			<if test="recordUserId != null">
+				RECORD_USER_ID = #{recordUserId},
+			</if>
+			<if test="meetingLocation != null">
+				MEETING_LOCATION = #{meetingLocation},
+			</if>
+			<if test="meetingResult != null">
+				MEETING_RESULT = #{meetingResult},
+			</if>
+		</trim>
+		WHERE PID = #{pid}
+	</update>
+	
+	<update id="updateBizMeetingMinutesMember" parameterType="com.xlkfinance.bms.rpc.beforeloan.BizMeetingMinutesMember">
+		UPDATE BIZ_MEETING_MINUTES_MEMBER
+		<trim prefix="set" suffixOverrides=",">
+			<if test="meetingDttm != null">
+				PARTICIPATE_STATUS = #{meetingDttm},
+			</if>
+		</trim>
+		WHERE PID = #{pid}
+	</update>
+	
+  	<delete id="deleteBizProjectMeetingByProjectId" parameterType="java.lang.String">
+		DELETE FROM BIZ_PROJECT_MEETING BPM WHERE BPM.PROJECT_ID = #{projectId,jdbcType=INTEGER}
+	</delete>
+	
+	<delete id="deletteBizProjectMeetingRSTByMeetingId" parameterType="java.lang.String">
+		DELETE FROM BIZ_PROJECT_MEETING_RST BPMR WHERE BPMR.MEETING_ID = #{meetingId,jdbcType=INTEGER}
+	</delete>
+	
+	<delete id="deleteBizMeetingMinutesMemberByMeetingId" parameterType="java.lang.String">
+		DELETE FROM BIZ_MEETING_MINUTES_MEMBER BPMR WHERE BPMR.MEETING_ID = #{meetingId,jdbcType=INTEGER}
+	</delete>
+  	
+	<select id="getBizProjectMeetingNum" resultType="java.lang.String" parameterType="java.lang.String">
+		SELECT CONCAT(CONCAT(TO_CHAR(TO_DATE(#{nowDttm}, 'yyyy-mm-dd hh24:mi:ss'), 'yyyy'),
+                     'XDJY'),
+              (SELECT NVL(MAX(SUBSTR(MEETING_NUM, 9) + 1), 1)
+                 FROM BIZ_PROJECT_MEETING M
+                WHERE SUBSTR(M.MEETING_NUM, 0, 4) =
+                      TO_CHAR(TO_DATE(#{nowDttm}, 'yyyy-mm-dd hh24:mi:ss'), 'yyyy')))
+  		FROM DUAL
+	</select>
+</mapper>

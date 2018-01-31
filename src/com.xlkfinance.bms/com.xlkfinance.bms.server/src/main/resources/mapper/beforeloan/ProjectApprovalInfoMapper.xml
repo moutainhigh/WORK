@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.beforeloan.mapper.ProjectApprovalInfoMapper">
+	<resultMap id="ProjectApprovalInfoResultMap" type="com.xlkfinance.bms.rpc.beforeloan.ProjectApprovalInfo">
+        <id property="pid" column="PID"/>
+        <result property="projectId" column="PROJECT_ID" />
+        <result property="infoType" column="INFO_TYPE" />
+        <result property="infoContent" column="INOF_CONTENT" />
+        <result property="approvalUserId" column="APPROVAL_USER_ID" />
+        <result property="status" column="STATUS" />
+        <result property="isConfirm" column="IS_CONFIRM" />
+        <result property="confirmUserId" column="CONFIRM_USER_ID" />
+        <result property="interestChgId" column="INTEREST_CHG_ID" />
+        
+    </resultMap>
+	
+	
+	<!-- 根据项目ID查询落实条件 -->
+	<select id="getProjectApprovalLs"  resultMap="ProjectApprovalInfoResultMap" parameterType="java.lang.Integer">
+		SELECT PID,PROJECT_ID,INFO_TYPE,INOF_CONTENT,APPROVAL_USER_ID,STATUS,IS_CONFIRM
+		FROM BIZ_PROJECT_APPROVAL_INFO 
+		WHERE INFO_TYPE = 1
+		AND PROJECT_ID = #{projectId}
+	</select>
+	
+	<!-- 根据项目ID查询管理要求 -->
+	<select id="getProjectApprovalGl"  resultMap="ProjectApprovalInfoResultMap" parameterType="java.lang.Integer">
+		SELECT PID,PROJECT_ID,INFO_TYPE,INOF_CONTENT,APPROVAL_USER_ID,STATUS,IS_CONFIRM
+		FROM BIZ_PROJECT_APPROVAL_INFO 
+		WHERE INFO_TYPE = 2
+		AND PROJECT_ID = #{projectId}
+	</select>
+	
+	<!-- 新增 -->
+	<insert id="insert" parameterType="com.xlkfinance.bms.rpc.beforeloan.ProjectApprovalInfo">
+		<selectKey resultType="int" keyProperty="pid" order="BEFORE">
+        	SELECT SEQ_BIZ_PROJECT_APPROVAL_INFO.NEXTVAL as PID FROM DUAL
+	    </selectKey>
+		INSERT INTO BIZ_PROJECT_APPROVAL_INFO
+		(PID,PROJECT_ID,INFO_TYPE,INOF_CONTENT,APPROVAL_USER_ID,IS_CONFIRM,STATUS)
+		VALUES (#{pid},#{projectId},#{infoType},#{infoContent},#{approvalUserId},#{isConfirm},#{status})
+	</insert>
+	
+	
+
+	
+	<!-- 修改贷审会内容 -->
+	<update id="updateByPrimaryKey" parameterType="com.xlkfinance.bms.rpc.beforeloan.ProjectApprovalInfo">
+		UPDATE BIZ_PROJECT_APPROVAL_INFO
+		<trim prefix="set" suffixOverrides=",">
+			<if test="infoContent != null">
+				INOF_CONTENT = #{infoContent},
+			</if>
+		</trim>
+		WHERE PID = #{pid}
+	</update>
+		<!-- 利率贷审会管理要求增加 -->
+	<insert id="addProjectApprovalInfoRes" parameterType="com.xlkfinance.bms.rpc.beforeloan.ProjectApprovalInfo">
+		<selectKey resultType="int" keyProperty="pid" order="BEFORE">
+        	SELECT SEQ_BIZ_PROJECT_APPROVAL_RES.NEXTVAL as PID FROM DUAL
+	    </selectKey>
+		INSERT INTO BIZ_PROJECT_APPROVAL_INFO_RES
+		(PID,INTEREST_CHG_ID,INFO_TYPE,INOF_CONTENT,APPROVAL_USER_ID,IS_CONFIRM,STATUS)
+		VALUES (#{pid},#{interestChgId},#{infoType},#{infoContent},#{approvalUserId},#{isConfirm},#{status})
+	</insert>
+		
+	
+		<!-- 修改利率贷审会内容 -->
+	<update id="updateProjectApprovalInfoResInfo" parameterType="com.xlkfinance.bms.rpc.beforeloan.ProjectApprovalInfo">
+		UPDATE BIZ_PROJECT_APPROVAL_INFO_RES
+		<trim prefix="set" suffixOverrides=",">
+			<if test="infoContent != null">
+				INOF_CONTENT = #{infoContent},
+			</if>
+		</trim>
+		WHERE PID = #{pid}
+	</update>
+	
+	
+		<!-- 根据利率ID查询落实条件 -->
+	<select id="getProjectApprovalLsInfo"  resultMap="ProjectApprovalInfoResultMap" parameterType="java.lang.Integer">
+		SELECT PID,INTEREST_CHG_ID,INFO_TYPE,INOF_CONTENT,APPROVAL_USER_ID,STATUS,IS_CONFIRM
+		FROM BIZ_PROJECT_APPROVAL_INFO_RES 
+		WHERE INFO_TYPE = 1
+		AND INTEREST_CHG_ID = #{interestChgId}
+	</select>
+	
+	<!-- 根据利率ID查询管理要求 -->
+	<select id="getProjectApprovalGlInfo"  resultMap="ProjectApprovalInfoResultMap" parameterType="java.lang.Integer">
+		SELECT PID,INTEREST_CHG_ID,INFO_TYPE,INOF_CONTENT,APPROVAL_USER_ID,STATUS,IS_CONFIRM
+		FROM BIZ_PROJECT_APPROVAL_INFO_RES 
+		WHERE INFO_TYPE = 2
+		AND INTEREST_CHG_ID = #{interestChgId}
+	</select>
+	
+		<!-- 根据利率ID查询管理要求 -->
+	<select id="getProjectApprovalAll"  resultMap="ProjectApprovalInfoResultMap" parameterType="java.lang.Integer">
+		SELECT PID,INTEREST_CHG_ID,INFO_TYPE,INOF_CONTENT,APPROVAL_USER_ID,STATUS,IS_CONFIRM
+		FROM BIZ_PROJECT_APPROVAL_INFO_RES 
+		WHERE   INTEREST_CHG_ID = #{interestChgId}
+	</select>
+	
+	
+		
+	<!-- 根据项目ID查询落实条件 -->
+	<select id="getProjectApprovalInfo"  resultMap="ProjectApprovalInfoResultMap" parameterType="java.lang.Integer">
+		SELECT PID,PROJECT_ID,INFO_TYPE,INOF_CONTENT,APPROVAL_USER_ID,STATUS,IS_CONFIRM
+		FROM BIZ_PROJECT_APPROVAL_INFO 
+		WHERE    PROJECT_ID = #{projectId}
+	</select>
+	
+	<!-- 修改确认贷审会信息 -->
+	<update id="updateIsConfirmPrimaryKey">
+		UPDATE BIZ_PROJECT_APPROVAL_INFO
+		<trim prefix="set" suffixOverrides=",">
+			<if test="isConfirm != null and isConfirm != 0 ">
+				IS_CONFIRM = #{isConfirm},
+			</if>
+			<if test="confirmUserId != null ">
+				CONFIRM_USER_ID = #{confirmUserId},
+			</if>
+		</trim>
+		WHERE PID in
+		<foreach item="item" collection="pids" open="(" separator="," close=")">  
+			#{item}  
+		</foreach> 
+	</update>
+	
+	<!-- 修改利率变更确认贷审会信息 -->
+	<update id="updateIsConfirmPrimaryKeyInfo">
+		UPDATE BIZ_PROJECT_APPROVAL_INFO_RES
+		<trim prefix="set" suffixOverrides=",">
+			<if test="isConfirm != null and isConfirm != 0 ">
+				IS_CONFIRM = #{isConfirm},
+			</if>
+			<if test="confirmUserId != null ">
+				CONFIRM_USER_ID = #{confirmUserId},
+			</if>
+		</trim>
+		WHERE PID in
+		<foreach item="item" collection="pids" open="(" separator="," close=")">  
+			#{item}  
+		</foreach> 
+	</update>
+	
+	<!-- 删除 -->
+	<delete id="batchDelete" parameterType="java.lang.String">
+		DELETE FROM BIZ_PROJECT_APPROVAL_INFO WHERE PID in 
+		<foreach item="idItem" collection="array" open="(" separator="," close=")">
+			#{idItem}
+		</foreach>
+	</delete>
+	
+	<!-- 删除利率变更贷审会信息 -->
+	<delete id="deleteProjectApprovalById" parameterType="java.lang.String">
+		DELETE FROM BIZ_PROJECT_APPROVAL_INFO_RES WHERE PID in 
+		<foreach item="idItem" collection="array" open="(" separator="," close=")">
+			#{idItem}
+		</foreach>
+	</delete>
+	
+		<!-- 根据项目id删除 -->
+	<delete id="deleteProjectApprovalByProjectId"  parameterType="java.lang.Integer">
+		DELETE  FROM BIZ_PROJECT_APPROVAL_INFO  WHERE    PROJECT_ID = #{projectId}
+	</delete>
+</mapper>

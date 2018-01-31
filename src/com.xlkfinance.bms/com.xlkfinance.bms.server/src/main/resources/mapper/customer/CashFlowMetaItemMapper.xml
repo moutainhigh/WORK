@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.customer.mapper.CashFlowMetaItemMapper">
+  <resultMap type="com.xlkfinance.bms.rpc.customer.FinacialDTO" id="CashFlowMetaItemMapper">
+        <id property="pid" column="PID"/>
+        <result property="lineNum" column="LINE_NUM" />
+        <result property="itemName" column="ITEM_NAME" />
+        <result property="thisMonthVal" column="THIS_MONTH_VAL" />
+        <result property="thisYearVal" column="THIS_YEAR_VAL" />
+  </resultMap>
+
+   <resultMap id="CusComFinanceReportMap" type="com.xlkfinance.bms.rpc.customer.CusComFinanceReport">
+        <id property="pid" column="PID"/>
+        <result property="comId" column="COM_ID" />
+        <result property="accountingYear" column="ACCOUNTING_YEAR" />
+        <result property="accountingMonth" column="ACCOUNTING_MONTH" />
+        <result property="reportType" column="REPORT_TYPE" />
+        <result property="reportDttm" column="REPORT_DTTM" />
+        <result property="reportUserId" column="REPORT_USER_ID" />
+        <result property="status" column="STATUS" />
+    </resultMap>
+
+    
+  <select id="getAllCusComCaseFlowMeta" resultMap="CashFlowMetaItemMapper"  parameterType="com.xlkfinance.bms.rpc.customer.FinacialDTO">
+         SELECT  T.PID,
+           T.LINE_NUM,
+           CONCAT(T.ITEM_PREFIX, T.ITEM_NAME) ITEM_NAME,
+           T.IS_INPUT,
+           T.IS_CACL,
+           T.IS_SUBTRACTION,
+           T.STATUS
+      FROM CUS_COM_CASH_FLOW_META T
+      WHERE 1=1
+      and t.is_main=1
+		  order by t.line_num  asc
+  </select>
+   
+<!--     <select id="getAllCusComIncomeReportMeta" resultMap="CusComIncomeReportMetaMap"> -->
+<!-- 	      SELECT PID, LINE_NUM, ITEM_NAME, ITEM_PREFIX, IS_SUBTRACTION, STATUS -->
+<!--   			FROM CUS_COM_INCOME_REPORT_META -->
+<!--  			WHERE 1 = 1 -->
+<!--   	</select>  -->
+  	
+</mapper>

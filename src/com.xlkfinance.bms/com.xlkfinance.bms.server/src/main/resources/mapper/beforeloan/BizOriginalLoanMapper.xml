@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xlkfinance.bms.server.beforeloan.mapper.BizOriginalLoanMapper">
+	<resultMap id="bizOriginalLoanMap" type="com.xlkfinance.bms.rpc.beforeloan.BizOriginalLoan">
+		<id property="originalLoanId" column="PID" />
+		<id property="projectId" column="PROJECT_ID" />
+		<id property="loanType" column="LOAN_TYPE" />
+		<id property="oldLoanBank" column="OLD_LOAN_BANK" />
+		<id property="oldLoanBankBranch" column="OLD_LOAN_BANK_BRANCH" />
+		<id property="oldLoanMoney" column="OLD_LOAN_MONEY" />
+		<id property="oldOwedAmount" column="OLD_OWED_AMOUNT" />
+		<id property="oldLoanTime" column="OLD_LOAN_TIME" />
+		<id property="oldLoanStartTime" column="OLD_LOAN_START_TIME" />
+		<id property="oldLoanPerson" column="OLD_LOAN_PERSON" />
+		<id property="oldLoanPhone" column="OLD_LOAN_PHONE" />
+		<id property="oldLoanAccount" column="OLD_LOAN_ACCOUNT" />
+		<id property="createrDate" column="CREATER_DATE" />
+		<id property="createrId" column="CREATER_ID" />
+		<id property="updateId" column="UPDATE_ID" />
+		<id property="updateDate" column="UPDATE_DATE" />
+		<id property="status" column="STATUS" />
+		<id property="loanTypeStr" column="LOAN_TYPE_STR" />
+		<id property="oldLoanBankStr" column="OLD_LOAN_BANK_STR" />
+		<id property="estateId" column="ESTATE_ID" />
+		<id property="estateName" column="ESTATE_NAME" />
+	</resultMap>
+	<sql id="column_list">
+        PID,PROJECT_ID,LOAN_TYPE,OLD_LOAN_BANK,OLD_LOAN_BANK_BRANCH,OLD_LOAN_MONEY,OLD_OWED_AMOUNT
+        ,TO_CHAR(OLD_LOAN_TIME,'yyyy-MM-dd') AS OLD_LOAN_TIME,TO_CHAR(OLD_LOAN_START_TIME,'yyyy-MM-dd') AS OLD_LOAN_START_TIME,
+        OLD_LOAN_PERSON,OLD_LOAN_PHONE,OLD_LOAN_ACCOUNT,CREATER_DATE,CREATER_ID,UPDATE_ID,UPDATE_DATE,STATUS,ESTATE_ID
+	</sql>
+	<!-- 查询所有 -->
+	<select id="getAll" resultMap="bizOriginalLoanMap" parameterType="com.xlkfinance.bms.rpc.beforeloan.BizOriginalLoan">
+		SELECT
+		<include refid="column_list" />
+		FROM BIZ_ORIGINAL_LOAN
+		<where>
+			<trim>
+		      <if test="originalLoanId != null and originalLoanId >0">
+	          PID=#{originalLoanId}
+	          </if>
+		      <if test="projectId != null and projectId >0">
+	          AND PROJECT_ID=#{projectId}
+	          </if>
+		      <if test="loanType != null and loanType >0">
+	          AND LOAN_TYPE=#{loanType}
+	          </if>
+		      <if test="oldLoanBank != null and oldLoanBank !=''">
+	          AND OLD_LOAN_BANK=#{oldLoanBank}
+	          </if>
+		      <if test="oldLoanBankBranch != null and oldLoanBankBranch !=''">
+	          AND OLD_LOAN_BANK_BRANCH=#{oldLoanBankBranch}
+	          </if>
+		      <if test="oldLoanMoney != null and oldLoanMoney >0">
+	          AND OLD_LOAN_MONEY=#{oldLoanMoney}
+	          </if>
+		      <if test="oldOwedAmount != null and oldOwedAmount >0">
+	          AND OLD_OWED_AMOUNT=#{oldOwedAmount}
+	          </if>
+		      <if test="oldLoanTime != null and oldLoanTime !=''">
+	          AND OLD_LOAN_TIME=#{oldLoanTime}
+	          </if>
+		      <if test="oldLoanStartTime != null and oldLoanStartTime !=''">
+	          AND OLD_LOAN_START_TIME=#{oldLoanStartTime}
+	          </if>
+		      <if test="oldLoanPerson != null and oldLoanPerson !=''">
+	          AND OLD_LOAN_PERSON=#{oldLoanPerson}
+	          </if>
+		      <if test="oldLoanPhone != null and oldLoanPhone !=''">
+	          AND OLD_LOAN_PHONE=#{oldLoanPhone}
+	          </if>
+		      <if test="oldLoanAccount != null and oldLoanAccount !=''">
+	          AND OLD_LOAN_ACCOUNT=#{oldLoanAccount}
+	          </if>
+		      <if test="createrDate != null and createrDate !=''">
+	          AND CREATER_DATE=#{createrDate}
+	          </if>
+		      <if test="createrId != null and createrId >0">
+	          AND CREATER_ID=#{createrId}
+	          </if>
+		      <if test="updateId != null and updateId >0">
+	          AND UPDATE_ID=#{updateId}
+	          </if>
+		      <if test="updateDate != null and updateDate !=''">
+	          AND UPDATE_DATE=#{updateDate}
+	          </if>
+		      <if test="status != null and status >0">
+	          AND STATUS=#{status}
+	          </if>
+	          <if test="estateId != null and estateId >0">
+	          AND ESTATE_ID=#{estateId}
+	          </if>
+			</trim>
+		</where>
+	</select>
+	<!-- 根据id获取 -->
+	<select id="getById" resultMap="bizOriginalLoanMap">
+		SELECT <include refid="column_list" /> FROM BIZ_ORIGINAL_LOAN WHERE PID=#{pid}
+	</select>
+	<!-- 插入一条数据 -->
+	<insert id="insert" parameterType="com.xlkfinance.bms.rpc.beforeloan.BizOriginalLoan">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="originalLoanId">
+			SELECT SEQ_BIZ_ORIGINAL_LOAN.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_ORIGINAL_LOAN
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+		    <if test="originalLoanId != null and originalLoanId >0">
+				PID,
+			</if>
+		    <if test="projectId != null and projectId >0">
+				PROJECT_ID,
+			</if>
+		    <if test="loanType != null and loanType >0">
+				LOAN_TYPE,
+			</if>
+		    <if test="oldLoanBank != null and oldLoanBank !=''">
+				OLD_LOAN_BANK,
+			</if>
+		    <if test="oldLoanBankBranch != null and oldLoanBankBranch !=''">
+				OLD_LOAN_BANK_BRANCH,
+			</if>
+		    <if test="oldLoanMoney != null and oldLoanMoney >0">
+				OLD_LOAN_MONEY,
+			</if>
+		    <if test="oldOwedAmount != null and oldOwedAmount >0">
+				OLD_OWED_AMOUNT,
+			</if>
+		    <if test="oldLoanTime != null and oldLoanTime !=''">
+				OLD_LOAN_TIME,
+			</if>
+		    <if test="oldLoanStartTime != null and oldLoanStartTime !=''">
+				OLD_LOAN_START_TIME,
+			</if>
+		    <if test="oldLoanPerson != null and oldLoanPerson !=''">
+				OLD_LOAN_PERSON,
+			</if>
+		    <if test="oldLoanPhone != null and oldLoanPhone !=''">
+				OLD_LOAN_PHONE,
+			</if>
+		    <if test="oldLoanAccount != null and oldLoanAccount !=''">
+				OLD_LOAN_ACCOUNT,
+			</if>
+				CREATER_DATE,
+		    <if test="createrId != null and createrId >0">
+				CREATER_ID,
+			</if>
+		    <if test="updateId != null and updateId >0">
+				UPDATE_ID,
+			</if>
+		    <if test="updateDate != null and updateDate !=''">
+				UPDATE_DATE,
+			</if>
+		    <if test="status != null and status >0">
+				STATUS,
+			</if>
+			<if test="estateId != null and estateId >0">
+	          ESTATE_ID,
+	        </if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+		    <if test="originalLoanId != null and originalLoanId >0">
+		    #{originalLoanId},
+			</if>
+		    <if test="projectId != null and projectId >0">
+		    #{projectId},
+			</if>
+		    <if test="loanType != null and loanType >0">
+		    #{loanType},
+			</if>
+		    <if test="oldLoanBank != null and oldLoanBank !=''">
+		    #{oldLoanBank},
+			</if>
+		    <if test="oldLoanBankBranch != null and oldLoanBankBranch !=''">
+		    #{oldLoanBankBranch},
+			</if>
+		    <if test="oldLoanMoney != null and oldLoanMoney >0">
+		    #{oldLoanMoney},
+			</if>
+		    <if test="oldOwedAmount != null and oldOwedAmount >0">
+		    #{oldOwedAmount},
+			</if>
+		    <if test="oldLoanTime != null and oldLoanTime !=''">
+		    #{oldLoanTime,jdbcType= DATE,javaType= java.lang.String},
+			</if>
+		    <if test="oldLoanStartTime != null and oldLoanStartTime !=''">
+		    #{oldLoanStartTime,jdbcType= DATE,javaType= java.lang.String},
+			</if>
+		    <if test="oldLoanPerson != null and oldLoanPerson !=''">
+		    #{oldLoanPerson},
+			</if>
+		    <if test="oldLoanPhone != null and oldLoanPhone !=''">
+		    #{oldLoanPhone},
+			</if>
+		    <if test="oldLoanAccount != null and oldLoanAccount !=''">
+		    #{oldLoanAccount},
+			</if>
+		    SYSDATE,
+		    <if test="createrId != null and createrId >0">
+		    #{createrId},
+			</if>
+		    <if test="updateId != null and updateId >0">
+		    #{updateId},
+			</if>
+		    <if test="updateDate != null and updateDate !=''">
+		    #{updateDate,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		    <if test="status != null and status >0">
+		    #{status},
+			</if>
+			<if test="estateId != null and estateId >0">
+	          #{estateId},
+	        </if>
+		</trim>
+	</insert>
+
+	<!-- 根据id更新数据 -->
+		<update id="update" parameterType="com.xlkfinance.bms.rpc.beforeloan.BizOriginalLoan">
+		UPDATE BIZ_ORIGINAL_LOAN
+		<set>
+		    <if test="projectId != null and projectId >0">
+		     PROJECT_ID=#{projectId},
+			</if>
+		    <if test="loanType != null and loanType >0">
+		     LOAN_TYPE=#{loanType},
+			</if>
+		    <if test="oldLoanBank != null and oldLoanBank !=''">
+		     OLD_LOAN_BANK=#{oldLoanBank},
+			</if>
+		    <if test="oldLoanBankBranch != null and oldLoanBankBranch !=''">
+		     OLD_LOAN_BANK_BRANCH=#{oldLoanBankBranch},
+			</if>
+		    <if test="oldLoanMoney != null and oldLoanMoney >0">
+		     OLD_LOAN_MONEY=#{oldLoanMoney},
+			</if>
+		    <if test="oldOwedAmount != null and oldOwedAmount >0">
+		     OLD_OWED_AMOUNT=#{oldOwedAmount},
+			</if>
+		    <if test="oldLoanTime != null and oldLoanTime !=''">
+		     OLD_LOAN_TIME=#{oldLoanTime,jdbcType= DATE,javaType= java.lang.String},
+			</if>
+		    <if test="oldLoanStartTime != null and oldLoanStartTime !=''">
+		     OLD_LOAN_START_TIME=#{oldLoanStartTime,jdbcType= DATE,javaType= java.lang.String},
+			</if>
+		    <if test="oldLoanPerson != null">
+		     OLD_LOAN_PERSON=#{oldLoanPerson},
+			</if>
+		    <if test="oldLoanPhone != null">
+		     OLD_LOAN_PHONE=#{oldLoanPhone},
+			</if>
+		    <if test="oldLoanAccount != null">
+		     OLD_LOAN_ACCOUNT=#{oldLoanAccount},
+			</if>
+		    <if test="updateId != null and updateId >0">
+		     UPDATE_ID=#{updateId},
+			</if>
+		     UPDATE_DATE=SYSDATE,
+		    <if test="status != null and status >0">
+		     STATUS=#{status},
+			</if>
+			<if test="estateId != null and estateId >0">
+	          ESTATE_ID = #{estateId},
+	        </if>
+		</set>
+		WHERE PID = #{originalLoanId}
+	</update>
+
+	<!-- 根据项目ID查询所有 -->
+	<select id="getAllByCondition" resultMap="bizOriginalLoanMap" parameterType="com.xlkfinance.bms.rpc.beforeloan.BizOriginalLoan">
+	SELECT A.PID AS PID,
+	A.PROJECT_ID AS PROJECT_ID,
+	A.OLD_LOAN_PERSON AS OLD_LOAN_PERSON,
+	A.OLD_LOAN_MONEY AS OLD_LOAN_MONEY,
+	A.OLD_LOAN_PHONE AS OLD_LOAN_PHONE,
+	A.OLD_OWED_AMOUNT AS OLD_OWED_AMOUNT,
+	A.OLD_LOAN_BANK AS OLD_LOAN_BANK,
+	A.LOAN_TYPE AS LOAN_TYPE,
+	TO_CHAR(A.OLD_LOAN_TIME,'YYYY-MM-DD') AS OLD_LOAN_TIME,
+	A.OLD_LOAN_BANK_BRANCH AS OLD_LOAN_BANK_BRANCH,
+	B.BANK_NAME AS OLD_LOAN_BANK_STR,
+	C.LOOKUP_DESC AS LOAN_TYPE_STR,
+	TO_CHAR(A.OLD_LOAN_START_TIME,'YYYY-MM-DD')AS OLD_LOAN_START_TIME,
+	D.PID AS ESTATE_ID,D.HOUSE_NAME AS ESTATE_NAME,A.OLD_LOAN_ACCOUNT
+	FROM BIZ_ORIGINAL_LOAN A
+	LEFT JOIN SYS_BANK_INFO B
+	ON A.OLD_LOAN_BANK = B.PID
+	LEFT JOIN SYS_LOOKUP_VAL C
+	ON A.LOAN_TYPE = C.PID
+	LEFT JOIN BIZ_PROJECT_ESTATE D
+  	ON A.ESTATE_ID = D.PID
+	WHERE 1=1 
+	<if test="projectId != null and projectId >0">
+		AND A.PROJECT_ID=#{projectId}
+	</if>
+	<if test="originalLoanIds !=null and originalLoanIds.size()>0">
+	  AND A.PID IN
+	  	<foreach item="itemId" collection="originalLoanIds" open="(" separator="," close=")">
+	          #{itemId}
+	  	</foreach>
+	  </if>
+	  <if test="status != null and status >0">
+		AND A.STATUS=#{status}
+	  </if>
+	  <if test="estateId != null and estateId >0">
+        AND A.ESTATE_ID = #{estateId}
+      </if>
+	</select>
+	
+	<!-- 批量删除原贷款信息，此处做假删除 -->
+	<update id="delOriginalLoan"  parameterType="java.util.List">
+		UPDATE BIZ_ORIGINAL_LOAN SET STATUS = 2 WHERE PID IN
+	  		<foreach item="itemId" collection="list" open="(" separator=","
+			close=")">
+				#{itemId}
+			</foreach>
+	</update>
+
+</mapper>

@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.customer.mapper.CusPerFamilyFinanceMapper">
+
+<resultMap id="selectAllResultMap" type="com.xlkfinance.bms.rpc.customer.CusPerFamilyFinance" >
+    <id column="PID" property="pid" jdbcType="INTEGER" />
+    <result column="CUS_PER_ID" property="cusPerBase.pid" jdbcType="INTEGER" />
+    <result column="TOTAL_ASSETS" property="totalAssets" jdbcType="INTEGER" />
+    <result column="TOTAL_LIAB" property="totalLiab" jdbcType="INTEGER" />
+    <result column="FAMILY_ASSETS" property="familyAssets" jdbcType="INTEGER" />
+    <result column="YEAR_PAY" property="yearPay" jdbcType="INTEGER" />
+    <result column="MONTH_WAGE" property="monthWage" jdbcType="INTEGER" />
+    <result column="FAMILY_INCOME" property="familyIncome" jdbcType="INTEGER" />
+    <result column="FAMILY_CONTROL" property="familyControl" jdbcType="INTEGER" />
+    <result column="STATUS" property="status" jdbcType="INTEGER" />
+    
+    <result column="ASSETS_DETAIL" property="assetsDetail" jdbcType="VARCHAR" />
+    <result column="LIAB_DETAIL" property="liabDetail" jdbcType="VARCHAR" />
+    
+    <result column="MONTHLY_PAYMENT" property="monthlyPayment" jdbcType="DOUBLE" />
+    <result column="OVERDRAFT" property="overdraft" jdbcType="DOUBLE" />
+</resultMap>
+
+<insert id="insert" parameterType="com.xlkfinance.bms.rpc.customer.CusPerFamilyFinance">
+    <selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+		SELECT SEQ_CUS_PER_FAMILY_FINANCE.Nextval as PID from DUAL
+	</selectKey>
+    insert into cus_per_family_finance 
+	<trim prefix="(" suffix=")" suffixOverrides=",">
+    	PID, 
+    	<if test="cusPerBase.pid != null and cusPerBase.pid !=''"> 
+    	CUS_PER_ID, 
+    	</if>
+    	<if test="totalAssets != null and totalAssets !=''"> 
+    	TOTAL_ASSETS, 
+    	</if>
+    	<if test="totalLiab != null and totalLiab !=''"> 
+    	TOTAL_LIAB, 
+    	</if>
+    	<if test="familyAssets != null and familyAssets !=''"> 
+    	FAMILY_ASSETS, 
+    	</if>
+    	<if test="yearPay != null and yearPay !=''"> 
+    	YEAR_PAY, 
+    	</if>
+    	<if test="monthWage != null and monthWage !=''"> 
+    	MONTH_WAGE, 
+    	</if>
+    	<if test="familyIncome != null and familyIncome !=''"> 
+    	FAMILY_INCOME, 
+    	</if>
+    	<if test="familyControl != null and familyControl !=''"> 
+    	FAMILY_CONTROL,
+    	</if>
+    	
+    	<if test="assetsDetail != null and assetsDetail !=''"> 
+    	ASSETS_DETAIL,
+    	</if>
+    	<if test="liabDetail != null and liabDetail !=''"> 
+    	LIAB_DETAIL,
+    	</if>
+    	<if test="monthlyPayment != null"> 
+    	MONTHLY_PAYMENT,
+    	</if>
+    	<if test="overdraft != null"> 
+    	OVERDRAFT,
+    	</if>
+    	
+    	STATUS
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+    	#{pid,jdbcType=INTEGER},
+    	<if test="cusPerBase.pid != null and cusPerBase.pid !=''">  
+    	#{cusPerBase.pid,jdbcType=INTEGER},
+    	</if>
+    	<if test="totalAssets != null and totalAssets !=''"> 
+    	#{totalAssets,jdbcType=INTEGER},
+    	</if>
+    	<if test="totalLiab != null and totalLiab !=''">
+     	#{totalLiab,jdbcType=INTEGER}, 
+     	</if>
+    	<if test="familyAssets != null and familyAssets !=''">
+     	#{familyAssets,jdbcType=INTEGER},
+     	</if>
+    	<if test="yearPay != null and yearPay !=''">
+     	#{yearPay,jdbcType=INTEGER},
+     	</if>
+    	<if test="monthWage != null and monthWage !=''">
+     	#{monthWage,jdbcType=INTEGER}, 
+     	</if>
+    	<if test="familyIncome != null and familyIncome !=''">
+     	#{familyIncome,jdbcType=INTEGER},
+     	</if>
+    	<if test="familyControl != null and familyControl !=''">
+     	#{familyControl,jdbcType=INTEGER},
+     	</if>
+     	
+     	<if test="assetsDetail != null and assetsDetail !=''"> 
+    	#{assetsDetail,jdbcType=VARCHAR},
+    	</if>
+    	<if test="liabDetail != null and liabDetail !=''"> 
+    	#{liabDetail,jdbcType=VARCHAR},
+    	</if>
+     	<if test="monthlyPayment != null"> 
+    	#{monthlyPayment,jdbcType=DOUBLE},
+    	</if>
+    	<if test="overdraft != null"> 
+    	#{overdraft,jdbcType=DOUBLE},
+    	</if>
+     	#{status,jdbcType=INTEGER}
+   	</trim>
+  </insert>
+  <!-- 更新的方法 -->
+	<update id="updateByPrimaryKey" parameterType="com.xlkfinance.bms.rpc.customer.CusPerFamilyFinance">
+		update cus_per_family_finance
+		<set>
+		<if test="cusPerBase.pid != null">
+		    CUS_PER_ID = #{cusPerBase.pid,jdbcType=INTEGER},
+		</if>
+		<if test="totalAssets != null">
+		    TOTAL_ASSETS = #{totalAssets,jdbcType=INTEGER},
+		</if>
+    	<if test="totalLiab != null">
+      		TOTAL_LIAB = #{totalLiab,jdbcType=INTEGER}, 
+      	</if>
+      	<if test="familyAssets != null">
+      		FAMILY_ASSETS = #{familyAssets,jdbcType=INTEGER},
+      	</if>
+      	<if test="yearPay != null">
+      		YEAR_PAY = #{yearPay,jdbcType=INTEGER},
+      	</if>
+      	<if test="monthWage != null">
+      		MONTH_WAGE = #{monthWage,jdbcType=INTEGER},
+      	</if>
+      	<if test="familyIncome != null">
+      		FAMILY_INCOME = #{familyIncome,jdbcType=INTEGER},
+      	</if>
+      	<if test="familyControl != null">
+      		FAMILY_CONTROL = #{familyControl,jdbcType=INTEGER},
+      	</if>
+      	
+      	<if test="assetsDetail != null and assetsDetail !=''"> 
+    		ASSETS_DETAIL = #{assetsDetail,jdbcType=VARCHAR},
+    	</if>
+    	<if test="liabDetail != null and liabDetail !=''"> 
+    		LIAB_DETAIL = #{liabDetail,jdbcType=VARCHAR},
+    	</if>
+      	
+      	<if test="status != null">
+      		STATUS = #{status,jdbcType=INTEGER},
+      	</if>
+      	<if test="monthlyPayment != null"> 
+    	MONTHLY_PAYMENT = #{monthlyPayment,jdbcType=DOUBLE},
+    	</if>
+    	<if test="overdraft != null"> 
+    	OVERDRAFT = #{overdraft,jdbcType=DOUBLE},
+    	</if>
+		</set>
+		where pid = #{pid,jdbcType=INTEGER}
+	</update>
+	
+	<select id="selectByPrimaryKey" resultMap="selectAllResultMap" parameterType="java.lang.Integer">
+  		select * from cus_per_family_finance where CUS_PER_ID=#{perId,jdbcType=INTEGER} and status=1
+  	</select>
+</mapper>

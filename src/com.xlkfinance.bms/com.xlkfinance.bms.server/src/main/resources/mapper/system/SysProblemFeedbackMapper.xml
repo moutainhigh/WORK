@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.xlkfinance.bms.server.system.mapper.SysProblemFeedbackMapper">
+	<!-- 添加一条反馈 -->
+	<insert id="addProblemFeedback" parameterType="problemFeedback">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_PROBLEM_FEEDBACK.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO SYS_PROBLEM_FEEDBACK
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			PID,
+			<if test="feedbackContent != null and feedbackContent !=''">
+				FEEDBACK_CONTENT,
+			</if>
+			<if test="problemSource != null and problemSource >0">
+				PROBLEM_SOURCE,
+			</if>
+			<if test="createrId != null and createrId >0">
+				CREATER_ID,
+			</if>
+			CREATER_DATE
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{pid},
+			<if test="feedbackContent != null and feedbackContent !=''">
+				#{feedbackContent},
+			</if>
+			<if test="problemSource != null and problemSource >0">
+				#{problemSource},
+			</if>
+			<if test="createrId != null and createrId >0">
+				#{createrId},
+			</if>
+			SYSDATE
+		</trim>
+	</insert>
+</mapper>

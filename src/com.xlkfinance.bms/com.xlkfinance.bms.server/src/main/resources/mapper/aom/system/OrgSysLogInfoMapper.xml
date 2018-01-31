@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.xlkfinance.bms.server.aom.system.mapper.OrgSysLogInfoMapper">
+	<resultMap id="orgSysLogInfoMap" type="com.qfang.xk.aom.rpc.system.OrgSysLogInfo">
+		<id property="pid" column="PID" />
+		<id property="orderId" column="ORDER_ID" />
+		<id property="type" column="TYPE" />
+		<id property="content" column="CONTENT" />
+		<id property="browser" column="BROWSER" />
+		<id property="ipAddress" column="IP_ADDRESS" />
+		<id property="operator" column="OPERATOR" />
+		<id property="createDate" column="CREATE_DATE" />
+	</resultMap>
+	<sql id="column_list">
+		PID,ORDER_ID,TYPE,CONTENT,IP_ADDRESS,BROWSER,OPERATOR,CREATE_DATE
+	</sql>
+	<!-- 查询所有 -->
+	<select id="getAll" resultMap="orgSysLogInfoMap"
+		parameterType="com.qfang.xk.aom.rpc.system.OrgSysLogInfo">
+		SELECT
+		<include refid="column_list" />
+		FROM ORG_SYS_LOG_INFO
+		<where>
+			<trim>
+				<if test="pid != null and pid >0">
+					PID=#{pid}
+				</if>
+				<if test="orderId != null and orderId >0">
+					AND ORDER_ID=#{orderId}
+				</if>
+				<if test="type != null and type >0">
+					AND TYPE=#{type}
+				</if>
+				<if test="content != null and content !=''">
+					AND CONTENT=#{content}
+				</if>
+				<if test="ipAddress != null and ipAddress !=''">
+					AND IP_ADDRESS=#{ipAddress}
+				</if>
+				<if test="browser != null and browser !=''">
+					AND BROWSER=#{browser}
+				</if>
+				<if test="operator != null and operator >0">
+					AND OPERATOR=#{operator}
+				</if>
+				<if test="createDate != null and createDate !=''">
+					AND CREATE_DATE=#{createDate}
+				</if>
+			</trim>
+		</where>
+	</select>
+	<!-- 根据id获取 -->
+	<select id="getById" resultMap="orgSysLogInfoMap">
+		SELECT
+		<include refid="column_list" />
+		FROM ORG_SYS_LOG_INFO WHERE PID=#{pid}
+	</select>
+	<!-- 插入一条数据 -->
+	<insert id="insert" parameterType="com.qfang.xk.aom.rpc.system.OrgSysLogInfo">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_ORG_SYS_LOG_INFO.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO ORG_SYS_LOG_INFO
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="pid != null and pid >0">
+				PID,
+			</if>
+			<if test="orderId != null and orderId >0">
+				ORDER_ID,
+			</if>
+			<if test="type != null and type >0">
+				TYPE,
+			</if>
+			<if test="content != null and content !=''">
+				CONTENT,
+			</if>
+			<if test="ipAddress != null and ipAddress !=''">
+				IP_ADDRESS,
+			</if>
+			<if test="browser != null and browser !=''">
+				BROWSER,
+			</if>
+			<if test="operator != null and operator >0">
+				OPERATOR,
+			</if>
+				CREATE_DATE
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="pid != null and pid >0">
+				#{pid},
+			</if>
+			<if test="orderId != null and orderId >0">
+				#{orderId},
+			</if>
+			<if test="type != null and type >0">
+				#{type},
+			</if>
+			<if test="content != null and content !=''">
+				#{content},
+			</if>
+			<if test="ipAddress != null and ipAddress !=''">
+				#{ipAddress},
+			</if>
+			<if test="browser != null and browser !=''">
+				#{browser},
+			</if>
+			<if test="operator != null and operator >0">
+				#{operator},
+			</if>
+			SYSDATE
+		</trim>
+	</insert>
+
+</mapper>

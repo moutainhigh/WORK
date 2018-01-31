@@ -1,0 +1,42 @@
+==================配置信息========================================
+#web-config.properties添加以下内容
+#=============================hnbx2 config ===========================================
+hnbx2.partner.api.url=http://cgi.sinosafe.com.cn/esb_agent/SULOUApply
+hnbx2.partner.accid=P89XK08
+hnbx2.partner.type=HAXB0001
+hnbx2.partner.md5=53da303eb82a2302e83f3370aeb749b1
+
+#hnbx2 sftp config
+hnbx2.sftp.server.ip=ftp.sinosafe.com.cn
+hnbx2.sftp.server.port=21
+hnbx2.sftp.server.username=xbqfw
+hnbx2.sftp.server.password=xbqfw-2017
+#hnbx2 file base dir
+hnbx2.sftp.dir.base.path=/download/qfang
+
+
+
+/**添加配置*/
+系统管理 》系统配置 
+	参数名：HNBX2_PARTNER_RATE
+	参数值：0
+	描述：华安保险接口配置 费率（数字）（不必填）（小科）
+	
+	
+	参数名：HNBX2_PARTNER_GROSS_RATE
+	参数值：0.079
+	描述：华安保险接口配置 执行利率（数字）（小科）
+
+	
+
+
+
+
+
+
+
+
+ 
+	
+  
+

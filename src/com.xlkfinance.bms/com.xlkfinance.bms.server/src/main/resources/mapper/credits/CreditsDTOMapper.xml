@@ -1,0 +1,621 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.credits.mapper.CreditsDTOMapper">
+  <resultMap id="CreditsDTOResultMap" type="com.xlkfinance.bms.rpc.beforeloan.CreditsDTO">
+        <result property="creditId" column="PID" />
+        <result property="projectId" column="PROJECT_ID" />
+        <result property="projectName" column="PROJECT_NAME" />
+        <result property="projectNumber" column="PROJECT_NUMBER" />
+        <result property="isHoop" column="IS_HOOP" />
+        <result property="isHoopVal" column="isHoopVal" />
+        <result property="creditAmt" column="CREDIT_AMT" />
+        <result property="extractionAmt" column="extractionAmt" />
+        <result property="freezeAmt" column="freezeAmt" />
+        <result property="availableAmt" column="availableAmt" />
+        <result property="credtiStartDt" column="CREDTI_START_DT" javaType="String" jdbcType="DATE"/>
+        <result property="credtiEndDt" column="CREDTI_END_DT" javaType="String" jdbcType="DATE"/>
+        <result property="refId" column="REF_ID" />
+        <result property="cusType" column="CUS_TYPE" />
+        <result property="dataObject" column="dataObject" />
+    	<result property="pmUserId" column="PM_USER_ID"/>
+    	<result property="pmUser" column="PMUSER"/>
+    	<result property="requestDttm" column="REQUEST_DTTM" javaType="String" jdbcType="DATE"/>
+    	<result property="relationType" column="RELATION_TYPE"/>
+    </resultMap>
+    
+    <resultMap type="com.xlkfinance.bms.rpc.beforeloan.CreditsLineDTO" id="CreditsLineResultMap">
+    	<result property="projectId" column="PID"/>
+    	<result property="projectNumber" column="PROJECT_NUMBER"/>
+    	<result property="projectName" column="PROJECT_NAME"/>
+    	<result property="requestStatusVal" column="REQUEST_STATUS_VAL"/>
+    	<result property="requestStatus" column="REQUEST_STATUS"/>
+    	<result property="requestDttm" column="REQUEST_DTTM"/>
+    	<result property="acctType" column="cusType"/>
+    	<result property="creditAmt" column="CREDIT_AMT"/>
+    	<result property="pmUser" column="pmUser"/>
+    	<result property="planOutLoanDT" column="PLAN_OUT_LOAN_DT"/>
+    	<result property="planRepayLoanDT" column="PLAN_REPAY_LOAN_DT"/>
+    	<result property="oldProjectId" column="oldProjectId"/>
+    	<result property="PM_USER_ID" column="pmUserId"/>
+    </resultMap>
+    
+    <!-- 查询所需列  -->
+    <sql id="creditsDTO_Column_List">
+		c.PID,c.project_id,p.project_name,p.project_number,c.IS_HOOP,
+       CASE c.is_hoop WHEN 1 THEN '可循环' WHEN 2 THEN '不可循环' END isHoopVal,
+       c.credit_amt,
+       (
+       (SELECT NVL(SUM(CLR1.AMT), 0)
+          FROM BIZ_CREDIT_LIMIT_RECORD CLR1
+         WHERE C.PID = CLR1.CREDIT_ID
+           AND CLR1.CREDIT_USE_TYPE = 2
+           AND CLR1.STATUS = 1) - 
+       (SELECT NVL(SUM(CLR5.AMT), 0) AS B
+           FROM BIZ_CREDIT_LIMIT_RECORD CLR5
+          WHERE C.PID = CLR5.CREDIT_ID
+            AND CLR5.STATUS = 1
+            AND CLR5.CREDIT_USE_TYPE = 5)    
+       )AS EXTRACTIONAMT,
+       (
+       (SELECT nvl(SUM(CLR1.AMT),0)
+       FROM BIZ_CREDIT_LIMIT_RECORD clr1
+       WHERE c.pid = clr1.credit_id
+       AND clr1.credit_use_type = 3 AND clr1.status = 1 ) - 
+       (SELECT nvl(SUM(CLR2.AMT),0)
+       FROM BIZ_CREDIT_LIMIT_RECORD clr2
+       WHERE c.pid = clr2.credit_id
+       AND clr2.credit_use_type = 4 AND clr2.status = 1)
+       )AS freezeAmt,
+       (
+       (SELECT nvl(SUM(CLR1.AMT),0) AS b
+       FROM BIZ_CREDIT_LIMIT_RECORD clr1
+       WHERE c.PID = clr1.CREDIT_ID AND clr1.status = 1
+       AND clr1.CREDIT_USE_TYPE = 1 ) - 
+       (SELECT nvl(SUM(CLR2.AMT),0) AS a
+       FROM BIZ_CREDIT_LIMIT_RECORD clr2
+       WHERE c.PID = clr2.CREDIT_ID AND clr2.status = 1
+       AND clr2.CREDIT_USE_TYPE = 2 ) - 
+       (SELECT nvl(SUM(CLR3.AMT),0) AS b
+       FROM BIZ_CREDIT_LIMIT_RECORD clr3
+       WHERE c.PID = clr3.CREDIT_ID AND clr3.status = 1
+       AND clr3.CREDIT_USE_TYPE = 3 ) +
+       (SELECT nvl(SUM(CLR4.AMT),0) AS b
+       FROM BIZ_CREDIT_LIMIT_RECORD clr4
+       WHERE c.PID = clr4.CREDIT_ID AND clr4.status = 1
+       AND clr4.CREDIT_USE_TYPE = 4 ) +
+       (SELECT nvl(SUM(CLR5.AMT),0) AS b
+       FROM BIZ_CREDIT_LIMIT_RECORD clr5
+       WHERE c.PID = clr5.CREDIT_ID AND clr5.status = 1
+       AND clr5.CREDIT_USE_TYPE = 5 )
+       ) AS availableAmt,
+       c.credti_start_dt,c.credti_end_dt,
+       (SELECT SU.REAL_NAME  FROM SYS_USER SU WHERE SU.PID = P.PM_USER_ID) AS PMUSER , TO_CHAR(p.REQUEST_DTTM, 'yyyy-MM-dd') REQUEST_DTTM
+    </sql>
+    
+    <!-- 查询条件 -->
+    <sql id="queryCreditsDTO">
+    	FROM BIZ_PROJECT p,BIZ_CREDIT c,cus_ACCT_V cus
+		WHERE p.PID = c.PROJECT_ID 
+	    AND p.ACCT_ID = cus.ACCT_ID 
+	    AND P.REQUEST_STATUS = 4 
+	    AND P.STATUS = 1 
+	    AND c.credit_status = 1 
+	    AND (p.PROJECT_TYPE = 1 OR  p.PROJECT_TYPE = 5) 
+	    AND P.PM_USER_ID IN (
+	        SELECT t.pid FROM SYS_USER t START WITH t.pid = #{pmUserId} 
+	        CONNECT BY t.superior_user_id = PRIOR t.pid
+  		)
+  		AND C.IS_HOOP = 1
+    	<if test="projectName != null and projectName != ''">
+			AND p.project_name LIKE '%${projectName}%'
+		</if>
+		<if test="projectNumber != null and projectNumber != ''">
+			AND p.project_NUMBER LIKE '%${projectNumber}%'
+		</if>
+		<if test="acctName != null and acctName != ''">
+			AND cus.ACCT_NAME LIKE '%${acctName}%'
+		</if>
+		<if test="acctType != null and acctType != -1 ">
+			AND cus.ACCT_TYPE=#{acctType}
+		</if>
+		<if test="ecoTrade != null and ecoTrade != -1 ">
+			AND cus.ECO_TRADE=#{ecoTrade}
+		</if>
+		<if test="isHoop != null and isHoop != -1 ">
+			AND c.IS_HOOP=#{isHoop}
+		</if>
+		<if test="credtiStartDt != null and credtiStartDt != ''">
+			AND c.CREDTI_START_DT <![CDATA[>= ]]> #{credtiStartDt,jdbcType=DATE,javaType=String}
+		</if>
+		<if test="credtiEndDt != null and credtiEndDt != ''">
+			AND c.CREDTI_END_DT <![CDATA[< ]]> #{credtiEndDt,jdbcType=DATE,javaType=String} 
+		</if>
+		<if test="projectId != null and projectId != 0">
+			AND c.PROJECT_ID =#{projectId} 
+		</if>
+		<if test="beginRequestDttm != null and beginRequestDttm !=''">
+			 AND p.REQUEST_DTTM <![CDATA[>= ]]> TO_DATE(#{beginRequestDttm},'yyyy-mm-dd hh24:mi:ss')
+		</if>
+		<if test="endRequestDttm != null and endRequestDttm !=''">
+			 AND p.REQUEST_DTTM <![CDATA[<= ]]> TO_DATE(#{endRequestDttm},'yyyy-mm-dd hh24:mi:ss')+1
+		</if>
+    </sql>
+    
+    <!-- 查询所需列  -->
+    <sql id="creditsDTO_Column_ListTwo">
+		c.PID,c.project_id,p.project_name,p.project_number,c.IS_HOOP,
+       CASE c.is_hoop WHEN 1 THEN '可循环' WHEN 2 THEN '不可循环' END isHoopVal,
+       c.credit_amt,
+       (SELECT nvl(SUM(CLR1.AMT),0)
+       FROM BIZ_CREDIT_LIMIT_RECORD clr1
+       WHERE c.pid = clr1.credit_id
+       AND clr1.credit_use_type = 2 AND clr1.status = 1 ) AS extractionAmt,
+       (
+       (SELECT nvl(SUM(CLR1.AMT),0)
+       FROM BIZ_CREDIT_LIMIT_RECORD clr1
+       WHERE c.pid = clr1.credit_id
+       AND clr1.credit_use_type = 3 AND clr1.status = 1 ) - 
+       (SELECT nvl(SUM(CLR2.AMT),0)
+       FROM BIZ_CREDIT_LIMIT_RECORD clr2
+       WHERE c.pid = clr2.credit_id
+       AND clr2.credit_use_type = 4 AND clr2.status = 1)
+       )AS freezeAmt,
+       (
+       (SELECT nvl(SUM(CLR1.AMT),0) AS b
+       FROM BIZ_CREDIT_LIMIT_RECORD clr1
+       WHERE c.PID = clr1.CREDIT_ID AND clr1.status = 1
+       AND clr1.CREDIT_USE_TYPE = 1 ) - 
+       (SELECT nvl(SUM(CLR2.AMT),0) AS a
+       FROM BIZ_CREDIT_LIMIT_RECORD clr2
+       WHERE c.PID = clr2.CREDIT_ID AND clr2.status = 1
+       AND clr2.CREDIT_USE_TYPE = 2 ) - 
+       (SELECT nvl(SUM(CLR3.AMT),0) AS b
+       FROM BIZ_CREDIT_LIMIT_RECORD clr3
+       WHERE c.PID = clr3.CREDIT_ID AND clr3.status = 1
+       AND clr3.CREDIT_USE_TYPE = 3 ) +
+       (SELECT nvl(SUM(CLR4.AMT),0) AS b
+       FROM BIZ_CREDIT_LIMIT_RECORD clr4
+       WHERE c.PID = clr4.CREDIT_ID AND clr4.status = 1
+       AND clr4.CREDIT_USE_TYPE = 4 )
+       ) AS availableAmt,
+       c.credti_start_dt,c.credti_end_dt,
+       (SELECT SU.REAL_NAME  FROM SYS_USER SU WHERE SU.PID = P.PM_USER_ID) AS PMUSER , TO_CHAR(p.REQUEST_DTTM, 'yyyy-MM-dd') REQUEST_DTTM
+    </sql>
+    
+    <!-- 查询条件two -->
+    <sql id="queryCreditsDTOTwo">
+    	FROM BIZ_PROJECT p,BIZ_CREDIT c,cus_ACCT_V cus
+		WHERE p.PID = c.PROJECT_ID 
+	    AND p.ACCT_ID = cus.ACCT_ID 
+	    AND P.REQUEST_STATUS = 4 
+	    AND P.STATUS = 1 
+	    AND c.credit_status = 1 
+	    AND (p.PROJECT_TYPE = 1 OR  p.PROJECT_TYPE = 5) 
+	    AND P.PM_USER_ID IN (
+	        SELECT t.pid FROM SYS_USER t START WITH t.pid = #{pmUserId} 
+	        CONNECT BY t.superior_user_id = PRIOR t.pid
+  		)
+  		AND C.IS_HOOP = 2
+    	<if test="projectName != null and projectName != ''">
+			AND p.project_name LIKE '%${projectName}%'
+		</if>
+		<if test="projectNumber != null and projectNumber != ''">
+			AND p.project_NUMBER LIKE '%${projectNumber}%'
+		</if>
+		<if test="acctName != null and acctName != ''">
+			AND cus.ACCT_NAME LIKE '%${acctName}%'
+		</if>
+		<if test="acctType != null and acctType != -1 ">
+			AND cus.ACCT_TYPE=#{acctType}
+		</if>
+		<if test="ecoTrade != null and ecoTrade != -1 ">
+			AND cus.ECO_TRADE=#{ecoTrade}
+		</if>
+		<if test="isHoop != null and isHoop != -1 ">
+			AND c.IS_HOOP=#{isHoop}
+		</if>
+		<if test="credtiStartDt != null and credtiStartDt != ''">
+			AND c.CREDTI_START_DT <![CDATA[>= ]]> #{credtiStartDt,jdbcType=DATE,javaType=String}
+		</if>
+		<if test="credtiEndDt != null and credtiEndDt != ''">
+			AND c.CREDTI_END_DT <![CDATA[< ]]> #{credtiEndDt,jdbcType=DATE,javaType=String} 
+		</if>
+		<if test="projectId != null and projectId != 0">
+			AND c.PROJECT_ID =#{projectId} 
+		</if>
+		<if test="beginRequestDttm != null and beginRequestDttm !=''">
+			 AND p.REQUEST_DTTM <![CDATA[>= ]]> TO_DATE(#{beginRequestDttm},'yyyy-mm-dd hh24:mi:ss')
+		</if>
+		<if test="endRequestDttm != null and endRequestDttm !=''">
+			 AND p.REQUEST_DTTM <![CDATA[<= ]]> TO_DATE(#{endRequestDttm},'yyyy-mm-dd hh24:mi:ss')+1
+		</if>
+    </sql>
+    
+    <!-- 授信项目额度查询列表 -->
+    <select id="getAllCredits" resultMap="CreditsDTOResultMap" parameterType="com.xlkfinance.bms.rpc.beforeloan.CreditsDTO">
+		SELECT * FROM (
+			SELECT rownum rnum ,aa.* FROM (  
+				SELECT  rownum rid,  
+				<include refid="creditsDTO_Column_List" /> 
+				<include refid="queryCreditsDTO" /> 
+				UNION ALL 
+				SELECT  rownum rid,  
+				<include refid="creditsDTO_Column_ListTwo" /> 
+				<include refid="queryCreditsDTOTwo" /> 
+				) aa) bb 
+		where 1=1  
+		<if test="page != null and page !=0 and rows!=null and rows!=0">
+			and rnum<![CDATA[<=]]>#{page}*#{rows}
+			and rnum>=((#{page}-1)*#{rows})+1
+		</if> 
+        ORDER BY bb.REQUEST_DTTM DESC
+  	</select> 
+	
+	<!-- 根据条件查询贷前申请的总数 -->
+	<select id="getAllCreditsDTOCount" resultType="java.lang.Integer" parameterType="com.xlkfinance.bms.rpc.beforeloan.CreditsDTO">
+		SELECT  count(*)
+		FROM BIZ_PROJECT p,BIZ_CREDIT c,cus_ACCT_V cus
+		WHERE p.PID = c.PROJECT_ID 
+	    AND p.ACCT_ID = cus.ACCT_ID 
+	    AND P.REQUEST_STATUS = 4 
+	    AND P.STATUS = 1 
+	    AND c.credit_status = 1 
+	    AND (p.PROJECT_TYPE = 1 OR  p.PROJECT_TYPE = 5) 
+	    AND P.PM_USER_ID IN (
+	        SELECT t.pid FROM SYS_USER t START WITH t.pid = #{pmUserId} 
+	        CONNECT BY t.superior_user_id = PRIOR t.pid
+  		)
+    	<if test="projectName != null and projectName != ''">
+			AND p.project_name LIKE '%${projectName}%'
+		</if>
+		<if test="projectNumber != null and projectNumber != ''">
+			AND p.project_NUMBER LIKE '%${projectNumber}%'
+		</if>
+		<if test="acctName != null and acctName != ''">
+			AND cus.ACCT_NAME LIKE '%${acctName}%'
+		</if>
+		<if test="acctType != null and acctType != -1 ">
+			AND cus.ACCT_TYPE=#{acctType}
+		</if>
+		<if test="ecoTrade != null and ecoTrade != -1 ">
+			AND cus.ECO_TRADE=#{ecoTrade}
+		</if>
+		<if test="isHoop != null and isHoop != -1 ">
+			AND c.IS_HOOP=#{isHoop}
+		</if>
+		<if test="credtiStartDt != null and credtiStartDt != ''">
+			AND c.CREDTI_START_DT <![CDATA[>= ]]> #{credtiStartDt,jdbcType=DATE,javaType=String}
+		</if>
+		<if test="credtiEndDt != null and credtiEndDt != ''">
+			AND c.CREDTI_END_DT <![CDATA[< ]]> #{credtiEndDt,jdbcType=DATE,javaType=String} 
+		</if>
+		<if test="projectId != null and projectId != 0">
+			AND c.PROJECT_ID =#{projectId} 
+		</if>
+		<if test="beginRequestDttm != null and beginRequestDttm !=''">
+			 AND p.REQUEST_DTTM <![CDATA[>= ]]> TO_DATE(#{beginRequestDttm},'yyyy-mm-dd hh24:mi:ss')
+		</if>
+		<if test="endRequestDttm != null and endRequestDttm !=''">
+			 AND p.REQUEST_DTTM <![CDATA[<= ]]> TO_DATE(#{endRequestDttm},'yyyy-mm-dd hh24:mi:ss')+1
+		</if>
+	</select>
+	
+	   <!-- 授信项目额度查询列表 -->
+    <select id="getCreditsInfo" resultMap="CreditsDTOResultMap" parameterType="com.xlkfinance.bms.rpc.beforeloan.CreditsDTO">
+    
+    	<if test="isHoop == 1">
+	    	SELECT
+				 <include refid="creditsDTO_Column_List" /> 
+				 FROM BIZ_PROJECT p,BIZ_CREDIT c,cus_ACCT_V cus
+				WHERE p.PID = c.PROJECT_ID 
+			    AND p.ACCT_ID = cus.ACCT_ID 
+			    AND P.REQUEST_STATUS = 4 
+			    AND P.STATUS = 1 
+			    AND c.credit_status = 1 
+			    AND (p.PROJECT_TYPE = 1 OR  p.PROJECT_TYPE = 5) 
+		  		AND C.IS_HOOP = 1 
+				AND p.pid =#{projectId} 
+		</if>
+    	<if test="isHoop == 2">
+	    	SELECT
+				<include refid="creditsDTO_Column_ListTwo" />
+				 FROM BIZ_PROJECT p,BIZ_CREDIT c,cus_ACCT_V cus
+				WHERE p.PID = c.PROJECT_ID 
+			    AND p.ACCT_ID = cus.ACCT_ID 
+			    AND P.REQUEST_STATUS = 4 
+			    AND P.STATUS = 1 
+			    AND c.credit_status = 1 
+			    AND (p.PROJECT_TYPE = 1 OR  p.PROJECT_TYPE = 5) 
+		  		AND C.IS_HOOP = 2
+				AND p.pid =#{projectId}  
+		</if>
+		
+  	</select> 
+	
+	<!-- 新增额度使用记录 -->
+	<insert id="insert" parameterType="com.xlkfinance.bms.rpc.beforeloan.CreditLimitRecord">
+		<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+			SELECT SEQ_BIZ_CREDIT_LIMIT_RECORD.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_CREDIT_LIMIT_RECORD(
+		   PID,
+		   CREDIT_ID,
+		   CREDIT_USE_TYPE,
+		   AMT,
+		   REQUEST_AMT,
+		   REASON,
+		   CRE_DTTM,
+		   STATUS)
+		values (
+		    #{pid,jdbcType=INTEGER},
+		    #{creditId,jdbcType=INTEGER},
+		    #{creditUseType,jdbcType=INTEGER},
+		    #{amt,jdbcType=DOUBLE},
+		    #{requestAmt,jdbcType=DOUBLE},
+		    #{reason,jdbcType=VARCHAR},
+		    #{creDttm,jdbcType=TIMESTAMP,javaType=String},
+		    #{status,jdbcType=INTEGER})
+	</insert>
+	
+	 <!-- 更新的方法 -->
+	<update id="updateByPrimaryKey" parameterType="com.xlkfinance.bms.rpc.beforeloan.CreditLimitRecord">
+		UPDATE BIZ_CREDIT_LIMIT_RECORD 
+		SET 
+		<trim prefix=" " suffix=" " suffixOverrides=",">
+			<if test="amt != null">
+				AMT = #{amt,jdbcType=DOUBLE},
+			</if>
+			<if test="requestAmt != null">
+				REQUEST_AMT = #{requestAmt,jdbcType=DOUBLE},
+			</if>
+			<if test="creDttm != null and creDttm != ''">
+				CRE_DTTM = #{creDttm,jdbcType=TIMESTAMP,javaType=String},
+			</if>
+			<if test="status != null">
+				STATUS = #{status,jdbcType=INTEGER},
+			</if>
+		</trim>
+		WHERE PID = #{pid,jdbcType=INTEGER}
+	</update>
+	
+ <select id="selectByPrimaryKey" resultType="com.xlkfinance.bms.rpc.beforeloan.CreditLimitRecord" parameterType="java.lang.Integer">
+		SELECT CLR.PID,
+	       CLR.CREDIT_ID       CREDITID,
+	       CLR.CREDIT_USE_TYPE CREDITUSETYPE,
+	       CLR.CREDIT_USE_TYPE,
+	       CLR.AMT,
+	       CLR.REQUEST_AMT     REQUESTAMT,
+	       CLR.REASON,
+	       CLR.CRE_DTTM        CREDTTM,
+	       CLR.STATUS
+	  FROM BIZ_CREDIT_LIMIT_RECORD CLR
+	 WHERE CLR.PID  = #{pid,jdbcType=INTEGER}
+</select> 	
+
+	<select id="getCreditsLine" parameterType="com.xlkfinance.bms.rpc.beforeloan.CreditsLineDTO" resultMap="CreditsLineResultMap">
+		SELECT * FROM(
+		SELECT C.*,ROWNUM RN FROM (
+			SELECT BP.PID,BP.PM_USER_ID,
+		       BP.PROJECT_NAME,
+		       BP.PROJECT_NUMBER,
+		       BP.REQUEST_STATUS,
+		       CASE
+		         WHEN BP.REQUEST_STATUS = 1 AND BP.IS_REJECTED = 0 THEN
+		          '申请中'
+		         WHEN BP.REQUEST_STATUS = 2 AND BP.IS_REJECTED = 0 THEN
+		          '审核中'
+		         WHEN BP.REQUEST_STATUS = 3 AND BP.IS_REJECTED = 0  THEN
+		          '已放款'
+		         WHEN BP.REQUEST_STATUS = 4 AND BP.IS_REJECTED = 0  THEN
+		          '已归档'
+		         WHEN BP.IS_REJECTED = 1 THEN
+		          '已否决'
+		       END REQUEST_STATUS_VAL,
+		       TO_CHAR(BP.REQUEST_DTTM,'yyyy-MM-DD HH24-mi-ss') REQUEST_DTTM,
+		       BL.CREDIT_AMT,
+		       BL.PLAN_OUT_LOAN_DT,
+		       BL.PLAN_REPAY_LOAN_DT,
+		       CV.ACCT_TYPE cusType,
+		       BPR.REF_PROJECT_ID OLDPROJECTID,
+	       (SELECT SU.REAL_NAME
+                         FROM SYS_USER SU
+                        WHERE SU.PID = BP.PM_USER_ID) PMUSER
+                 FROM BIZ_PROJECT_RELATION BPR, BIZ_PROJECT BP
+                 LEFT JOIN BIZ_LOAN BL
+                   ON BP.PID = BL.PROJECT_ID
+                 LEFT JOIN CUS_ACCT_V CV
+                   ON BP.ACCT_ID = CV.ACCT_ID
+                WHERE BP.PID = BPR.PROJECT_ID
+                  AND BP.PROJECT_TYPE = 3
+                  AND BP.STATUS = 1
+                  
+            <if test="pmUserId!=1 ">
+                  AND BP.PM_USER_ID IN (
+				        SELECT t.pid FROM SYS_USER t START WITH t.pid = #{pmUserId} 
+				        CONNECT BY t.superior_user_id = PRIOR t.pid
+			  		)
+			</if> 		
+		   <if test="projectName!=null and projectName!=''">
+		   		AND	BP.PROJECT_NAME like #{projectName}||'%'
+		   </if>
+		   <if test="projectNumber!=null and projectNumber!=''">
+		   		AND BP.PROJECT_NUMBER like #{projectNumber}||'%'
+		   </if>
+		   <if test="cusName!=null and cusName!=''">
+		   		AND CV.ACCT_NAME = #{cusName}
+		   </if>
+		   <if test="acctType!=null and acctType!='' and acctType!='-1'">
+		   		AND CV.ACCT_TYPE = #{acctType}
+		   </if>
+		  <if test="requestStatus != null and requestStatus != -1 and requestStatus != 0">
+				<choose>
+					<when test="requestStatus == 7">
+						AND BP.IS_REJECTED = 1
+					</when>
+					<otherwise>
+						AND BP.REQUEST_STATUS = #{requestStatus} 
+						AND BP.IS_REJECTED =0
+					</otherwise>
+				</choose>
+		   </if>
+		   <if test="ecoTrade!=null and ecoTrade!='' and ecoTrade!='-1'">
+		   		AND CV.ECO_TRADE = #{ecoTrade}
+		   </if>
+		   <if test="requestStartDt!=null and requestStartDt!=''">
+		   		AND BP.REQUEST_DTTM <![CDATA[>=]]> TO_DATE(#{requestStartDt},'yyyy-MM-dd') 
+		   </if>
+		   <if test="requestEndDt!=null and requestEndDt!=''">
+		   		AND BP.REQUEST_DTTM <![CDATA[<=]]> TO_DATE(#{requestEndDt},'yyyy-MM-dd') +1
+		   </if>
+		   order by REQUEST_DTTM desc
+		) C WHERE ROWNUM<![CDATA[<=]]>#{page}*#{rows} )
+		WHERE RN>=((#{page}-1)*#{rows})+1
+	</select>
+	
+	<select id="getCreditsLineTotal" resultType="java.lang.Integer" parameterType="com.xlkfinance.bms.rpc.beforeloan.CreditsLineDTO">
+		SELECT COUNT(1) FROM(
+			SELECT BP.PID,
+		       BP.PROJECT_NAME,
+		       BP.PROJECT_NUMBER,
+		       CASE
+		         WHEN BP.REQUEST_STATUS = 1 AND BP.IS_REJECTED = 0 THEN
+		          '申请中'
+		         WHEN BP.REQUEST_STATUS = 2 AND BP.IS_REJECTED = 0 THEN
+		          '审核中'
+		         WHEN BP.REQUEST_STATUS = 3 AND BP.IS_REJECTED = 0  THEN
+		          '已放款'
+		         WHEN BP.REQUEST_STATUS = 4 AND BP.IS_REJECTED = 0  THEN
+		          '已归档'
+		         WHEN BP.IS_REJECTED = 1 THEN
+		          '已否决'
+		       END REQUEST_STATUS_VAL,
+		       BP.REQUEST_DTTM,
+		       BL.CREDIT_AMT,
+		       BL.PLAN_OUT_LOAN_DT,
+		       BL.PLAN_REPAY_LOAN_DT,
+		       CV.ACCT_TYPE,
+		       BPR.REF_PROJECT_ID OLDPROJECTID,
+	        (SELECT SU.REAL_NAME
+                         FROM SYS_USER SU
+                        WHERE SU.PID = BP.PM_USER_ID) PMUSER
+                 FROM BIZ_PROJECT_RELATION BPR, BIZ_PROJECT BP
+                 LEFT JOIN BIZ_LOAN BL
+                   ON BP.PID = BL.PROJECT_ID
+                 LEFT JOIN CUS_ACCT_V CV
+                   ON BP.ACCT_ID = CV.ACCT_ID
+                WHERE BP.PID = BPR.PROJECT_ID
+                  AND BP.PROJECT_TYPE = 3
+                  AND BP.STATUS = 1
+                  
+             <if test="pmUserId!=1 ">
+                  AND BP.PM_USER_ID IN (
+				        SELECT t.pid FROM SYS_USER t START WITH t.pid = #{pmUserId} 
+				        CONNECT BY t.superior_user_id = PRIOR t.pid
+			  		)
+			</if> 	
+             <!--      AND BP.PM_USER_ID IN (
+				        SELECT t.pid FROM SYS_USER t START WITH t.pid = #{pmUserId} 
+				        CONNECT BY t.superior_user_id = PRIOR t.pid
+			  		) -->
+		   <if test="projectName!=null and projectName!=''">
+		   		AND	BP.PROJECT_NAME like #{projectName}||'%'
+		   </if>
+		   <if test="projectNumber!=null and projectNumber!=''">
+		   		AND BP.PROJECT_NUMBER like #{projectNumber}||'%'
+		   </if>
+		   <if test="cusName!=null and cusName!=''">
+		   		AND CV.ACCT_NAME = #{cusName}
+		   </if>
+		   <if test="acctType!=null and acctType!='' and acctType!='-1'">
+		   		AND CV.ACCT_TYPE = #{acctType}
+		   </if>
+		   <if test="requestStatus != null and requestStatus != -1 and requestStatus != 0">
+				<choose>
+					<when test="requestStatus == 7">
+						AND BP.IS_REJECTED = 1
+					</when>
+					<otherwise>
+						AND BP.REQUEST_STATUS = #{requestStatus} 
+						AND BP.IS_REJECTED =0
+					</otherwise>
+				</choose>
+		   </if>
+		   <if test="ecoTrade!=null and ecoTrade!='' and ecoTrade!='-1'">
+		   		AND CV.ECO_TRADE = #{ecoTrade}
+		   </if>
+		   <if test="requestStartDt!=null and requestStartDt!=''">
+		   		AND BP.REQUEST_DTTM <![CDATA[>=]]> TO_DATE(#{requestStartDt},'yyyy-MM-dd') 
+		   </if>
+		   <if test="requestEndDt!=null and requestEndDt!=''">
+		   		AND BP.REQUEST_DTTM <![CDATA[<=]]> TO_DATE(#{requestEndDt},'yyyy-MM-dd') +1
+		   </if>
+		) 
+	</select>
+	
+	<!-- 根据授信ID和额度调整类型查询授信使用记录ID -->
+	<select id="getCreditLimitRecordPid" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+		SELECT c.PID FROM BIZ_CREDIT_LIMIT_RECORD c
+		WHERE c.credit_id = #{creditId} AND c.credit_use_type = #{creditUseType} 
+	</select>
+	
+	<update id="deleteCreditsLine" parameterType="java.lang.Integer">
+		update BIZ_PROJECT set status = 0 where pid = #{projectId}
+	</update>
+	
+	<!-- 根据项目ID查询授信合同的信息和共同借款人信息 -->
+	<select id="getProjectAcctAndPublicManByProjectId" resultMap="CreditsDTOResultMap" parameterType="java.lang.Integer">
+		SELECT PR.PID PROJECT_ID,CA.PID REF_ID,CA.CUS_TYPE CUS_TYPE,
+       	PKG_COMMON.FUN_GET_ACCT_NAME(CA.PID) dataObject,-1 RELATION_TYPE
+  		FROM CUS_ACCT CA, BIZ_PROJECT PR
+ 		WHERE 1 = 1
+	   	AND PR.PID = #{projectId}
+	   	AND PR.ACCT_ID = CA.PID
+	   	AND CA.STATUS = 1
+	   	AND PR.STATUS = 1
+	UNION ALL
+		SELECT PR.PID, PER.PID, 1, PER.CHINA_NAME,per.RELATION_TYPE
+  		FROM BIZ_PROJECT PR, BIZ_PROJECT_PUBLIC_MAN PPM, CUS_PERSON PER
+		WHERE 1 = 1
+	   	AND PR.PID = #{projectId}
+	   	AND PPM.PROJECT_ID = PR.PID
+	   	AND PER.PID = PPM.PERSON_ID
+	   	AND PR.STATUS = 1
+	   	AND PPM.STATUS = 1
+	   	AND PER.STATUS = 1
+	</select>
+	<select id="getCreditLimitTypeByPid" parameterType="Integer" resultType="Integer">
+		SELECT T.CREDIT_USE_TYPE FROM BIZ_CREDIT_LIMIT_RECORD T WHERE T.PID = #{pid}
+	</select>
+	
+	
+	
+		<!-- -->
+	<select id="getCreditsLineProjectId" parameterType="com.xlkfinance.bms.rpc.beforeloan.CreditsLineDTO" resultMap="CreditsLineResultMap">
+		SELECT BP.REQUEST_STATUS
+		  FROM BIZ_PROJECT_RELATION BPR, BIZ_PROJECT BP
+		 WHERE BP.PID = BPR.PROJECT_ID
+		   AND BP.PROJECT_TYPE = 3
+		   AND BP.STATUS !=0
+		   AND BPR.REF_PROJECT_ID  IN(  SELECT BPR.PROJECT_ID FROM BIZ_PROJECT_RELATION BPR WHERE BPR.REF_PROJECT_ID   =#{projectId})
+
+	</select>
+	
+	<select id="getCreditId" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+		SELECT PID
+		FROM BIZ_CREDIT BC
+		WHERE BC.PROJECT_ID =
+		(SELECT BPR.REF_PROJECT_ID
+		FROM BIZ_PROJECT_RELATION BPR
+		WHERE BPR.PROJECT_ID =
+		(SELECT BL.PROJECT_ID
+		FROM BIZ_LOAN BL
+		WHERE BL.PID = #{loanId}))
+
+	</select>
+	
+	<select id="getIsHoopById" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+		  select bc.is_hoop FROM biz_credit bc WHERE bc.project_id = #{projectId}
+	</select>
+	
+	
+</mapper>

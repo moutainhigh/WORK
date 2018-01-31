@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:mybatis="http://mybatis.org/schema/mybatis-spring"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+       http://www.springframework.org/schema/beans/spring-beans-3.2.xsd 
+       http://www.springframework.org/schema/aop 
+       http://www.springframework.org/schema/aop/spring-aop-3.2.xsd 
+       http://www.springframework.org/schema/tx 
+       http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+       http://www.springframework.org/schema/context 
+       http://www.springframework.org/schema/context/spring-context-3.2.xsd
+       http://mybatis.org/schema/mybatis-spring 
+       http://mybatis.org/schema/mybatis-spring.xsd">
+
+	<!-- 支持注解 -->
+	<context:annotation-config />
+
+	<!-- 注解扫描组件目录 -->
+	<context:component-scan base-package="com.achievo.framework.*,com.xlkfinance.bms.common.*,com.xlkfinance.bms.server.*" />
+	
+	<!-- 使用CGLIB强制代理 
+	<aop:aspectj-autoproxy proxy-target-class="true"/>-->
+
+	<!-- 全局配置 -->
+	<!-- 必须放到首先位置 -->
+	<bean id="app-properties-file-loader"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:config.properties</value>
+				<value>classpath:db.properties</value>
+				<value>classpath:business-log.properties</value>
+			</list>
+		</property>
+	</bean>
+	
+	<!-- 上下文容器，必须放到前面 -->
+	<bean class="com.achievo.framework.context.SpringApplicationContext" />
+
+	<!-- 数据源配置 -->
+	<import resource="classpath:config/db-config.xml" />
+
+	<!-- 事务配置 -->
+	<import resource="classpath:config/transaction-config.xml" />
+	
+	<!-- 使用spring 的 SqlSessionTemplate 创建一个 可以批量操作的sqlSession -->
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg index="0" ref="sqlSessionFactory" />
+	</bean>
+
+	<!-- 采用MapperScannerConfigurer扫描 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
+		<property name="basePackage" value="com.xlkfinance" />
+		<property name="markerInterface" value="com.achievo.framework.mybatis.mapper.BaseMapper"/>  
+	</bean>
+			
+	<!-- 配置 mybatis 的sqlSessionFactory 由 spring 的 SqlSessionFactoryBean 代理 -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="druidDataSource" />
+		<property name="configLocation" value="classpath:config/mybatis-config.xml" />
+		<property name="mapperLocations">
+			<list>
+				<value>classpath*:mapper/**/*Mapper.xml</value>
+				<!-- <value>classpath*:mapper/beforeloan/*Mapper.xml</value>
+				<value>classpath*:mapper/customer/*Mapper.xml</value>
+				<value>classpath*:mapper/finance/*Mapper.xml</value>
+				<value>classpath*:mapper/aom/**/*Mapper.xml</value>
+				<value>classpath*:mapper/inloan/*Mapper.xml</value>
+				<value>classpath*:mapper/partner/*Mapper.xml</value>
+				<value>classpath*:mapper/product/*Mapper.xml</value>
+				<value>classpath*:mapper/push/*Mapper.xml</value>
+				<value>classpath*:mapper/report/*Mapper.xml</value>
+				<value>classpath*:mapper/system/*Mapper.xml</value>
+				<value>classpath*:mapper/task/*Mapper.xml</value>
+				<value>classpath*:mapper/workflow/*Mapper.xml</value> -->
+			</list>
+		</property>
+	</bean>
+	
+	<!-- 工作流配置 -->
+	<import resource="classpath:config/workflow-config.xml" />
+	
+	<!-- 日志开关 -->
+	<bean id="logSwitch" class="java.util.HashMap">
+		<constructor-arg>
+			<map>
+				<entry key="foreafterloan" value="${log.foreafterloan.record}" />
+				<entry key="fddafterloan" value="${log.fddafterloan.record}" />
+				<entry key="afterloan" value="${log.afterloan.record}" />
+				<entry key="beforeloan" value="${log.beforeloan.record}" />
+				<entry key="contract" value="${log.contract.record}" />
+				<entry key="credits" value="${log.credits.record}" />
+				<entry key="customer" value="${log.customer.record}" />
+				<entry key="finance" value="${log.finance.record}" />
+				<entry key="mortgage" value="${log.mortgage.record}" />
+				<entry key="repayment" value="${log.repayment.record}" />
+				<entry key="system" value="${log.system.record}" />
+				<entry key="task" value="${log.task.record}" />
+				<entry key="inloan" value="${log.inloan.record}" />
+				<entry key="partner" value="${log.partner.record}" />
+				<entry key="element" value="${log.element.record}" />
+				<entry key="report" value="${log.report.record}" />
+				<entry key="org" value="${log.org.record}" />
+				<entry key="fee" value="${log.fee.record}" />
+				<entry key="workDay" value="${log.workDay.record}" /> 
+			</map>
+		</constructor-arg>
+	</bean>
+
+	<!-- 全局系统参数 -->
+	<bean name="globalConfig" class="com.xlkfinance.bms.common.config.GlobalConfig">
+		<property name="logSwitch" ref="logSwitch" />
+	</bean>
+	
+	<!-- 服务工厂 -->
+	<bean id="serverFactory"
+		class="com.achievo.framework.thrift.server.ThriftMultiBinaryServerFactory">
+		<property name="baseServiceImplPackage" value="com.xlkfinance.bms.server" />
+		<property name="port" value="${port.default}" />
+		<property name="timeout" value="${timeout.default}" />
+	</bean>
+	
+<!-- 	<bean id="serverAomFactory"
+		class="com.achievo.framework.thrift.server.ThriftMultiBinaryServerFactory">
+		<property name="baseServiceImplPackage" value="com.qfang.xk.aom.server" />
+		<property name="port" value="${port.default}" />
+		<property name="timeout" value="${timeout.default}" />
+	</bean> -->
+
+	<!-- 使用服务工厂启动服务  
+	<bean factory-bean="serverFactory"  factory-method="start" />  --> 
+      <bean class="com.xlkfinance.bms.server.AsynchronousServer"> 
+        <property name="serverFactory"  ref="serverFactory" />
+        <property name="startDelay" value="5000" />
+     </bean> 
+     <!-- 邮件发送 -->
+	<bean id="JavaMailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host" value="${mail.host}"></property>
+		<property name="username" value="${mail.username}"></property>
+		<property name="password" value="${mail.password}"></property>
+		<!-- 相当于javax.mail.Session中的props属性 -->
+		<property name="javaMailProperties">
+			<props>
+				<prop key="mail.smtp.auth">true</prop>
+				<prop key="mail.smtp.from">${mail.smtp.from}</prop>
+				<prop key="mail.debug">true</prop>
+			</props>
+		</property>
+	</bean> 
+</beans>

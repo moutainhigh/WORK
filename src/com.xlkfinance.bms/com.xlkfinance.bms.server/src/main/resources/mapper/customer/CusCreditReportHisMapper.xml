@@ -1,0 +1,682 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xlkfinance.bms.server.customer.mapper.CusCreditReportHisMapper">
+	<resultMap id="cusCreditReportHisMap" type="com.xlkfinance.bms.rpc.customer.CusCreditReportHis">
+		<id property="pid" column="PID" />
+		<id property="acctId" column="ACCT_ID" />
+		<id property="dataSource" column="DATA_SOURCE" />
+		<id property="reportType" column="REPORT_TYPE" />
+		<id property="queryResonId" column="QUERY_RESON_ID" />
+		<id property="queryName" column="QUERY_NAME" />
+		<id property="queryDocumentNo" column="QUERY_DOCUMENT_NO" />
+		<id property="queryPhone" column="QUERY_PHONE" />
+		<id property="queryStatus" column="QUERY_STATUS" />
+		<id property="queryStatusMsg" column="QUERY_STATUS_MSG" />
+		<id property="reportNo" column="REPORT_NO" />
+		<id property="queryResult" column="QUERY_RESULT"  />
+<!-- 		<id property="queryResult" column="QUERY_RESULT"  jdbcType="CLOB" javaType="java.lang.String"
+							typeHandler ="com.xlkfinance.bms.common.mybatis.type.OracleClobTypeHandler" /> -->
+		<id property="operator" column="OPERATOR" />
+		<id property="createTime" column="CREATE_TIME" jdbcType="TIMESTAMP" javaType="java.lang.String" />
+		<id property="creator" column="CREATOR" />
+		<id property="remark" column="REMARK" />
+		<id property="realName" column="REAL_NAME" />
+		<id property="isRepeat" column="IS_REPEAT" />
+		<id property="unitPrice" column="UNIT_PRICE" />
+		<id property="queryPbocStatus" column="QUERY_PBOC_STATUS" />
+		
+		<id property="totalCount" column="TOTAL_COUNT" />
+		<id property="totalPrice" column="TOTAL_PRICE" />
+		
+		
+	</resultMap>
+	<sql id="column_list">
+        PID,ACCT_ID,DATA_SOURCE,REPORT_TYPE,QUERY_RESON_ID,QUERY_NAME,QUERY_DOCUMENT_NO,QUERY_PHONE,QUERY_STATUS,QUERY_STATUS_MSG,REPORT_NO,QUERY_RESULT,OPERATOR,CREATE_TIME,CREATOR,REMARK,QUERY_PBOC_STATUS
+	</sql>
+	
+	
+	<!-- 获取PID -->
+	<select id="getSeqPid" resultType="java.lang.Integer">
+		SELECT SEQ_CUS_CREDIT_REPORT_HIS.Nextval as PID from DUAL 
+	</select>
+	
+	
+	
+	<!-- 查询所有 -->
+	<select id="getAll" resultMap="cusCreditReportHisMap" parameterType="com.xlkfinance.bms.rpc.customer.CusCreditReportHis">
+		SELECT
+		<include refid="column_list" />
+		FROM CUS_CREDIT_REPORT_HIS
+		<where>
+			<trim>
+		      <if test="pid != null and pid >0">
+	          PID=#{pid}
+	          </if>
+		      <if test="acctId != null and acctId >0">
+	          AND ACCT_ID=#{acctId}
+	          </if>
+		      <if test="dataSource != null and dataSource >0">
+	          AND DATA_SOURCE=#{dataSource}
+	          </if>
+		      <if test="reportType != null and reportType >0">
+	          AND REPORT_TYPE=#{reportType}
+	          </if>
+		      <if test="queryResonId != null and queryResonId !=''">
+	          AND QUERY_RESON_ID=#{queryResonId}
+	          </if>
+		      <if test="queryName != null and queryName !=''">
+	          AND QUERY_NAME=#{queryName}
+	          </if>
+		      <if test="queryDocumentNo != null and queryDocumentNo !=''">
+	          AND QUERY_DOCUMENT_NO=#{queryDocumentNo}
+	          </if>
+		      <if test="queryPhone != null and queryPhone !=''">
+	          AND QUERY_PHONE=#{queryPhone}
+	          </if>
+		      <if test="queryStatus != null and queryStatus >0">
+	          AND QUERY_STATUS=#{queryStatus}
+	          </if>
+		      <if test="queryStatusMsg != null and queryStatusMsg !=''">
+	          AND QUERY_STATUS_MSG=#{queryStatusMsg}
+	          </if>
+		      <if test="reportNo != null and reportNo !=''">
+	          AND REPORT_NO=#{reportNo}
+	          </if>
+		      <if test="queryResult != null and queryResult !=''">
+	          AND QUERY_RESULT=#{queryResult}
+	          </if>
+		      <if test="operator != null and operator >0">
+	          AND OPERATOR=#{operator}
+	          </if>
+		      <if test="createTime != null and createTime !=''">
+	          AND CREATE_TIME=#{createTime}
+	          </if>
+		      <if test="creator != null and creator >0">
+	          AND CREATOR=#{creator}
+	          </if>
+		      <if test="remark != null and remark !=''">
+	          AND REMARK=#{remark}
+	          </if>
+		      <if test="queryPbocStatus != null and queryPbocStatus !=''">
+	          AND QUERY_PBOC_STATUS=#{queryPbocStatus}
+	          </if>
+			</trim>
+		</where>
+	</select>
+	<!-- 根据id获取 -->
+	<select id="getById" resultMap="cusCreditReportHisMap">
+		SELECT <include refid="column_list" /> FROM CUS_CREDIT_REPORT_HIS WHERE PID=#{pid}
+	</select>
+	<!-- 插入一条数据 -->
+	<insert id="insert" parameterType="com.xlkfinance.bms.rpc.customer.CusCreditReportHis">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_CUS_CREDIT_REPORT_HIS.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO CUS_CREDIT_REPORT_HIS
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+				PID,
+			</if>
+		    <if test="acctId != null and acctId >0">
+				ACCT_ID,
+			</if>
+		    <if test="dataSource != null and dataSource >0">
+				DATA_SOURCE,
+			</if>
+		    <if test="reportType != null and reportType >0">
+				REPORT_TYPE,
+			</if>
+		    <if test="queryResonId != null and queryResonId !=''">
+				QUERY_RESON_ID,
+			</if>
+		    <if test="queryName != null and queryName !=''">
+				QUERY_NAME,
+			</if>
+		    <if test="queryDocumentNo != null and queryDocumentNo !=''">
+				QUERY_DOCUMENT_NO,
+			</if>
+		    <if test="queryPhone != null and queryPhone !=''">
+				QUERY_PHONE,
+			</if>
+		    <if test="queryStatus != null and queryStatus >0">
+				QUERY_STATUS,
+			</if>
+		    <if test="queryStatusMsg != null and queryStatusMsg !=''">
+				QUERY_STATUS_MSG,
+			</if>
+		    <if test="reportNo != null and reportNo !=''">
+				REPORT_NO,
+			</if>
+		    <if test="queryResult != null and queryResult !=''">
+				QUERY_RESULT,
+			</if>
+		    <if test="operator != null and operator >0">
+				OPERATOR,
+			</if>
+		    <if test="createTime != null and createTime !=''">
+				CREATE_TIME,
+			</if>
+		    <if test="creator != null and creator >0">
+				CREATOR,
+			</if>
+		    <if test="remark != null and remark !=''">
+				REMARK,
+			</if>
+		    <if test="isRepeat != null and isRepeat > 0">
+				IS_REPEAT,
+			</if>
+		    <if test="unitPrice != null and unitPrice > 0 ">
+				UNIT_PRICE,
+			</if>
+		    <if test="queryPbocStatus != null and queryPbocStatus !=''">
+				QUERY_PBOC_STATUS,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+		    #{pid},
+			</if>
+		    <if test="acctId != null and acctId >0">
+		    #{acctId},
+			</if>
+		    <if test="dataSource != null and dataSource >0">
+		    #{dataSource},
+			</if>
+		    <if test="reportType != null and reportType >0">
+		    #{reportType},
+			</if>
+		    <if test="queryResonId != null and queryResonId !=''">
+		    #{queryResonId},
+			</if>
+		    <if test="queryName != null and queryName !=''">
+		    #{queryName},
+			</if>
+		    <if test="queryDocumentNo != null and queryDocumentNo !=''">
+		    #{queryDocumentNo},
+			</if>
+		    <if test="queryPhone != null and queryPhone !=''">
+		    #{queryPhone},
+			</if>
+		    <if test="queryStatus != null and queryStatus >0">
+		    #{queryStatus},
+			</if>
+		    <if test="queryStatusMsg != null and queryStatusMsg !=''">
+		    #{queryStatusMsg},
+			</if>
+		    <if test="reportNo != null and reportNo !=''">
+		    #{reportNo},
+			</if>
+		    <if test="queryResult != null and queryResult !=''">
+		    #{queryResult},
+			</if>
+		    <if test="operator != null and operator >0">
+		    #{operator},
+			</if>
+		    <if test="createTime != null and createTime !=''">
+		    #{createTime,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		    <if test="creator != null and creator >0">
+		    #{creator},
+			</if>
+		    <if test="remark != null and remark !=''">
+		    #{remark},
+			</if>
+		    <if test="isRepeat != null and isRepeat > 0">
+				#{isRepeat},
+			</if>
+		    <if test="unitPrice != null and unitPrice > 0 ">
+				#{unitPrice},
+			</if>
+		    <if test="queryPbocStatus != null and queryPbocStatus !=''">
+				 #{queryPbocStatus},
+			</if>
+		</trim>
+	</insert>
+	<!-- 根据id删除数据 -->
+	<delete id="deleteById" parameterType="com.xlkfinance.bms.rpc.customer.CusCreditReportHis">
+		<![CDATA[DELETE FROM CUS_CREDIT_REPORT_HIS WHERE PID=#{pid}]]>
+	</delete>
+	<!-- 根据id更新数据 -->
+		<update id="update" parameterType="com.xlkfinance.bms.rpc.customer.CusCreditReportHis">
+		UPDATE CUS_CREDIT_REPORT_HIS
+		<set>
+		    <if test="pid != null and pid >0">
+		     PID=#{pid},
+			</if>
+		    <if test="acctId != null and acctId >0">
+		     ACCT_ID=#{acctId},
+			</if>
+		    <if test="dataSource != null and dataSource >0">
+		     DATA_SOURCE=#{dataSource},
+			</if>
+		    <if test="reportType != null and reportType >0">
+		     REPORT_TYPE=#{reportType},
+			</if>
+		    <if test="queryResonId != null and queryResonId !=''">
+		     QUERY_RESON_ID=#{queryResonId},
+			</if>
+		    <if test="queryName != null and queryName !=''">
+		     QUERY_NAME=#{queryName},
+			</if>
+		    <if test="queryDocumentNo != null and queryDocumentNo !=''">
+		     QUERY_DOCUMENT_NO=#{queryDocumentNo},
+			</if>
+		    <if test="queryPhone != null and queryPhone !=''">
+		     QUERY_PHONE=#{queryPhone},
+			</if>
+		    <if test="queryStatus != null and queryStatus >0">
+		     QUERY_STATUS=#{queryStatus},
+			</if>
+		    <if test="queryStatusMsg != null and queryStatusMsg !=''">
+		     QUERY_STATUS_MSG=#{queryStatusMsg},
+			</if>
+		    <if test="reportNo != null and reportNo !=''">
+		     REPORT_NO=#{reportNo},
+			</if>
+		    <if test="queryResult != null and queryResult !=''">
+		     QUERY_RESULT=#{queryResult},
+			</if>
+		    <if test="operator != null and operator >0">
+		     OPERATOR=#{operator},
+			</if>
+		    <if test="createTime != null and createTime !=''">
+		     CREATE_TIME=#{createTime,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		    <if test="creator != null and creator >0">
+		     CREATOR=#{creator},
+			</if>
+		    <if test="remark != null and remark !=''">
+		     REMARK=#{remark},
+			</if>
+		    <if test="queryPbocStatus != null and queryPbocStatus !=''">
+		     QUERY_PBOC_STATUS=#{queryPbocStatus},
+			</if>
+		</set>
+		WHERE PID = #{pid}
+	</update>
+	<!-- 根据传入多个id删除数据 -->
+	<delete id="deleteByIds" parameterType="java.util.List">
+		DELETE FROM CUS_CREDIT_REPORT_HIS WHERE PID in
+		<foreach collection="list" item="item" index="index" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+	
+	
+	<!-- 查询客户征信报告列表(可分页) -->
+	<select id="selectList" resultMap="cusCreditReportHisMap" parameterType="com.xlkfinance.bms.rpc.customer.CusCreditReportHis">
+		<if test="page!=-1">
+			SELECT D.* FROM (SELECT T.*, ROWNUM RN FROM (
+		</if>
+				SELECT C.PID,C.ACCT_ID,C.DATA_SOURCE,C.REPORT_TYPE,C.QUERY_RESON_ID,C.QUERY_NAME,C.QUERY_DOCUMENT_NO,
+						C.QUERY_PHONE,C.QUERY_STATUS,C.QUERY_STATUS_MSG,C.REPORT_NO,C.QUERY_RESULT,
+						C.OPERATOR,C.CREATE_TIME,C.CREATOR,C.REMARK,
+						C.IS_REPEAT , C.UNIT_PRICE , C.QUERY_PBOC_STATUS,
+						SU.REAL_NAME
+					
+				FROM CUS_CREDIT_REPORT_HIS C
+					LEFT JOIN SYS_USER SU ON C.OPERATOR = SU.PID
+				<where>
+					<trim>
+					      <if test="pid != null and pid >0">
+				          		C.PID=#{pid}
+				          </if>
+					      <if test="acctId != null and acctId >0">
+				          	AND C.ACCT_ID=#{acctId}
+				          </if>
+					      <if test="dataSource != null and dataSource >0">
+				          	AND C.DATA_SOURCE=#{dataSource}
+				          </if>
+					      <if test="reportType != null and reportType >0">
+				          	AND C.REPORT_TYPE=#{reportType}
+				          </if>
+					      <if test="queryResonId != null and queryResonId !='' and queryResonId !=0 ">
+				          	AND C.QUERY_RESON_ID= #{queryResonId}
+				          </if>
+					      <if test="queryName != null and queryName !=''">
+				          	AND C.QUERY_NAME  like '%${queryName}%'
+				          </if>
+					      <if test="queryDocumentNo != null and queryDocumentNo !=''">
+				          	AND C.QUERY_DOCUMENT_NO  like '%${queryDocumentNo}%'
+				          </if>
+					      <if test="queryPhone != null and queryPhone !=''">
+				          	AND C.QUERY_PHONE like '%${queryPhone}%'
+				          </if>
+					      <if test="queryStatus != null and queryStatus >0">
+				          	AND C.QUERY_STATUS=#{queryStatus}
+				          </if>
+					      <if test="reportNo != null and reportNo !=''">
+				          	AND C.REPORT_NO=#{reportNo}
+				          </if>
+						  <if test="queryPbocStatus != null and queryPbocStatus !=''">
+							 AND C.QUERY_PBOC_STATUS = #{queryPbocStatus}
+						  </if>
+					      <if test="operator != null and operator >0">
+				          	AND C.OPERATOR=#{operator}
+				          </if>
+					      <if test="creator != null and creator >0">
+				          	AND C.CREATOR=#{creator}
+				          </if>
+				          
+						  <if test="beginCreateTime != null and beginCreateTime !=''">
+								 AND C.CREATE_TIME <![CDATA[>= ]]> #{beginCreateTime,jdbcType=TIMESTAMP,javaType=String}
+					      </if>
+						  <if test="endCreateTime != null and endCreateTime !=''">
+								 AND C.CREATE_TIME <![CDATA[<= ]]> #{endCreateTime,jdbcType=TIMESTAMP,javaType=String}
+						  </if>
+						  <if test="realName != null and realName !=''">
+								 AND SU.REAL_NAME like '%${realName}%'
+						  </if>
+				          
+					</trim>
+				</where>
+					
+		<if test="page!=-1">
+			<![CDATA[
+			ORDER BY C.CREATE_TIME DESC
+			) T
+			WHERE ROWNUM <=#{page}*#{rows}
+			) D
+			WHERE D.RN > ((#{page}-1)*#{rows})
+			]]>
+		</if>
+	</select>
+	
+	<!-- 查询客户征信报告总数 -->
+	<select id="selectTotal" resultType="Integer" parameterType="com.xlkfinance.bms.rpc.customer.CusCreditReportHis">
+		SELECT COUNT(1) FROM CUS_CREDIT_REPORT_HIS C 
+			LEFT JOIN SYS_USER SU ON C.OPERATOR = SU.PID
+		<where>
+			<trim>
+			      <if test="pid != null and pid >0">
+		          		C.PID=#{pid}
+		          </if>
+			      <if test="acctId != null and acctId >0">
+		          	AND C.ACCT_ID=#{acctId}
+		          </if>
+			      <if test="dataSource != null and dataSource >0">
+		          	AND C.DATA_SOURCE=#{dataSource}
+		          </if>
+			      <if test="reportType != null and reportType >0">
+		          	AND C.REPORT_TYPE=#{reportType}
+		          </if>
+			      <if test="queryResonId != null and queryResonId !='' and queryResonId !=0">
+		          	AND C.QUERY_RESON_ID=#{queryResonId}
+		          </if>
+			      <if test="queryName != null and queryName !=''">
+		          	AND C.QUERY_NAME  like '%${queryName}%'
+		          </if>
+			      <if test="queryDocumentNo != null and queryDocumentNo !=''">
+		          	AND C.QUERY_DOCUMENT_NO  like '%${queryDocumentNo}%'
+		          </if>
+			      <if test="queryPhone != null and queryPhone !=''">
+		          	AND C.QUERY_PHONE like '%${queryPhone}%'
+		          </if>
+			      <if test="queryStatus != null and queryStatus >0">
+		          	AND C.QUERY_STATUS=#{queryStatus}
+		          </if>
+			      <if test="reportNo != null and reportNo !=''">
+		          	AND C.REPORT_NO=#{reportNo}
+		          </if>
+				  <if test="queryPbocStatus != null and queryPbocStatus !=''">
+						 AND C.QUERY_PBOC_STATUS = #{queryPbocStatus}
+				  </if>
+			      <if test="operator != null and operator >0">
+		          	AND C.OPERATOR=#{operator}
+		          </if>
+			      <if test="creator != null and creator >0">
+		          	AND C.CREATOR=#{creator}
+		          </if>
+				  <if test="beginCreateTime != null and beginCreateTime !=''">
+						 AND C.CREATE_TIME <![CDATA[>= ]]> #{beginCreateTime,jdbcType=TIMESTAMP,javaType=String}
+			      </if>
+				  <if test="endCreateTime != null and endCreateTime !=''">
+						 AND C.CREATE_TIME <![CDATA[<= ]]> #{endCreateTime,jdbcType=TIMESTAMP,javaType=String}
+				  </if>
+				  <if test="realName != null and realName !=''">
+						 AND SU.REAL_NAME like '%${realName}%'
+				  </if>
+			</trim>
+		</where>
+	</select>
+	
+	
+	<!-- 查询征信报告费用统计记录（可分页） -->
+	<select id="selectCreditReportFeeList" resultMap="cusCreditReportHisMap" parameterType="com.xlkfinance.bms.rpc.customer.CusCreditReportHis">
+		<if test="page!=-1">
+			SELECT D.* FROM (SELECT T.*, ROWNUM RN FROM (
+		</if>
+        	SELECT C.DATA_SOURCE,C.REPORT_TYPE, 
+               COUNT(C.PID) AS TOTAL_COUNT,
+               SUM(C.UNIT_PRICE) AS TOTAL_PRICE,
+               C.IS_REPEAT,
+               SU.REAL_NAME
+        	FROM CUS_CREDIT_REPORT_HIS C
+				LEFT JOIN SYS_USER SU ON C.OPERATOR = SU.PID
+				<where>
+					<trim>
+					      1 = 1 
+					      <if test="acctId != null and acctId >0">
+				          	AND C.ACCT_ID=#{acctId}
+				          </if>
+					      <if test="dataSource != null and dataSource >0">
+				          	AND C.DATA_SOURCE=#{dataSource}
+				          </if>
+					      <if test="reportType != null and reportType >0">
+				          	AND C.REPORT_TYPE=#{reportType}
+				          </if>
+					      <if test="queryResonId != null and queryResonId !='' and queryResonId !=0 ">
+				          	AND C.QUERY_RESON_ID= #{queryResonId}
+				          </if>
+					      <if test="queryName != null and queryName !=''">
+				          	AND C.QUERY_NAME  like '%${queryName}%'
+				          </if>
+					      <if test="queryDocumentNo != null and queryDocumentNo !=''">
+				          	AND C.QUERY_DOCUMENT_NO  like '%${queryDocumentNo}%'
+				          </if>
+					      <if test="queryPhone != null and queryPhone !=''">
+				          	AND C.QUERY_PHONE like '%${queryPhone}%'
+				          </if>
+					      <if test="queryStatus != null and queryStatus >0">
+				          	AND C.QUERY_STATUS=#{queryStatus}
+				          </if>
+					      <if test="reportNo != null and reportNo !=''">
+				          	AND C.REPORT_NO=#{reportNo}
+				          </if>
+						  <if test="queryPbocStatus != null and queryPbocStatus !=''">
+							 AND C.QUERY_PBOC_STATUS = #{queryPbocStatus}
+						  </if>
+					      <if test="operator != null and operator >0">
+				          	AND C.OPERATOR=#{operator}
+				          </if>
+					      <if test="creator != null and creator >0">
+				          	AND C.CREATOR=#{creator}
+				          </if>
+					      <if test="isRepeat != null and isRepeat >0">
+				          	AND C.IS_REPEAT=#{isRepeat}
+				          </if>
+						  <if test="beginCreateTime != null and beginCreateTime !=''">
+								 AND C.CREATE_TIME <![CDATA[>= ]]> #{beginCreateTime,jdbcType=TIMESTAMP,javaType=String}
+					      </if>
+						  <if test="endCreateTime != null and endCreateTime !=''">
+								 AND C.CREATE_TIME <![CDATA[<= ]]> #{endCreateTime,jdbcType=TIMESTAMP,javaType=String}
+						  </if>
+						  <if test="realName != null and realName !=''">
+								 AND SU.REAL_NAME like '%${realName}%'
+						  </if>
+			         	 <!-- 小科数据权限 -->
+				         <if test="userIds!=null and userIds.size()>0">
+								AND	C.OPERATOR in
+							<foreach item="itemId" collection="userIds" open="(" separator="," close=")">
+							          #{itemId}
+							</foreach>
+						 </if>
+					</trim>
+				</where>
+				
+			GROUP BY C.DATA_SOURCE,C.REPORT_TYPE, C.IS_REPEAT,  SU.REAL_NAME		
+					
+		<if test="page!=-1">
+			<![CDATA[
+			ORDER BY C.REPORT_TYPE ASC
+			) T
+			WHERE ROWNUM <=#{page}*#{rows}
+			) D
+			WHERE D.RN > ((#{page}-1)*#{rows})
+			]]>
+		</if>
+	</select>
+	
+	<!-- 查询征信报告费用统计数量-->
+	<select id="selectCreditReportFeeListTotal" resultType="Integer" parameterType="com.xlkfinance.bms.rpc.customer.CusCreditReportHis">
+		SELECT COUNT(1) FROM  (
+			SELECT C.DATA_SOURCE,C.REPORT_TYPE, 
+	               COUNT(C.PID) AS TOTAL_COUNT,
+	               C.IS_REPEAT,
+	               SUM(C.UNIT_PRICE) AS TOTAL_PRICE,
+	               SU.REAL_NAME
+			<where>
+				<trim>
+					1 = 1 
+			      <if test="acctId != null and acctId >0">
+		          	AND C.ACCT_ID=#{acctId}
+		          </if>
+			      <if test="dataSource != null and dataSource >0">
+		          	AND C.DATA_SOURCE=#{dataSource}
+		          </if>
+			      <if test="reportType != null and reportType >0">
+		          	AND C.REPORT_TYPE=#{reportType}
+		          </if>
+			      <if test="queryResonId != null and queryResonId !='' and queryResonId !=0 ">
+		          	AND C.QUERY_RESON_ID= #{queryResonId}
+		          </if>
+			      <if test="queryName != null and queryName !=''">
+		          	AND C.QUERY_NAME  like '%${queryName}%'
+		          </if>
+			      <if test="queryDocumentNo != null and queryDocumentNo !=''">
+		          	AND C.QUERY_DOCUMENT_NO  like '%${queryDocumentNo}%'
+		          </if>
+			      <if test="queryPhone != null and queryPhone !=''">
+		          	AND C.QUERY_PHONE like '%${queryPhone}%'
+		          </if>
+			      <if test="queryStatus != null and queryStatus >0">
+		          	AND C.QUERY_STATUS=#{queryStatus}
+		          </if>
+			      <if test="reportNo != null and reportNo !=''">
+		          	AND C.REPORT_NO=#{reportNo}
+		          </if>
+				  <if test="queryPbocStatus != null and queryPbocStatus !=''">
+					 AND C.QUERY_PBOC_STATUS = #{queryPbocStatus}
+				  </if>
+			      <if test="operator != null and operator >0">
+		          	AND C.OPERATOR=#{operator}
+		          </if>
+			      <if test="creator != null and creator >0">
+		          	AND C.CREATOR=#{creator}
+		          </if>
+			      <if test="isRepeat != null and isRepeat >0">
+		          	AND C.IS_REPEAT=#{isRepeat}
+		          </if>
+				  <if test="beginCreateTime != null and beginCreateTime !=''">
+						 AND C.CREATE_TIME <![CDATA[>= ]]> #{beginCreateTime,jdbcType=TIMESTAMP,javaType=String}
+			      </if>
+				  <if test="endCreateTime != null and endCreateTime !=''">
+						 AND C.CREATE_TIME <![CDATA[<= ]]> #{endCreateTime,jdbcType=TIMESTAMP,javaType=String}
+				  </if>
+				  <if test="realName != null and realName !=''">
+						 AND SU.REAL_NAME like '%${realName}%'
+				  </if>
+	         	 <!-- 小科数据权限 -->
+		         <if test="userIds!=null and userIds.size()>0">
+					AND	C.OPERATOR in
+					<foreach item="itemId" collection="userIds" open="(" separator="," close=")">
+					          #{itemId}
+					</foreach>
+				 </if>
+				</trim>
+			</where>
+			
+			GROUP BY C.DATA_SOURCE,C.REPORT_TYPE, C.IS_REPEAT,  SU.REAL_NAME
+		) TEMP
+		
+	</select>
+	
+	
+	<!-- 查询征信报告费用总和 -->
+	<select id="selectCreditReportFeeSum" resultMap="cusCreditReportHisMap"  parameterType="com.xlkfinance.bms.rpc.customer.CusCreditReportHis">
+		 SELECT SUM(TOTAL_COUNT) AS TOTAL_COUNT ,SUM (TOTAL_PRICE) AS TOTAL_PRICE	FROM (
+		 
+        	SELECT  COUNT(C.PID) AS TOTAL_COUNT,
+                	SUM( NVL(C.UNIT_PRICE,0)) AS TOTAL_PRICE,
+             	 	C.DATA_SOURCE
+        	FROM CUS_CREDIT_REPORT_HIS C  
+				LEFT JOIN SYS_USER SU ON C.OPERATOR = SU.PID
+				<where>
+					<trim>
+					      1 = 1 
+					      <if test="acctId != null and acctId >0">
+				          	AND C.ACCT_ID=#{acctId}
+				          </if>
+					      <if test="dataSource != null and dataSource >0">
+				          	AND C.DATA_SOURCE=#{dataSource}
+				          </if>
+					      <if test="reportType != null and reportType >0">
+				          	AND C.REPORT_TYPE=#{reportType}
+				          </if>
+					      <if test="queryResonId != null and queryResonId !='' and queryResonId !=0 ">
+				          	AND C.QUERY_RESON_ID= #{queryResonId}
+				          </if>
+					      <if test="queryName != null and queryName !=''">
+				          	AND C.QUERY_NAME  like '%${queryName}%'
+				          </if>
+					      <if test="queryDocumentNo != null and queryDocumentNo !=''">
+				          	AND C.QUERY_DOCUMENT_NO  like '%${queryDocumentNo}%'
+				          </if>
+					      <if test="queryPhone != null and queryPhone !=''">
+				          	AND C.QUERY_PHONE like '%${queryPhone}%'
+				          </if>
+					      <if test="queryStatus != null and queryStatus >0">
+				          	AND C.QUERY_STATUS=#{queryStatus}
+				          </if>
+					      <if test="reportNo != null and reportNo !=''">
+				          	AND C.REPORT_NO=#{reportNo}
+				          </if>
+						  <if test="queryPbocStatus != null and queryPbocStatus !=''">
+							 AND C.QUERY_PBOC_STATUS = #{queryPbocStatus}
+						  </if>
+					      <if test="operator != null and operator >0">
+				          	AND C.OPERATOR=#{operator}
+				          </if>
+					      <if test="creator != null and creator >0">
+				          	AND C.CREATOR=#{creator}
+				          </if>
+					      <if test="isRepeat != null and isRepeat >0">
+				          	AND C.IS_REPEAT=#{isRepeat}
+				          </if>
+						  <if test="beginCreateTime != null and beginCreateTime !=''">
+								 AND C.CREATE_TIME <![CDATA[>= ]]> #{beginCreateTime,jdbcType=TIMESTAMP,javaType=String}
+					      </if>
+						  <if test="endCreateTime != null and endCreateTime !=''">
+								 AND C.CREATE_TIME <![CDATA[<= ]]> #{endCreateTime,jdbcType=TIMESTAMP,javaType=String}
+						  </if>
+						  <if test="realName != null and realName !=''">
+								 AND SU.REAL_NAME like '%${realName}%'
+						  </if>
+			         	 <!-- 小科数据权限 -->
+				         <if test="userIds!=null and userIds.size()>0">
+								AND	C.OPERATOR in
+							<foreach item="itemId" collection="userIds" open="(" separator="," close=")">
+							          #{itemId}
+							</foreach>
+						 </if>
+					</trim>
+				</where>
+				GROUP BY C.DATA_SOURCE  
+			)
+	</select>
+	
+	
+	
+</mapper>

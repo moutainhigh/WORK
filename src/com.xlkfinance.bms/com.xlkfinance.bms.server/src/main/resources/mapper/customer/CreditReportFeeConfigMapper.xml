@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xlkfinance.bms.server.customer.mapper.CreditReportFeeConfigMapper">
+	<resultMap id="creditReportFeeConfigMap" type="com.xlkfinance.bms.rpc.customer.CreditReportFeeConfig">
+		<id property="pid" column="PID" />
+		<id property="dataSource" column="DATA_SOURCE" />
+		<id property="reportType" column="REPORT_TYPE" />
+		<id property="unitPrice" column="UNIT_PRICE" />
+		<id property="createTime" column="CREATE_TIME" />
+		<id property="creator" column="CREATOR" />
+		<id property="updateTime" column="UPDATE_TIME" />
+		<id property="updator" column="UPDATOR" />
+		<id property="remark" column="REMARK" />
+	</resultMap>
+	<sql id="column_list">
+        PID,DATA_SOURCE,REPORT_TYPE,UNIT_PRICE,CREATE_TIME,CREATOR,UPDATE_TIME,UPDATOR,REMARK
+	</sql>
+	<!-- 查询所有 -->
+	<select id="getAll" resultMap="creditReportFeeConfigMap" parameterType="com.xlkfinance.bms.rpc.customer.CreditReportFeeConfig">
+		SELECT
+		<include refid="column_list" />
+		FROM CREDIT_REPORT_FEE_CONFIG
+		<where>
+			<trim>
+		      <if test="pid != null and pid >0">
+	          PID=#{pid}
+	          </if>
+		      <if test="dataSource != null and dataSource >0">
+	          AND DATA_SOURCE=#{dataSource}
+	          </if>
+		      <if test="reportType != null and reportType >0">
+	          AND REPORT_TYPE=#{reportType}
+	          </if>
+		      <if test="unitPrice != null and unitPrice >0">
+	          AND UNIT_PRICE=#{unitPrice}
+	          </if>
+		      <if test="createTime != null and createTime !=''">
+	          AND CREATE_TIME=#{createTime}
+	          </if>
+		      <if test="creator != null and creator >0">
+	          AND CREATOR=#{creator}
+	          </if>
+		      <if test="updateTime != null and updateTime !=''">
+	          AND UPDATE_TIME=#{updateTime}
+	          </if>
+		      <if test="updator != null and updator >0">
+	          AND UPDATOR=#{updator}
+	          </if>
+		      <if test="remark != null and remark !=''">
+	          AND REMARK=#{remark}
+	          </if>
+			</trim>
+		</where>
+	</select>
+	<!-- 根据id获取 -->
+	<select id="getById" resultMap="creditReportFeeConfigMap">
+		SELECT <include refid="column_list" /> FROM CREDIT_REPORT_FEE_CONFIG WHERE PID=#{pid}
+	</select>
+	<!-- 插入一条数据 -->
+	<insert id="insert" parameterType="com.xlkfinance.bms.rpc.customer.CreditReportFeeConfig">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_CREDIT_REPORT_FEE_CONFIG.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO CREDIT_REPORT_FEE_CONFIG
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+				PID,
+			</if>
+		    <if test="dataSource != null and dataSource >0">
+				DATA_SOURCE,
+			</if>
+		    <if test="reportType != null and reportType >0">
+				REPORT_TYPE,
+			</if>
+		    <if test="unitPrice != null and unitPrice >0">
+				UNIT_PRICE,
+			</if>
+		    <if test="createTime != null and createTime !=''">
+				CREATE_TIME,
+			</if>
+		    <if test="creator != null and creator >0">
+				CREATOR,
+			</if>
+		    <if test="updateTime != null and updateTime !=''">
+				UPDATE_TIME,
+			</if>
+		    <if test="updator != null and updator >0">
+				UPDATOR,
+			</if>
+		    <if test="remark != null and remark !=''">
+				REMARK,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+		    #{pid},
+			</if>
+		    <if test="dataSource != null and dataSource >0">
+		    #{dataSource},
+			</if>
+		    <if test="reportType != null and reportType >0">
+		    #{reportType},
+			</if>
+		    <if test="unitPrice != null and unitPrice >0">
+		    #{unitPrice},
+			</if>
+		    <if test="createTime != null and createTime !=''">
+		    #{createTime,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		    <if test="creator != null and creator >0">
+		    #{creator},
+			</if>
+		    <if test="updateTime != null and updateTime !=''">
+		    #{updateTime,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		    <if test="updator != null and updator >0">
+		    #{updator},
+			</if>
+		    <if test="remark != null and remark !=''">
+		    #{remark},
+			</if>
+		</trim>
+	</insert>
+	<!-- 根据id删除数据 -->
+	<delete id="deleteById" parameterType="com.xlkfinance.bms.rpc.customer.CreditReportFeeConfig">
+		<![CDATA[DELETE FROM CREDIT_REPORT_FEE_CONFIG WHERE PID=#{pid}]]>
+	</delete>
+	<!-- 根据id更新数据 -->
+		<update id="update" parameterType="com.xlkfinance.bms.rpc.customer.CreditReportFeeConfig">
+		UPDATE CREDIT_REPORT_FEE_CONFIG
+		<set>
+		    <if test="pid != null and pid >0">
+		     PID=#{pid},
+			</if>
+		    <if test="dataSource != null and dataSource >0">
+		     DATA_SOURCE=#{dataSource},
+			</if>
+		    <if test="reportType != null and reportType >0">
+		     REPORT_TYPE=#{reportType},
+			</if>
+		    <if test="unitPrice != null and unitPrice >0">
+		     UNIT_PRICE=#{unitPrice},
+			</if>
+			<!-- 提供设置为0入口 -->
+			<if test="unitPrice != null and unitPrice == -1">
+		     UNIT_PRICE= 0,
+			</if>
+		    <if test="createTime != null and createTime !=''">
+		     CREATE_TIME=#{createTime,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		    <if test="creator != null and creator >0">
+		     CREATOR=#{creator},
+			</if>
+		    <if test="updateTime != null and updateTime !=''">
+		     UPDATE_TIME=#{updateTime,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		    <if test="updator != null and updator >0">
+		     UPDATOR=#{updator},
+			</if>
+		    <if test="remark != null and remark !=''">
+		     REMARK=#{remark},
+			</if>
+		</set>
+		WHERE PID = #{pid}
+	</update>
+	<!-- 根据传入多个id删除数据 -->
+	<delete id="deleteByIds" parameterType="java.util.List">
+		DELETE FROM CREDIT_REPORT_FEE_CONFIG WHERE PID in
+		<foreach collection="list" item="item" index="index" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+	
+	
+	<!-- 查询征信报告费用配置列表(可分页) -->
+	<select id="selectList" resultMap="creditReportFeeConfigMap" parameterType="com.xlkfinance.bms.rpc.customer.CreditReportFeeConfig">
+		<if test="page!=-1">
+			SELECT D.* FROM (SELECT T.*, ROWNUM RN FROM (
+		</if>
+				SELECT  C.PID,C.DATA_SOURCE,C.REPORT_TYPE,C.UNIT_PRICE,
+						TO_CHAR(C.CREATE_TIME, 'yyyy-MM-dd hh24:mi:ss') AS CREATE_TIME,
+						C.CREATOR,
+						TO_CHAR(C.UPDATE_TIME, 'yyyy-MM-dd hh24:mi:ss') AS UPDATE_TIME,
+						C.UPDATOR,C.REMARK,
+						SU.REAL_NAME AS operatorName
+				FROM CREDIT_REPORT_FEE_CONFIG C
+					LEFT JOIN SYS_USER SU ON C.UPDATOR = SU.PID
+				<where>
+					<trim>
+					      <if test="pid != null and pid >0">
+				          		C.PID=#{pid}
+				          </if>
+					      <if test="dataSource != null and dataSource >0">
+				          	AND C.DATA_SOURCE=#{dataSource}
+				          </if>
+					      <if test="reportType != null and reportType >0">
+				          	AND C.REPORT_TYPE=#{reportType}
+				          </if>
+						  <if test="operatorName != null and operatorName !=''">
+								 AND SU.REAL_NAME like '%${operatorName}%'
+						  </if>
+					</trim>
+				</where>
+					
+		<if test="page!=-1">
+			<![CDATA[
+			ORDER BY C.CREATE_TIME DESC
+			) T
+			WHERE ROWNUM <=#{page}*#{rows}
+			) D
+			WHERE D.RN > ((#{page}-1)*#{rows})
+			]]>
+		</if>
+	</select>
+	
+	<!-- 查询客户征信报告总数 -->
+	<select id="selectTotal" resultType="Integer" parameterType="com.xlkfinance.bms.rpc.customer.CreditReportFeeConfig">
+		SELECT COUNT(1) FROM CREDIT_REPORT_FEE_CONFIG C 
+			LEFT JOIN SYS_USER SU ON C.UPDATOR = SU.PID
+				<where>
+					<trim>
+					      <if test="pid != null and pid >0">
+				          		C.PID=#{pid}
+				          </if>
+					      <if test="dataSource != null and dataSource >0">
+				          	AND C.DATA_SOURCE=#{dataSource}
+				          </if>
+					      <if test="reportType != null and reportType >0">
+				          	AND C.REPORT_TYPE=#{reportType}
+				          </if>
+						  <if test="operatorName != null and operatorName !=''">
+								 AND SU.REAL_NAME like '%${operatorName}%'
+						  </if>
+					</trim>
+				</where>
+	</select>
+	
+	
+</mapper>

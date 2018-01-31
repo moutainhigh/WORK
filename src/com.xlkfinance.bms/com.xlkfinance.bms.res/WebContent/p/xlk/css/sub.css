@@ -1,0 +1,64 @@
+@import url('common/base.css');
+@import url('common/common.css');
+@import url('common/modules.css');
+
+.t_address_manage{margin:10px 0;}
+
+/*账户信息*/
+.acount_info{margin:10px 0;background:#F4F9FF;line-height:24px;}
+.acount_info a{margin:0 8px;}
+
+/*交易方管理、地址管理*/
+.address_manage,.bank_account{margin:10px 0;background:#F4F9FF;}
+.address_manage .set_default,
+.bank_account .set_default,
+#bankAccountList .set_default,
+.t_address_manage .set_default{visibility:hidden;}
+.address_manage tr:hover .set_default,
+.bank_account tr:hover .set_default,
+.t_address_manage tr:hover .set_default,
+#bankAccountList tr:hover .set_default{visibility:visible;}
+.add_address .select{width:103px;}
+#bankAccountList{margin-bottom:15px;}
+
+/*订单*/
+.order_search .common_tb{overflow-x:auto;width:100%;}
+.order_list_tb tbody a{color:#1d6ec0;text-decoration:underline;}
+.order_list_tb tbody a:hover{color:#f60;text-decoration:none;}
+.order_list_tb td{border:solid 1px #a2cbff;padding:6px;}
+.order_list_tb tr.t_hd{background:#F4F9FF;}
+.order_list_tb tr.t_hd span{margin-right:25px;display:inline-block;}
+.order_list_tb tr.t_foot td{height:10px;border:none;padding:0;}
+
+/*下单收货信息*/
+.delivery_addr{border:solid 1px #a2cbff;margin:0 0 5px 5px;padding:4px;width:400px;overflow:hidden;}
+.delivery_addr a{margin:0 5px;}
+.addr_refresh{color:#0E58A7;}
+
+/*垫付*/
+#df_supplier_hide_item{margin:0;}
+#df_supplier{padding-bottom:0;}
+#df_supplier p{padding:5px 0;}
+#df_supplier p span{display:inline-block;width:83px;text-align:right;}
+.df_supplier_account{display:none;}
+
+/*验证邮箱、手机*/
+.pop_form_bd .key{width:80px;}
+.pop_form_bd .value{padding-left:90px;}
+.pop_form_bd .get_code{margin-left:3px;color:#1d6ec0;font-size:12px;}
+
+/*下单步骤*/
+span.step_num{display:inline-block;width:24px;height:24px;text-align:center;line-height:24px;background:url(img/icons.png) -3px -69px no-repeat;color:#fff;font-weight:700;font-size:14px;margin-right:5px;}
+.step_list{position:fixed;width:24px;bottom:180px;right:13%;}
+.step_list li{width:24px;height:24px;text-align:center;line-height:24px;background:url(img/icons.png) -3px -113px no-repeat;color:#888;font-size:14px;margin:5px 0;cursor:pointer;font-family: arial;}
+.step_list li.cur,.step_list li:hover{background-position:-3px -69px;color:#fff;font-weight:700;}
+
+/*国内物流*/
+#log_pro_list_tb{margin:0 0 10px 5px;}
+.log_list{padding:10px;background:#F4F9FF;}
+.log_list h3{padding-left:5px;}
+.log_pro_list_tb{border:solid 1px #a2cbff;border-bottom:none;width:500px;margin-left:5px;}
+.log_pro_list_tb td,.log_pro_list_tb th{border-bottom:solid 1px #a2cbff;text-align:center;padding:3px;}
+.log_pro_list_tb .num_txt{width:50px;padding-left:2px;}
+.log_pro_list_tb th{background:#F4F9FF;}
+.log_pro_list_tb tr:hover{background:#e1ebf7;}

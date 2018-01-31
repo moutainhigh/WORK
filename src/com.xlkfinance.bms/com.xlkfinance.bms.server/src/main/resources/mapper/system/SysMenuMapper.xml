@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.system.mapper.SysMenuMapper">
+	<resultMap id="SysMenuResultMap" type="com.xlkfinance.bms.rpc.system.SysMenu">
+		<id column="PID" property="pid" jdbcType="INTEGER" />
+		<result column="PARENT_ID" property="parentId" jdbcType="INTEGER" />
+		<result column="MENU_NAME" property="menuName" jdbcType="VARCHAR" />
+		<result column="ICON_CLS" property="iconCls" jdbcType="VARCHAR" />
+		<result column="MENU_URL" property="menuUrl" jdbcType="VARCHAR" />
+		<result column="STATUS" property="status" jdbcType="INTEGER" />
+		<result column="MENU_INDEX" property="menuIndex" jdbcType="INTEGER" />
+	</resultMap>
+	 
+	
+
+	<sql id="SysMenu_Column_List">
+		PID,PARENT_ID,MENU_NAME,ICON_CLS,MENU_URL,STATUS,MENU_INDEX
+	</sql>
+
+	<!-- 添加菜单 -->
+	<insert id="insert" parameterType="com.xlkfinance.bms.rpc.system.SysMenu">
+		<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+			SELECT SEQ_SYS_MENU.Nextval as PID from DUAL
+		</selectKey>
+		
+		insert into SYS_MENU
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			PID,
+			<if test="parentId != null">
+				PARENT_ID,
+			</if>
+			<if test="menuName != null">
+				MENU_NAME,
+			</if>
+			<if test="iconCls != null">
+				ICON_CLS,
+			</if>
+			<if test="menuUrl != null">
+				MENU_URL,
+			</if>
+			<if test="status != null">
+				STATUS,
+			</if>
+			<if test="menuIndex != null">
+				MENU_INDEX
+			</if>
+			
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+				#{pid,jdbcType=INTEGER},
+			<if test="parentId != null">
+				#{parentId,jdbcType=VARCHAR},
+			</if>
+			<if test="menuName != null">
+				#{menuName,jdbcType=VARCHAR},
+			</if>
+			<if test="iconCls != null">
+				#{iconCls,jdbcType=VARCHAR},
+			</if>
+			<if test="menuUrl != null">
+				#{menuUrl,jdbcType=VARCHAR},
+			</if>
+			<if test="status != null">
+				#{status,jdbcType=VARCHAR},
+			</if>
+			(SELECT MAX(B.MENU_INDEX) + 1 FROM SYS_MENU B WHERE B.PARENT_ID = #{parentId,jdbcType=VARCHAR})
+		</trim>
+	</insert>
+	
+	<!-- 删除节点 -->
+	<delete id="delete" parameterType="com.xlkfinance.bms.rpc.system.SysMenu">
+		delete from SYS_MENU
+		where PID = #{pid,jdbcType=INTEGER} or parent_id = #{pid,jdbcType=INTEGER}
+	</delete>
+	
+	<!-- 修改菜单 -->
+	<update id="updateByPrimaryKey" parameterType="com.xlkfinance.bms.rpc.system.SysMenu">
+		update SYS_MENU
+		set
+		<if test="parentId != null">
+			PARENT_ID = #{parentId,jdbcType=VARCHAR},
+		</if>
+		<if test="menuName != null">
+			MENU_NAME = #{menuName,jdbcType=VARCHAR},
+		</if>
+		<if test="iconCls != null">
+			ICON_CLS = #{iconCls,jdbcType=VARCHAR},
+		</if>
+		<if test="menuUrl != null">
+			MENU_URL = #{menuUrl,jdbcType=VARCHAR},
+		</if>
+		<if test="status != null">
+			STATUS = #{status,jdbcType=VARCHAR},
+		</if>
+		<if test="menuIndex != null">
+			MENU_INDEX = #{menuIndex,jdbcType=VARCHAR}
+		</if>
+		where PID = #{pid,jdbcType=INTEGER}
+	</update>
+	
+	<!-- 查询用户菜单 -->
+	<select id="selectPermissionMenuByUserName" resultMap="SysMenuResultMap" parameterType="java.lang.String">
+		SELECT 
+		<include refid="SysMenu_Column_List" />
+		  FROM SYS_USER_MENU_V
+		 WHERE 1=1 
+		 AND USER_NAME = #{userName,jdbcType=VARCHAR}
+		 ORDER BY PARENT_ID, MENU_INDEX
+	</select>
+	
+	<!-- 查询根菜单 -->
+	<select id="selectRootMenuByUser" resultMap="SysMenuResultMap" parameterType="java.lang.String">
+		SELECT 
+		<include refid="SysMenu_Column_List" />
+		  FROM SYS_USER_MENU_V
+		 WHERE 1=1 
+		 AND USER_NAME = #{userName,jdbcType=VARCHAR}
+		 AND PARENT_ID = 0
+		 ORDER BY MENU_INDEX
+	</select>
+	
+	<!-- 查询子菜单 -->
+	<select id="selectChildMenuByUser" resultMap="SysMenuResultMap" parameterType="java.util.HashMap">
+		SELECT 
+		<include refid="SysMenu_Column_List" />
+		  FROM SYS_USER_MENU_V
+		 WHERE 1=1 
+		 AND USER_NAME = #{userName,jdbcType=VARCHAR}
+		 AND PARENT_ID = #{pid,jdbcType=INTEGER}
+		 ORDER BY MENU_INDEX
+	</select>
+
+
+	<!-- 分页查询系统菜单 -->
+	<select id="getMenuPageList" resultMap="SysMenuResultMap">
+		SELECT m.pid,m.parent_id,m.menu_name,m.icon_cls,m.menu_url,m.status,m.menu_index from sys_menu  m
+	    start with m.parent_id= 0
+	    connect by m.parent_id= prior m.pid
+	    ORDER SIBLINGS BY m.pid
+	</select>
+	
+	<!-- 查询所有根节点 -->
+	<select id="getRootMenuList" resultMap="SysMenuResultMap">
+		SELECT M.PID,
+	       M.PARENT_ID,
+	       M.MENU_NAME,
+	       M.ICON_CLS,
+	       M.MENU_URL,
+	       M.STATUS,
+	       M.MENU_INDEX
+	  FROM SYS_MENU M
+	 WHERE M.PARENT_ID = 0
+	</select>
+	<!-- 查询所有根节点 -->
+	<select id="selectChildMenuByPid" resultMap="SysMenuResultMap" parameterType="Integer">
+		SELECT M.PID,
+	       M.PARENT_ID,
+	       M.MENU_NAME,
+	       M.ICON_CLS,
+	       M.MENU_URL,
+	       M.STATUS,
+	       M.MENU_INDEX
+	  FROM SYS_MENU M
+	 WHERE M.PARENT_ID = #{pid}
+	</select>
+	
+	<!-- 模糊查询 -->
+	<select id="searchMenuListByName" resultMap="SysMenuResultMap" parameterType="java.util.Map">
+		SELECT m.pid,m.parent_id,m.menu_name,m.icon_cls,m.menu_url,m.status,m.menu_index from sys_menu m where rowid IN
+		  (select rid from 
+		    (select rownum rn,rid FROM
+		      (select rowid rid,MENU_INDEX FROM sys_menu
+		      	where 1=1 
+		        <if test="menuName!='' and menuName!=null ">
+		        	and menu_name like '%'||#{menuName}||'%'
+		        </if>  
+		        order by MENU_INDEX desc)
+		    where rownum<![CDATA[<=]]>#{pageNum}*#{pageSize}) 
+		where rn>=((#{pageNum}-1)*#{pageSize})+1)
+	</select>
+	
+	<!-- 左边的树 -->
+	<select id="getMenuTreeList" resultMap="SysMenuResultMap" parameterType="java.util.Map">
+		SELECT 
+		<include refid="SysMenu_Column_List" />
+		  FROM SYS_USER_MENU_V
+		 WHERE USER_NAME = #{userName,jdbcType=VARCHAR}
+		 ORDER BY MENU_INDEX
+	</select>
+	
+	<!-- 下拉框专用 -->
+	<select id="getComBoxList" resultType="com.xlkfinance.bms.rpc.system.SysMenu">
+		SELECT 0 PID, '根菜单' as menuName
+				  FROM DUAL
+				UNION ALL
+				SELECT PID, LPAD(' ', 1 * LEVEL - 1)|| M.MENU_NAME as menuName
+				  FROM SYS_MENU M
+				 START WITH M.PARENT_ID = 0
+		CONNECT BY PRIOR M.PID = M.PARENT_ID
+	</select>
+	
+</mapper>

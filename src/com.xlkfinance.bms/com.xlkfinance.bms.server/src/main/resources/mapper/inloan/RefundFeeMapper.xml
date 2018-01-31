@@ -1,0 +1,960 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.inloan.mapper.RefundFeeMapper">
+	<resultMap type="refundFeeDTO" id="refundFeeMap">
+		<id property="pid" column="PID" />
+		<id property="projectId" column="PROJECT_ID" />
+		<id property="applyStatus" column="APPLY_STATUS" />
+		<id property="productId" column="PRODUCT_ID" />
+		<id property="productName" column="PRODUCT_NAME" />
+		<id property="tradeWay" column="TRADE_WAY" />
+		<id property="tradeDate" column="TRADE_DATE" />
+		<id property="mortgageNumber" column="MORTGAGE_NUMBER" />
+		<id property="customerId" column="CUSTOMER_ID" />
+		<id property="customerName" column="CUSTOMER_Name" />
+		<id property="oldHome" column="OLD_HOME" />
+		<id property="pmUserId" column="PM_USER_ID" />
+		<id property="pmUserName" column="PM_USER_Name" />
+		<id property="homeName" column="HOME_NAME" />
+		<id property="guaranteeMoney" column="GUARANTEE_MONEY" />
+		<id property="extractMoney" column="EXTRACT_MONEY" />
+		<id property="lendBank" column="LEND_BANK" />
+		<id property="foreclosureFloorBank" column="FORECLOSURE_FLOOR_BANK" />
+		<id property="bankLendTotalAmount" column="BANK_LEND_TOTAL_AMOUNT" />
+		<id property="deptId" column="DEPT_ID" />
+		<id property="deptName" column="DEPT_NAME" />
+		<id property="recGuaranteeMoney" column="REC_GUARANTEE_MONEY" />
+		<id property="foreclosureFloorMoney" column="FORECLOSURE_FLOOR_MONEY" />
+		<id property="defaultInterest" column="DEFAULT_INTEREST" />
+		<id property="payTotal" column="PAY_TOTAL" />
+		<id property="returnFee" column="RETURN_FEE" />
+		<id property="recAccountName" column="REC_ACCOUNT_NAME" />
+		<id property="bankName" column="BANK_NAME" />
+		<id property="recAccount" column="REC_ACCOUNT" />
+		<id property="createrDate" column="CREATER_DATE" />
+		<id property="createrId" column="CREATER_ID" />
+		<id property="updateId" column="UPDATE_ID" />
+		<id property="updateDate" column="UPDATE_DATE" />
+		<id property="projectName" column="PROJECT_NAME" />
+		<id property="projectNumber" column="PROJECT_NUMBER" />
+		<id property="interest" column="INTEREST" />
+		<id property="foreclosureStatus" column="FORECLOSURE_STATUS" />
+		<id property="type" column="TYPE" />
+		
+		<id property="recDate" column="REC_DATE" />
+		<id property="recMoney" column="REC_MONEY" />
+		<id property="cancelGuaranteeDate" column="CANCEL_GUARANTEE_DATE" />
+		<id property="payDate" column="PAY_DATE" />
+		
+		<id property="bankLendTotalMoney" column="BANK_LEND_TOTAL_MONEY" />
+		
+		<id property="confirmMoney" column="CONFIRM_MONEY" />
+		<id property="isConfirm" column="IS_CONFIRM" />
+		<id property="confirmDate" column="CONFIRM_DATE" />
+		<id property="realUseDays" column="REAL_USE_DAYS" />
+		
+		<id property="repaymentMoney" column="REPAYMENT_MONEY" />
+		<id property="repaymentDate" column="REPAYMENT_DATE" />
+		<id property="feeRate" column="FEE_RATE" />
+	</resultMap>
+	<resultMap type="refundFeeIndexDTO" id="refundFeeIndexMap">
+		<id property="pid" column="PID" />
+		<id property="projectId" column="PROJECT_ID" />
+		<id property="projectNumber" column="PROJECT_NUMBER" />
+		<id property="projectName" column="PROJECT_NAME" />
+		<id property="requestDate" column="REQUEST_DATE" />
+		<id property="bizApplyHandleStatus" column="APPLY_HANDLE_STATUS" />
+		<id property="recStatus" column="REC_STATUS" />
+		<id property="backFeeApplyHandleStatus" column="APPLY_STATUS" />
+		<id property="customerName" column="CUSTOMER_NAME" />
+		<id property="oldHome" column="OLD_HOME" />
+		<id property="cancelGuaranteeDate" column="CANCEL_GUARANTEE_DATE" />
+		<id property="projectPassDate" column="PROJECT_PASS_DATE" />
+		<id property="type" column="TYPE" />
+		<id property="loanMoney" column="LOAN_MONEY" />
+		<id property="productType" column="PRODUCT_TYPE" />
+		<id property="productId" column="PRODUCT_ID" />
+		<id property="productName" column="PRODUCT_NAME" />
+		<id property="confirmMoney" column="CONFIRM_MONEY" />
+		<id property="isConfirm" column="IS_CONFIRM" />
+		<id property="confirmDate" column="CONFIRM_DATE" />
+		<id property="returnFee" column="RETURN_FEE" />
+		<id property="houseName" column="HOUSE_NAME"/>
+  		<id property="buyerName" column="BUYER_NAME"/>
+  		<id property="sellerName" column="SELLER_NAME"/>
+  		<id property="isChechan" column="IS_CHECHAN"/>
+  		<id property="pmUserId" column="PM_USER_ID"/>
+  		<id property="businessSourceNo" column="BUSINESS_SOURCE_NO"/>
+  		<id property="businessCatelog" column="BUSINESS_CATELOG"/>
+  		<id property="orgName" column="ORG_NAME"/>
+  		<id property="pmName" column="PM_NAME"/>
+  		<id property="recAccountName" column="REC_ACCOUNT_NAME" />
+  		<id property="guaranteeFee" column="GUARANTEE_FEE" />
+  		<id property="receMoney" column="RECE_MONEY" />
+  		<id property="finPoundage" column="FIN_POUNDAGE" />
+  		<id property="businessSource" column="BUSINESS_SOURCE" />
+  		<id property="innerOrOut" column="INNER_OR_OUT"  />
+  		<id property="foreclosureFloorMoney" column="FORECLOSURE_FLOOR_MONEY" />
+  		<id property="finInterest" column="FIN_INTEREST" />
+  		<id property="bankName" column="BANK_NAME" />
+  		<id property="batchRefundFeeMainId" column="BATCH_REFUND_FEE_MAIN_ID" />
+  		<id property="batchName" column="BATCH_NAME" />
+  		<id property="businessSourceStr" column="BUSINESS_SOURCE_STR" />
+  		<id property="repaymentDate" column="REPAYMENT_DATE" />
+  		<id property="repaymentMoney" column="REPAYMENT_MONEY" />
+  		<id property="notRepaymentMoney" column="NOT_REPAYMENT_MONEY" />
+  		<id property="extensionFee" column="EXTENSION_FEE" />
+	</resultMap>
+	<sql id="column_list">
+        PID,PROJECT_ID,APPLY_STATUS,TYPE,RETURN_FEE,REC_ACCOUNT,BANK_NAME,REC_ACCOUNT_NAME,CREATER_DATE,CREATER_ID,UPDATE_ID,UPDATE_DATE,IS_CONFIRM,CONFIRM_MONEY,CONFIRM_DATE
+	</sql>
+<!-- 添加退款信息 -->
+<insert id="addRefundFee" parameterType="refundFeeDTO">
+	<selectKey resultType="java.lang.Integer" order="BEFORE"
+		keyProperty="pid">
+		SELECT SEQ_REFUND_FEE.Nextval as PID from DUAL
+	</selectKey>
+	INSERT INTO BIZ_LOAN_REFUND_FEE
+	<trim prefix="(" suffix=")" suffixOverrides=",">
+		PID,
+		<if test="projectId != null and projectId >0">
+			PROJECT_ID,
+		</if>
+		<if test="applyStatus != null and applyStatus >0">
+			APPLY_STATUS,
+		</if>
+		<if test="returnFee != null and returnFee >=0">
+			RETURN_FEE,
+		</if>
+		<if test="recAccountName != null and recAccountName !=''">
+			REC_ACCOUNT_NAME,
+		</if>
+		<if test="bankName != null and bankName !=''">
+			BANK_NAME,
+		</if>
+		<if test="recAccount != null and recAccount !=''">
+			REC_ACCOUNT,
+		</if>
+		<if test="createrId != null and createrId >0">
+			CREATER_ID,
+		</if>
+		<if test="updateId != null and updateId >0">
+			UPDATE_ID,
+		</if>
+		<if test="type != null and type >0">
+			TYPE,
+		</if>
+		<if test="confirmMoney != null">
+			CONFIRM_MONEY,
+		</if>
+		<if test="isConfirm != null and isConfirm >0">
+			IS_CONFIRM,
+		</if>
+		<if test="confirmDate != null and confirmDate !=''">
+			CONFIRM_DATE,
+		</if>
+			CREATER_DATE,
+			UPDATE_DATE
+	</trim>
+	<trim prefix="values (" suffix=")" suffixOverrides=",">
+		#{pid},
+		<if test="projectId != null and projectId >0">
+			#{projectId},
+		</if>
+		<if test="applyStatus != null and applyStatus >0">
+			#{applyStatus},
+		</if>
+		<if test="returnFee != null and returnFee >=0">
+			#{returnFee},
+		</if>
+		<if test="recAccountName != null and recAccountName !=''">
+			#{recAccountName},
+		</if>
+		<if test="bankName != null and bankName !=''">
+			#{bankName},
+		</if>
+		<if test="recAccount != null and recAccount !=''">
+			#{recAccount},
+		</if>
+		<if test="createrId != null and createrId >0">
+			#{createrId},
+		</if>
+		<if test="updateId != null and updateId >0">
+			#{updateId},
+		</if>
+		<if test="type != null and type >0">
+			#{type},
+		</if>
+		<if test="confirmMoney != null">
+			#{confirmMoney},
+		</if>
+		<if test="isConfirm != null and isConfirm >0">
+			#{isConfirm},
+		</if>
+		<if test="confirmDate != null and confirmDate !=''">
+			#{confirmDate,jdbcType=DATE,javaType=String},
+		</if>
+			SYSDATE,
+			SYSDATE
+	</trim>
+</insert>
+<!-- 根据id更新退款信息-->
+<update id="updateRefundFee" parameterType="refundFeeDTO">
+	UPDATE BIZ_LOAN_REFUND_FEE
+	<set>
+		<if test="applyStatus != null and applyStatus >0">
+			APPLY_STATUS=#{applyStatus},
+		</if>
+		<if test="returnFee != null and returnFee >=0">
+			RETURN_FEE=#{returnFee},
+		</if>
+		<if test="recAccountName != null and recAccountName !=''">
+			REC_ACCOUNT_NAME=#{recAccountName},
+		</if>
+		<if test="bankName != null and bankName !=''">
+			BANK_NAME=#{bankName},
+		</if>
+		<if test="recAccount != null and recAccount !=''">
+			REC_ACCOUNT=#{recAccount},
+		</if>
+		<if test="updateId != null and updateId >0">
+			UPDATE_ID=#{updateId},
+		</if>
+		<if test="createrId != null and createrId >0">
+			CREATER_ID=#{createrId},
+		</if>
+		<if test="confirmMoney != null">
+			CONFIRM_MONEY=#{confirmMoney},
+		</if>
+		<if test="isConfirm != null and isConfirm >0">
+			IS_CONFIRM=#{isConfirm},
+		</if>
+		<if test="confirmDate != null and confirmDate !=''">
+			CONFIRM_DATE=#{confirmDate,jdbcType=DATE,javaType=String},
+		</if>
+			UPDATE_DATE=SYSDATE
+	</set>
+	where pid = #{pid}
+</update>
+<!-- 根据条件查询退款信息（分页查询）-->
+<select id="findAllRefundFee" resultMap="refundFeeMap"
+	parameterType="refundFeeDTO">
+	<![CDATA[
+	SELECT D.* FROM (SELECT T.*, ROWNUM RN
+	        FROM ( SELECT A.PID AS PROJECT_ID,
+       A.PROJECT_NAME,
+       A.PROJECT_NUMBER,
+       B.PRODUCT_NAME AS PRODUCT_NAME,
+       (SELECT LOOKUP_DESC
+          FROM SYS_LOOKUP_VAL S1
+         WHERE S1.PID = A.BUSINESS_CATEGORY) AS TRADE_WAY,
+       '' AS TRADE_DATE,
+       '' AS MORTGAGE_NUMBER,
+       DD.CHINA_NAME AS CUSTOMER_NAME,
+       E.REAL_NAME AS PM_USER_NAME,
+       A.PM_USER_ID AS PM_USER_ID,
+       EH.HOUSE_NAME AS HOME_NAME,
+       F.SELLER_NAME AS OLD_HOME,
+       G.LOAN_MONEY AS GUARANTEE_MONEY,
+       (SELECT SUM(AFH.REC_MONEY)
+          FROM BIZ_LOAN_FINANCE_HANDLE FH, BIZ_LOAN_APPLY_FINANCE_HANDLE AFH
+         WHERE FH.PID = AFH.FINANCE_HANDLE_ID
+           AND AFH.REC_PRO IN (3, 4, 5, 6)
+           AND FH.PROJECT_ID = A.PID) AS EXTRACT_MONEY,
+       (SELECT S.BANK_NAME  FROM SYS_BANK_INFO S WHERE S.PID =  K.NEW_LOAN_BANK) AS LEND_BANK,
+       (SELECT S.BANK_NAME  FROM OLD_LOAN_BANK_V S WHERE S.PID =  K.PROJECT_ID) AS FORECLOSURE_FLOOR_BANK,
+       (SELECT SUM(AFH.REC_MONEY)
+          FROM BIZ_LOAN_FINANCE_HANDLE FH, BIZ_LOAN_APPLY_FINANCE_HANDLE AFH
+         WHERE FH.PID = AFH.FINANCE_HANDLE_ID
+           AND AFH.REC_PRO IN (3, 4, 5, 6)
+           AND FH.PROJECT_ID = A.PID) AS BANK_LEND_TOTAL_AMOUNT,
+       I.NAME AS DEPT_NAME,
+       (SELECT SUM(AFH.REC_MONEY)
+          FROM BIZ_LOAN_FINANCE_HANDLE FH, BIZ_LOAN_APPLY_FINANCE_HANDLE AFH
+         WHERE FH.PID = AFH.FINANCE_HANDLE_ID
+           AND AFH.REC_PRO = 1
+           AND FH.PROJECT_ID = A.PID) AS REC_GUARANTEE_MONEY,
+       (SELECT SUM(HB.DEFAULT_INTEREST)
+          FROM BIZ_LOAN_HOUSE_BALANCE HB
+         WHERE H.PID = HB.HANDLE_ID) AS INTEREST,
+       (SELECT SUM(HB.PRINCIPAL)
+          FROM BIZ_LOAN_HOUSE_BALANCE HB
+         WHERE H.PID = HB.HANDLE_ID) AS FORECLOSURE_FLOOR_MONEY,
+       (SELECT SUM(HB.DEFAULT_INTEREST)
+          FROM BIZ_LOAN_HOUSE_BALANCE HB
+         WHERE H.PID = HB.HANDLE_ID) AS DEFAULT_INTEREST,
+       J.PID,
+       J.APPLY_STATUS,
+       J.RETURN_FEE,
+       
+       (CASE
+         WHEN J.REC_ACCOUNT_NAME IS NOT NULL THEN
+          J.REC_ACCOUNT_NAME
+         ELSE
+          (SELECT CAB.ACC_NAME
+             FROM CUS_ACCT_BANK CAB
+            WHERE CAB.STATUS = 1
+              AND CAB.ACCT_ID = A.ACCT_ID
+              AND ROWNUM = 1)
+       END) AS REC_ACCOUNT_NAME,
+       (CASE
+         WHEN J.BANK_NAME IS NOT NULL THEN
+          J.BANK_NAME
+         ELSE
+          (SELECT CAB.BANK_NAME
+             FROM CUS_ACCT_BANK CAB
+            WHERE CAB.STATUS = 1
+              AND CAB.ACCT_ID = A.ACCT_ID
+              AND ROWNUM = 1)
+       END) AS BANK_NAME,
+       (CASE
+         WHEN J.REC_ACCOUNT IS NOT NULL THEN
+          J.REC_ACCOUNT
+         ELSE
+          (SELECT CAB.LOAN_CARD_ID
+             FROM CUS_ACCT_BANK CAB
+            WHERE CAB.STATUS = 1
+              AND CAB.ACCT_ID = A.ACCT_ID
+              AND ROWNUM = 1)
+       END) AS REC_ACCOUNT,
+       J.CREATER_DATE,
+       J.CREATER_ID,
+       J.UPDATE_ID,
+       J.UPDATE_DATE,
+       A.FORECLOSURE_STATUS,
+       J.TYPE,
+       J.CONFIRM_DATE,
+       J.IS_CONFIRM,
+       J.CONFIRM_MONEY,
+       
+       (SELECT to_char(AFH.REC_DATE,'yyyy-MM-dd')
+          FROM BIZ_LOAN_FINANCE_HANDLE FH
+         INNER JOIN BIZ_LOAN_APPLY_FINANCE_HANDLE AFH
+            ON FH.PID = AFH.FINANCE_HANDLE_ID
+         WHERE AFH.REC_PRO = 1
+           AND FH.PROJECT_ID = A.PID) AS REC_DATE,
+       (SELECT SUM(AFH.REC_MONEY)
+          FROM BIZ_LOAN_FINANCE_HANDLE FH
+         INNER JOIN BIZ_LOAN_APPLY_FINANCE_HANDLE AFH
+            ON FH.PID = AFH.FINANCE_HANDLE_ID
+         WHERE AFH.REC_PRO IN(1,2,7)
+           AND FH.PROJECT_ID = A.PID) AS REC_MONEY,
+       A.CANCEL_GUARANTEE_DATE,
+       (SELECT to_char(HD.FINISH_DATE,'yyyy-MM-dd')
+          FROM BIZ_LOAN_HANDLE_INFO HI, BIZ_LOAN_HANDLE_DYNAMIC HD
+         WHERE HI.PID = HD.HANDLE_ID
+           AND HD.HANDLE_FLOW_ID = 1
+           AND HI.PROJECT_ID = A.PID) AS PAY_DATE,
+       
+       (SELECT SUM(AFH.REC_MONEY)
+          FROM BIZ_LOAN_FINANCE_HANDLE FH, BIZ_LOAN_APPLY_FINANCE_HANDLE AFH
+         WHERE FH.PID = AFH.FINANCE_HANDLE_ID
+           AND AFH.REC_PRO IN (3, 5)
+           AND FH.PROJECT_ID = A.PID) AS BANK_LEND_TOTAL_MONEY,
+ (TO_DATE(TO_CHAR((SELECT PAY.NEW_REPAYMENT_DATE
+                    FROM BIZ_LOAN_REPAYMENT PAY
+                   WHERE PAY.PROJECT_ID = A.PID),
+                  'yyyy-MM-dd'),
+          'yyyy-MM-dd') -
+ TO_DATE(TO_CHAR((SELECT AFH.REC_DATE
+                    FROM BIZ_LOAN_FINANCE_HANDLE       FH,
+                         BIZ_LOAN_APPLY_FINANCE_HANDLE AFH
+                   WHERE FH.PID = AFH.FINANCE_HANDLE_ID
+                     AND AFH.REC_PRO = 3
+                     AND FH.PROJECT_ID = A.PID),
+                  'yyyy-MM-dd'),
+          'yyyy-MM-dd'))+1 AS REAL_USE_DAYS,
+          L.REPAYMENT_MONEY,
+          to_char(L.NEW_REPAYMENT_DATE,'yyyy-MM-dd') AS REPAYMENT_DATE,
+          G.FEE_RATE
+
+  FROM BIZ_PROJECT A
+ INNER JOIN BIZ_PRODUCT B
+    ON A.PRODUCT_ID = B.PID
+ INNER JOIN CUS_ACCT C
+    ON A.ACCT_ID = C.PID
+ INNER JOIN CUS_PERSON DD
+    ON C.PID = DD.ACCT_ID
+   AND DD.RELATION_TYPE = 1
+ INNER JOIN SYS_USER E
+    ON A.PM_USER_ID = E.PID
+  LEFT JOIN BIZ_PROJECT_PROPERTY F
+    ON F.PROJECT_ID = A.PID
+  LEFT JOIN BIZ_PROJECT_GUARANTEE G
+    ON G.PROJECT_ID = A.PID
+ INNER JOIN SYS_ORG_INFO I
+    ON I.ID = E.ORG_ID
+  LEFT JOIN BIZ_LOAN_REFUND_FEE J
+    ON J.PROJECT_ID = A.PID
+  LEFT JOIN BIZ_PROJECT_FORECLOSURE K
+    ON A.PID = K.PROJECT_ID
+ LEFT JOIN BIZ_LOAN_HANDLE_INFO H
+    ON A.PID = H.PROJECT_ID
+ LEFT JOIN BIZ_LOAN_REPAYMENT L
+    ON L.PROJECT_ID=A.PID
+    LEFT JOIN V_HOUSE_NAME EH ON EH.PROJECT_ID = A.PID
+	]]>
+	<where>
+		<trim>
+			<if test="userIds!=null and userIds.size()>0">
+				AND A.PM_USER_ID IN
+				<foreach item="itemId" collection="userIds" open="("
+					separator="," close=")">
+					#{itemId}
+				</foreach>
+			</if>
+			<if test="type != null and type >0">
+			    AND J.TYPE =#{type}
+		    </if>
+			<if test="projectList !=null and projectList.size()>0">
+				AND A.PID IN
+				<foreach item="itemProjectId" collection="projectList" open="("
+					separator="," close=")">
+					#{itemProjectId}
+				</foreach>
+			</if>
+			<if test="applyStatus != null and applyStatus >0">
+				AND J.APPLY_STATUS = #{applyStatus}
+			</if>
+			<if test="projectId !=null and projectId >0">
+				AND A.PID = #{projectId}
+			</if>
+			<if test="pid!=null and pid>0">
+				AND J.PID = #{pid}
+			</if>
+		</trim>
+	</where>
+	<![CDATA[
+	) T
+	WHERE ROWNUM <=#{page}*#{rows}
+	) D
+	WHERE D.RN > ((#{page}-1)*#{rows})
+	]]>
+</select>
+<!-- 根据条件查询退款信息总数 -->
+<select id="getRefundFeeTotal" resultType="Integer"
+	parameterType="refundFeeDTO">
+	<![CDATA[
+	SELECT COUNT(1) FROM
+			( SELECT A.PID
+
+  FROM BIZ_PROJECT A
+ INNER JOIN BIZ_PRODUCT B
+    ON A.PRODUCT_ID = B.PID
+ INNER JOIN CUS_ACCT C
+    ON A.ACCT_ID = C.PID
+ INNER JOIN CUS_PERSON DD
+    ON C.PID = DD.ACCT_ID
+   AND DD.RELATION_TYPE = 1
+ INNER JOIN SYS_USER E
+    ON A.PM_USER_ID = E.PID
+  LEFT JOIN BIZ_PROJECT_PROPERTY F
+    ON F.PROJECT_ID = A.PID
+  LEFT JOIN BIZ_PROJECT_GUARANTEE G
+    ON G.PROJECT_ID = A.PID
+ INNER JOIN SYS_ORG_INFO I
+    ON I.ID = E.ORG_ID
+  LEFT JOIN BIZ_LOAN_REFUND_FEE J
+    ON J.PROJECT_ID = A.PID
+  LEFT JOIN BIZ_PROJECT_FORECLOSURE K
+    ON A.PID = K.PROJECT_ID
+ LEFT JOIN BIZ_LOAN_HANDLE_INFO H
+    ON A.PID = H.PROJECT_ID
+ LEFT JOIN BIZ_LOAN_REPAYMENT L
+    ON L.PROJECT_ID=A.PID
+    LEFT JOIN V_HOUSE_NAME EH ON EH.PROJECT_ID = A.PID
+	]]>
+	<where>
+		<trim>
+			<if test="userIds!=null and userIds.size()>0">
+				AND A.PM_USER_ID IN
+				<foreach item="itemId" collection="userIds" open="("
+					separator="," close=")">
+					#{itemId}
+				</foreach>
+			</if>
+			<if test="type != null and type >0">
+			    AND J.TYPE =#{type}
+		    </if>
+			<if test="projectList !=null and projectList.size()>0">
+				AND A.PID IN
+				<foreach item="itemProjectId" collection="projectList" open="("
+					separator="," close=")">
+					#{itemProjectId}
+				</foreach>
+			</if>
+			<if test="applyStatus != null and applyStatus >0">
+				AND J.APPLY_STATUS = #{applyStatus}
+			</if>
+			<if test="projectId !=null and projectId >0">
+				AND A.PID = #{projectId}
+			</if>
+			<if test="pid!=null and pid>0">
+				AND J.PID = #{pid}
+			</if>
+		</trim>
+	</where>
+	) T
+</select>
+<!-- 根据条件查询退款列表（分页查询）-->
+<select id="findAllRefundFeeIndex" resultMap="refundFeeIndexMap" parameterType="refundFeeIndexDTO">
+	<![CDATA[
+	SELECT D.* FROM (SELECT T.*, ROWNUM RN
+	        FROM ( SELECT B.PID,
+       A.PID AS PROJECT_ID,
+       A.PROJECT_NUMBER,
+       A.PROJECT_NAME,
+       A.IS_CHECHAN,
+       A.PM_USER_ID,
+       A.BUSINESS_SOURCE_NO,
+       A.BUSINESS_CATELOG,
+       A.INNER_OR_OUT,
+       TO_CHAR(A.REQUEST_DTTM, 'yyyy-MM-dd') AS REQUEST_DATE,
+       CASE
+         WHEN C.APPLY_HANDLE_STATUS > 0 THEN
+          C.APPLY_HANDLE_STATUS
+         ELSE
+          1
+       END AS APPLY_HANDLE_STATUS,
+       CASE
+         WHEN C.REC_STATUS > 0 THEN
+          C.REC_STATUS
+         ELSE
+          1
+       END AS REC_STATUS,
+       CASE
+         WHEN B.APPLY_STATUS > 0 THEN
+          B.APPLY_STATUS
+         ELSE
+          1
+       END AS APPLY_STATUS,
+       E.SELLER_NAME AS OLD_HOME,
+       G.CHINA_NAME AS CUSTOMER_NAME,
+       A.CANCEL_GUARANTEE_DATE,
+       I.CREATER_DATE AS PROJECT_PASS_DATE,
+       B.TYPE,
+       B.RETURN_FEE,
+       B.CONFIRM_DATE,
+       B.IS_CONFIRM,
+       B.CONFIRM_MONEY,
+       B.UPDATE_DATE,
+       J.LOAN_MONEY,
+       K.PID AS PRODUCT_ID,
+       K.PRODUCT_TYPE,
+       K.PRODUCT_NAME,
+       EH.HOUSE_NAME,
+       E.BUYER_NAME,
+       E.SELLER_NAME,
+       O.NAME ORG_NAME,
+       u.REAL_NAME PM_NAME,
+       B.BANK_NAME,
+       (CASE
+         WHEN B.REC_ACCOUNT_NAME IS NOT NULL THEN
+          B.REC_ACCOUNT_NAME
+         ELSE
+          (SELECT CAB.ACC_NAME
+             FROM CUS_ACCT_BANK CAB
+            WHERE CAB.STATUS = 1
+              AND CAB.ACCT_ID = A.ACCT_ID
+              AND ROWNUM = 1)
+       END) AS REC_ACCOUNT_NAME,
+       J.GUARANTEE_FEE,
+       J.RECE_MONEY,
+       P.FIN_POUNDAGE,
+       Q.FORECLOSURE_FLOOR_MONEY,
+       P.FIN_INTEREST,
+       BRF.BATCH_REFUND_FEE_MAIN_ID,
+       BRF.BATCH_NAME,
+       BU.BUSINESS_SOURCE_STR,
+       TO_CHAR(R.NEW_REPAYMENT_DATE,'YYYY-MM-DD') REPAYMENT_DATE,
+       R.REPAYMENT_MONEY,
+       (P.REAL_LOAN_MONEY-R.REPAYMENT_MONEY) AS NOT_REPAYMENT_MONEY,
+       S.EXTENSION_FEE
+  FROM BIZ_PROJECT A
+  LEFT JOIN BIZ_LOAN_REFUND_FEE B
+    ON B.PROJECT_ID = A.PID
+  LEFT JOIN BIZ_LOAN_HANDLE_INFO C
+    ON A.PID = C.PROJECT_ID
+  LEFT JOIN BIZ_PROJECT_PROPERTY E
+    ON E.PROJECT_ID = A.PID
+ INNER JOIN CUS_ACCT F
+    ON A.ACCT_ID = F.PID
+ INNER JOIN CUS_PERSON G
+    ON G.ACCT_ID = F.PID
+   AND G.RELATION_TYPE = 1
+  LEFT JOIN BIZ_LOAN_FINANCE_HANDLE I
+    ON I.PROJECT_ID = A.PID
+  LEFT JOIN BIZ_PROJECT_GUARANTEE J
+    ON A.PID = J.PROJECT_ID
+  LEFT JOIN BIZ_PRODUCT K
+    ON A.PRODUCT_ID = K.PID
+  LEFT JOIN SYS_USER U
+  ON A.PM_USER_ID = U.PID
+  LEFT JOIN SYS_ORG_INFO O
+  ON U.ORG_ID = o.id
+  LEFT JOIN(SELECT AFH.FINANCE_HANDLE_ID,
+                   SUM(CASE WHEN (AFH.REC_PRO = 1) THEN AFH.REC_MONEY ELSE 0 END) AS FIN_INTEREST,
+                   SUM(CASE WHEN (AFH.REC_PRO = 2) THEN AFH.REC_MONEY ELSE 0 END) AS FIN_POUNDAGE,
+                   SUM(CASE WHEN (AFH.REC_PRO = 3 or AFH.REC_PRO = 9) THEN AFH.REC_MONEY ELSE 0 END) AS real_Loan_MONEY
+           FROM BIZ_LOAN_APPLY_FINANCE_HANDLE AFH 
+           GROUP BY AFH.FINANCE_HANDLE_ID) P
+  ON P.FINANCE_HANDLE_ID=I.PID
+  LEFT JOIN(SELECT HB.HANDLE_ID,SUM(HB.PRINCIPAL) AS FORECLOSURE_FLOOR_MONEY 
+            FROM BIZ_LOAN_HOUSE_BALANCE HB
+            GROUP BY HB.HANDLE_ID) Q
+  ON Q.HANDLE_ID=C.PID
+  LEFT JOIN V_HOUSE_NAME EH ON EH.PROJECT_ID = A.PID
+  LEFT JOIN (SELECT MAX(BRFM.PID) AS BATCH_REFUND_FEE_MAIN_ID,MAX(BRFM.BATCH_NAME) AS BATCH_NAME,BRFR.PROJECT_ID FROM BIZ_LOAN_BATCH_REFUND_FEE_MAIN BRFM 
+                LEFT JOIN BIZ_BATCH_REFUND_FEE_RELATION BRFR
+                ON BRFM.PID=BRFR.BATCH_REFUND_FEE_MAIN_ID GROUP BY BRFR.PROJECT_ID) BRF
+             ON BRF.PROJECT_ID=A.PID
+  LEFT JOIN BUSINESS_SOURCE_V BU ON BU.PID=A.PID
+  LEFT JOIN BIZ_LOAN_REPAYMENT R ON R.PROJECT_ID=A.PID
+  LEFT JOIN (SELECT PE.EXTENSION_PROJECT_ID,
+                   (CASE WHEN (AFH.REC_MONEY>0) THEN AFH.REC_MONEY ELSE 0 END) AS EXTENSION_FEE                  
+            FROM BIZ_LOAN_APPLY_FINANCE_HANDLE AFH 
+            INNER JOIN BIZ_LOAN_FINANCE_HANDLE FH ON AFH.FINANCE_HANDLE_ID=FH.PID
+            INNER JOIN biz_project_extension PE ON FH.PROJECT_ID=PE.PROJECT_ID
+            WHERE AFH.REC_PRO=8) S 
+            ON S.EXTENSION_PROJECT_ID=A.PID
+	]]>
+	<where>
+		<trim>
+		   <if test="userIds!=null and userIds.size()>0">
+				AND A.PM_USER_ID IN
+				<foreach item="itemId" collection="userIds" open="("
+					separator="," close=")">
+					#{itemId}
+				</foreach>
+			</if>
+		   <if test="backFeeApplyHandleStatusList !=null and backFeeApplyHandleStatusList.size() >0">
+				AND B.APPLY_STATUS IN
+				<foreach item="itemId" collection="backFeeApplyHandleStatusList" open="("
+					separator="," close=")">
+					#{itemId}
+				</foreach>
+			</if>
+			<if test="type != null and type >0">
+			    AND B.TYPE =#{type}
+		    </if>
+			<if test="backFeeApplyHandleStatus != null and backFeeApplyHandleStatus >0">
+			    AND B.APPLY_STATUS =#{backFeeApplyHandleStatus}
+		    </if>
+			<if test="projectName!=null and projectName !=''">
+				AND A.PROJECT_NAME LIKE '%${projectName}%'
+			</if>
+			<if test="batchName!=null and batchName !=''">
+				AND BRF.BATCH_NAME LIKE '%${batchName}%'
+			</if>
+			<if test="businessSourceStr!=null and businessSourceStr !=''">
+				AND BU.BUSINESS_SOURCE_STR LIKE '%${businessSourceStr}%'
+			</if>
+			<if test="customerName and customerName !=''">
+				AND G.CHINA_NAME LIKE '%${customerName}%'
+			</if>
+			<if test="oldHome and oldHome !=''">
+				AND E.SELLER_NAME LIKE '%${oldHome}%'
+			</if>
+			<if test="projectNumber!=null and projectNumber!=''">
+				AND A.PROJECT_NUMBER LIKE '%${projectNumber}%'
+			</if>
+			<if test="houseName !=null and houseName !=''">
+			   AND EH.HOUSE_NAME LIKE '%${houseName}%'
+		    </if>
+		    <if test="buyerName !=null and buyerName !=''">
+			   AND E.BUYER_NAME LIKE '%${buyerName}%'
+		    </if>
+		    <if test="sellerName !=null and sellerName !=''">
+			   AND E.SELLER_NAME LIKE '%${sellerName}%'
+		    </if>
+			<if test="recStatus !=null and recStatus >0">
+				AND C.REC_STATUS = #{recStatus}
+			</if>
+			<if test="productId !=null and productId >0">
+				AND K.PID = #{productId}
+			</if>
+			<if test="projectId !=null and projectId >0">
+				AND A.PID = #{projectId}
+			</if>
+			<if test="pid!=null and pid>0">
+				AND B.PID = #{pid}
+			</if>
+			<if test="orgId != null and orgId>0">
+				AND	o.id =#{orgId}
+			</if>
+			<if test="pmUserId != null and pmUserId > 0">
+				AND	A.pm_user_id =#{pmUserId}
+			</if>
+			<if test="startDate !=null and startDate !=''">
+				 AND B.CONFIRM_DATE <![CDATA[>=]]>
+					TO_DATE(#{startDate},'yyyy-MM-dd')
+			</if>
+			<if test="endDate !=null and endDate !=''">
+				 AND B.CONFIRM_DATE <![CDATA[<=]]>
+					TO_DATE(CONCAT(#{endDate},' 23:59:59'),'yyyy-mm-dd
+					hh24:mi:ss')
+			</if>
+			<if test="repaymentDate !=null and repaymentDate !=''">
+				 AND R.NEW_REPAYMENT_DATE <![CDATA[>=]]>
+					TO_DATE(#{repaymentDate},'yyyy-MM-dd')
+			</if>
+			<if test="repaymentDateEnd !=null and repaymentDateEnd !=''">
+				 AND R.NEW_REPAYMENT_DATE <![CDATA[<=]]>
+					TO_DATE(CONCAT(#{repaymentDateEnd},' 23:59:59'),'yyyy-mm-dd
+					hh24:mi:ss')
+			</if>
+		</trim>
+	</where>
+	<![CDATA[
+	ORDER BY A.REQUEST_DTTM DESC
+	) T
+	WHERE ROWNUM <=#{page}*#{rows}
+	) D
+	WHERE D.RN > ((#{page}-1)*#{rows})
+	]]>
+</select>
+<!-- 根据条件查询退款列表总数 -->
+<select id="getRefundFeeIndexTotal" resultType="Integer" parameterType="refundFeeIndexDTO">
+	<![CDATA[
+	SELECT COUNT(1) FROM
+			(SELECT A.PID 
+FROM BIZ_PROJECT A
+  LEFT JOIN BIZ_LOAN_REFUND_FEE B
+    ON B.PROJECT_ID = A.PID
+  LEFT JOIN BIZ_LOAN_HANDLE_INFO C
+    ON A.PID = C.PROJECT_ID
+  LEFT JOIN BIZ_PROJECT_PROPERTY E
+    ON E.PROJECT_ID = A.PID
+ INNER JOIN CUS_ACCT F
+    ON A.ACCT_ID = F.PID
+ INNER JOIN CUS_PERSON G
+    ON G.ACCT_ID = F.PID
+   AND G.RELATION_TYPE = 1
+  LEFT JOIN BIZ_LOAN_FINANCE_HANDLE I
+    ON I.PROJECT_ID = A.PID
+  LEFT JOIN BIZ_PROJECT_GUARANTEE J
+    ON A.PID = J.PROJECT_ID
+  LEFT JOIN BIZ_PRODUCT K
+    ON A.PRODUCT_ID = K.PID
+  LEFT JOIN SYS_USER U
+  ON A.PM_USER_ID = U.PID
+  LEFT JOIN SYS_ORG_INFO O
+  ON U.ORG_ID = o.id
+  LEFT JOIN(SELECT AFH.FINANCE_HANDLE_ID,
+                   SUM(CASE WHEN (AFH.REC_PRO = 1) THEN AFH.REC_MONEY ELSE 0 END) AS FIN_INTEREST,
+                   SUM(CASE WHEN (AFH.REC_PRO = 2) THEN AFH.REC_MONEY ELSE 0 END) AS FIN_POUNDAGE,
+                   SUM(CASE WHEN (AFH.REC_PRO = 3 or AFH.REC_PRO = 9) THEN AFH.REC_MONEY ELSE 0 END) AS real_Loan_MONEY
+           FROM BIZ_LOAN_APPLY_FINANCE_HANDLE AFH 
+           GROUP BY AFH.FINANCE_HANDLE_ID) P
+  ON P.FINANCE_HANDLE_ID=I.PID
+  LEFT JOIN(SELECT HB.HANDLE_ID,SUM(HB.PRINCIPAL) AS FORECLOSURE_FLOOR_MONEY 
+            FROM BIZ_LOAN_HOUSE_BALANCE HB
+            GROUP BY HB.HANDLE_ID) Q
+  ON Q.HANDLE_ID=C.PID
+  LEFT JOIN V_HOUSE_NAME EH ON EH.PROJECT_ID = A.PID
+  LEFT JOIN (SELECT MAX(BRFM.PID) AS BATCH_REFUND_FEE_MAIN_ID,MAX(BRFM.BATCH_NAME) AS BATCH_NAME,BRFR.PROJECT_ID FROM BIZ_LOAN_BATCH_REFUND_FEE_MAIN BRFM 
+                LEFT JOIN BIZ_BATCH_REFUND_FEE_RELATION BRFR
+                ON BRFM.PID=BRFR.BATCH_REFUND_FEE_MAIN_ID GROUP BY BRFR.PROJECT_ID) BRF
+             ON BRF.PROJECT_ID=A.PID
+  LEFT JOIN BUSINESS_SOURCE_V BU ON BU.PID=A.PID
+  LEFT JOIN BIZ_LOAN_REPAYMENT R ON R.PROJECT_ID=A.PID
+	]]>
+	<where>
+		<trim>
+		   <if test="userIds!=null and userIds.size()>0">
+				AND A.PM_USER_ID IN
+				<foreach item="itemId" collection="userIds" open="("
+					separator="," close=")">
+					#{itemId}
+				</foreach>
+			</if>
+		   <if test="backFeeApplyHandleStatusList !=null and backFeeApplyHandleStatusList.size() >0">
+				AND B.APPLY_STATUS IN
+				<foreach item="itemId" collection="backFeeApplyHandleStatusList" open="("
+					separator="," close=")">
+					#{itemId}
+				</foreach>
+			</if>
+			<if test="type != null and type >0">
+			    AND B.TYPE =#{type}
+		    </if>
+			<if test="backFeeApplyHandleStatus != null and backFeeApplyHandleStatus >0">
+			    AND B.APPLY_STATUS =#{backFeeApplyHandleStatus}
+		    </if>
+			<if test="projectName!=null and projectName !=''">
+				AND A.PROJECT_NAME LIKE '%${projectName}%'
+			</if>
+			<if test="batchName!=null and batchName !=''">
+				AND BRF.BATCH_NAME LIKE '%${batchName}%'
+			</if>			
+			<if test="businessSourceStr!=null and businessSourceStr !=''">
+				AND BU.BUSINESS_SOURCE_STR LIKE '%${businessSourceStr}%'
+			</if>
+			<if test="customerName and customerName !=''">
+				AND G.CHINA_NAME LIKE '%${customerName}%'
+			</if>
+			<if test="oldHome and oldHome !=''">
+				AND E.SELLER_NAME LIKE '%${oldHome}%'
+			</if>
+			<if test="projectNumber!=null and projectNumber!=''">
+				AND A.PROJECT_NUMBER LIKE '%${projectNumber}%'
+			</if>
+			<if test="houseName !=null and houseName !=''">
+			   AND EH.HOUSE_NAME LIKE '%${houseName}%'
+		    </if>
+		    <if test="buyerName !=null and buyerName !=''">
+			   AND E.BUYER_NAME LIKE '%${buyerName}%'
+		    </if>
+		    <if test="sellerName !=null and sellerName !=''">
+			   AND E.SELLER_NAME LIKE '%${sellerName}%'
+		    </if>
+			<if test="recStatus !=null and recStatus >0">
+				AND C.REC_STATUS = #{recStatus}
+			</if>
+			<if test="productId !=null and productId >0">
+				AND K.PID = #{productId}
+			</if>
+			<if test="projectId !=null and projectId >0">
+				AND A.PID = #{projectId}
+			</if>
+			<if test="pid!=null and pid>0">
+				AND B.PID = #{pid}
+			</if>
+			<if test="orgId != null and orgId>0">
+				AND	o.id =#{orgId}
+			</if>
+			<if test="pmUserId != null and pmUserId > 0">
+				AND	A.pm_user_id =#{pmUserId}
+			</if>
+			<if test="startDate !=null and startDate !=''">
+				 AND B.CONFIRM_DATE <![CDATA[>=]]>
+					TO_DATE(#{startDate},'yyyy-MM-dd')
+			</if>
+			<if test="endDate !=null and endDate !=''">
+				 AND B.CONFIRM_DATE <![CDATA[<=]]>
+					TO_DATE(CONCAT(#{endDate},' 23:59:59'),'yyyy-mm-dd
+					hh24:mi:ss')
+			</if>
+			<if test="repaymentDate !=null and repaymentDate !=''">
+				 AND R.NEW_REPAYMENT_DATE <![CDATA[>=]]>
+					TO_DATE(#{repaymentDate},'yyyy-MM-dd')
+			</if>
+			<if test="repaymentDateEnd !=null and repaymentDateEnd !=''">
+				 AND R.NEW_REPAYMENT_DATE <![CDATA[<=]]>
+					TO_DATE(CONCAT(#{repaymentDateEnd},' 23:59:59'),'yyyy-mm-dd
+					hh24:mi:ss')
+			</if>
+		</trim>
+	</where>
+	) T
+</select>
+
+<!-- 根据条件查询退款列表（分页查询）-->
+<select id="queryRefundFeeByIds" resultMap="refundFeeIndexMap" parameterType="java.util.List">
+ SELECT B.PID,
+       A.PID AS PROJECT_ID,
+       A.PROJECT_NUMBER,
+       A.PROJECT_NAME,
+       A.IS_CHECHAN,
+       A.PM_USER_ID,
+       A.BUSINESS_SOURCE_NO,
+       A.BUSINESS_CATELOG,
+       A.INNER_OR_OUT,
+       TO_CHAR(A.REQUEST_DTTM, 'yyyy-MM-dd') AS REQUEST_DATE,
+       CASE
+         WHEN C.APPLY_HANDLE_STATUS > 0 THEN
+          C.APPLY_HANDLE_STATUS
+         ELSE
+          1
+       END AS APPLY_HANDLE_STATUS,
+       CASE
+         WHEN C.REC_STATUS > 0 THEN
+          C.REC_STATUS
+         ELSE
+          1
+       END AS REC_STATUS,
+       CASE
+         WHEN B.APPLY_STATUS > 0 THEN
+          B.APPLY_STATUS
+         ELSE
+          1
+       END AS APPLY_STATUS,
+       E.SELLER_NAME AS OLD_HOME,
+       G.CHINA_NAME AS CUSTOMER_NAME,
+       A.CANCEL_GUARANTEE_DATE,
+       I.CREATER_DATE AS PROJECT_PASS_DATE,
+       B.TYPE,
+       B.RETURN_FEE,
+       B.CONFIRM_DATE,
+       B.IS_CONFIRM,
+       B.CONFIRM_MONEY,
+       B.UPDATE_DATE,
+       J.LOAN_MONEY,
+       K.PID AS PRODUCT_ID,
+       K.PRODUCT_TYPE,
+       K.PRODUCT_NAME,
+       EH.HOUSE_NAME,
+       E.BUYER_NAME,
+       E.SELLER_NAME,
+       O.NAME ORG_NAME,
+       u.REAL_NAME PM_NAME,
+       B.BANK_NAME,
+       (CASE
+         WHEN B.REC_ACCOUNT_NAME IS NOT NULL THEN
+          B.REC_ACCOUNT_NAME
+         ELSE
+          (SELECT CAB.ACC_NAME
+             FROM CUS_ACCT_BANK CAB
+            WHERE CAB.STATUS = 1
+              AND CAB.ACCT_ID = A.ACCT_ID
+              AND ROWNUM = 1)
+       END) AS REC_ACCOUNT_NAME,
+       J.GUARANTEE_FEE,
+       J.RECE_MONEY,
+       P.FIN_POUNDAGE,
+       Q.FORECLOSURE_FLOOR_MONEY,
+       P.FIN_INTEREST
+       
+  FROM BIZ_PROJECT A
+  LEFT JOIN BIZ_LOAN_REFUND_FEE B
+    ON B.PROJECT_ID = A.PID
+  LEFT JOIN BIZ_LOAN_HANDLE_INFO C
+    ON A.PID = C.PROJECT_ID
+  LEFT JOIN BIZ_PROJECT_PROPERTY E
+    ON E.PROJECT_ID = A.PID
+ INNER JOIN CUS_ACCT F
+    ON A.ACCT_ID = F.PID
+ INNER JOIN CUS_PERSON G
+    ON G.ACCT_ID = F.PID
+   AND G.RELATION_TYPE = 1
+  LEFT JOIN BIZ_LOAN_FINANCE_HANDLE I
+    ON I.PROJECT_ID = A.PID
+  LEFT JOIN BIZ_PROJECT_GUARANTEE J
+    ON A.PID = J.PROJECT_ID
+  LEFT JOIN BIZ_PRODUCT K
+    ON A.PRODUCT_ID = K.PID
+  LEFT JOIN SYS_USER U
+  ON A.PM_USER_ID = U.PID
+  LEFT JOIN SYS_ORG_INFO O
+  ON U.ORG_ID = o.id
+  LEFT JOIN(SELECT AFH.FINANCE_HANDLE_ID,
+                   SUM(CASE WHEN (AFH.REC_PRO = 1) THEN AFH.REC_MONEY ELSE 0 END) AS FIN_INTEREST,
+                   SUM(CASE WHEN (AFH.REC_PRO = 2) THEN AFH.REC_MONEY ELSE 0 END) AS FIN_POUNDAGE
+           FROM BIZ_LOAN_APPLY_FINANCE_HANDLE AFH 
+           GROUP BY AFH.FINANCE_HANDLE_ID) P
+  ON P.FINANCE_HANDLE_ID=I.PID
+  LEFT JOIN(SELECT HB.HANDLE_ID,SUM(HB.PRINCIPAL) AS FORECLOSURE_FLOOR_MONEY 
+            FROM BIZ_LOAN_HOUSE_BALANCE HB
+            GROUP BY HB.HANDLE_ID) Q
+  ON Q.HANDLE_ID=C.PID
+  LEFT JOIN V_HOUSE_NAME EH ON EH.PROJECT_ID = A.PID
+	WHERE B.PID IN
+		<foreach item="itemId" collection="list" open="("
+						separator="," close=")">
+						#{itemId}
+		</foreach>
+</select>
+<select id="getRefundFeeById" resultMap="refundFeeMap" parameterType="int">
+SELECT <include refid="column_list" /> FROM BIZ_LOAN_REFUND_FEE WHERE PID=#{pid}
+</select>
+</mapper>

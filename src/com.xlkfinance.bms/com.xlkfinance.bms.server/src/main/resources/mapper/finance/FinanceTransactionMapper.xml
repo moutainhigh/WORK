@@ -1,0 +1,620 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.xlkfinance.bms.server.finance.mapper.FinanceTransactionMapper">
+
+	<resultMap type="com.xlkfinance.bms.rpc.finance.FinanceTransactionView"
+		id="FinanceTransactionMap">
+		<id property="pid" column="pid" />
+		<result property="bankAcctId" column="bank_acct_id" />
+		<result property="creDttm" column="cre_dttm" />
+		<result property="creUserId" column="cre_user_id" />
+		<result property="ftDt" column="ft_dt" />
+		<result property="ftAmt" column="ft_amt" />
+		<result property="regCategory" column="reg_category" />
+		<result property="ftType" column="ft_type" />
+		<result property="repayDt" column="repay_dt" />
+		<result property="repayType" column="repay_type" />
+		<result property="incomeType" column="income_type" />
+		<result property="usedType" column="used_type" />
+		<result property="remark" column="remark" />
+		<result property="usedTypeText" column="used_type_text" />
+		<result property="ftAmtLoan" column="ftAmtLoan" />
+		<result property="ftAmtInput" column="ftAmtInput" />
+		<result property="ftAmtInterest" column="ftAmtInterest" />
+	</resultMap>
+	<insert id="insertFt" parameterType="com.xlkfinance.bms.rpc.finance.FinanceTDTO">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_BIZ_FINANCE_TRANSACTION.Nextval as PID from DUAL
+		</selectKey>
+		insert into BIZ_FINANCE_TRANSACTION (
+		pid,
+		bank_acct_id,
+		cre_dttm,
+		cre_user_id,
+		ft_dt,
+		ft_amt,
+		reg_category,
+		ft_type,
+		repay_dt,
+		repay_type,
+		income_type,
+		used_type,
+		remark,
+		status,
+		PARENT_ID
+		)
+		values (
+		#{pid,jdbcType=INTEGER},
+		#{bankAcctId,jdbcType=INTEGER},
+		#{creDttm,jdbcType=DATE},
+		#{creUserId,jdbcType=DATE},
+		#{ftDt,jdbcType=DATE},
+		#{ftAmt,jdbcType=DOUBLE},
+		#{regCategory,jdbcType=INTEGER},
+		#{ftType,jdbcType=INTEGER},
+		#{repayDt,jdbcType=DATE},
+		#{repayType,jdbcType=INTEGER},
+		#{incomeType,jdbcType=INTEGER},
+		#{usedType,jdbcType=INTEGER},
+		#{remark,jdbcType=VARCHAR},
+		1,
+		#{parentId,jdbcType=INTEGER}
+		)
+	</insert>
+	<select id="getFinanceTransactionList"
+		parameterType="com.xlkfinance.bms.rpc.finance.FinanceTransactionCondition"
+		resultMap="FinanceTransactionMap">
+		SELECT * FROM (SELECT W.*, ROWNUM RNUM FROM (
+		select ft.pid,ft.bank_acct_id,ft.cre_dttm,ft.cre_user_id,
+		to_char(ft.ft_dt,'yyyy-MM-dd') as ft_dt,ft.ft_amt,ft.reg_category,
+		ft.ft_type,ft.repay_dt,ft.repay_type,ft.income_type,
+		PKG_COMMON.FUN_GET_SYS_LOOKUP_VAL(ft.used_type) used_type_text
+		,ft.remark,
+		ft.status
+		from BIZ_FINANCE_TRANSACTION ft
+		where ft.status=1 and ft.bank_acct_id=#{bankAcctId}
+		<if test="regCategory != null and regCategory == 1  or regCategory == 2 ">
+			and ft.reg_category in (1,2)
+		</if>
+		<if test="regCategory != null and regCategory != 1  and regCategory != 2 ">
+			and ft.reg_category=#{regCategory}
+		</if>
+		<if test="usedType != null and usedType != '' and usedType!=-1 ">
+			AND ft.used_type=#{usedType}
+		</if>
+		<if test="ftStartDt != null and ftStartDt != '' ">
+			AND to_date( to_char(ft.ft_dt,'yyyy-mm-dd'),'yyyy-mm-dd') <![CDATA[>=]]>
+			to_date(#{ftStartDt},'yyyy-mm-dd')
+		</if>
+		<if test="ftEndDt != null and ftEndDt != '' ">
+			AND to_date( to_char(ft.ft_dt,'yyyy-mm-dd'),'yyyy-mm-dd') <![CDATA[<=]]>
+			to_date(#{ftEndDt},'yyyy-mm-dd')
+		</if>
+		order by ft.cre_dttm desc
+		) W
+		) 
+	<![CDATA[ 
+		WHERE RNUM BETWEEN (((#{page}-1) * #{rows})+1) AND (#{page} * #{rows})]]>
+
+	</select>
+	<select id="countFinanceTransactionList"
+		parameterType="com.xlkfinance.bms.rpc.finance.FinanceTransactionCondition"
+		resultType="java.lang.Integer">
+		select count(1)
+		from BIZ_FINANCE_TRANSACTION ft
+		where ft.status=1 and ft.bank_acct_id=#{bankAcctId} and
+		ft.reg_category=#{regCategory}
+		<if test="usedType != null and usedType != '' ">
+			AND ft.used_type=#{usedType}
+		</if>
+		<if test="ftStartDt != null and ftStartDt != '' ">
+			AND to_date( to_char(ft.ft_dt,'yyyy-mm-dd'),'yyyy-mm-dd') <![CDATA[>=]]>
+			to_date(#{ftStartDt},'yyyy-mm-dd')
+		</if>
+		<if test="ftEndDt != null and ftEndDt != '' ">
+			AND to_date( to_char(ft.ft_dt,'yyyy-mm-dd'),'yyyy-mm-dd') <![CDATA[<=]]>
+			to_date(#{ftEndDt},'yyyy-mm-dd')
+		</if>
+
+	</select>
+	<select id="getFinanceTransactionById" parameterType="java.lang.Integer"
+		resultMap="FinanceTransactionMap">
+		select ft.pid,ft.bank_acct_id,ft.cre_dttm,ft.cre_user_id,
+		to_char(ft.ft_dt,'yyyy-MM-dd') as ft_dt,ft.ft_amt,ft.reg_category,
+		ft.ft_type,ft.repay_dt,ft.repay_type,ft.income_type,
+		PKG_COMMON.FUN_GET_SYS_LOOKUP_VAL(ft.used_type) used_type_text
+		,ft.remark,ft.used_type,
+		ft.status
+		from BIZ_FINANCE_TRANSACTION ft
+		where ft.status=1 and ft.pid=#{pid}
+
+	</select>
+	<update id="updateFinanceTransaction" parameterType="com.xlkfinance.bms.rpc.finance.FinanceTDTO">
+		update BIZ_FINANCE_TRANSACTION
+		set
+		<if test="bankAcctId != null and bankAcctId != '' ">
+			bank_acct_id = #{bankAcctId,jdbcType=INTEGER},
+		</if>
+		<if test="ftDt != null and ftDt != ''">
+			ft_dt = #{ftDt,jdbcType=DATE},
+		</if>
+		<if test="ftAmt != null and ftAmt != ''">
+			ft_amt = #{ftAmt,jdbcType=DOUBLE},
+		</if>
+		<if test="regCategory != null and regCategory != ''">
+			reg_category = #{regCategory,jdbcType=INTEGER},
+		</if>
+		<if test="ftType != null and ftType != ''">
+			ft_type = #{defaultAmt,jdbcType=INTEGER},
+		</if>
+		<if test="repayDt != null and repayDt != '' ">
+			repay_dt = #{repayDt,jdbcType=DATE},
+		</if>
+		<if test="repayType != null and repayType != ''">
+			repay_type = #{remark,jdbcType=INTEGER},
+		</if>
+		<if test="incomeType != null and incomeType != ''">
+			income_type = #{incomeType,jdbcType=INTEGER},
+		</if>
+		<if test="usedType != null and usedType != ''">
+			used_type = #{usedType,jdbcType=INTEGER},
+		</if>
+		<if test="remark != null and remark != ''">
+			remark = #{remark,jdbcType=VARCHAR},
+		</if>
+		<if test="status != null">
+			status = #{status,jdbcType=INTEGER} ,
+		</if>
+		cre_user_id = #{creUserId,jdbcType=INTEGER}
+		where pid = #{pid,jdbcType=INTEGER}
+	</update>
+	<!-- 融资查询 列表 -->
+
+	<select id="getFinanceFinancing"
+		parameterType="com.xlkfinance.bms.rpc.finance.FinanceTransactionCondition"
+		resultMap="FinanceTransactionMap">
+		SELECT * FROM (SELECT W.*, ROWNUM RNUM FROM (
+		select ft.pid,
+		ft.bank_acct_id,
+		ft.cre_dttm,
+		ft.cre_user_id,
+		to_char(ft.ft_dt, 'yyyy-MM-dd') as ft_dt,
+		ft.ft_amt,
+		ft.reg_category,
+		ft.ft_type,
+		to_char(ft.repay_dt,'yyyy-mm-dd') as repay_dt,
+		ft.repay_type,
+		ft.income_type,
+		PKG_COMMON.FUN_GET_SYS_LOOKUP_VAL(ft.used_type) used_type_text,
+		ft.remark,
+		ft.status,
+		(select sum(ft_amt) as ftAmtInput
+		from BIZ_FINANCE_TRANSACTION f
+		where f.reg_category = 1
+		and f.pid =ft.pid) as ftAmtLoan,
+		(select sum(ft_amt) as ftAmtOutput
+		from BIZ_FINANCE_TRANSACTION f
+		where f.reg_category = 2
+		and REPAY_TYPE = 1
+		and f.PARENT_ID =ft.pid) as ftAmtInput,
+		(select sum(ft_amt) as ftAmtOutput
+		from BIZ_FINANCE_TRANSACTION f
+		where f.reg_category = 2
+		and REPAY_TYPE = 2
+		and f.PARENT_ID =ft.pid) as ftAmtInterest
+		from BIZ_FINANCE_TRANSACTION ft
+		where ft.status = 1
+		and ft.bank_acct_id = #{bankAcctId,jdbcType=INTEGER}
+		and ft.reg_category =1
+		<if test="ftStartDt != null and ftStartDt != '' ">
+			AND to_date( to_char(ft.ft_dt,'yyyy-mm-dd'),'yyyy-mm-dd') <![CDATA[>=]]>
+			to_date(#{ftStartDt},'yyyy-mm-dd')
+		</if>
+		<if test="ftEndDt != null and ftEndDt != '' ">
+			AND to_date( to_char(ft.ft_dt,'yyyy-mm-dd'),'yyyy-mm-dd') <![CDATA[<=]]>
+			to_date(#{ftEndDt},'yyyy-mm-dd')
+		</if>
+		order by ft.cre_dttm desc
+		) W
+		) 
+	<![CDATA[ 
+		WHERE RNUM BETWEEN (((#{page}-1) * #{rows})+1) AND (#{page} * #{rows})]]>
+
+	</select>
+	<!-- 融资查询 列表统计 -->
+	<select id="countFinanceFinancing"
+		parameterType="com.xlkfinance.bms.rpc.finance.FinanceTransactionCondition"
+		resultType="java.lang.Integer">
+		select count(1)
+		from BIZ_FINANCE_TRANSACTION ft
+		where ft.status = 1
+		and ft.bank_acct_id = #{bankAcctId,jdbcType=INTEGER}
+		and ft.reg_category in (1, 2)
+		<if test="ftStartDt != null and ftStartDt != '' ">
+			AND to_date( to_char(ft.ft_dt,'yyyy-mm-dd'),'yyyy-mm-dd') <![CDATA[>=]]>
+			to_date(#{ftStartDt},'yyyy-mm-dd')
+		</if>
+		<if test="ftEndDt != null and ftEndDt != '' ">
+			AND to_date( to_char(ft.ft_dt,'yyyy-mm-dd'),'yyyy-mm-dd') <![CDATA[<=]]>
+			to_date(#{ftEndDt},'yyyy-mm-dd')
+		</if>
+
+	</select>
+	<update id="deleteFinanceFinancing" parameterType="com.xlkfinance.bms.rpc.finance.FinanceTDTO">
+		update BIZ_FINANCE_TRANSACTION
+		set status = #{status,jdbcType=INTEGER} ,
+		cre_user_id = #{creUserId,jdbcType=INTEGER}
+		where pid in (select pid from BIZ_FINANCE_TRANSACTION where
+		parent_id=#{pid,jdbcType=INTEGER}) or pid=#{pid,jdbcType=INTEGER}
+	</update>
+	<resultMap type="com.xlkfinance.bms.rpc.finance.TransactionView"
+		id="TransactionViewMap">
+		<id property="pid" column="pid" />
+		<result property="chargeName" column="CHARGE_NAME" />
+		<result property="bankCardType" column="bank_Card_Type" />
+		<result property="defaultAmt" column="default_Amt" />
+		<result property="bankCardTypeText" column="bank_Card_Type_text" />
+		<result property="borrowLoanBalance" column="borrowLoanBalance" />
+		<result property="loanTotal" column="loanTotal" />
+		<result property="loanHasAlsoTotal" column="loanHasAlsoTotal" />
+		<result property="loanBalance" column="loanBalance" />
+		<result property="loanPrincipalTotal" column="loanPrincipalTotal" />
+		<result property="takeBackPrincipalTotal" column="takeBackPrincipalTotal" />
+		<result property="rateTakeBacTotal" column="rateTakeBacTotal" />
+		<result property="financialDepositInterest" column="financialDepositInterest" />
+		<result property="expensesCostTotal" column="expensesCostTotal" />
+		<result property="availableFundBalance" column="availableFundBalance" />
+		<result property="bankNum" column="bank_Num" />
+		<result property="weekAmt" column="weekAmt" />
+		<result property="aprilAmt" column="aprilAmt" />
+		<result property="inputUnrecAmt" column="inputUnrecAmt" />
+
+	</resultMap>
+
+	<!-- 资金头寸查询页面数据 列表 -->
+	<select id="getTransactionList" parameterType="com.xlkfinance.bms.rpc.finance.FinanceBank"
+		resultMap="TransactionViewMap">
+		SELECT * FROM (SELECT W.*, ROWNUM RNUM FROM (
+		SELECT CCT.PID,
+		CCT.CHARGE_NAME,
+		PKG_COMMON.FUN_GET_SYS_LOOKUP_VAL(CCT.BANK_CARD_TYPE) BANK_CARD_TYPE_text,
+		CCT.DEFAULT_AMT,
+		CCT.bank_Num
+		FROM BIZ_FINANCE_BANK CCT
+		WHERE CCT.STATUS=1
+		<if test="chargeName != null and  chargeName!=''">
+			AND CCT.CHARGE_NAME LIKE '%${chargeName}%'
+		</if>
+		<if test="bankNum != null and  bankNum !=''">
+			AND CCT.BANK_NUM LIKE '%${bankNum}%'
+		</if>
+		<if test=" bankUserName != null and  bankUserName !=''">
+			AND CCT.BANK_USER_NAME like '%${bankUserName}%'
+		</if>
+		<if
+			test="bankCardType != null  and  bankCardType !=0 and  bankCardType !=-1">
+			AND CCT.BANK_CARD_TYPE = #{bankCardType,jdbcType=INTEGER}
+		</if>
+
+		) W
+		)
+		<if test="page != null and page !=0 and rows!=null and rows!=0">
+		<![CDATA[ 
+ 		WHERE RNUM BETWEEN (((#{page}-1) * #{rows})+1) AND (#{page} * #{rows})]]>
+		</if>
+
+	</select>
+	<!-- 资金头寸查询页面数据统计数量 -->
+	<select id="countTransactionList" parameterType="com.xlkfinance.bms.rpc.finance.FinanceBank"
+		resultType="java.lang.Integer">
+
+		SELECT count(1)
+		FROM BIZ_FINANCE_BANK CCT
+		WHERE CCT.STATUS=1
+		<if test="chargeName != null and  chargeName!=''">
+			AND CCT.CHARGE_NAME LIKE '%${chargeName}%'
+		</if>
+		<if test="bankNum != null and  bankNum !=''">
+			AND CCT.BANK_NUM LIKE '%${bankNum}%'
+		</if>
+		<if test=" bankUserName != null and  bankUserName !=''">
+			AND CCT.BANK_USER_NAME like '%${bankUserName}%'
+		</if>
+		<if
+			test="bankCardType != null  and  bankCardType !=0 and  bankCardType !=-1">
+			AND CCT.BANK_CARD_TYPE = #{bankCardType,jdbcType=INTEGER}
+		</if>
+
+
+	</select>
+	<!-- 获取资金头寸的金额信息 -->
+	<select id="getTransactionAmtList" statementType="CALLABLE"
+		parameterType="java.util.Map">
+        	<![CDATA[ 
+			{ call PKG_FINANCE.PRO_GET_BANK_REPORT_INFO(#{bankId, mode=IN, jdbcType=INTEGER},
+				#{results,mode=OUT,jdbcType=CURSOR,resultMap=TransactionViewMap}) } 
+			  ]]>
+	</select>
+
+	<!-- 项目否决,删除对应的财务放款记录 -->
+	<select id="deleteFinanceRecords" statementType="CALLABLE"
+		parameterType="java.lang.Integer">
+      <![CDATA[ 
+			{ call PKG_FINANCE.PRO_DELETE_FINANCE_RECORDS(#{projectId, mode=IN, jdbcType=INTEGER}) } 
+	  ]]>
+	</select>
+	<!-- 统计欠款客户数 -->
+	<select id="countCustArrearsTotal" resultType="java.lang.Integer">
+		select COUNT (distinct PROJECT.ACCT_ID)
+		from (select PRO.*
+		,NVL(PCOM.IS_COMPLETE,0) as IS_COMPLETE,PCOM.STATUS as PCOM_STATUS,
+		( select sum(E.EXTENSION_AMT) from BIZ_PROJECT_EXTENSION E where
+		E.EXTENSION_PROJECT_ID=PRO.Pid and E.STATUS=1) as EAMT
+		from BIZ_PROJECT PRO
+		LEFT JOIN BIZ_PROJECT_COMPLETE PCOM ON PCOM.PROJECT_ID=PRO.Pid
+
+		) PROJECT
+		left join CUS_ACCT ACCT on ACCT.PID=PROJECT.ACCT_ID
+		left join BIZ_LOAN LOAN ON PROJECT.Pid=LOAN.PROJECT_ID
+		WHERE PROJECT.STATUS=1 and PROJECT.PROJECT_TYPE in (2,3,5,4) and
+		PROJECT.REQUEST_STATUS=4
+		AND ( PROJECT.IS_COMPLETE=0 AND (PROJECT.PCOM_STATUS=1 or
+		PROJECT.PCOM_STATUS is null) )
+
+		and
+		NVL(loan.credit_amt,0)-NVL(PROJECT.EAMT,0)-PKG_FINANCE_COMMON.GET_LOAN_R_TYPE_AMT(loan.pid,30)
+		>0
+	</select>
+
+
+	<!-- 提成列表 -->
+	<resultMap type="com.xlkfinance.bms.rpc.finance.UserCommissionView"
+		id="UserCommissionViewMap">
+		<result property="loanId" column="loan_Id" />
+		<result property="projectId" column="project_id" />
+		<result property="userId" column="pm_user_id" />
+		<result property="commissionAmt" column="commissionAmt" />
+		<result property="memberId" column="member_id" />
+		<result property="realName" column="real_name" />
+		<result property="userId" column="pid" />
+		<result property="projectName" column="project_name" />
+		<result property="reconciltaionDt" column="RECONCILIATION_DT" />
+		<result property="projectAmt" column="commissionAmt"/>
+		<result property="superiorUserId" column="superior_user_id"/>
+		
+		
+	</resultMap>
+	<!-- <select id="getUserCommission" resultMap="UserCommissionViewMap" parameterType="com.xlkfinance.bms.rpc.finance.UserCommissionCondition">
+		SELECT * FROM (SELECT W.*, ROWNUM RNUM FROM (select u.pid,u.member_id ,u.real_name, uprl.sumamt as commissionAmt,u.superior_user_id
+			from sys_user u ,(select p.pm_user_id, sum(rl.amt) sumamt from
+			biz_project p ,biz_loan l, (
+			SELECT r.loan_info_id,SUM(T.DTL_AMT) as amt
+			FROM BIZ_LOAN_RECONCILIATION_DTL T, Biz_Loan_Reconciliation r
+			WHERE T.DTL_TYPE != 30 and t.dtl_type!=7
+			AND T.STATUS = 1 and r.pid=t.recon_id and r.status=1 and
+			to_char(r.RECONCILIATION_DT,'yyyy-mm')= to_char(sysdate,'yyyy-mm')
+			group by r.loan_info_id) rL
+			where rl.loan_info_id=l.pid and l.project_id=p.pid and p.status=1 and
+			l.status =1 group by p.pm_user_id)
+			uprl where uprl.pm_user_id= u.pid
+		<if test="realName != null and  realName !=''">
+			AND u.real_name LIKE '%${realName}%'
+		</if>
+		<if test="memberId != null and  memberId !=''">
+			AND u.member_id LIKE '%${memberId}%'
+		</if>
+		) W
+		) 
+	<![CDATA[ 
+		WHERE RNUM BETWEEN (((#{page}-1) * #{rows})+1) AND (#{page} * #{rows})]]>
+	</select> -->
+	
+	<select id="getUserCommission" resultMap="UserCommissionViewMap" parameterType="com.xlkfinance.bms.rpc.finance.UserCommissionCondition">
+		SELECT * FROM (SELECT W.*, ROWNUM RNUM FROM  (
+	select uss.pid, uss.member_id, uss.real_name, uprl.sumamt as commissionAmt
+	  from sys_user uss left join 
+	       (        
+	        select p.pm_user_id, sum(rl.amt) sumamt
+	          from biz_project p,
+	                biz_loan l,
+	                (SELECT r.loan_info_id, SUM(T.DTL_AMT) as amt
+	                   FROM BIZ_LOAN_RECONCILIATION_DTL T,
+	                        Biz_Loan_Reconciliation     r
+	                  WHERE T.DTL_TYPE != 30
+	                    and t.dtl_type != 7
+	                    AND T.STATUS = 1
+	                    and r.pid = t.recon_id
+	                    and r.status = 1
+	                     <if test="date != null and  date !=''">
+			                           and to_char(r.RECONCILIATION_DT, 'yyyy-mm') =
+			                               to_char(to_date(#{date}, 'yyyy-mm'),
+			                                       'yyyy-mm')
+			                           </if>
+			                          <if test="date == null or  date ==''">
+			                          and to_char(r.RECONCILIATION_DT, 'yyyy-mm') =
+			                               to_char(sysdate, 'yyyy-mm')
+			                           </if>
+	                  group by r.loan_info_id) rL
+	         where rl.loan_info_id = l.pid
+	           and l.project_id = p.pid
+	           and p.status = 1
+	           and l.status = 1
+	         group by p.pm_user_id
+	        
+	        ) uprl
+	 on uprl.pm_user_id = uss.pid
+	 where 
+	    uss.Status = 1
+	   and uss.real_name != '林宏涛'
+	   and (uss.JOB_TITLE = '项目经理') 
+	UNION
+	select sysU.pid, sysU.member_id, sysU.real_name, us.amt as commissionAmt
+	  from sys_user sysU,
+	       (select u.superior_user_id, sum(uprl.sumamt) as amt
+	          from sys_user u,
+	               (select p.pm_user_id, sum(rl.amt) sumamt
+	                  from biz_project p,
+	                       biz_loan l,
+	                       (SELECT r.loan_info_id, SUM(T.DTL_AMT) as amt
+	                          FROM BIZ_LOAN_RECONCILIATION_DTL T,
+	                               Biz_Loan_Reconciliation     r
+	                         WHERE T.DTL_TYPE != 30
+	                           and t.dtl_type != 7
+	                           AND T.STATUS = 1
+	                           and r.pid = t.recon_id
+	                           and r.status = 1
+	                            <if test="date != null and  date !=''">
+			                           and to_char(r.RECONCILIATION_DT, 'yyyy-mm') =
+			                               to_char(to_date(#{date}, 'yyyy-mm'),
+			                                       'yyyy-mm')
+			                           </if>
+			                          <if test="date == null or  date ==''">
+			                          and to_char(r.RECONCILIATION_DT, 'yyyy-mm') =
+			                               to_char(sysdate, 'yyyy-mm')
+			                           </if>
+	                         group by r.loan_info_id) rL
+	                 where rl.loan_info_id = l.pid
+	                   and l.project_id = p.pid
+	                   and p.status = 1
+	                   and l.status = 1
+	                 group by p.pm_user_id) uprl
+	         where uprl.pm_user_id = u.pid
+	           and u.status = 1
+	         group by u.superior_user_id
+	        
+	        ) us
+	    where sysU.Pid = us.superior_user_id
+	 and sysU.real_name != '林宏涛'
+	   and (JOB_TITLE = '项目经理' or JOB_TITLE = '销售总监')
+	   and sysU.Status = 1
+	   
+   ) W
+		<if test="realName != null and  realName !=''">
+			AND w.real_name LIKE '%${realName}%'
+		</if>
+		<if test="memberId != null and  memberId !=''">
+			AND w.member_id LIKE '%${memberId}%'
+		</if>
+		) 
+	<![CDATA[ 
+		WHERE RNUM BETWEEN (((#{page}-1) * #{rows})+1) AND (#{page} * #{rows})]]>
+	</select> 
+	
+<select id="countUserCommission" resultType="java.lang.Integer" parameterType="com.xlkfinance.bms.rpc.finance.UserCommissionCondition">
+			SELECT count(1)   FROM (
+			select uss.pid, uss.member_id, uss.real_name, uprl.sumamt as commissionAmt
+			  from sys_user uss left join 
+			       (        
+			        select p.pm_user_id, sum(rl.amt) sumamt
+			          from biz_project p,
+			                biz_loan l,
+			                (SELECT r.loan_info_id, SUM(T.DTL_AMT) as amt
+			                   FROM BIZ_LOAN_RECONCILIATION_DTL T,
+			                        Biz_Loan_Reconciliation     r
+			                  WHERE T.DTL_TYPE != 30
+			                    and t.dtl_type != 7
+			                    AND T.STATUS = 1
+			                    and r.pid = t.recon_id
+			                    and r.status = 1
+			                    <if test="date != null and  date !=''">
+			                           and to_char(r.RECONCILIATION_DT, 'yyyy-mm') =
+			                               to_char(to_date(#{date}, 'yyyy-mm'),
+			                                       'yyyy-mm')
+			                           </if>
+			                          <if test="date == null or  date ==''">
+			                          and to_char(r.RECONCILIATION_DT, 'yyyy-mm') =
+			                               to_char(sysdate, 'yyyy-mm')
+			                           </if>
+			                  group by r.loan_info_id) rL
+			         where rl.loan_info_id = l.pid
+			           and l.project_id = p.pid
+			           and p.status = 1
+			           and l.status = 1
+			         group by p.pm_user_id
+			        
+			        ) uprl
+			 on uprl.pm_user_id = uss.pid
+			 where 
+			    uss.Status = 1
+			   and uss.real_name != '林宏涛'
+			   and (uss.JOB_TITLE = '项目经理') 
+			UNION
+			select sysU.pid, sysU.member_id, sysU.real_name, us.amt as commissionAmt
+			  from sys_user sysU,
+			       (select u.superior_user_id, sum(uprl.sumamt) as amt
+			          from sys_user u,
+			               (select p.pm_user_id, sum(rl.amt) sumamt
+			                  from biz_project p,
+			                       biz_loan l,
+			                       (SELECT r.loan_info_id, SUM(T.DTL_AMT) as amt
+			                          FROM BIZ_LOAN_RECONCILIATION_DTL T,
+			                               Biz_Loan_Reconciliation     r
+			                         WHERE T.DTL_TYPE != 30
+			                           and t.dtl_type != 7
+			                           AND T.STATUS = 1
+			                           and r.pid = t.recon_id
+			                           and r.status = 1
+			                           <if test="date != null and  date !=''">
+			                           and to_char(r.RECONCILIATION_DT, 'yyyy-mm') =
+			                               to_char(to_date(#{date}, 'yyyy-mm'),
+			                                       'yyyy-mm')
+			                           </if>
+			                          <if test="date == null or  date ==''">
+			                          and to_char(r.RECONCILIATION_DT, 'yyyy-mm') =
+			                               to_char(sysdate, 'yyyy-mm')
+			                           </if>
+			                         group by r.loan_info_id) rL
+			                 where rl.loan_info_id = l.pid
+			                   and l.project_id = p.pid
+			                   and p.status = 1
+			                   and l.status = 1
+			                 group by p.pm_user_id) uprl
+			         where uprl.pm_user_id = u.pid
+			           and u.status = 1
+			         group by u.superior_user_id
+			        
+			        ) us
+			    where sysU.Pid = us.superior_user_id
+			 and sysU.real_name != '林宏涛'
+			   and (JOB_TITLE = '项目经理' or JOB_TITLE = '销售总监')
+			   and sysU.Status = 1
+			   
+		   ) W
+		<if test="realName != null and  realName !=''">
+			AND w.real_name LIKE '%${realName}%'
+		</if>
+		<if test="memberId != null and  memberId !=''">
+			AND w.member_id LIKE '%${memberId}%'
+		</if>
+		
+	</select>
+<select id="getListUserCommissionDetail" resultMap="UserCommissionViewMap" parameterType="com.xlkfinance.bms.rpc.finance.UserCommissionCondition">
+			
+		select p.pm_user_id, rl.amt as commissionAmt,p.project_name,p.pid as project_id  ,to_char(rl.RECONCILIATION_DT,'yyyy-mm-dd') as RECONCILIATION_DT
+    from biz_project p ,biz_loan l, (
+        SELECT  r.loan_info_id,SUM(T.DTL_AMT) as amt,r.RECONCILIATION_DT
+        FROM BIZ_LOAN_RECONCILIATION_DTL T, Biz_Loan_Reconciliation r
+        WHERE T.DTL_TYPE != 30 and t.dtl_type!=7
+        AND T.STATUS = 1 and r.pid=t.recon_id  and r.status=1 
+        
+       <if test="date != null and  date !=''">
+        and to_char(r.RECONCILIATION_DT, 'yyyy-mm') =
+            to_char(to_date(#{date}, 'yyyy-mm'),
+                    'yyyy-mm')
+        </if>
+       <if test="date == null or  date ==''">
+       and to_char(r.RECONCILIATION_DT, 'yyyy-mm') =
+            to_char(sysdate, 'yyyy-mm')
+        </if>
+
+         group by r.loan_info_id,r.RECONCILIATION_DT) rL
+    where rl.loan_info_id=l.pid and l.project_id=p.pid and p.status=1 and l.status =1 and p.pm_user_id in( SELECT t.pid FROM SYS_USER t START WITH t.pid = #{userId} 
+	        CONNECT BY t.superior_user_id = PRIOR t.pid )
+    
+		
+		
+	</select>
+
+</mapper>

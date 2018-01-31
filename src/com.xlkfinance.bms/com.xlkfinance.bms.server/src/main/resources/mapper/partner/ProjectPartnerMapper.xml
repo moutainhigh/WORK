@@ -1,0 +1,2170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.partner.mapper.ProjectPartnerMapper">
+<resultMap type="com.xlkfinance.bms.rpc.partner.ProjectPartner" id="partnerMapper">
+  		<id property="pid" column="PID"/>
+  		<id property="projectId" column="PROJECT_ID"/>
+  		<id property="loanId" column="LOAN_ID"/>
+		<id property="partnerNo" column="PARTNER_NO"/>
+  		<id property="requestStatus" column="REQUEST_STATUS"/>
+  		<id property="requestFiles" column="REQUEST_FILES"/>
+  		<id property="remark" column="REMARK"/>
+  		<id property="requestTime" column="REQUEST_TIME" jdbcType="TIMESTAMP" javaType="String"/>
+  		<id property="updateTime" column="UPDATE_TIME" jdbcType="TIMESTAMP" javaType="String"/>
+  		<id property="approvalTime" column="APPROVAL_TIME" jdbcType="TIMESTAMP" javaType="String"/>
+  		<id property="approvalComment" column="APPROVAL_COMMENT"/>
+  		<id property="submitApprovalTime" column="SUBMIT_APPROVAL_TIME" jdbcType="TIMESTAMP" javaType="String"/>
+  		<id property="isClosed" column="IS_CLOSED"/>
+  		<id property="loanStatus" column="LOAN_STATUS"/>
+  		<id property="loanTime" column="LOAN_TIME" jdbcType="TIMESTAMP" javaType="String"/>
+  		<id property="loanResultTime" column="LOAN_RESULT_TIME" jdbcType="TIMESTAMP" javaType="String"/>
+  		<id property="repaymentRepurchaseType" column="REPAYMENT_REPURCHASE_TYPE"/>
+  		<id property="repaymentRepurchaseStatus" column="REPAYMENT_REPURCHASE_STATUS"/>
+  		<id property="repaymentRepurchaseTime" column="REPAYMENT_REPURCHASE_TIME" jdbcType="TIMESTAMP" javaType="String"/>
+  		<id property="rpResultTime" column="RP_RESULT_TIME" jdbcType="TIMESTAMP" javaType="String"/>
+  		<id property="loanAmount" column="LOAN_AMOUNT"/>
+  		<id property="totalCost" column="TOTAL_COST"/>
+  		<id property="guaranteeFee" column="GUARANTEE_FEE"/>
+  		<id property="xiFeeRequestTime" column="XIFEE_REQUEST_TIME" jdbcType="TIMESTAMP" javaType="String"/>
+  		<id property="xiFeeResultTime" column="XIFEE_RESULT_TIME" jdbcType="TIMESTAMP" javaType="String"/>
+  		<id property="xiFeeStatus" column="XIFEE_STATUS"/>
+  		<id property="projectNumber" column="PROJECT_NUMBER"/>
+  		<id property="projectName" column="PROJECT_NAME"/>
+  		<id property="projectStatus" column="PROJECT_STATUS"/>
+  		<id property="projectStatusTime" column="PROJECT_STATUS_TIME" jdbcType="TIMESTAMP" javaType="String"/>
+  		<id property="approvalStatus" column="APPROVAL_STATUS"/>
+  		<id property="pmUserId" column="PM_USER_ID"/>
+  		<id property="repaymentVoucherPath" column="REPAYMENT_VOUCHER_PATH"/>
+  		<id property="xiFeeVoucherPath" column="XIFEE_VOUCHER_PATH"/>
+  		<id property="confirmLoanStatus" column="CONFIRM_LOAN_STATUS"/>
+  		<id property="approveMoney" column="APPROVE_MONEY"/>
+  		<id property="loanStatus" column="LOAN_STATUS"/>
+  		<id property="loanRemark" column="LOAN_REMARK"/>
+		<id property="loanJusticeFiles" column="LOAN_JUSTICE_FILES"/>
+		<id property="loanBlankFiles" column="LOAN_BLANK_FILES"/>
+		<id property="loanOtherFiles" column="LOAN_OTHER_FILES"/>
+		<id property="loanEffeDate" column="LOAN_EFFE_DATE"/>
+		<id property="partnerLoanDate" column="PARTNER_LOAN_DATE"/>
+		<id property="partnerInterests" column="PARTNER_INTERESTS"/>
+		<id property="refundLoanAmount" column="REFUND_LOAN_AMOUNT"/>
+		<id property="refundXifee" column="REFUND_XIFEE"/>
+		<id property="refundDate" column="REFUND_DATE"/>    
+		<id property="businessCategory" column="BUSINESS_CATEGORY"/>    
+		<id property="businessCategoryStr" column="BUSINESS_CATEGORY_STR"/>    
+		
+		
+		<id property="payBankName" column="PAY_BANK_NAME"/>   
+		<id property="payAcctName" column="PAY_ACCT_NAME"/>   
+		<id property="payAcctNo" column="PAY_ACCT_NO"/>   
+		<id property="payBankCode" column="PAY_BANK_CODE"/>   
+		<!-- 确认放款金额 -->
+		<id property="confirmLoanMoney" column="CONFIRM_LOAN_MONEY"/>  
+		<id property="confirmLoanDays" column="CONFIRM_LOAN_DAYS"/>  
+		
+		<id property="refundTotalAmount" column="REFUND_TOTAL_AMOUNT"/>  
+		<id property="refundPenalty" column="REFUND_PENALTY"/>  
+		<id property="refundFine" column="REFUND_FINE"/>  
+		<id property="refundCompdinte" column="REFUND_COMPDINTE"/>  
+		<id property="projectSource" column="PROJECT_SOURCE"/>  
+		<id property="partnerOrderCode" column="PARTNER_ORDER_CODE"/>
+		<id property="planRefundDate" column="PLAN_REFUND_DATE"/>
+</resultMap>
+
+<!-- 所有字段 -->
+<resultMap type="com.xlkfinance.bms.rpc.partner.ProjectPartner" id="BasePartnerMapper">
+  		<id property="pid" column="PID"/>
+  		<id property="projectId" column="PROJECT_ID"/>
+  		<id property="loanId" column="LOAN_ID"/>
+		<id property="partnerNo" column="PARTNER_NO"/>
+  		<id property="requestStatus" column="REQUEST_STATUS"/>
+  		<id property="requestFiles" column="REQUEST_FILES"/>
+  		<id property="remark" column="REMARK"/>
+  		<id property="requestTime" column="REQUEST_TIME" jdbcType="TIMESTAMP" javaType="String"/>
+  		<id property="updateTime" column="UPDATE_TIME" jdbcType="TIMESTAMP" javaType="String"/>
+  		<id property="approvalTime" column="APPROVAL_TIME" jdbcType="TIMESTAMP" javaType="String"/>
+  		<id property="approvalComment" column="APPROVAL_COMMENT"/>
+  		<id property="submitApprovalTime" column="SUBMIT_APPROVAL_TIME" jdbcType="TIMESTAMP" javaType="String"/>
+  		<id property="isClosed" column="IS_CLOSED"/>
+  		<id property="loanStatus" column="LOAN_STATUS"/>
+  		<id property="loanTime" column="LOAN_TIME" jdbcType="TIMESTAMP" javaType="String"/>
+  		<id property="loanResultTime" column="LOAN_RESULT_TIME" jdbcType="TIMESTAMP" javaType="String"/>
+  		<id property="repaymentRepurchaseType" column="REPAYMENT_REPURCHASE_TYPE"/>
+  		<id property="repaymentRepurchaseStatus" column="REPAYMENT_REPURCHASE_STATUS"/>
+  		<id property="repaymentRepurchaseTime" column="REPAYMENT_REPURCHASE_TIME" jdbcType="TIMESTAMP" javaType="String"/>
+  		<id property="rpResultTime" column="RP_RESULT_TIME" jdbcType="TIMESTAMP" javaType="String"/>
+  		<id property="loanAmount" column="LOAN_AMOUNT"/>
+  		<id property="totalCost" column="TOTAL_COST"/>
+  		<id property="guaranteeFee" column="GUARANTEE_FEE"/>
+  		<id property="xiFeeRequestTime" column="XIFEE_REQUEST_TIME" jdbcType="TIMESTAMP" javaType="String"/>
+  		<id property="xiFeeResultTime" column="XIFEE_RESULT_TIME" jdbcType="TIMESTAMP" javaType="String"/>
+  		<id property="xiFeeStatus" column="XIFEE_STATUS"/>
+  		
+  		<id property="approvalStatus" column="APPROVAL_STATUS"/>
+  		<id property="pmUserId" column="PM_USER_ID"/>
+  		<id property="repaymentVoucherPath" column="REPAYMENT_VOUCHER_PATH"/>
+  		<id property="xiFeeVoucherPath" column="XIFEE_VOUCHER_PATH"/>
+  		<id property="premium" column="PREMIUM"/>
+  		
+  		<id property="reApplyReason" column="RE_APPLY_REASON"/>
+  		<id property="approveMoney" column="APPROVE_MONEY"/>
+  		<id property="confirmLoanStatus" column="CONFIRM_LOAN_STATUS"/>
+  		<id property="confirmLoanRequestTime" column="CONFIRM_LOAN_REQUEST_TIME" jdbcType="TIMESTAMP" javaType="String"/>
+  		<id property="confirmLoanResultTime" column="CONFIRM_LOAN_RESULT_TIME" jdbcType="TIMESTAMP" javaType="String"/>
+  		<id property="confirmLoanReason" column="CONFIRM_LOAN_REASON"/>
+		<id property="loanJusticeFiles" column="LOAN_JUSTICE_FILES"/>
+		<id property="loanBlankFiles" column="LOAN_BLANK_FILES"/>
+		<id property="loanOtherFiles" column="LOAN_OTHER_FILES"/>
+		
+		<id property="applyLoanDate" column="APPLY_LOAN_DATE"/>
+		<id property="loanRemark" column="LOAN_REMARK"/>
+		
+	    <!-- 借款帐号信息 -->
+	    <id property="paymentBank" column="PAYMENT_BANK" />
+		<id property="paymentBankBranch" column="PAYMENT_BANK_BRANCH"/>   
+		<id property="paymentAcctName" column="PAYMENT_ACCT_NAME"/>   
+		<id property="paymentAcctNo" column="PAYMENT_ACCT_NO"/>   
+		<id property="paymentProvinceCode" column="PAYMENT_PROVINCE_CODE"/>   
+		<id property="paymentCityCode" column="PAYMENT_CITY_CODE"/>   
+		
+		
+		<id property="applyDate" column="APPLY_DATE"/>
+		<!-- 确认放款金额 -->
+		<id property="confirmLoanMoney" column="CONFIRM_LOAN_MONEY"/>  
+		<id property="confirmLoanDays" column="CONFIRM_LOAN_DAYS"/>  
+	    <id property="provinceCode" column="PROVINCE_CODE" />
+	    <id property="cityCode" column="CITY_CODE" />
+		
+		<id property="loanEffeDate" column="LOAN_EFFE_DATE"/>
+		<id property="partnerLoanDate" column="PARTNER_LOAN_DATE"/>
+		<id property="partnerLoanFile" column="PARTNER_LOAN_FILE"/>   
+		<id property="partnerRealRefundDate" column="PARTNER_REAL_REFUND_DATE"/>   
+		<!-- 还款信息 -->
+		<id property="refundLoanAmount" column="REFUND_LOAN_AMOUNT"/>
+		<id property="refundXifee" column="REFUND_XIFEE"/>
+		<id property="refundDate" column="REFUND_DATE"/>    
+		<id property="partnerRefundFile" column="PARTNER_REFUND_FILE"/>   
+		<id property="partnerInterests" column="PARTNER_INTERESTS"/>   
+		<id property="repaymentRepurchaseRemark" column="REPAYMENT_REPURCHASE_REMARK"/>   
+		<!-- 还款银行 -->
+		<id property="payBankName" column="PAY_BANK_NAME"/>   
+		<id property="payBankCode" column="PAY_BANK_CODE"/>  
+		<id property="payBankBranch" column="PAY_BANK_BRANCH"/>  
+		<id property="payAcctName" column="PAY_ACCT_NAME"/>   
+		<id property="payAcctNo" column="PAY_ACCT_NO"/> 
+		<id property="payProvinceCode" column="PAY_PROVINCE_CODE"/>   
+		<id property="payCityCode" column="PAY_CITY_CODE"/>  
+		
+		<!-- 物业省市 -->
+		<id property="houseProvinceCode" column="HOUSE_PROVINCE_CODE"/>  
+		<id property="houseCityCode" column="HOUSE_CITY_CODE"/>  
+		
+		<!-- 预留手机号和借款相关字段字段 -->
+		<id property="partnerOrderCode" column="PARTNER_ORDER_CODE"/>  
+		<id property="loanPeriodLimit" column="LOAN_PERIOD_LIMIT"/>  
+		<id property="isCreditLoan" column="IS_CREDIT_LOAN"/>  
+		<id property="paymentBankPhone" column="PAYMENT_BANK_PHONE"/>  
+		<id property="paymentBankLineNo" column="PAYMENT_BANK_LINE_NO"/>  
+		
+		<id property="refundTotalAmount" column="REFUND_TOTAL_AMOUNT"/>  
+		<id property="refundPenalty" column="REFUND_PENALTY"/>  
+		<id property="refundFine" column="REFUND_FINE"/>  
+		<id property="refundCompdinte" column="REFUND_COMPDINTE"/>  
+		<id property="partnerOrderCode" column="PARTNER_ORDER_CODE"/>
+		
+		<id property="partnerPushAccount" column="PARTNER_PUSH_ACCOUNT"/>
+		<id property="partnerGrossRate" column="PARTNER_GROSS_RATE"/>
+</resultMap>
+
+
+<!-- 合作机构项目详情 -->
+<resultMap id="partnerDto" type="com.xlkfinance.bms.rpc.partner.ProjectPartnerDto">
+    <id property="pid" column="pid" />
+    <id property="projectId" column="PROJECT_ID"/>
+	<id property="loanId" column="LOAN_ID"/>
+	<id property="projectNumber" column="PROJECT_NUMBER"/>
+	<id property="projectName" column="PROJECT_NAME"/>
+	<id property="requestFiles" column="REQUEST_FILES"/>
+	<id property="businessType" column="BUSINESS_TYPE"/>
+	<id property="businessTypeStr" column="BUSINESS_TYPE_STR"/>
+	<id property="city" column="CITY"/>
+	<id property="userName" column="USER_NAME"/>
+	<id property="cardNo" column="CARD_NO"/>
+	<id property="phone" column="PHONE"/>
+	<id property="applyMoney" column="APPLY_MONEY"/>
+	<id property="applyDate" column="APPLY_DATE"/>
+	<id property="applyLoanDate" column="APPLY_LOAN_DATE"/>
+	<id property="pmUserName" column="REAL_NAME"/>
+	<id property="pmUserId" column="PM_USER_ID"/>
+	<id property="partnerNo" column="PARTNER_NO"/>
+	<id property="remark" column="REMARK"/>
+	<id property="reApplyReason" column="RE_APPLY_REASON"/>
+	<id property="loanJusticeFiles" column="LOAN_JUSTICE_FILES"/>
+	<id property="loanBlankFiles" column="LOAN_BLANK_FILES"/>
+	<id property="loanOtherFiles" column="LOAN_OTHER_FILES"/>
+	<id property="confirmLoanReason" column="CONFIRM_LOAN_REASON"/>
+	<id property="repaymentRepurchaseType" column="REPAYMENT_REPURCHASE_TYPE"/>
+	<id property="repaymentVoucherPath" column="REPAYMENT_VOUCHER_PATH"/>
+	<id property="repaymentRepurchaseStatus" column="REPAYMENT_REPURCHASE_STATUS"/>
+  	<id property="loanStatus" column="LOAN_STATUS"/>
+	<id property="loanRemark" column="LOAN_REMARK"/>
+	<id property="partnerOrderCode" column="PARTNER_ORDER_CODE"/>
+	
+</resultMap>
+
+
+<!-- 机构合作表，并懒加载项目相关数据  -->
+<resultMap type="com.xlkfinance.bms.rpc.partner.ProjectPartnerDto" id="partnerDtoLazyMapper">
+	<!-- 机构合作信息 -->
+    <id property="pid" column="PID" />
+    <id property="projectId" column="PROJECT_ID" />
+    <id property="projectName" column="PROJECT_NAME" />
+    <id property="projectNumber" column="PROJECT_NUMBER" />
+	<id property="businessCategory" column="BUSINESS_CATEGORY"/>    
+	<id property="businessCategoryStr" column="BUSINESS_CATEGORY_STR"/>    
+    <id property="partnerNo" column="PARTNER_NO" />
+    <id property="loanId" column="LOAN_ID" />
+    <id property="remark" column="REMARK" />
+    <id property="requestFiles" column="REQUEST_FILES" />
+    <id property="reApplyReason" column="RE_APPLY_REASON" />
+    <id property="loanJusticeFiles" column="LOAN_JUSTICE_FILES" />
+    <id property="loanBlankFiles" column="LOAN_BLANK_FILES" />
+    <id property="loanOtherFiles" column="LOAN_OTHER_FILES" />
+    <id property="confirmLoanReason" column="CONFIRM_LOAN_REASON" />
+    <id property="repaymentVoucherPath" column="REPAYMENT_VOUCHER_PATH" />
+    <id property="xiFeeVoucherPath" column="XIFEE_VOUCHER_PATH" />
+    <id property="repaymentRepurchaseType" column="REPAYMENT_REPURCHASE_TYPE" />
+    <id property="repaymentRepurchaseStatus" column="REPAYMENT_REPURCHASE_STATUS" />
+    <id property="loanStatus" column="LOAN_STATUS" />
+    <id property="loanRemark" column="LOAN_REMARK" />
+    <id property="provinceCode" column="PROVINCE_CODE" />
+    <id property="cityCode" column="CITY_CODE" />
+	<id property="loanEffeDate" column="LOAN_EFFE_DATE"/>
+	<id property="partnerLoanDate" column="PARTNER_LOAN_DATE"/>  
+	<id property="refundLoanAmount" column="REFUND_LOAN_AMOUNT"/>
+	<id property="refundXifee" column="REFUND_XIFEE"/>    
+	<id property="refundDate" column="REFUND_DATE"/>   
+	
+	<id property="partnerRealRefundDate" column="PARTNER_REAL_REFUND_DATE"/>   
+	<id property="partnerLoanFile" column="PARTNER_LOAN_FILE"/>   
+	<id property="partnerRefundFile" column="PARTNER_REFUND_FILE"/>   
+	<id property="partnerInterests" column="PARTNER_INTERESTS"/>   
+	
+	<!-- 还款回购帐号信息 -->
+	<id property="payAcctNo" column="PAY_ACCT_NO"/>   
+	<id property="payAcctName" column="PAY_ACCT_NAME"/>   
+	<id property="payBankName" column="PAY_BANK_NAME"/>   
+	<id property="payBankBranch" column="PAY_BANK_BRANCH"/>   
+	<id property="payProvinceCode" column="PAY_PROVINCE_CODE"/>   
+	<id property="payCityCode" column="PAY_CITY_CODE"/>  
+	<!-- 确认放款金额 -->
+	<id property="confirmLoanMoney" column="CONFIRM_LOAN_MONEY"/>  
+	<id property="confirmLoanDays" column="CONFIRM_LOAN_DAYS"/>  
+	<id property="approveMoney" column="APPROVE_MONEY"/>
+	<!-- 物业省市 -->
+	<id property="houseProvinceCode" column="HOUSE_PROVINCE_CODE"/>  
+	<id property="houseCityCode" column="HOUSE_CITY_CODE"/>  
+	
+	<!-- 预留手机号和借款相关字段字段 -->
+	<id property="partnerOrderCode" column="PARTNER_ORDER_CODE"/>  
+	<id property="loanPeriodLimit" column="LOAN_PERIOD_LIMIT"/>  
+	<id property="isCreditLoan" column="IS_CREDIT_LOAN"/>  
+	<id property="paymentBankPhone" column="PAYMENT_BANK_PHONE"/>  
+	<id property="paymentBankLineNo" column="PAYMENT_BANK_LINE_NO"/>  
+	
+	
+	
+    
+    <!-- 经办人 -->
+    <id property="pmUserId" column="PM_USER_ID" />
+    <id property="pmUserName" column="PM_USER_NAME" />
+    <!-- 客户信息 -->
+    <id property="acctId" column="ACCT_ID" />
+    <id property="userName" column="USER_NAME" />
+    <id property="certType" column="CERT_TYPE" />
+    <id property="cardNo" column="CARD_NO" />
+    <id property="phone" column="PHONE" />
+    <id property="businessTypeStr" column="BUSINESS_TYPE_STR" />
+    <id property="businessType" column="BUSINESS_TYPE" />
+    <id property="applyMoney" column="APPLY_MONEY" />
+    <id property="applyDate" column="APPLY_DATE" />
+    <!-- 借款帐号信息 -->
+    <id property="paymentBank" column="PAYMENT_BANK" />
+	<id property="paymentBankBranch" column="PAYMENT_BANK_BRANCH"/>   
+	<id property="paymentAcctName" column="PAYMENT_ACCT_NAME"/>   
+	<id property="paymentAcctNo" column="PAYMENT_ACCT_NO"/>   
+	<id property="paymentProvinceCode" column="PAYMENT_PROVINCE_CODE"/>   
+	<id property="paymentCityCode" column="PAYMENT_CITY_CODE"/>   
+	<id property="payBankCode" column="PAY_BANK_CODE"/>   
+    
+    <id property="applyLoanDate" column="APPLY_LOAN_DATE" />
+    <id property="pmCustomerName" column="PM_CUSTOMER_NAME" />
+    <id property="sex" column="SEX" />
+    <id property="liveAddr" column="LIVE_ADDR" />
+
+    <id property="businessContacts" column="BUSINESS_CONTACTS" />
+    <id property="managers" column="MANAGERS" />
+    
+    <!-- 银行信息 -->
+    <id property="oldBankName" column="OLD_BANK_NAME" />
+    <id property="oldLoanMoney" column="OLD_LOAN_MONEY" />
+    <id property="oldLoanPerson" column="OLD_LOAN_PERSON" />
+    <id property="oldLoanPhone" column="OLD_LOAN_PHONE" />
+    <id property="newBankName" column="NEW_BANK_NAME" />
+    <id property="newLoanMoney" column="NEW_LOAN_MONEY" />
+    <id property="newLoanPerson" column="NEW_LOAN_PERSON" />
+    <id property="newLoanPhone" column="NEW_LOAN_PHONE" />
+    
+    <id property="paymentType" column="PAYMENT_TYPE" />
+    <id property="accumulationFundBank" column="ACCUMULATION_FUND_BANK" />
+    <id property="accumulationFundMoney" column="ACCUMULATION_FUND_MONEY" />
+    <id property="superviseDepartment" column="SUPERVISE_DEPARTMENT" />
+    <id property="notarizationDate" column="NOTARIZATION_DATE" />
+    <id property="fundsMoney" column="FUNDS_MONEY" />
+    <!-- 物业信息 -->
+    <id property="houseName" column="HOUSE_NAME" />
+    <id property="area" column="AREA" />
+    <id property="costMoney" column="COST_MONEY" />
+    <id property="tranasctionMoney" column="TRANASCTION_MONEY" />
+    <id property="housePropertyCard" column="HOUSE_PROPERTY_CARD" />
+    <id property="buyerName" column="BUYER_NAME" />
+    <id property="buyerCardNo" column="BUYER_CARD_NO" />
+    <id property="buyerAddress" column="BUYER_ADDRESS" />
+    
+</resultMap>
+
+<!-- 共同借款人 -->
+<resultMap type="com.xlkfinance.bms.rpc.customer.CusPerson" id="publicManMapper">
+	  <id property="chinaName" column="CHINA_NAME" />
+	  <id property="sex" column="SEX" />
+	  <id property="certType" column="CERT_TYPE" />
+	  <id property="certNumber" column="CERT_NUMBER" />
+	  <id property="relation" column="RELATION" />
+	  <id property="workService" column="WORK_SERVICE" />
+	  <id property="monthIncome" column="MONTH_INCOME" />
+</resultMap>
+<!-- 审批工作流记录 -->
+<resultMap type="com.xlkfinance.bms.rpc.workflow.TaskVo" id="workFlowMapper">
+    <id property="taskName" column="taskName" />
+    <id property="allocationDttm" column="allocationDttm" />
+    <id property="completeDttm" column="completeDttm" />
+    <!--workflowName 为备注字段，充当  -->
+    <id property="taskUserName" column="taskUserName" />
+    <id property="workflowName" column="workflowName" />
+</resultMap>
+
+ 
+<!-- 办理动态-->
+<resultMap type="com.xlkfinance.bms.rpc.inloan.HandleDynamicDTO" id="inLoanStatusMapper">
+  		<id property="pid" column="PID"/>
+  		<id property="handleId" column="HANDLE_ID"/>
+  		<id property="handleFlowId" column="HANDLE_FLOW_ID"/>
+  		<id property="finishDate" column="FINISH_DATE"/>
+  		<id property="handleDay" column="HANDLE_DAY"/>
+  		<id property="operator" column="OPERATOR"/>
+  		<id property="differ" column="DIFFER"/>
+  		<id property="remark" column="REMARK"/>
+  		<id property="taskUserName" column="HANDLE_FLOW_NAME"/>
+  		<id property="fixDay" column="FIX_DAY"/>
+  		<id property="currentHandleUserName" column="CURRENT_HANDLE_USER_NAME"/>
+</resultMap>
+
+
+<!-- 查询机构合作项目列表 -->
+<select id="findAllProjectInfo" resultMap="partnerMapper" parameterType="com.xlkfinance.bms.rpc.partner.ProjectPartner">
+	SELECT D.* FROM (SELECT T.*, ROWNUM RN
+	        FROM (
+			    SELECT PRO.PID PROJECT_ID,PRO.PROJECT_NAME PROJECT_NAME,
+			      PRO.PROJECT_NUMBER PROJECT_NUMBER,
+			      PRO.FORECLOSURE_STATUS PROJECT_STATUS,
+			      PRO.COMPLETE_DTTM PROJECT_STATUS_TIME,
+			      PRO.BUSINESS_CATEGORY,
+			      PRO.PROJECT_SOURCE,
+			      GUAR.LOAN_MONEY AS LOAN_AMOUNT,      
+			      SLV.LOOKUP_DESC AS BUSINESS_CATEGORY_STR,
+			      PAR.PARTNER_NO
+ 		FROM BIZ_PROJECT PRO 
+	 		LEFT JOIN BIZ_PRODUCT P  ON PRO.PRODUCT_ID = P.PID
+			LEFT JOIN BIZ_PROJECT_GUARANTEE GUAR ON GUAR.PROJECT_ID = PRO.PID
+			LEFT JOIN SYS_LOOKUP_VAL SLV ON SLV.PID = PRO.BUSINESS_CATEGORY
+			
+	        LEFT JOIN (
+	           SELECT PROJECT_ID, LISTAGG(PARTNER_NO||'##'||PID,';')  WITHIN GROUP(ORDER BY PARTNER_NO) AS PARTNER_NO
+	                  FROM BIZ_PROJECT_PARTNER 
+	                  WHERE (REQUEST_STATUS IS NULL OR REQUEST_STATUS = 1)
+	                  	<if test="partnerNo != null and partnerNo!=''">
+							AND PARTNER_NO = #{partnerNo}
+						</if>
+	                  GROUP BY PROJECT_ID
+	                  
+		  	) PAR ON PAR.PROJECT_ID = PRO.PID
+			
+		WHERE PRO.STATUS = 1 AND PRO.IS_CHECHAN = 0 
+		AND PRO.FORECLOSURE_STATUS in (10,11) 
+		AND PRO.PROJECT_TYPE in(2,6)
+		
+		AND (
+	       	( PRO.PROJECT_SOURCE !=  1 
+	         	AND PRO.IS_NEED_FINANCIAL  != 2	
+	         	<!-- 小科数据权限 -->
+		        <if test="userIds!=null and userIds.size()>0">
+					AND	PRO.PM_USER_ID in
+					<foreach item="itemId" collection="userIds" open="(" separator="," close=")">
+					          #{itemId}
+					</foreach>
+				</if>
+	       	) 
+	        OR     
+	       <!-- 万通条件 -->
+	       ( PRO.PROJECT_SOURCE =  1
+	         AND PRO.IS_NEED_FINANCIAL  = 2	
+	       )
+	   )
+	   
+	   <!-- 己经放款过的，爸爸不要你了 -->
+	   AND PRO.PID NOT IN (
+	   	SELECT PROJECT_ID FROM BIZ_PROJECT_PARTNER  WHERE IS_CLOSED = 1 AND LOAN_STATUS > 1 
+	   )
+	   
+	<if test="projectName != null and projectName!=''">
+		AND PRO.PROJECT_NAME like '%${projectName}%'
+	</if>
+	<if test="projectNumber != null and projectNumber!=''">
+		AND PRO.PROJECT_NUMBER like '%${projectNumber}%'
+	</if>
+	<if test="partnerNo != null and partnerNo!=''">
+		AND PAR.PARTNER_NO like '%${partnerNo}%'
+	</if>
+
+	<![CDATA[ORDER BY PRO.PID  DESC , PROJECT_STATUS_TIME DESC) T
+	WHERE ROWNUM <=#{page}*#{rows}
+	) D
+	WHERE D.RN > ((#{page}-1)*#{rows})]]>
+   </select>
+   
+   
+   
+ <!-- 查询机构合作项目列表总数  -->
+<select id="findAllProjectInfoCount" resultType="java.lang.Integer" parameterType="com.xlkfinance.bms.rpc.partner.ProjectPartner">
+	 
+		SELECT COUNT(DISTINCT PRO.PID)   FROM BIZ_PROJECT PRO 
+			LEFT JOIN BIZ_PROJECT_PARTNER PAR ON PAR.PROJECT_ID = PRO.PID
+		 WHERE 
+		 	PRO.STATUS = 1 AND PRO.IS_CHECHAN = 0 
+			AND PRO.FORECLOSURE_STATUS  in (10,11)
+			AND PRO.PROJECT_TYPE in(2,6)
+			AND (
+		       	( PRO.PROJECT_SOURCE !=  1 
+		         	AND PRO.IS_NEED_FINANCIAL  != 2	
+		         	<!-- 小科数据权限 -->
+			        <if test="userIds!=null and userIds.size()>0">
+						AND	PRO.PM_USER_ID in
+						<foreach item="itemId" collection="userIds" open="(" separator="," close=")">
+						          #{itemId}
+						</foreach>
+					</if>
+		       	) 
+		        OR     
+		       <!-- 万通条件 -->
+		       ( PRO.PROJECT_SOURCE =  1
+		         AND PRO.IS_NEED_FINANCIAL  = 2	
+		       )
+		   )
+		   
+		   <!-- 己经放款过的，爸爸不要你了 -->
+		   AND PRO.PID NOT IN (
+		   		SELECT PROJECT_ID FROM BIZ_PROJECT_PARTNER  WHERE IS_CLOSED = 1 AND LOAN_STATUS > 1 
+		   )
+			   
+		<if test="projectName != null and projectName!=''">
+			AND PRO.PROJECT_NAME like '%${projectName}%'
+		</if>
+		<if test="projectNumber != null and projectNumber!=''">
+			AND PRO.PROJECT_NUMBER like '%${projectNumber}%'
+		</if>
+		<if test="partnerNo != null and partnerNo!=''">
+			AND  ( PAR.PARTNER_NO = #{partnerNo}  AND  (PAR.REQUEST_STATUS IS NULL OR PAR.REQUEST_STATUS = 1) )
+		</if>
+</select>
+
+
+
+
+<!-- 通过项目ID查询合作机构申请信息详情 -->
+<select id="findProjectPartner" resultMap="partnerDto" parameterType="java.lang.Integer">
+	SELECT CUS.CHINA_NAME USER_NAME,CUS.CERT_NUMBER CARD_NO,CUS.TELEPHONE PHONE,
+			PD.PRODUCT_NAME BUSINESS_TYPE_STR,
+			(CASE WHEN PD.PRODUCT_NAME = '交易现金赎楼'THEN 1 WHEN PD.PRODUCT_NAME = '非交易现金赎楼'THEN 2 ELSE 4 END)AS BUSINESS_TYPE, 
+			FORE.LOAN_DAYS APPLY_DATE,
+			<!-- to_char(FORE.RECE_DATE,'yyyy-MM-dd') LOAN_DATE, -->
+			SU.REAL_NAME ,
+		PRO.PID PROJECT_ID,PAR.PID,PRO.PROJECT_NAME,PRO.PROJECT_NUMBER,PAR.PARTNER_NO ,
+		PAR.LOAN_ID,PAR.REMARK, GUAR.LOAN_MONEY APPLY_MONEY,PAR.pid,par.request_files,
+		PAR.RE_APPLY_REASON,
+		PAR.LOAN_JUSTICE_FILES ,PAR.LOAN_BLANK_FILES,PAR.LOAN_OTHER_FILES,
+		PAR.CONFIRM_LOAN_REASON,PAR.REPAYMENT_VOUCHER_PATH,PAR.REPAYMENT_REPURCHASE_TYPE,PAR.REPAYMENT_REPURCHASE_STATUS,
+		NVL(to_char(PAR.APPLY_LOAN_DATE,'yyyy-MM-dd'),to_char(FORE.RECE_DATE,'yyyy-MM-dd')) AS APPLY_LOAN_DATE,
+		PAR.LOAN_STATUS,PAR.LOAN_REMARK,
+		PAR.PARTNER_ORDER_CODE
+		FROM BIZ_PROJECT PRO
+    		LEFT JOIN BIZ_PRODUCT PD ON PD.PID = PRO.PRODUCT_ID
+    		LEFT JOIN CUS_PERSON CUS ON PRO.ACCT_ID = CUS.ACCT_ID AND CUS.RELATION_TYPE = 1
+    		LEFT JOIN BIZ_PROJECT_FORECLOSURE FORE ON FORE.PROJECT_ID = PRO.PID
+    		LEFT JOIN BIZ_PROJECT_GUARANTEE GUAR ON GUAR.PROJECT_ID = PRO.PID
+    		LEFT JOIN BIZ_PROJECT_PARTNER PAR ON PAR.PROJECT_ID = PRO.PID
+     		LEFT JOIN SYS_USER SU ON PAR.PM_USER_ID = SU.PID 
+     	where PRO.pid=#{projectId,jdbcType=INTEGER}
+</select>
+
+<select id="findProjectPartnerInfo" resultMap="BasePartnerMapper" parameterType="com.xlkfinance.bms.rpc.partner.ProjectPartner">
+	SELECT 
+		PAR.PID,PROJECT_ID ,PAR.LOAN_ID , PAR.REQUEST_STATUS, PAR.PARTNER_NO, PAR.REQUEST_FILES, PAR.REMARK, 
+		PAR.REQUEST_TIME,PAR.UPDATE_TIME, PAR.APPROVAL_TIME, PAR.APPROVAL_COMMENT, PAR.SUBMIT_APPROVAL_TIME, PAR.IS_CLOSED, 
+		PAR.LOAN_STATUS, PAR.LOAN_TIME, PAR.LOAN_RESULT_TIME,
+		PAR.REPAYMENT_REPURCHASE_TYPE , PAR.REPAYMENT_REPURCHASE_STATUS,  PAR.REPAYMENT_REPURCHASE_TIME, 
+		PAR.RP_RESULT_TIME,
+		PAR.LOAN_AMOUNT , PAR.TOTAL_COST , PAR.GUARANTEE_FEE, 
+		PAR.XIFEE_REQUEST_TIME,PAR.XIFEE_RESULT_TIME,PAR.XIFEE_STATUS ,
+		PAR.APPROVAL_STATUS ,PAR.PM_USER_ID ,
+		PAR.REPAYMENT_VOUCHER_PATH,PAR.XIFEE_VOUCHER_PATH ,PAR.PREMIUM  ,PAR.RE_APPLY_REASON,PAR.APPROVE_MONEY ,
+		PAR.CONFIRM_LOAN_STATUS  ,PAR.CONFIRM_LOAN_REQUEST_TIME,PAR.CONFIRM_LOAN_RESULT_TIME ,PAR.CONFIRM_LOAN_REASON  ,
+		PAR.LOAN_JUSTICE_FILES,PAR.LOAN_BLANK_FILES ,PAR.LOAN_OTHER_FILES  ,
+		to_char(PAR.APPLY_LOAN_DATE,'yyyy-MM-dd') AS APPLY_LOAN_DATE,
+		PAR.LOAN_REMARK ,
+		PAR.PAYMENT_BANK ,PAR.PAYMENT_BANK_BRANCH,PAR.PAYMENT_ACCT_NAME,PAR.PAYMENT_ACCT_NO ,
+		
+		PAR.APPLY_DATE,PAR.CONFIRM_LOAN_DAYS,
+		PAR.PROVINCE_CODE ,PAR.CITY_CODE ,
+		
+		to_char(PAR.LOAN_EFFE_DATE,'yyyy-MM-dd') AS LOAN_EFFE_DATE,
+		to_char(PAR.PARTNER_LOAN_DATE,'yyyy-MM-dd') AS PARTNER_LOAN_DATE,
+		PAR.PARTNER_LOAN_FILE,
+		
+		PAR.PARTNER_REAL_REFUND_DATE,
+		PAR.REFUND_LOAN_AMOUNT,PAR.REFUND_XIFEE,
+		to_char(PAR.REFUND_DATE,'yyyy-MM-dd') AS REFUND_DATE,
+		PAR.PARTNER_REFUND_FILE,PAR.PARTNER_INTERESTS,
+		PAR.REPAYMENT_REPURCHASE_REMARK,
+				
+		PAR.PAY_BANK_NAME,PAR.PAY_BANK_CODE, PAR.PAY_BANK_BRANCH,
+		PAR.PAY_ACCT_NAME, PAR.PAY_ACCT_NO, PAR.PAY_PROVINCE_CODE, PAR.PAY_CITY_CODE,
+		PAR.HOUSE_PROVINCE_CODE, PAR.HOUSE_CITY_CODE,
+		PAR.PARTNER_ORDER_CODE, PAR.LOAN_PERIOD_LIMIT,  
+		PAR.IS_CREDIT_LOAN, PAR.PAYMENT_BANK_PHONE,  
+		PAR.PAYMENT_BANK_LINE_NO, PAR.REFUND_TOTAL_AMOUNT,  
+		PAR.REFUND_PENALTY, PAR.REFUND_FINE,  
+		PAR.REFUND_COMPDINTE, PAR.PARTNER_PLATFORM_ORDER_CODE,
+		PAR.PARTNER_PUSH_ACCOUNT , PAR.PARTNER_GROSS_RATE
+		
+		FROM BIZ_PROJECT_PARTNER PAR 
+		where 1=1 
+	<if test="pid != null and pid>0">
+		AND PAR.pid = #{pid}
+	</if>
+	<if test="loanId != null and loanId!=''">
+		AND PAR.LOAN_ID = #{loanId}
+	</if>
+	<if test="projectId != null and projectId!=''">
+		AND PAR.PROJECT_ID = #{projectId}
+	</if>
+	<if test="partnerNo != null and partnerNo!=''">
+		AND PAR.PARTNER_NO = #{partnerNo}
+	</if>
+</select>
+
+<!-- 查询机构合作列表 -->
+<select id="findProjectPartnerInfoList" resultMap="BasePartnerMapper" parameterType="com.xlkfinance.bms.rpc.partner.ProjectPartner">
+	SELECT PAR.*
+		FROM BIZ_PROJECT_PARTNER PAR 
+		where 1=1 
+	<if test="pid != null and pid>0">
+		AND PAR.pid = #{pid}
+	</if>
+	<if test="loanId != null and loanId!=''">
+		AND PAR.LOAN_ID = #{loanId}
+	</if>
+	<if test="projectId != null and projectId >0 ">
+		AND PAR.PROJECT_ID = #{projectId}
+	</if>
+	<if test="partnerNo != null and partnerNo != '' ">
+		AND PAR.PARTNER_NO = #{partnerNo}
+	</if>
+	<if test="requestStatus != null and requestStatus >0 ">
+		AND PAR.REQUEST_STATUS = #{requestStatus}
+	</if>
+   	<if test="approvalStatus != null and approvalStatus>0">
+   	  	AND	APPROVAL_STATUS = #{approvalStatus} 
+   	</if>
+	<if test="isClosed != null and isClosed >0 ">
+		AND PAR.IS_CLOSED = #{isClosed}
+	</if>
+	
+	<if test="projectId != null and projectId >0 ">
+		AND PAR.PROJECT_ID = #{projectId}
+	</if>
+	
+	<if test="loanIds!=null and loanIds.size()>0">
+		AND	PAR.LOAN_ID IN
+		<foreach item="itemId" collection="loanIds" open="(" separator="," close=")">
+		          #{itemId}
+		</foreach>
+	</if>
+</select>
+
+<!-- 获取合作机构项目信息的PID -->
+<select id="getSeqBizProjectPartner" resultType="java.lang.Integer">
+	SELECT SEQ_BIZ_PROJECT_PARTNER.Nextval as PID from DUAL 
+</select>
+
+<!-- 新增合作机构项目 -->
+<insert id="addProjectPartner" parameterType="com.xlkfinance.bms.rpc.partner.ProjectPartner">
+	INSERT INTO BIZ_PROJECT_PARTNER
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+        	PID, 
+    	<if test="projectId != null and projectId >0"> 
+    		PROJECT_ID, 
+    	</if>
+    	<if test="loanId != null and loanId!=''">
+    		LOAN_ID, 
+    	</if>
+    	<if test="requestStatus != null and requestStatus>0">
+    		REQUEST_STATUS, 
+    	</if>
+    	<if test="partnerNo != null and partnerNo !=''">
+    		PARTNER_NO, 
+    	</if>
+    	<if test="requestFiles != null and requestFiles!=''">
+    		REQUEST_FILES, 
+    	</if>
+    	<if test="remark != null and remark!=''">
+    		REMARK, 
+    	</if>
+    	<if test="requestTime != null and requestTime!=''">
+    		REQUEST_TIME, 
+    	</if>
+    	<if test="updateTime != null and updateTime!=''">
+    		UPDATE_TIME, 
+    	</if>
+    	<if test="approvalTime != null and approvalTime!=''">
+    		APPROVAL_TIME, 
+    	</if>
+    	<if test="approvalComment != null and approvalComment!=''">
+    		APPROVAL_COMMENT, 
+    	</if>
+    	<if test="submitApprovalTime != null and submitApprovalTime!=''">
+    		SUBMIT_APPROVAL_TIME,
+    	</if>
+    	<if test="isClosed != null and isClosed >0">
+    		IS_CLOSED,
+    	</if>
+    	<if test="loanStatus != null and loanStatus >0">
+    		LOAN_STATUS,
+    	</if>
+    	<if test="loanTime != null and loanTime!=''">
+    		LOAN_TIME,
+    	</if>
+    	<if test="loanResultTime != null and loanResultTime!=''">
+    		LOAN_RESULT_TIME,
+    	</if>
+    	<if test="repaymentRepurchaseType != null and repaymentRepurchaseType>0">
+    		REPAYMENT_REPURCHASE_TYPE,
+    	</if>
+    	<if test="repaymentRepurchaseStatus != null and repaymentRepurchaseStatus>0">
+    		REPAYMENT_REPURCHASE_STATUS,
+    	</if>
+    	<if test="repaymentRepurchaseTime != null and repaymentRepurchaseTime!=''">
+    		REPAYMENT_REPURCHASE_TIME,
+    	</if>
+    	<if test="rpResultTime != null and rpResultTime!=''">
+    		RP_RESULT_TIME,
+    	</if>
+    	<if test="loanAmount != null and loanAmount>0">
+    	 	LOAN_AMOUNT,
+    	</if>
+    	<if test="totalCost != null and totalCost>0">
+    	 	TOTAL_COST,
+    	</if>
+    	<if test="guaranteeFee != null and guaranteeFee>0">
+    	  	GUARANTEE_FEE,
+    	</if>
+    	<if test="xiFeeRequestTime != null and xiFeeRequestTime!=''">
+    	  	XIFEE_REQUEST_TIME,
+    	</if>
+    	<if test="xiFeeResultTime != null and xiFeeResultTime!=''">
+    	  	XIFEE_RESULT_TIME,
+    	</if>
+    	<if test="xiFeeStatus != null and xiFeeStatus>0">
+    	  	XIFEE_STATUS,
+    	</if>
+    	<if test="approvalStatus != null and approvalStatus>0">
+    	 	APPROVAL_STATUS,
+    	</if>
+    	<if test="pmUserId != null and pmUserId>0">
+    	  	PM_USER_ID,
+    	</if>
+    	<if test="approveMoney != null and approveMoney > 0">
+    	  	APPROVE_MONEY,
+    	</if>
+    	<if test="confirmLoanStatus != null and confirmLoanStatus > 0">
+    	  	CONFIRM_LOAN_STATUS,
+    	</if>
+    	<if test="confirmLoanRequestTime != null and confirmLoanRequestTime != ''">
+    	  	CONFIRM_LOAN_REQUEST_TIME,
+    	</if>
+    	<if test="confirmLoanResultTime != null and confirmLoanResultTime != ''">
+    	  	CONFIRM_LOAN_RESULT_TIME,
+    	</if>
+    	<if test="confirmLoanReason != null and confirmLoanReason !=''">
+    		CONFIRM_LOAN_REASON, 
+    	</if>
+    	<if test="applyLoanDate != null and applyLoanDate !=''">
+    		APPLY_LOAN_DATE, 
+    	</if>
+    	<if test="paymentBank != null and paymentBank !=''">
+    		PAYMENT_BANK, 
+    	</if>
+ 	    <if test="paymentBankBranch != null and paymentBankBranch !=''">
+    		PAYMENT_BANK_BRANCH, 
+    	</if>
+ 	    <if test="paymentAcctName != null and paymentAcctName !=''">
+    		PAYMENT_ACCT_NAME, 
+    	</if>
+ 	    <if test="paymentAcctNo != null and paymentAcctNo !=''">
+    		PAYMENT_ACCT_NO, 
+    	</if>
+ 	    <if test="paymentProvinceCode != null and paymentProvinceCode !=''">
+    		PAYMENT_PROVINCE_CODE, 
+    	</if>
+ 	    <if test="paymentCityCode != null and paymentCityCode !=''">
+    		PAYMENT_CITY_CODE, 
+    	</if>
+    	<if test="provinceCode != null and provinceCode !=''">
+    		PROVINCE_CODE, 
+    	</if>
+    	<if test="cityCode != null and cityCode !=''">
+    		CITY_CODE, 
+    	</if>
+    	<if test="loanEffeDate != null and loanEffeDate !=''">
+    		LOAN_EFFE_DATE, 
+    	</if>
+    	<if test="partnerLoanDate != null and partnerLoanDate !=''">
+    		PARTNER_LOAN_DATE, 
+    	</if>
+    	<if test="partnerLoanFile != null and partnerLoanFile !=''">
+    		PARTNER_LOAN_FILE, 
+    	</if>
+    	<if test="partnerRealRefundDate != null and partnerRealRefundDate !=''">
+    		PARTNER_REAL_REFUND_DATE, 
+    	</if>
+    	<if test="partnerRefundFile != null and partnerRefundFile !=''">
+    		PARTNER_REFUND_FILE, 
+    	</if>
+    	<if test="partnerInterests != null and partnerInterests > 0">
+    		PARTNER_INTERESTS, 
+    	</if>
+    	<if test="repaymentRepurchaseRemark != null and repaymentRepurchaseRemark !=''">
+    		REPAYMENT_REPURCHASE_REMARK, 
+    	</if>
+    	<if test="refundLoanAmount != null and refundLoanAmount !=''">
+    		REFUND_LOAN_AMOUNT, 
+    	</if>
+    	<if test="refundXifee != null and refundXifee !=''">
+    		REFUND_XIFEE, 
+    	</if>
+    	<if test="refundDate != null and refundDate !=''">
+    		REFUND_DATE, 
+    	</if>
+    	<if test="payAcctNo != null and payAcctNo !=''">
+    		PAY_ACCT_NO, 
+    	</if>
+    	<if test="payAcctName != null and payAcctName !=''">
+    		PAY_ACCT_NAME, 
+    	</if>
+    	<if test="payBankName != null and payBankName !=''">
+    		PAY_BANK_NAME, 
+    	</if>
+    	<if test="payBankBranch != null and payBankBranch !=''">
+    		PAY_BANK_BRANCH, 
+    	</if>
+    	<if test="payProvinceCode != null and payProvinceCode !=''">
+    		PAY_PROVINCE_CODE, 
+    	</if>
+    	<if test="payCityCode != null and payCityCode !=''">
+    		PAY_CITY_CODE, 
+    	</if>
+    	<if test="payBankCode != null and payBankCode !=''">
+    		PAY_BANK_CODE, 
+    	</if>
+    	<if test="confirmLoanMoney != null and confirmLoanMoney > 0">
+    		CONFIRM_LOAN_MONEY, 
+    	</if>
+    	<if test="confirmLoanDays != null and confirmLoanDays > 0">
+    		CONFIRM_LOAN_DAYS, 
+    	</if>
+    	<if test="applyDate != null and applyDate > 0">
+    		APPLY_DATE, 
+    	</if>
+    	<if test="houseProvinceCode != null and houseProvinceCode !=''">
+    		HOUSE_PROVINCE_CODE, 
+    	</if>
+    	<if test="houseCityCode != null and houseCityCode !=''">
+    		HOUSE_CITY_CODE, 
+    	</if>
+    	
+    	<if test="partnerOrderCode != null and partnerOrderCode !=''">
+    		PARTNER_ORDER_CODE , 
+    	</if>
+    	<if test="loanPeriodLimit != null and loanPeriodLimit > 0">
+    		LOAN_PERIOD_LIMIT , 
+    	</if>
+    	<if test="isCreditLoan != null and isCreditLoan > 0">
+    		IS_CREDIT_LOAN , 
+    	</if>
+    	<if test="paymentBankPhone != null and paymentBankPhone !=''">
+    		PAYMENT_BANK_PHONE , 
+    	</if>
+    	<if test="paymentBankLineNo != null and paymentBankLineNo !=''">
+    		PAYMENT_BANK_LINE_NO , 
+    	</if>
+    	<if test="partnerGrossRate != null and partnerGrossRate > 0 ">
+    	  	PARTNER_GROSS_RATE,
+    	</if>
+    	<if test="partnerPushAccount != null and partnerPushAccount > 0">
+    	  	PARTNER_PUSH_ACCOUNT,
+    	</if>
+    	
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+    		#{pid,jdbcType=INTEGER}, 
+    	<if test="projectId != null and projectId >0"> 
+    		#{projectId}, 
+    	</if>
+    	<if test="loanId != null and loanId!=''">
+    		#{loanId}, 
+    	</if>
+    	<if test="requestStatus != null and requestStatus>0">
+    		#{requestStatus}, 
+    	</if>
+    	<if test="partnerNo != null and partnerNo !=''">
+    		#{partnerNo}, 
+    	</if>
+    	<if test="requestFiles != null and requestFiles!=''">
+    		#{requestFiles}, 
+    	</if>
+    	<if test="remark != null and remark!=''">
+    		#{remark}, 
+    	</if>
+    	
+    	<if test="requestTime != null and requestTime!=''">
+    		#{requestTime,javaType=String, jdbcType=TIMESTAMP}, 
+    	</if>
+    	<if test="updateTime != null and updateTime!=''">
+    		#{updateTime,javaType=String, jdbcType=TIMESTAMP}, 
+    	</if>
+    	<if test="approvalTime != null and approvalTime!=''">
+    		#{approvalTime,javaType=String, jdbcType=TIMESTAMP}, 
+    	</if>
+    	<if test="approvalComment != null and approvalComment!=''">
+    		#{approvalComment}, 
+    	</if>
+    	<if test="submitApprovalTime != null and submitApprovalTime!=''">
+    		#{submitApprovalTime,javaType=String, jdbcType=TIMESTAMP}, 
+    	</if>
+    	<if test="isClosed != null and isClosed >0">
+    		#{isClosed}, 
+    	</if>
+    	<if test="loanStatus != null and loanStatus >0">
+    		#{loanStatus}, 
+    	</if>
+    	<if test="loanTime != null and loanTime!=''">
+    		#{loanTime,javaType=String, jdbcType=TIMESTAMP}, 
+    	</if>
+    	<if test="loanResultTime != null and loanResultTime!=''">
+    		#{loanResultTime,javaType=String, jdbcType=TIMESTAMP}, 
+    	</if>
+    	<if test="repaymentRepurchaseType != null and repaymentRepurchaseType>0">
+    		#{repaymentRepurchaseType}, 
+    	</if>
+    	<if test="repaymentRepurchaseStatus != null and repaymentRepurchaseStatus>0">
+    		#{repaymentRepurchaseStatus}, 
+    	</if>
+    	<if test="repaymentRepurchaseTime != null and repaymentRepurchaseTime!=''">
+    		#{repaymentRepurchaseTime,javaType=String, jdbcType=TIMESTAMP}, 
+    	</if>
+    	<if test="rpResultTime != null and rpResultTime!=''">
+    	  	#{rpResultTime,javaType=String, jdbcType=TIMESTAMP}, 
+    	</if>
+    	
+    	<if test="loanAmount != null and loanAmount>0">
+    	  	#{loanAmount}, 
+    	</if>
+    	<if test="totalCost != null and totalCost>0">
+    	  	#{totalCost}, 
+    	</if>
+    	<if test="guaranteeFee != null and guaranteeFee>0">
+    	  	#{guaranteeFee}, 
+    	</if>
+    	<if test="xiFeeRequestTime != null and xiFeeRequestTime!=''">
+    	  	#{xiFeeRequestTime,javaType=String, jdbcType=TIMESTAMP}, 
+    	</if>
+    	<if test="xiFeeResultTime != null and xiFeeResultTime!=''">
+    	 	#{xiFeeResultTime,javaType=String, jdbcType=TIMESTAMP}, 
+    	</if>
+    	<if test="xiFeeStatus != null and xiFeeStatus>0">
+    	  	#{xiFeeStatus}, 
+    	</if>
+    	<if test="approvalStatus != null and approvalStatus>0">
+    	  	#{approvalStatus}, 
+    	</if>
+    	<if test="pmUserId != null and pmUserId>0">
+    	  	#{pmUserId}, 
+    	</if>
+    	
+    	<if test="approveMoney != null and approveMoney > 0">
+    	  	#{approveMoney},
+    	</if>
+    	<if test="confirmLoanStatus != null and confirmLoanStatus > 0">
+    	  	#{confirmLoanStatus},
+    	</if>
+    	<if test="confirmLoanRequestTime != null and confirmLoanRequestTime != ''">
+    	  	#{confirmLoanRequestTime,javaType=String, jdbcType=TIMESTAMP},
+    	</if>
+    	<if test="confirmLoanResultTime != null and confirmLoanResultTime != ''">
+    	  	#{confirmLoanResultTime,javaType=String, jdbcType=TIMESTAMP},
+    	</if>
+    	<if test="confirmLoanReason != null and confirmLoanReason !=''">
+    		#{confirmLoanReason}, 
+    	</if>
+    	<if test="applyLoanDate != null and applyLoanDate !=''">
+    		#{applyLoanDate,jdbcType=DATE,javaType=String},
+    	</if>
+    	<if test="paymentBank != null and paymentBank !=''">
+    		#{paymentBank}, 
+    	</if>
+ 	    <if test="paymentBankBranch != null and paymentBankBranch !=''">
+    		#{paymentBankBranch}, 
+    	</if>
+ 	    <if test="paymentAcctName != null and paymentAcctName !=''">
+    		#{paymentAcctName}, 
+    	</if>
+ 	    <if test="paymentAcctNo != null and paymentAcctNo !=''">
+    		#{paymentAcctNo}, 
+    	</if>
+ 	    <if test="paymentCityCode != null and paymentCityCode !=''">
+    		#{paymentCityCode}, 
+    	</if>
+ 	    <if test="paymentCityCode != null and paymentCityCode !=''">
+    		#{paymentCityCode}, 
+    	</if>
+    	<if test="provinceCode != null and provinceCode !=''">
+    		#{provinceCode}, 
+    	</if>
+    	<if test="cityCode != null and cityCode !=''">
+    		#{cityCode}, 
+    	</if>
+    	<if test="loanEffeDate != null and loanEffeDate !=''">
+    		#{loanEffeDate}, 
+    	</if>
+    	<if test="partnerLoanDate != null and partnerLoanDate !=''">
+    		#{partnerLoanDate}, 
+    	</if>
+    	<if test="partnerLoanFile != null and partnerLoanFile !=''">
+    		#{partnerLoanFile}, 
+    	</if>
+    	<if test="partnerRealRefundDate != null and partnerRealRefundDate !=''">
+    		#{partnerRealRefundDate}, 
+    	</if>
+    	<if test="partnerRefundFile != null and partnerRefundFile !=''">
+    		#{partnerRefundFile}, 
+    	</if>
+    	<if test="partnerInterests != null and partnerInterests > 0">
+    		#{partnerInterests}, 
+    	</if>
+    	<if test="repaymentRepurchaseRemark != null and repaymentRepurchaseRemark !=''">
+    		#{repaymentRepurchaseRemark}, 
+    	</if>
+    	<if test="refundLoanAmount != null and refundLoanAmount !=''">
+    		#{refundLoanAmount}, 
+    	</if>
+    	<if test="refundXifee != null and refundXifee !=''">
+    		#{refundXifee}, 
+    	</if>
+    	<if test="refundDate != null and refundDate !=''">
+    		#{refundDate}, 
+    	</if>
+    	<if test="payAcctNo != null and payAcctNo !=''">
+    		#{payAcctNo}, 
+    	</if>
+    	<if test="payAcctName != null and payAcctName !=''">
+    		#{payAcctName}, 
+    	</if>
+    	<if test="payBankName != null and payBankName !=''">
+    		#{payBankName}, 
+    	</if>
+    	<if test="payBankBranch != null and payBankBranch !=''">
+    		#{payBankBranch}, 
+    	</if>
+    	<if test="payProvinceCode != null and payProvinceCode !=''">
+    		#{payProvinceCode}, 
+    	</if>
+    	<if test="payCityCode != null and payCityCode !=''">
+    		#{payCityCode}, 
+    	</if>
+    	<if test="payBankCode != null and payBankCode !=''">
+    		#{payBankCode}, 
+    	</if>
+    	<if test="confirmLoanMoney != null and confirmLoanMoney > 0">
+    		#{confirmLoanMoney}, 
+    	</if>
+    	<if test="confirmLoanDays != null and confirmLoanDays > 0">
+    		#{confirmLoanDays}, 
+    	</if>
+    	<if test="applyDate != null and applyDate > 0">
+    		#{applyDate}, 
+    	</if>
+    	<if test="houseProvinceCode != null and houseProvinceCode !=''">
+    		#{houseProvinceCode}, 
+    	</if>
+    	<if test="houseCityCode != null and houseCityCode !=''">
+    		#{houseCityCode}, 
+    	</if>
+    	
+    	<if test="partnerOrderCode != null and partnerOrderCode !=''">
+    		#{partnerOrderCode}, 
+    	</if>
+    	<if test="loanPeriodLimit != null and loanPeriodLimit > 0">
+    		#{loanPeriodLimit}, 
+    	</if>
+    	<if test="isCreditLoan != null and isCreditLoan > 0">
+    		#{isCreditLoan}, 
+    	</if>
+    	<if test="paymentBankPhone != null and paymentBankPhone !=''">
+    		#{paymentBankPhone}, 
+    	</if>
+    	<if test="paymentBankLineNo != null and paymentBankLineNo !=''">
+    		#{paymentBankLineNo}, 
+    	</if>
+    	<if test="partnerGrossRate != null and partnerGrossRate > 0 ">
+    	  	#{partnerGrossRate},
+    	</if>
+    	<if test="partnerPushAccount != null and partnerPushAccount > 0">
+    	  	#{partnerPushAccount},
+    	</if>
+    	
+    </trim>
+</insert>
+<!-- 修改合作机构项目信息 -->
+<update id="updateProjectPartner" parameterType="com.xlkfinance.bms.rpc.partner.ProjectPartner">
+	UPDATE BIZ_PROJECT_PARTNER
+	<set>
+		<if test="loanId != null and loanId!=''">
+    		LOAN_ID =#{loanId}, 
+    	</if>
+    	<if test="requestStatus != null and requestStatus >0">
+    		REQUEST_STATUS = #{requestStatus}, 
+    	</if>
+    	<if test="partnerNo != null and partnerNo !=''">
+    		PARTNER_NO = #{partnerNo},
+    	</if>
+    	<if test="requestFiles != null and requestFiles!=''">
+    		REQUEST_FILES = #{requestFiles}, 
+    	</if>
+    	<if test="remark != null and remark!=''">
+    		REMARK = #{remark}, 
+    	</if>
+    	<if test="requestTime != null and requestTime!=''">
+    		REQUEST_TIME = #{requestTime,javaType=String, jdbcType=TIMESTAMP}, 
+    	</if>
+    	<if test="updateTime != null and updateTime!=''">
+    		UPDATE_TIME = #{updateTime,javaType=String, jdbcType=TIMESTAMP}, 
+    	</if>
+    	<if test="approvalTime != null and approvalTime!=''">
+    		APPROVAL_TIME = #{approvalTime,javaType=String, jdbcType=TIMESTAMP}, 
+    	</if>
+    	<if test="approvalComment != null and approvalComment!=''">
+    		APPROVAL_COMMENT = #{approvalComment}, 
+    	</if>
+    	<if test="submitApprovalTime != null and submitApprovalTime!=''">
+    		SUBMIT_APPROVAL_TIME = #{submitApprovalTime,javaType=String, jdbcType=TIMESTAMP},
+    	</if>
+    	<if test="isClosed != null and isClosed >0">
+    		IS_CLOSED = #{isClosed},
+    	</if>
+    	<if test="loanStatus != null and loanStatus >0">
+    		LOAN_STATUS = #{loanStatus},
+    	</if>
+    	<if test="loanTime != null and loanTime!=''">
+    		LOAN_TIME = #{loanTime,javaType=String, jdbcType=TIMESTAMP},
+    	</if>
+    	<if test="loanResultTime != null and loanResultTime!=''">
+    		LOAN_RESULT_TIME = #{loanResultTime,javaType=String, jdbcType=TIMESTAMP},
+    	</if>
+    	<if test="repaymentRepurchaseType != null and repaymentRepurchaseType>0">
+    		REPAYMENT_REPURCHASE_TYPE = #{repaymentRepurchaseType},
+    	</if>
+    	<if test="repaymentRepurchaseStatus != null and repaymentRepurchaseStatus>0">
+    		REPAYMENT_REPURCHASE_STATUS = #{repaymentRepurchaseStatus},
+    	</if>
+    	<if test="repaymentRepurchaseTime != null and repaymentRepurchaseTime!=''">
+    		REPAYMENT_REPURCHASE_TIME = #{repaymentRepurchaseTime,javaType=String, jdbcType=TIMESTAMP},
+    	</if>
+    	<if test="rpResultTime != null and rpResultTime!=''">
+    	  	RP_RESULT_TIME = #{rpResultTime,javaType=String, jdbcType=TIMESTAMP},
+    	</if>
+    	<if test="repaymentVoucherPath != null and repaymentVoucherPath!=''">
+    	  	REPAYMENT_VOUCHER_PATH = #{repaymentVoucherPath},
+    	</if>
+    	<if test="xiFeeVoucherPath != null and xiFeeVoucherPath!=''">
+    	  	XIFEE_VOUCHER_PATH = #{xiFeeVoucherPath},
+    	</if>
+    	<if test="loanAmount != null and loanAmount>0">
+    	 	LOAN_AMOUNT = #{loanAmount},
+    	</if>
+    	<if test="totalCost != null and totalCost>0">
+    	  	TOTAL_COST = #{totalCost},
+    	</if>
+    	<if test="guaranteeFee != null and guaranteeFee>0">
+    	  	GUARANTEE_FEE = #{guaranteeFee},
+    	</if>
+    	<if test="xiFeeRequestTime != null and xiFeeRequestTime!=''">
+    	 	XIFEE_REQUEST_TIME = #{xiFeeRequestTime,javaType=String, jdbcType=TIMESTAMP},
+    	</if>
+    	<if test="xiFeeResultTime != null and xiFeeResultTime!=''">
+    	  	XIFEE_RESULT_TIME = #{xiFeeResultTime,javaType=String, jdbcType=TIMESTAMP},
+    	</if>
+    	<if test="xiFeeStatus != null and xiFeeStatus>0">
+    	  	XIFEE_STATUS = #{xiFeeStatus},
+    	</if>
+    	<if test="approvalStatus != null and approvalStatus>0">
+    	  	APPROVAL_STATUS = #{approvalStatus},
+    	</if>
+    	<if test="approvalStatus != null and approvalStatus == -1">
+    	  	APPROVAL_STATUS = 0,
+    	</if>
+    	<if test="reApplyReason != null and reApplyReason !=''">
+    		RE_APPLY_REASON = #{reApplyReason}, 
+    	</if>
+    	<if test="approveMoney != null and approveMoney > 0">
+    	  	APPROVE_MONEY = #{approveMoney},
+    	</if>
+    	<if test="confirmLoanStatus != null and confirmLoanStatus > 0">
+    	  	CONFIRM_LOAN_STATUS = #{confirmLoanStatus},
+    	</if>
+    	<if test="confirmLoanRequestTime != null and confirmLoanRequestTime != ''">
+    	  	CONFIRM_LOAN_REQUEST_TIME = #{confirmLoanRequestTime,javaType=String, jdbcType=TIMESTAMP},
+    	</if>
+    	<if test="confirmLoanResultTime != null and confirmLoanResultTime != ''">
+    	  	CONFIRM_LOAN_RESULT_TIME = #{confirmLoanResultTime,javaType=String, jdbcType=TIMESTAMP},
+    	</if>
+    	<if test="confirmLoanReason != null and confirmLoanReason !=''">
+    		CONFIRM_LOAN_REASON = #{confirmLoanReason}, 
+    	</if>
+    	<if test="applyLoanDate != null and applyLoanDate !=''">
+    		APPLY_LOAN_DATE = #{applyLoanDate,jdbcType=DATE,javaType=String},
+    	</if>
+    	<if test="loanRemark != null and loanRemark !=''">
+    		LOAN_REMARK = #{loanRemark},
+    	</if>
+    	<if test="loanJusticeFiles != null and loanJusticeFiles !=''">
+    		LOAN_JUSTICE_FILES = #{loanJusticeFiles,javaType=String},
+    	</if>
+    	<if test="loanBlankFiles != null and loanBlankFiles!=''">
+    		LOAN_BLANK_FILES = #{loanBlankFiles,javaType=String},
+    	</if>
+    	<if test="loanOtherFiles != null and loanOtherFiles!=''">
+    		LOAN_OTHER_FILES = #{loanOtherFiles,javaType=String},
+    	</if>
+    	<if test="paymentBank != null and paymentBank !=''">
+    		PAYMENT_BANK = #{paymentBank}, 
+    	</if>
+ 	    <if test="paymentBankBranch != null and paymentBankBranch !=''">
+    		PAYMENT_BANK_BRANCH = #{paymentBankBranch}, 
+    	</if>
+ 	    <if test="paymentAcctName != null and paymentAcctName !=''">
+    		PAYMENT_ACCT_NAME = #{paymentAcctName}, 
+    	</if>
+ 	    <if test="paymentAcctNo != null and paymentAcctNo !=''">
+    		PAYMENT_ACCT_NO = #{paymentAcctNo}, 
+    	</if>
+ 	    <if test="paymentProvinceCode != null and paymentProvinceCode !=''">
+    		PAYMENT_PROVINCE_CODE = #{paymentProvinceCode}, 
+    	</if>
+ 	    <if test="paymentCityCode != null and paymentCityCode !=''">
+    		PAYMENT_CITY_CODE = #{paymentCityCode}, 
+    	</if>
+    	
+    	<if test="provinceCode != null and provinceCode !=''">
+    		PROVINCE_CODE = #{provinceCode}, 
+    	</if>
+    	<if test="cityCode != null and cityCode !=''">
+    		CITY_CODE = #{cityCode}, 
+    	</if>
+    	<if test="loanEffeDate != null and loanEffeDate !=''">
+    		LOAN_EFFE_DATE = #{loanEffeDate,jdbcType=DATE,javaType=String},
+    	</if>
+    	<if test="partnerLoanDate != null and partnerLoanDate !=''">
+    		PARTNER_LOAN_DATE = #{partnerLoanDate,jdbcType=DATE,javaType=String},
+    	</if>
+    	<if test="partnerLoanFile != null and partnerLoanFile !=''">
+    		PARTNER_LOAN_FILE = #{partnerLoanFile}, 
+    	</if>
+    	<if test="partnerRealRefundDate != null and partnerRealRefundDate !=''">
+    		PARTNER_REAL_REFUND_DATE = #{partnerRealRefundDate,jdbcType=DATE,javaType=String},
+    	</if>
+    	<if test="partnerRefundFile != null and partnerRefundFile !=''">
+    		PARTNER_REFUND_FILE = #{partnerRefundFile}, 
+    	</if>
+    	<if test="partnerInterests != null and partnerInterests > 0">
+    		PARTNER_INTERESTS = #{partnerInterests}, 
+    	</if>
+    	<if test="repaymentRepurchaseRemark != null and repaymentRepurchaseRemark !=''">
+    		REPAYMENT_REPURCHASE_REMARK = #{repaymentRepurchaseRemark}, 
+    	</if>
+    	<if test="refundLoanAmount != null and refundLoanAmount !=''">
+    		REFUND_LOAN_AMOUNT = #{refundLoanAmount}, 
+    	</if>
+    	<if test="refundXifee != null and refundXifee !=''">
+    		REFUND_XIFEE = #{refundXifee}, 
+    	</if>
+    	<if test="refundDate != null and refundDate !=''">
+    		REFUND_DATE = #{refundDate,jdbcType=DATE,javaType=String},
+    	</if>
+    	<if test="pmUserId != null and pmUserId>0">
+    	  	PM_USER_ID =#{pmUserId},
+    	</if>
+    	<if test="payAcctNo != null and payAcctNo !=''">
+    		PAY_ACCT_NO = #{payAcctNo}, 
+    	</if>
+    	<if test="payAcctName != null and payAcctName !=''">
+    		PAY_ACCT_NAME = #{payAcctName}, 
+    	</if>
+    	<if test="payBankName != null and payBankName !=''">
+    		PAY_BANK_NAME = #{payBankName}, 
+    	</if>
+    	<if test="payBankBranch != null and payBankBranch !=''">
+    		PAY_BANK_BRANCH = #{payBankBranch}, 
+    	</if>
+    	<if test="payProvinceCode != null and payProvinceCode !=''">
+    		PAY_PROVINCE_CODE = #{payProvinceCode}, 
+    	</if>
+    	<if test="payCityCode != null and payCityCode !=''">
+    		PAY_CITY_CODE = #{payCityCode}, 
+    	</if>
+    	<if test="payBankCode != null and payBankCode !=''">
+    		PAY_BANK_CODE = #{payBankCode}, 
+    	</if>
+    	<if test="confirmLoanMoney != null and confirmLoanMoney > 0">
+    		CONFIRM_LOAN_MONEY = #{confirmLoanMoney}, 
+    	</if>
+    	<if test="confirmLoanDays != null and confirmLoanDays > 0">
+    		CONFIRM_LOAN_DAYS = #{confirmLoanDays}, 
+    	</if>
+    	<if test="applyDate != null and applyDate > 0">
+    		APPLY_DATE = #{applyDate}, 
+    	</if>
+    	<if test="houseProvinceCode != null and houseProvinceCode !=''">
+    		HOUSE_PROVINCE_CODE = #{houseProvinceCode}, 
+    	</if>
+    	<if test="houseCityCode != null and houseCityCode !=''">
+    		HOUSE_CITY_CODE = #{houseCityCode}, 
+    	</if>
+    	
+    	<if test="partnerOrderCode != null and partnerOrderCode !=''">
+    		PARTNER_ORDER_CODE = #{partnerOrderCode}, 
+    	</if>
+    	<if test="loanPeriodLimit != null and loanPeriodLimit > 0">
+    		LOAN_PERIOD_LIMIT = #{loanPeriodLimit}, 
+    	</if>
+    	<if test="isCreditLoan != null and isCreditLoan > 0">
+    		IS_CREDIT_LOAN = #{isCreditLoan}, 
+    	</if>
+    	<if test="paymentBankPhone != null and paymentBankPhone !=''">
+    		PAYMENT_BANK_PHONE = #{paymentBankPhone}, 
+    	</if>
+    	<if test="paymentBankLineNo != null and paymentBankLineNo !=''">
+    		PAYMENT_BANK_LINE_NO = #{paymentBankLineNo}, 
+    	</if>
+    	
+    	<!-- 还款信息 -->
+    	<if test="refundTotalAmount != null and refundTotalAmount > 0">
+    		REFUND_TOTAL_AMOUNT = #{refundTotalAmount}, 
+    	</if>
+    	<if test="refundPenalty != null and refundPenalty > 0">
+    		REFUND_PENALTY = #{refundPenalty}, 
+    	</if>
+    	<if test="refundFine != null and refundFine > 0">
+    		REFUND_FINE = #{refundFine}, 
+    	</if>
+    	<if test="refundCompdinte != null and refundCompdinte > 0">
+    		REFUND_COMPDINTE = #{refundCompdinte}, 
+    	</if>
+    	
+    	<if test="partnerGrossRate != null and partnerGrossRate > 0 ">
+    	  	PARTNER_GROSS_RATE = #{partnerGrossRate},
+    	</if>
+    	<if test="partnerPushAccount != null and partnerPushAccount > 0">
+    	  	PARTNER_PUSH_ACCOUNT = #{partnerPushAccount},
+    	</if>
+    	
+	</set>
+	where pid = #{pid}
+</update>
+
+
+    
+    <!-- 查询已申请提交的合作结构项目 -->
+<select id="findAllProjectPartner" resultMap="partnerMapper" parameterType="com.xlkfinance.bms.rpc.partner.ProjectPartner">
+	<if test="page!=-1">
+	 
+	SELECT D.* FROM (SELECT T.*, ROWNUM RN
+	     FROM (
+	</if>
+				<![CDATA[
+			SELECT 
+					PAR.PID,PROJECT_ID ,PAR.LOAN_ID , PAR.REQUEST_STATUS, PAR.PARTNER_NO, PAR.REQUEST_FILES, PAR.REMARK, 
+					PAR.REQUEST_TIME,PAR.UPDATE_TIME, PAR.APPROVAL_TIME, PAR.APPROVAL_COMMENT, PAR.SUBMIT_APPROVAL_TIME, PAR.IS_CLOSED, 
+					PAR.LOAN_STATUS, PAR.LOAN_TIME, PAR.LOAN_RESULT_TIME,
+					PAR.REPAYMENT_REPURCHASE_TYPE , PAR.REPAYMENT_REPURCHASE_STATUS,  PAR.REPAYMENT_REPURCHASE_TIME, PAR.RP_RESULT_TIME,
+					PAR.LOAN_AMOUNT , PAR.TOTAL_COST , PAR.GUARANTEE_FEE, 
+					PAR.XIFEE_REQUEST_TIME,PAR.XIFEE_RESULT_TIME,PAR.XIFEE_STATUS ,PAR.APPROVAL_STATUS ,PAR.PM_USER_ID ,
+					PAR.REPAYMENT_VOUCHER_PATH,PAR.XIFEE_VOUCHER_PATH ,PAR.PREMIUM  ,PAR.RE_APPLY_REASON,PAR.APPROVE_MONEY ,
+					PAR.CONFIRM_LOAN_STATUS  ,PAR.CONFIRM_LOAN_REQUEST_TIME,PAR.CONFIRM_LOAN_RESULT_TIME ,PAR.CONFIRM_LOAN_REASON  ,
+					PAR.LOAN_JUSTICE_FILES,PAR.LOAN_BLANK_FILES ,PAR.LOAN_OTHER_FILES  ,PAR.APPLY_LOAN_DATE,PAR.LOAN_REMARK ,
+					PAR.PAYMENT_BANK  ,PAR.PROVINCE_CODE ,PAR.CITY_CODE ,
+					to_char(PAR.LOAN_EFFE_DATE,'yyyy-MM-dd') AS LOAN_EFFE_DATE,
+					to_char(PAR.PARTNER_LOAN_DATE,'yyyy-MM-dd') AS PARTNER_LOAN_DATE,
+					PAR.PARTNER_LOAN_FILE,PAR.PARTNER_REAL_REFUND_DATE  ,
+					PAR.PARTNER_REFUND_FILE ,
+					PAR.PARTNER_INTERESTS ,PAR.REPAYMENT_REPURCHASE_REMARK,
+					PAR.REFUND_LOAN_AMOUNT ,PAR.REFUND_XIFEE,
+					to_char(PAR.REFUND_DATE,'yyyy-MM-dd') AS REFUND_DATE,
+					PRO.PROJECT_NAME,PRO.PROJECT_NUMBER ,
+					PRO.BUSINESS_CATEGORY,SLV.LOOKUP_DESC AS BUSINESS_CATEGORY_STR,
+					PAR.PAY_ACCT_NO,PAR.PAY_ACCT_NAME,PAR.PAY_BANK_NAME,PAR.PAY_BANK_CODE,
+					PAR.CONFIRM_LOAN_MONEY,PAR.CONFIRM_LOAN_DAYS,
+					
+					PAR.REFUND_TOTAL_AMOUNT,PAR.REFUND_PENALTY,
+					PAR.REFUND_FINE,PAR.REFUND_COMPDINTE,
+					PAR.PARTNER_ORDER_CODE,
+					
+					PRO.PROJECT_SOURCE,
+					TO_CHAR((PAR.PARTNER_LOAN_DATE+PAR.APPLY_DATE-1),'yyyy-MM-dd') AS PLAN_REFUND_DATE
+					
+					FROM BIZ_PROJECT_PARTNER PAR 
+						LEFT JOIN BIZ_PROJECT PRO ON PAR.PROJECT_ID = PRO.PID 
+						LEFT JOIN SYS_LOOKUP_VAL SLV ON SLV.PID = PRO.BUSINESS_CATEGORY
+			WHERE PRO.STATUS = 1 
+				AND PRO.IS_CHECHAN = 0 
+				  ]]>
+	
+		AND (
+        
+	       	( PRO.PROJECT_SOURCE !=  1 
+	         	AND PRO.IS_NEED_FINANCIAL  != 2	
+	         	<!-- 小科数据权限 -->
+		        <if test="userIds!=null and userIds.size()>0">
+					AND	PRO.PM_USER_ID in
+					<foreach item="itemId" collection="userIds" open="(" separator="," close=")">
+					          #{itemId}
+					</foreach>
+				</if>
+	       	) 
+	        OR     
+	       <!-- 万通条件 -->
+	       ( PRO.PROJECT_SOURCE =  1
+	         AND PRO.IS_NEED_FINANCIAL  = 2	
+	       )
+	   )
+	
+	
+	
+	<if test="isClosed != null and isClosed >0">
+		AND PAR.IS_CLOSED = #{isClosed}
+	</if>
+	<if test="requestStatusList !=null and requestStatusList.size()>0">
+		AND	PAR.REQUEST_STATUS IN
+		<foreach item="itemId" collection="requestStatusList" open="(" separator="," close=")">
+		          #{itemId}
+		</foreach>
+	</if>
+   <if test="fromPlanRefundDate !=null and fromPlanRefundDate !=''">
+		AND PAR.PARTNER_LOAN_DATE <![CDATA[>=]]>
+		TO_DATE(#{fromPlanRefundDate},'yyyy-mm-dd') -PAR.APPLY_DATE +1
+	</if>
+	
+	<if test="toPlanRefundDate !=null and toPlanRefundDate !=''">
+		AND PAR.PARTNER_LOAN_DATE <![CDATA[<=]]>
+		TO_DATE(CONCAT(#{toPlanRefundDate},' 23:59:59'),'yyyy-mm-dd hh24:mi:ss')-PAR.APPLY_DATE +1
+	</if>
+	<if test="requestStatus != null and requestStatus >0">
+		AND PAR.REQUEST_STATUS = #{requestStatus}
+	</if>
+	<if test="loanStatus != null and loanStatus >0">
+		AND PAR.LOAN_STATUS = #{loanStatus}
+	</if>
+	<if test="xiFeeStatus != null and xiFeeStatus >0">
+		 AND PAR.XIFEE_STATUS = #{xiFeeStatus}
+	</if>
+	
+	<if test="repaymentRepurchaseStatus != null and repaymentRepurchaseStatus == 1">
+		AND (PAR.REPAYMENT_REPURCHASE_STATUS = #{repaymentRepurchaseStatus} or  PAR.REPAYMENT_REPURCHASE_STATUS IS NULL)
+	</if>
+	<if test="repaymentRepurchaseStatus != null and repaymentRepurchaseStatus >1">
+		AND PAR.REPAYMENT_REPURCHASE_STATUS = #{repaymentRepurchaseStatus}
+	</if>
+	<if test="approvalStatus != null and approvalStatus >0">
+		 AND PAR.APPROVAL_STATUS = #{approvalStatus}
+	</if>
+	<if test="projectName != null and projectName!=''">
+		AND PRO.PROJECT_NAME like '%${projectName}%'
+	</if>
+	<if test="projectNumber != null and projectNumber!=''">
+		AND PRO.PROJECT_NUMBER like '%${projectNumber}%'
+	</if>
+	<if test="confirmLoanStatus != null and confirmLoanStatus>0">
+		AND PAR.CONFIRM_LOAN_STATUS = #{confirmLoanStatus}
+	</if>
+	<if test="loanIds!=null and loanIds.size()>0">
+		AND	PAR.LOAN_ID IN
+		<foreach item="itemId" collection="loanIds" open="(" separator="," close=")">
+		          #{itemId}
+		</foreach>
+	</if>
+	<if test="partnerNo != null and partnerNo!=''">
+		AND PAR.PARTNER_NO = #{partnerNo}
+	</if>
+	<!-- 排序    1：审核列表 2 放款列表  3 还款回购列表-->
+	<if test="orderByType != null and orderByType == 0">
+		ORDER BY PAR.PID  DESC ,PAR.SUBMIT_APPROVAL_TIME DESC
+	</if>
+	<if test="orderByType != null and orderByType == 1">
+		ORDER BY PAR.SUBMIT_APPROVAL_TIME DESC, PAR.PID  DESC  
+	</if>
+	<if test="orderByType != null and orderByType == 2">
+		ORDER BY PAR.LOAN_TIME DESC, PAR.PID  DESC  
+	</if>
+	<if test="orderByType != null and orderByType == 3">
+		ORDER BY PAR.REPAYMENT_REPURCHASE_TIME DESC, PAR.PID  DESC  
+	</if>
+	
+	
+	<if test="page!=-1">
+		<![CDATA[) T
+		WHERE ROWNUM <=#{page}*#{rows}
+		) D
+		WHERE D.RN > ((#{page}-1)*#{rows})]]>
+	</if>
+   </select>
+    
+    
+     <!-- 查询已审批结束，且未申请提交的贷前赎楼项目总数  -->
+<select id="findAllProjectPartnerCount" resultType="java.lang.Integer" parameterType="com.xlkfinance.bms.rpc.partner.ProjectPartner">
+	<![CDATA[
+	SELECT COUNT(PID) FROM (
+		SELECT PAR.*,PRO.PROJECT_NAME,PRO.PROJECT_NUMBER 
+		FROM BIZ_PROJECT_PARTNER PAR LEFT JOIN BIZ_PROJECT PRO 
+		ON PAR.PROJECT_ID = PRO.PID 
+			WHERE PRO.STATUS = 1 AND PRO.IS_CHECHAN = 0   ]]>
+	
+		AND (
+        
+	       	( PRO.PROJECT_SOURCE !=  1 
+	         	AND PRO.IS_NEED_FINANCIAL  != 2	
+	         	<!-- 小科数据权限 -->
+		        <if test="userIds!=null and userIds.size()>0">
+					AND	PRO.PM_USER_ID in
+					<foreach item="itemId" collection="userIds" open="(" separator="," close=")">
+					          #{itemId}
+					</foreach>
+				</if>
+	       	) 
+	        OR     
+	       <!-- 万通条件 -->
+	       ( PRO.PROJECT_SOURCE =  1
+	         AND PRO.IS_NEED_FINANCIAL  = 2	
+	       )
+	   )
+	
+	<if test="isClosed != null and isClosed >0">
+		AND PAR.IS_CLOSED = #{isClosed}
+	</if>
+	<if test="requestStatusList !=null and requestStatusList.size()>0">
+		AND	PAR.REQUEST_STATUS IN
+		<foreach item="itemId" collection="requestStatusList" open="(" separator="," close=")">
+		          #{itemId}
+		</foreach>
+	</if>
+	<if test="requestStatus != null and requestStatus >0">
+		AND PAR.REQUEST_STATUS = #{requestStatus}
+	</if>
+	
+	<if test="fromPlanRefundDate !=null and fromPlanRefundDate !=''">
+		AND PAR.PARTNER_LOAN_DATE <![CDATA[>=]]>
+		TO_DATE(#{fromPlanRefundDate},'yyyy-mm-dd')-PAR.APPLY_DATE +1
+	</if>
+	
+	<if
+		test="toPlanRefundDate !=null and toPlanRefundDate !=''">
+		AND PAR.PARTNER_LOAN_DATE <![CDATA[<=]]>
+		TO_DATE(CONCAT(#{toPlanRefundDate},' 23:59:59'),'yyyy-mm-dd hh24:mi:ss')-PAR.APPLY_DATE +1
+	</if>
+	
+	<if test="loanStatus != null and loanStatus >0">
+		AND PAR.LOAN_STATUS = #{loanStatus}
+	</if>
+	<if test="xiFeeStatus != null and xiFeeStatus >0">
+		 AND PAR.XIFEE_STATUS = #{xiFeeStatus}
+	</if>
+	<if test="repaymentRepurchaseStatus != null and repaymentRepurchaseStatus >0">
+		AND PAR.REPAYMENT_REPURCHASE_STATUS = #{repaymentRepurchaseStatus}
+	</if>
+	<if test="approvalStatus != null and approvalStatus >0">
+		 AND PAR.APPROVAL_STATUS = #{approvalStatus}
+	</if>
+	<if test="projectName != null and projectName!=''">
+		AND PRO.PROJECT_NAME like '%${projectName}%'
+	</if>
+	<if test="projectNumber != null and projectNumber!=''">
+		AND PRO.PROJECT_NUMBER like '%${projectNumber}%'
+	</if>
+	<if test="confirmLoanStatus != null and confirmLoanStatus>0">
+		AND PAR.CONFIRM_LOAN_STATUS = #{confirmLoanStatus}
+	</if>
+	<if test="loanIds!=null and loanIds.size()>0">
+		AND	PAR.LOAN_ID IN
+		<foreach item="itemId" collection="loanIds" open="(" separator="," close=")">
+		          #{itemId}
+		</foreach>
+	</if>
+	<if test="partnerNo != null and partnerNo!=''">
+		AND PAR.PARTNER_NO = #{partnerNo}
+	</if>
+	ORDER BY PRO.REQUEST_DTTM) DP
+    </select>
+    
+    
+    <!-- 修改关闭单据 -->
+    <update id="updatePartnerForClosed" parameterType="java.lang.String">
+    	UPDATE BIZ_PROJECT_PARTNER SET IS_CLOSED = 2 WHERE LOAN_ID = #{loanId}
+    </update>
+    
+    <!-- 修改放款信息 -->
+    <update id="updateLoanStatus" parameterType="com.xlkfinance.bms.rpc.partner.ProjectPartner">
+    	UPDATE BIZ_PROJECT_PARTNER
+    	<set>
+	    	<if test="loanStatus != null and loanStatus >0">
+	    	LOAN_STATUS = #{loanStatus},
+	    	</if>
+	    	<if test="loanTime != null and loanTime!=''">
+	    	LOAN_TIME = #{loanTime,javaType=String, jdbcType=TIMESTAMP},
+	    	</if>
+	    	<if test="loanResultTime != null and loanResultTime!=''">
+	    	LOAN_RESULT_TIME = #{loanResultTime,javaType=String, jdbcType=TIMESTAMP},
+	    	</if>
+	    	<if test="partnerLoanDate != null and partnerLoanDate !=''">
+	    		PARTNER_LOAN_DATE = #{partnerLoanDate,jdbcType=DATE,javaType=String},
+	    	</if>
+	    	<if test="repaymentRepurchaseStatus != null and repaymentRepurchaseStatus>0">
+	    		REPAYMENT_REPURCHASE_STATUS = #{repaymentRepurchaseStatus},
+	    	</if>
+	    	<if test="loanJusticeFiles != null and loanJusticeFiles !=''">
+	    		LOAN_JUSTICE_FILES = #{loanJusticeFiles,javaType=String},
+	    	</if>
+	    	<if test="loanBlankFiles != null and loanBlankFiles!=''">
+	    		LOAN_BLANK_FILES = #{loanBlankFiles,javaType=String},
+	    	</if>
+	    	<if test="loanOtherFiles != null and loanOtherFiles!=''">
+	    		LOAN_OTHER_FILES = #{loanOtherFiles,javaType=String},
+	    	</if>
+		</set>
+		WHERE LOAN_ID=#{loanId}
+    </update>
+    <!-- 修改还款信息 -->
+    <update id="updateRepaymentInfo" parameterType="com.xlkfinance.bms.rpc.partner.ProjectPartner">
+    	UPDATE BIZ_PROJECT_PARTNER
+    	<set>
+    	<if test="repaymentRepurchaseType != null and repaymentRepurchaseType>0">
+    		REPAYMENT_REPURCHASE_TYPE = #{repaymentRepurchaseType},
+    	</if>
+    	<if test="repaymentRepurchaseStatus != null and repaymentRepurchaseStatus>0">
+    		REPAYMENT_REPURCHASE_STATUS = #{repaymentRepurchaseStatus},
+    	</if>
+    	<if test="repaymentRepurchaseTime != null and repaymentRepurchaseTime!=''">
+    		REPAYMENT_REPURCHASE_TIME = #{repaymentRepurchaseTime,javaType=String, jdbcType=TIMESTAMP},
+    	</if>
+    	<if test="rpResultTime != null and rpResultTime!=''">
+    	  	RP_RESULT_TIME = #{rpResultTime,javaType=String, jdbcType=TIMESTAMP},
+    	</if>
+    	<if test="repaymentVoucherPath != null and repaymentVoucherPath!=''">
+    	  	REPAYMENT_VOUCHER_PATH = #{repaymentVoucherPath},
+    	</if>
+	</set>
+    	WHERE LOAN_ID=#{loanId}
+    </update>
+    <!-- 修改息费信息 -->
+    <update id="updateXiFeeInfo" parameterType="com.xlkfinance.bms.rpc.partner.ProjectPartner">
+    	UPDATE BIZ_PROJECT_PARTNER
+    	<set>
+    	<if test="loanAmount != null and loanAmount>0">
+    	  	LOAN_AMOUNT = #{loanAmount},
+    	</if>
+    	<if test="totalCost != null and totalCost>0">
+    	  	TOTAL_COST = #{totalCost},
+    	</if>
+    	<if test="guaranteeFee != null and guaranteeFee>0">
+    	  	GUARANTEE_FEE = #{guaranteeFee},
+    	</if>
+    	<if test="xiFeeRequestTime != null and xiFeeRequestTime!=''">
+    	  	XIFEE_REQUEST_TIME = #{xiFeeRequestTime,javaType=String, jdbcType=TIMESTAMP},
+    	</if>
+    	<if test="xiFeeResultTime != null and xiFeeResultTime!=''">
+    	  	XIFEE_RESULT_TIME = #{xiFeeResultTime,javaType=String, jdbcType=TIMESTAMP},
+    	</if>
+    	<if test="xiFeeStatus != null and xiFeeStatus>0">
+    	  	XIFEE_STATUS = #{xiFeeStatus},
+    	</if>
+    	<if test="xiFeeVoucherPath != null and xiFeeVoucherPath!=''">
+    	  	XIFEE_VOUCHER_PATH = #{xiFeeVoucherPath},
+    	</if>
+	</set>
+    	WHERE 1=1 
+    	<if test="loanIds!=null and loanIds.size()>0">
+			AND	LOAN_ID IN
+			<foreach item="itemId" collection="loanIds" open="(" separator="," close=")">
+			          #{itemId}
+			</foreach>
+		</if>
+		<if test="loanId != null and loanId!=''">
+		 	AND LOAN_ID=#{loanId}
+		</if>
+    </update>
+    
+    <!-- 批量修改息费信息 -->
+	<update id="updateXiFeeInfos" parameterType="java.util.List">
+		begin
+		 <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+			UPDATE BIZ_PROJECT_PARTNER
+			<set>
+		    	<if test="item.loanAmount != null and item.loanAmount>0">
+		    	  	LOAN_AMOUNT = #{item.loanAmount},
+		    	</if>
+		    	<if test="item.totalCost != null and item.totalCost>0">
+		    	  	TOTAL_COST = #{item.totalCost},
+		    	</if>
+		    	<if test="item.premium != null and item.premium>0">
+		    	  	PREMIUM = #{item.premium},
+		    	</if>
+		    	<if test="item.guaranteeFee != null and item.guaranteeFee>0">
+		    	  	GUARANTEE_FEE = #{item.guaranteeFee},
+		    	</if>
+		    	<if test="item.xiFeeRequestTime != null and item.xiFeeRequestTime!=''">
+		    	  	XIFEE_REQUEST_TIME = #{item.xiFeeRequestTime,javaType=String, jdbcType=TIMESTAMP},
+		    	</if>
+		    	<if test="item.xiFeeResultTime != null and item.xiFeeResultTime!=''">
+		    	  	XIFEE_RESULT_TIME = #{item.xiFeeResultTime,javaType=String, jdbcType=TIMESTAMP},
+		    	</if>
+		    	<if test="item.xiFeeStatus != null and item.xiFeeStatus>0">
+		    	  	XIFEE_STATUS = #{item.xiFeeStatus},
+		    	</if>
+		    	<if test="item.xiFeeVoucherPath != null and item.xiFeeVoucherPath!=''">
+		    	  	XIFEE_VOUCHER_PATH = #{item.xiFeeVoucherPath},
+		    	</if>
+			</set>
+			where LOAN_ID =  #{item.loanId}
+				<if test="item.queryXiFeeStatus != null and item.queryXiFeeStatus >0 ">
+					and XIFEE_STATUS=#{item.queryXiFeeStatus}
+				</if>
+		 </foreach>
+		 ;end;
+	</update>
+	
+ 
+	<!--  查询机构合作表，并懒加载项目相关数据 -->
+	<select id="findProjectPartnerAndLazy" resultMap="partnerDtoLazyMapper" parameterType="com.xlkfinance.bms.rpc.partner.ProjectPartner">
+		SELECT 
+				<!-- 项目合作机构信息 -->
+		        PAR.PID,
+		        PRO.PID AS PROJECT_ID,PRO.BUSINESS_CONTACTS,PRO.MANAGERS,
+		        PRO.PROJECT_NAME,PRO.PROJECT_NUMBER,
+		        PRO.BUSINESS_CATEGORY,SLV.LOOKUP_DESC AS BUSINESS_CATEGORY_STR,
+		        
+		        PAR.PARTNER_NO ,PAR.LOAN_ID,PAR.REMARK,PAR.REQUEST_FILES,
+		        PAR.RE_APPLY_REASON,PAR.LOAN_JUSTICE_FILES ,PAR.LOAN_BLANK_FILES,
+		        PAR.LOAN_OTHER_FILES,PAR.CONFIRM_LOAN_REASON,PAR.REPAYMENT_VOUCHER_PATH,
+		        PAR.XIFEE_VOUCHER_PATH,
+		        PAR.REPAYMENT_REPURCHASE_TYPE,PAR.REPAYMENT_REPURCHASE_STATUS,
+		        PAR.LOAN_STATUS,PAR.LOAN_REMARK,
+		        <!-- 经办人 -->
+		        PAR.PM_USER_ID,
+		        <!-- 借款帐号信息 -->
+		        PAR.PAYMENT_BANK,PAR.PAYMENT_BANK_BRANCH,PAR.PAYMENT_ACCT_NAME,PAR.PAYMENT_ACCT_NO,
+		        PAR.PAYMENT_PROVINCE_CODE,PAR.PAYMENT_CITY_CODE,PAR.PAY_BANK_CODE,
+		        
+		        PAR.PROVINCE_CODE,PAR.CITY_CODE,
+		        to_char(PAR.LOAN_EFFE_DATE,'yyyy-MM-dd') AS LOAN_EFFE_DATE,
+		        to_char(PAR.PARTNER_LOAN_DATE,'yyyy-MM-dd') AS PARTNER_LOAN_DATE,
+				PAR.REFUND_LOAN_AMOUNT ,PAR.REFUND_XIFEE,
+				to_char(PAR.REFUND_DATE,'yyyy-MM-dd') AS REFUND_DATE,
+				to_char(PAR.PARTNER_REAL_REFUND_DATE,'yyyy-MM-dd') AS PARTNER_REAL_REFUND_DATE,
+				PAR.PARTNER_INTERESTS,PAR.PARTNER_LOAN_FILE,PAR.PARTNER_REFUND_FILE,
+				<!-- 公司回款帐号 -->
+				PAR.PAY_ACCT_NO,PAR.PAY_ACCT_NAME,PAR.PAY_BANK_NAME,
+				PAR.PAY_BANK_BRANCH,PAR.PAY_PROVINCE_CODE,PAR.PAY_CITY_CODE,
+				<!-- 确认放款金额和天数 -->
+				PAR.CONFIRM_LOAN_MONEY,PAR.CONFIRM_LOAN_DAYS,
+				PAR.APPROVE_MONEY,
+				<!-- 物业省市编码 -->
+				PAR.HOUSE_PROVINCE_CODE,PAR.HOUSE_CITY_CODE,
+				
+				<!-- 预留手机号和借款相关字段字段 -->
+				PAR.PARTNER_ORDER_CODE,
+				PAR.LOAN_PERIOD_LIMIT,
+				PAR.IS_CREDIT_LOAN,
+				PAR.PAYMENT_BANK_PHONE,
+				PAR.PAYMENT_BANK_LINE_NO,
+								
+		        SU.REAL_NAME AS PM_USER_NAME,
+				<!-- 客户信息 -->
+				CUS.ACCT_ID,
+				CUS.CHINA_NAME USER_NAME,
+		        CUS.CERT_TYPE , CUS.CERT_NUMBER CARD_NO,
+		        CUS.TELEPHONE PHONE,
+				   PD.PRODUCT_NAME BUSINESS_TYPE_STR,
+				   (CASE WHEN PD.PRODUCT_NAME = '交易现金赎楼'THEN 1 WHEN PD.PRODUCT_NAME = '非交易现金赎楼'THEN 2 ELSE 3 END)
+				   	AS BUSINESS_TYPE, 
+		        
+		        GUAR.LOAN_MONEY APPLY_MONEY,
+		        
+		        NVL(PAR.APPLY_DATE,FORE.LOAN_DAYS) AS APPLY_DATE,
+		        NVL(to_char(PAR.APPLY_LOAN_DATE,'yyyy-MM-dd'),to_char(FORE.RECE_DATE,'yyyy-MM-dd')) AS APPLY_LOAN_DATE,
+			     <!-- 客户经理 -->
+		        (SELECT REAL_NAME FROM SYS_USER PMSU WHERE PMSU.PID = PRO.PM_USER_ID ) AS PM_CUSTOMER_NAME,
+		        CUS.SEX,CUS.LIVE_ADDR,
+		        
+		        <!-- 贷款银行 -->
+		        (SELECT BANK_NAME FROM OLD_LOAN_BANK_V SBO WHERE SBO.PID = FORE.PROJECT_ID ) AS OLD_BANK_NAME,
+		        FORE.OLD_LOAN_MONEY,FORE.OLD_LOAN_PERSON,FORE.OLD_LOAN_PHONE,
+		        (SELECT BANK_NAME FROM SYS_BANK_INFO SBN WHERE SBN.PID = FORE.NEW_LOAN_BANK ) AS NEW_BANK_NAME,
+		        FORE.NEW_LOAN_MONEY,FORE.NEW_LOAN_PERSON,FORE.NEW_LOAN_PHONE,
+		        FORE.PAYMENT_TYPE,
+		       <!--公积金银行-->
+		       (CASE WHEN FORE.ACCUMULATION_FUND_BANK = '' THEN '' 
+		             WHEN FORE.ACCUMULATION_FUND_BANK = -1 THEN ''
+		             ELSE 
+		                (SELECT BANK_NAME FROM SYS_BANK_INFO SBO WHERE SBO.PID = FORE.ACCUMULATION_FUND_BANK)
+		        END
+		       )AS ACCUMULATION_FUND_BANK,
+		       FORE.ACCUMULATION_FUND_MONEY,
+		       <!-- 监管银行 -->
+		       (CASE WHEN FORE.SUPERVISE_DEPARTMENT = '-1' THEN ''
+                 WHEN isNumber(FORE.SUPERVISE_DEPARTMENT) = 0 THEN FORE.SUPERVISE_DEPARTMENT 
+		             WHEN FORE.SUPERVISE_DEPARTMENT = '银行' THEN '银行'
+		             ELSE 
+		                (SELECT BANK_NAME FROM SYS_BANK_INFO SBO WHERE SBO.PID = FORE.SUPERVISE_DEPARTMENT)
+		        END
+		       )AS SUPERVISE_DEPARTMENT,
+		       TO_CHAR(FORE.NOTARIZATION_DATE,'yyyy-MM-dd') AS NOTARIZATION_DATE,
+		       FORE.FUNDS_MONEY,
+		       <!-- 物业信息 -->
+		       PPRO.HOUSE_NAME,PPRO.AREA,PPRO.COST_MONEY,PPRO.TRANASCTION_MONEY,PPRO.HOUSE_PROPERTY_CARD,
+		       PPRO.BUYER_NAME,PPRO.BUYER_CARD_NO,PPRO.BUYER_ADDRESS
+		        
+			FROM BIZ_PROJECT PRO
+			
+		   		LEFT JOIN BIZ_PRODUCT PD ON PD.PID = PRO.PRODUCT_ID
+		   		LEFT JOIN CUS_PERSON CUS ON PRO.ACCT_ID = CUS.ACCT_ID AND CUS.RELATION_TYPE = 1
+		   		LEFT JOIN BIZ_PROJECT_FORECLOSURE FORE ON FORE.PROJECT_ID = PRO.PID
+		   		LEFT JOIN BIZ_PROJECT_GUARANTEE GUAR ON GUAR.PROJECT_ID = PRO.PID
+		   		LEFT JOIN BIZ_PROJECT_PARTNER PAR ON PAR.PROJECT_ID = PRO.PID
+		    	LEFT JOIN SYS_USER SU ON PAR.PM_USER_ID = SU.PID 
+		       	LEFT JOIN BIZ_PROJECT_PROPERTY PPRO ON PPRO.PROJECT_ID = PRO.PID
+		       	LEFT JOIN SYS_LOOKUP_VAL SLV ON SLV.PID = PRO.BUSINESS_CATEGORY
+		     
+		    WHERE  PRO.PID = #{projectId}
+			<if test="userIds!=null and userIds.size()>0">
+				AND	PRO.PM_USER_ID in
+				<foreach item="itemId" collection="userIds" open="(" separator="," close=")">
+				          #{itemId}
+				</foreach>
+			</if>
+			<if test="pid != null and pid > 0">
+				AND PAR.PID = #{pid}
+			</if>
+			<if test="projectName != null and projectName!=''">
+				AND PRO.PROJECT_NAME like '%${projectName}%'
+			</if>
+			<if test="projectNumber != null and projectNumber!=''">
+				AND PRO.PROJECT_NUMBER like '%${projectNumber}%'
+			</if>
+			<if test="partnerNo != null and partnerNo!=''">
+				AND PAR.PARTNER_NO = #{partnerNo}
+			</if>
+	</select>
+	
+	<!--查询项目共同借款人 -->
+	<select id="findPublicManByProjectId" resultMap="publicManMapper" parameterType="java.lang.Integer">
+	 	
+	 	SELECT CUS.CHINA_NAME, CUS.SEX,CUS.CERT_TYPE ,CUS.CERT_NUMBER ,
+	        <!-- 关系 -->
+	        (CASE WHEN CUS.RELATION = ''THEN '' 
+	               ELSE 
+	                 (select lv.LOOKUP_DESC from SYS_LOOKUP_VAL lv 
+	                        left join SYS_LOOKUP l on l.PID = lv.LOOKUP_ID
+	                 where l.lookup_type = 'RELATION'
+	                       and lv.LOOKUP_VAL = TO_CHAR(CUS.RELATION_TYPE))
+	         END
+	        )AS RELATION,
+	        CUS.WORK_SERVICE,CUS.MONTH_INCOME
+	        FROM BIZ_PROJECT PRO
+	        LEFT JOIN BIZ_PROJECT_PUBLIC_MAN PPM ON PRO.PID = PPM.PROJECT_ID
+	        LEFT JOIN CUS_PERSON CUS ON PPM.PERSON_ID = CUS.PID
+	        where PRO.PID = #{projectId}
+	</select>
+	<!--查询项目贷前审批工作流记录 -->
+	<select id="findForeLoanWorkFlowByProjectId" resultMap="workFlowMapper" parameterType="java.lang.Integer">
+		SELECT DISTINCT 
+			T.ACT_NAME_ AS taskName, 
+			TO_CHAR(T.START_TIME_ ,'yyyy-mm-dd HH:mi:dd') AS allocationDttm,
+			TO_CHAR(T.END_TIME_ ,'yyyy-mm-dd HH:mi:dd') AS completeDttm,
+         <!-- 当前操作人 --> 
+	       (CASE WHEN T.ASSIGNEE_  = '' THEN '' 
+	             ELSE 
+	                (SELECT REAL_NAME FROM SYS_USER WHERE USER_NAME=T.ASSIGNEE_ )
+	        END
+	       )AS taskUserName,
+        	UTL_RAW.CAST_TO_VARCHAR2(C.FULL_MSG_) AS workflowName
+       FROM act_hi_actinst T 
+             LEFT JOIN act_hi_comment C ON T.TASK_ID_ = C.TASK_ID_
+             LEFT JOIN BIZ_WORKFLOW_PROJECT W ON W.WORKFLOW_INSTANCE_ID = T.PROC_INST_ID_
+             WHERE 
+                   W.PROCESS_DEFINITION_KEY in( 'foreLoanRequestProcess' , 'creditLoanRequestProcess')
+                   AND T.TASK_ID_ > 0
+                   AND W.PROJECT_ID = #{projectId}
+          order by completeDttm ASC
+	</select>
+	
+	
+	<!--查询项目贷中办理动态状态 记录-->
+	<select id="findInLoanStatusByProjectId" resultMap="inLoanStatusMapper" parameterType="java.lang.Integer">
+  
+		  select   A.PID, A.HANDLE_ID ,A.HANDLE_FLOW_ID , 
+		  		   to_char( A.FINISH_DATE,'yyyy-MM-dd') AS FINISH_DATE,
+		  		   A.HANDLE_DAY, A.OPERATOR,
+		           A.DIFFER,  A.REMARK,
+		           D.NAME AS HANDLE_FLOW_NAME,D.FIX_DAY,
+		           B.REAL_NAME AS CURRENT_HANDLE_USER_NAME
+		    FROM BIZ_LOAN_HANDLE_DYNAMIC A
+		           LEFT JOIN SYS_USER B   ON A.CURRENT_HANDLE_USER_ID = B.PID
+		           LEFT JOIN BIZ_LOAN_HANDLE_INFO C ON A.HANDLE_ID = C.PID
+		           LEFT JOIN BIZ_LOAN_HANDLE_FLOW D ON A.HANDLE_FLOW_ID = D.PID
+		           WHERE A.CURRENT_HANDLE_USER_ID > 0
+		                 AND C.PROJECT_ID = #{projectId} 
+		           ORDER BY A.HANDLE_FLOW_ID ASC 
+	</select>
+	
+	
+	<!--查询当前机构己申请的金额总和  过滤己回款-->
+	<select id="findLoanAmountCountByPartnerNo" resultType="java.lang.Double" parameterType="com.xlkfinance.bms.rpc.partner.ProjectPartner">
+		SELECT NVL(SUM(PAR.LOAN_AMOUNT),0)  FROM BIZ_PROJECT_PARTNER PAR
+	       WHERE	PAR.PARTNER_NO = #{partnerNo}
+	       
+			 	AND PAR.LOAN_ID IS NOT NULL 
+				AND (PAR.REPAYMENT_REPURCHASE_STATUS !=3 OR PAR.REPAYMENT_REPURCHASE_STATUS  IS NULL)
+			<if test="isClosed != null and isClosed > 0">
+				AND PAR.IS_CLOSED = #{isClosed}
+			</if>
+			<if test="beginTime != null and beginTime != ''">
+				AND PAR.REQUEST_TIME <![CDATA[>=]]> to_date(#{beginTime},'yyyy-mm-dd hh24:mi:ss')
+			</if>
+			<if test="endTime != null and endTime != ''">
+				AND PAR.REQUEST_TIME <![CDATA[<=]]> to_date(#{endTime},'yyyy-mm-dd hh24:mi:ss')  
+			</if>
+	</select>
+	
+	
+	
+	<!-- 更新还款金额信息 -->
+    <update id="updatePartnerRefundLoanMoney" parameterType="com.xlkfinance.bms.rpc.partner.ProjectPartner">
+    	UPDATE BIZ_PROJECT_PARTNER
+    	<set>
+    	<if test="refundLoanAmount != null and refundLoanAmount > 0">
+    		REFUND_LOAN_AMOUNT = NVL(REFUND_LOAN_AMOUNT,0) + #{refundLoanAmount},
+    	</if>
+    	<if test="refundXifee != null and refundXifee>0">
+    		REFUND_XIFEE = NVL(REFUND_XIFEE,0) +  #{refundXifee},
+    	</if>
+    	<if test="updateTime != null and updateTime!=''">
+    		UPDATE_TIME = #{updateTime,javaType=String, jdbcType=TIMESTAMP}, 
+    	</if>
+    	<if test="repaymentRepurchaseType != null and repaymentRepurchaseType>0">
+    		REPAYMENT_REPURCHASE_TYPE = #{repaymentRepurchaseType},
+    	</if>
+    	<if test="repaymentRepurchaseStatus != null and repaymentRepurchaseStatus>0">
+    		REPAYMENT_REPURCHASE_STATUS = #{repaymentRepurchaseStatus},
+    	</if>
+    	<if test="repaymentRepurchaseTime != null and repaymentRepurchaseTime!=''">
+    		REPAYMENT_REPURCHASE_TIME = #{repaymentRepurchaseTime,javaType=String, jdbcType=TIMESTAMP},
+    	</if>
+    	<if test="rpResultTime != null and rpResultTime!=''">
+    	  	RP_RESULT_TIME = #{rpResultTime,javaType=String, jdbcType=TIMESTAMP},
+    	</if>
+	</set>
+    	WHERE PID=#{pid}
+    </update>
+	
+	
+	
+ 	<!-- 批量修改项目信息信息 -->
+	<update id="updateBatchProjectParner" parameterType="java.util.List">
+		begin
+		 <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+			UPDATE BIZ_PROJECT_PARTNER
+				<set>
+				    	<if test="item.requestStatus != null and item.requestStatus >0">
+				    		REQUEST_STATUS = #{item.requestStatus}, 
+				    	</if>
+				    	<if test="item.partnerNo != null and item.partnerNo !=''">
+				    		PARTNER_NO = #{item.partnerNo},
+				    	</if>
+				    	<if test="item.requestFiles != null and item.requestFiles!=''">
+				    		REQUEST_FILES = #{item.requestFiles}, 
+				    	</if>
+				    	<if test="item.remark != null and item.remark!=''">
+				    		REMARK = #{item.remark}, 
+				    	</if>
+				    	<if test="item.requestTime != null and item.requestTime!=''">
+				    		REQUEST_TIME = #{item.requestTime,javaType=String, jdbcType=TIMESTAMP}, 
+				    	</if>
+				    	<if test="item.updateTime != null and item.updateTime!=''">
+				    		UPDATE_TIME = #{item.updateTime,javaType=String, jdbcType=TIMESTAMP}, 
+				    	</if>
+				    	<if test="item.approvalTime != null and item.approvalTime!=''">
+				    		APPROVAL_TIME = #{item.approvalTime,javaType=String, jdbcType=TIMESTAMP}, 
+				    	</if>
+				    	<if test="item.approvalComment != null and item.approvalComment!=''">
+				    		APPROVAL_COMMENT = #{item.approvalComment}, 
+				    	</if>
+				    	<if test="item.submitApprovalTime != null and item.submitApprovalTime!=''">
+				    		SUBMIT_APPROVAL_TIME = #{item.submitApprovalTime,javaType=String, jdbcType=TIMESTAMP},
+				    	</if>
+				    	<if test="item.isClosed != null and item.isClosed >0">
+				    		IS_CLOSED = #{item.isClosed},
+				    	</if>
+				    	<if test="item.loanStatus != null and item.loanStatus >0">
+				    		LOAN_STATUS = #{item.loanStatus},
+				    	</if>
+				    	<if test="item.loanTime != null and item.loanTime!=''">
+				    		LOAN_TIME = #{item.loanTime,javaType=String, jdbcType=TIMESTAMP},
+				    	</if>
+				    	<if test="item.loanResultTime != null and item.loanResultTime!=''">
+				    		LOAN_RESULT_TIME = #{item.loanResultTime,javaType=String, jdbcType=TIMESTAMP},
+				    	</if>
+				    	<if test="item.repaymentRepurchaseType != null and item.repaymentRepurchaseType>0">
+				    		REPAYMENT_REPURCHASE_TYPE = #{item.repaymentRepurchaseType},
+				    	</if>
+				    	<if test="item.repaymentRepurchaseStatus != null and item.repaymentRepurchaseStatus>0">
+				    		REPAYMENT_REPURCHASE_STATUS = #{item.repaymentRepurchaseStatus},
+				    	</if>
+				    	<if test="item.repaymentRepurchaseTime != null and item.repaymentRepurchaseTime!=''">
+				    		REPAYMENT_REPURCHASE_TIME = #{item.repaymentRepurchaseTime,javaType=String, jdbcType=TIMESTAMP},
+				    	</if>
+				    	<if test="item.rpResultTime != null and item.rpResultTime!=''">
+				    	  	RP_RESULT_TIME = #{item.rpResultTime,javaType=String, jdbcType=TIMESTAMP},
+				    	</if>
+				    	<if test="item.repaymentVoucherPath != null and item.repaymentVoucherPath!=''">
+				    	  	REPAYMENT_VOUCHER_PATH = #{item.repaymentVoucherPath},
+				    	</if>
+				    	<if test="item.xiFeeVoucherPath != null and item.xiFeeVoucherPath!=''">
+				    	  	XIFEE_VOUCHER_PATH = #{item.xiFeeVoucherPath},
+				    	</if>
+				    	<if test="item.loanAmount != null and item.loanAmount>0">
+				    	 	LOAN_AMOUNT = #{loanAmount},
+				    	</if>
+				    	<if test="item.totalCost != null and item.totalCost>0">
+				    	  	TOTAL_COST = #{item.totalCost},
+				    	</if>
+				    	<if test="item.guaranteeFee != null and item.guaranteeFee>0">
+				    	  	GUARANTEE_FEE = #{item.guaranteeFee},
+				    	</if>
+				    	<if test="item.xiFeeRequestTime != null and item.xiFeeRequestTime!=''">
+				    	 	XIFEE_REQUEST_TIME = #{item.xiFeeRequestTime,javaType=String, jdbcType=TIMESTAMP},
+				    	</if>
+				    	<if test="item.xiFeeResultTime != null and item.xiFeeResultTime!=''">
+				    	  	XIFEE_RESULT_TIME = #{item.xiFeeResultTime,javaType=String, jdbcType=TIMESTAMP},
+				    	</if>
+				    	<if test="item.xiFeeStatus != null and item.xiFeeStatus>0">
+				    	  	XIFEE_STATUS = #{item.xiFeeStatus},
+				    	</if>
+				    	<if test="item.approvalStatus != null and item.approvalStatus>0">
+				    	  	APPROVAL_STATUS = #{item.approvalStatus},
+				    	</if>
+				    	<if test="item.reApplyReason != null and item.reApplyReason !=''">
+				    		RE_APPLY_REASON = #{item.reApplyReason}, 
+				    	</if>
+				    	<if test="item.approveMoney != null and item.approveMoney > 0">
+				    	  	APPROVE_MONEY = #{item.approveMoney},
+				    	</if>
+				    	<if test="item.confirmLoanStatus != null and item.confirmLoanStatus > 0">
+				    	  	CONFIRM_LOAN_STATUS = #{item.confirmLoanStatus},
+				    	</if>
+				    	<if test="item.confirmLoanRequestTime != null and item.confirmLoanRequestTime != ''">
+				    	  	CONFIRM_LOAN_REQUEST_TIME = #{item.confirmLoanRequestTime,javaType=String, jdbcType=TIMESTAMP},
+				    	</if>
+				    	<if test="item.confirmLoanResultTime != null and item.confirmLoanResultTime != ''">
+				    	  	CONFIRM_LOAN_RESULT_TIME = #{item.confirmLoanResultTime,javaType=String, jdbcType=TIMESTAMP},
+				    	</if>
+				    	<if test="item.confirmLoanReason != null and item.confirmLoanReason !=''">
+				    		CONFIRM_LOAN_REASON = #{item.confirmLoanReason}, 
+				    	</if>
+				    	<if test="item.applyLoanDate != null and item.applyLoanDate !=''">
+				    		APPLY_LOAN_DATE = #{item.applyLoanDate,jdbcType=DATE,javaType=String},
+				    	</if>
+				    	<if test="item.loanRemark != null and item.loanRemark !=''">
+				    		LOAN_REMARK = #{item.loanRemark},
+				    	</if>
+				    	<if test="item.loanJusticeFiles != null and item.loanJusticeFiles !=''">
+				    		LOAN_JUSTICE_FILES = #{item.loanJusticeFiles,javaType=String},
+				    	</if>
+				    	<if test="item.loanBlankFiles != null and item.loanBlankFiles!=''">
+				    		LOAN_BLANK_FILES = #{item.loanBlankFiles,javaType=String},
+				    	</if>
+				    	<if test="item.loanOtherFiles != null and item.loanOtherFiles!=''">
+				    		LOAN_OTHER_FILES = #{item.loanOtherFiles,javaType=String},
+				    	</if>
+				    	<if test="item.paymentBank != null and item.paymentBank !=''">
+				    		PAYMENT_BANK = #{item.paymentBank}, 
+				    	</if>
+				 	    <if test="item.paymentBankBranch != null and item.paymentBankBranch !=''">
+				    		PAYMENT_BANK_BRANCH = #{item.paymentBankBranch}, 
+				    	</if>
+				 	    <if test="item.paymentAcctName != null and item.paymentAcctName !=''">
+				    		PAYMENT_ACCT_NAME = #{item.paymentAcctName}, 
+				    	</if>
+				 	    <if test="item.paymentAcctNo != null and item.paymentAcctNo !=''">
+				    		PAYMENT_ACCT_NO = #{item.paymentAcctNo}, 
+				    	</if>
+				 	    <if test="item.paymentProvinceCode != null and item.paymentProvinceCode !=''">
+				    		PAYMENT_PROVINCE_CODE = #{item.paymentProvinceCode}, 
+				    	</if>
+				 	    <if test="item.paymentCityCode != null and item.paymentCityCode !=''">
+				    		PAYMENT_CITY_CODE = #{item.paymentCityCode}, 
+				    	</if>
+				    	
+				    	<if test="item.provinceCode != null and item.provinceCode !=''">
+				    		PROVINCE_CODE = #{item.provinceCode}, 
+				    	</if>
+				    	<if test="item.cityCode != null and item.cityCode !=''">
+				    		CITY_CODE = #{item.cityCode}, 
+				    	</if>
+				    	<if test="item.loanEffeDate != null and item.loanEffeDate !=''">
+				    		LOAN_EFFE_DATE = #{item.loanEffeDate,jdbcType=DATE,javaType=String},
+				    	</if>
+				    	<if test="item.partnerLoanDate != null and item.partnerLoanDate !=''">
+				    		PARTNER_LOAN_DATE = #{item.partnerLoanDate,jdbcType=DATE,javaType=String},
+				    	</if>
+				    	<if test="item.partnerLoanFile != null and item.partnerLoanFile !=''">
+				    		PARTNER_LOAN_FILE = #{item.partnerLoanFile}, 
+				    	</if>
+				    	<if test="item.partnerRealRefundDate != null and item.partnerRealRefundDate !=''">
+				    		PARTNER_REAL_REFUND_DATE = #{item.partnerRealRefundDate,jdbcType=DATE,javaType=String},
+				    	</if>
+				    	<if test="item.partnerRefundFile != null and item.partnerRefundFile !=''">
+				    		PARTNER_REFUND_FILE = #{item.partnerRefundFile}, 
+				    	</if>
+				    	<if test="item.partnerInterests != null and item.partnerInterests > 0">
+				    		PARTNER_INTERESTS = #{item.partnerInterests}, 
+				    	</if>
+				    	<if test="item.repaymentRepurchaseRemark != null and item.repaymentRepurchaseRemark !=''">
+				    		REPAYMENT_REPURCHASE_REMARK = #{item.repaymentRepurchaseRemark}, 
+				    	</if>
+				    	<if test="item.refundLoanAmount != null and item.refundLoanAmount !=''">
+				    		REFUND_LOAN_AMOUNT = #{item.refundLoanAmount}, 
+				    	</if>
+				    	<if test="item.refundXifee != null and item.refundXifee !=''">
+				    		REFUND_XIFEE = #{refundXifee}, 
+				    	</if>
+				    	<if test="item.refundDate != null and item.refundDate !=''">
+				    		REFUND_DATE = #{item.refundDate,jdbcType=DATE,javaType=String},
+				    	</if>
+				    	<if test="item.pmUserId != null and item.pmUserId>0">
+				    	  	PM_USER_ID =#{item.pmUserId},
+				    	</if>
+				    	<if test="item.payAcctNo != null and item.payAcctNo !=''">
+				    		PAY_ACCT_NO = #{item.payAcctNo}, 
+				    	</if>
+				    	<if test="item.payAcctName != null and item.payAcctName !=''">
+				    		PAY_ACCT_NAME = #{item.payAcctName}, 
+				    	</if>
+				    	<if test="item.payBankName != null and item.payBankName !=''">
+				    		PAY_BANK_NAME = #{item.payBankName}, 
+				    	</if>
+				    	<if test="item.payBankBranch != null and item.payBankBranch !=''">
+				    		PAY_BANK_BRANCH = #{item.payBankBranch}, 
+				    	</if>
+				    	<if test="item.payProvinceCode != null and item.payProvinceCode !=''">
+				    		PAY_PROVINCE_CODE = #{item.payProvinceCode}, 
+				    	</if>
+				    	<if test="item.payCityCode != null and item.payCityCode !=''">
+				    		PAY_CITY_CODE = #{item.payCityCode}, 
+				    	</if>
+				    	<if test="item.payBankCode != null and item.payBankCode !=''">
+				    		PAY_BANK_CODE = #{item.payBankCode}, 
+				    	</if>
+				    	<if test="item.confirmLoanMoney != null and item.confirmLoanMoney > 0">
+				    		CONFIRM_LOAN_MONEY = #{item.confirmLoanMoney}, 
+				    	</if>
+				    	<if test="item.confirmLoanDays != null and item.confirmLoanDays > 0">
+				    		CONFIRM_LOAN_DAYS = #{item.confirmLoanDays}, 
+				    	</if>
+				    	<if test="item.applyDate != null and item.applyDate > 0">
+				    		APPLY_DATE = #{item.applyDate}, 
+				    	</if>
+				    	<if test="item.houseProvinceCode != null and item.houseProvinceCode !=''">
+				    		HOUSE_PROVINCE_CODE = #{item.houseProvinceCode}, 
+				    	</if>
+				    	<if test="item.houseCityCode != null and item.houseCityCode !=''">
+				    		HOUSE_CITY_CODE = #{item.houseCityCode}, 
+				    	</if>
+				    	
+				    	<if test="item.partnerOrderCode != null and item.partnerOrderCode !=''">
+				    		PARTNER_ORDER_CODE = #{item.partnerOrderCode}, 
+				    	</if>
+				    	<if test="item.loanPeriodLimit != null and item.loanPeriodLimit > 0">
+				    		LOAN_PERIOD_LIMIT = #{item.loanPeriodLimit}, 
+				    	</if>
+				    	<if test="item.isCreditLoan != null and item.isCreditLoan > 0">
+				    		IS_CREDIT_LOAN = #{item.isCreditLoan}, 
+				    	</if>
+				    	<if test="item.paymentBankPhone != null and item.paymentBankPhone !=''">
+				    		PAYMENT_BANK_PHONE = #{item.paymentBankPhone}, 
+				    	</if>
+				    	<if test="item.paymentBankLineNo != null and item.paymentBankLineNo !=''">
+				    		PAYMENT_BANK_LINE_NO = #{item.paymentBankLineNo}, 
+				    	</if>
+				    	
+				    	<!-- 还款信息 -->
+				    	<if test="item.refundTotalAmount != null and item.refundTotalAmount > 0">
+				    		REFUND_TOTAL_AMOUNT = #{item.refundTotalAmount}, 
+				    	</if>
+				    	<if test="item.refundPenalty != null and item.refundPenalty > 0">
+				    		REFUND_PENALTY = #{item.refundPenalty}, 
+				    	</if>
+				    	<if test="item.refundFine != null and item.refundFine > 0">
+				    		REFUND_FINE = #{item.refundFine}, 
+				    	</if>
+				    	<if test="item.refundCompdinte != null and item.refundCompdinte > 0">
+				    		REFUND_COMPDINTE = #{item.refundCompdinte}, 
+				    	</if>
+				    	<if test="item.partnerPlatformOrderCode != null and item.partnerPlatformOrderCode !=''">
+				    		PARTNER_PLATFORM_ORDER_CODE = #{item.partnerPlatformOrderCode}, 
+				    	</if>
+					</set>
+					where PID =  #{item.pid}
+					<if test="item.loanId != null and item.loanId !='' ">
+						and LOAN_ID=#{item.loanId}
+					</if>
+		 </foreach>
+		 ;end;
+	</update>
+	
+ 
+</mapper>

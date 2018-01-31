@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xlkfinance.bms.server.foreafterloan.mapper.AfterExceptionReportMapper">
+	<resultMap id="afterExceptionReportMap" type="com.xlkfinance.bms.rpc.foreafterloan.AfterExceptionReport">
+		<id property="pid" column="PID" />
+		<id property="projectId" column="PROJECT_ID" />
+		<id property="monitorUserId" column="MONITOR_USER_ID" />
+		<id property="exceptionType" column="EXCEPTION_TYPE" />
+		<id property="status" column="STATUS" />
+		<id property="monitorDate" column="MONITOR_DATE" />
+		<id property="noticeWay" column="NOTICE_WAY" />
+		<id property="remark" column="REMARK" />
+		<id property="attachmentId" column="ATTACHMENT_ID" />
+		<id property="createrDate" column="CREATER_DATE" />
+		<id property="createrId" column="CREATER_ID" />
+		<id property="updateId" column="UPDATE_ID" />
+		<id property="updateDate" column="UPDATE_DATE" />
+		<id property="createrName" column="CREATER_NAME" />
+	</resultMap>
+	<sql id="column_list">
+        PID,PROJECT_ID,MONITOR_USER_ID,EXCEPTION_TYPE,STATUS,MONITOR_DATE,NOTICE_WAY,REMARK,ATTACHMENT_ID,CREATER_DATE,CREATER_ID,UPDATE_ID,UPDATE_DATE
+	</sql>
+	<!-- 查询所有 -->
+	<select id="getAll" resultMap="afterExceptionReportMap" parameterType="com.xlkfinance.bms.rpc.foreafterloan.AfterExceptionReport">
+		SELECT
+		<include refid="column_list" />
+		FROM BIZ_AFTER_EXCEPTION_REPORT
+		<where>
+			<trim>
+		      <if test="pid != null and pid >0">
+	          PID=#{pid}
+	          </if>
+		      <if test="projectId != null and projectId >0">
+	          AND PROJECT_ID=#{projectId}
+	          </if>
+		      <if test="monitorUserId != null and monitorUserId >0">
+	          AND MONITOR_USER_ID=#{monitorUserId}
+	          </if>
+		      <if test="exceptionType != null and exceptionType >0">
+	          AND EXCEPTION_TYPE=#{exceptionType}
+	          </if>
+		      <if test="status != null and status >0">
+	          AND STATUS=#{status}
+	          </if>
+		      <if test="monitorDate != null and monitorDate !=''">
+	          AND MONITOR_DATE=#{monitorDate}
+	          </if>
+		      <if test="noticeWay != null and noticeWay !=''">
+	          AND NOTICE_WAY=#{noticeWay}
+	          </if>
+		      <if test="remark != null and remark !=''">
+	          AND REMARK=#{remark}
+	          </if>
+		      <if test="attachmentId != null and attachmentId >0">
+	          AND ATTACHMENT_ID=#{attachmentId}
+	          </if>
+		      <if test="createrId != null and createrId >0">
+	          AND CREATER_ID=#{createrId}
+	          </if>
+		      <if test="updateId != null and updateId >0">
+	          AND UPDATE_ID=#{updateId}
+	          </if>
+			</trim>
+		</where>
+	</select>
+	<!-- 根据id获取 -->
+	<select id="getById" resultMap="afterExceptionReportMap">
+		SELECT <include refid="column_list" /> FROM BIZ_AFTER_EXCEPTION_REPORT WHERE PID=#{pid}
+	</select>
+	<!-- 插入一条数据 -->
+	<insert id="insert" parameterType="com.xlkfinance.bms.rpc.foreafterloan.AfterExceptionReport">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_AFTER_EXCEPTION_REPORT.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_AFTER_EXCEPTION_REPORT
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+				PID,
+			</if>
+		    <if test="projectId != null and projectId >0">
+				PROJECT_ID,
+			</if>
+		    <if test="monitorUserId != null and monitorUserId >0">
+				MONITOR_USER_ID,
+			</if>
+		    <if test="exceptionType != null and exceptionType >0">
+				EXCEPTION_TYPE,
+			</if>
+		    <if test="status != null and status >0">
+				STATUS,
+			</if>
+		    <if test="monitorDate != null and monitorDate !=''">
+				MONITOR_DATE,
+			</if>
+		    <if test="noticeWay != null and noticeWay !=''">
+				NOTICE_WAY,
+			</if>
+		    <if test="remark != null and remark !=''">
+				REMARK,
+			</if>
+		    <if test="attachmentId != null and attachmentId >0">
+				ATTACHMENT_ID,
+			</if>
+			    CREATER_DATE,
+		   <if test="createrId != null and createrId >0">
+		        CREATER_ID,
+			</if>
+		    <if test="updateId != null and updateId >0">
+				UPDATE_ID,
+			</if>
+				UPDATE_DATE
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+		    #{pid},
+			</if>
+		    <if test="projectId != null and projectId >0">
+		    #{projectId},
+			</if>
+		    <if test="monitorUserId != null and monitorUserId >0">
+		    #{monitorUserId},
+			</if>
+		    <if test="exceptionType != null and exceptionType >0">
+		    #{exceptionType},
+			</if>
+		    <if test="status != null and status >0">
+		    #{status},
+			</if>
+		    <if test="monitorDate != null and monitorDate !=''">
+		    #{monitorDate,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		    <if test="noticeWay != null and noticeWay !=''">
+		    #{noticeWay},
+			</if>
+		    <if test="remark != null and remark !=''">
+		    #{remark},
+			</if>
+		    <if test="attachmentId != null and attachmentId >0">
+		    #{attachmentId},
+			</if>
+		    SYSDATE,
+		    <if test="createrId != null and createrId >0">
+		    #{createrId},
+			</if>
+		    <if test="updateId != null and updateId >0">
+		    #{updateId},
+			</if>
+		    SYSDATE
+		</trim>
+	</insert>
+	<!-- 根据id删除数据 -->
+	<delete id="deleteById" parameterType="com.xlkfinance.bms.rpc.foreafterloan.AfterExceptionReport">
+		<![CDATA[DELETE FROM BIZ_AFTER_EXCEPTION_REPORT WHERE PID=#{pid}]]>
+	</delete>
+	<!-- 根据id更新数据 -->
+		<update id="update" parameterType="com.xlkfinance.bms.rpc.foreafterloan.AfterExceptionReport">
+		UPDATE BIZ_AFTER_EXCEPTION_REPORT
+		<set>
+		    <if test="projectId != null and projectId >0">
+		     PROJECT_ID=#{projectId},
+			</if>
+		    <if test="monitorUserId != null and monitorUserId >0">
+		     MONITOR_USER_ID=#{monitorUserId},
+			</if>
+		    <if test="exceptionType != null and exceptionType >0">
+		     EXCEPTION_TYPE=#{exceptionType},
+			</if>
+		    <if test="status != null and status >0">
+		     STATUS=#{status},
+			</if>
+		    <if test="monitorDate != null and monitorDate !=''">
+		     MONITOR_DATE=#{monitorDate,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		    <if test="noticeWay != null and noticeWay !=''">
+		     NOTICE_WAY=#{noticeWay},
+			</if>
+		    <if test="remark != null and remark !=''">
+		     REMARK=#{remark},
+			</if>
+		    <if test="attachmentId != null and attachmentId >0">
+		     ATTACHMENT_ID=#{attachmentId},
+			</if>
+		    <if test="updateId != null and updateId >0">
+		     UPDATE_ID=#{updateId},
+			</if>
+		     UPDATE_DATE=SYSDATE
+		</set>
+		WHERE PID = #{pid}
+	</update>
+	<!-- 根据传入多个id删除数据 -->
+	<delete id="deleteByIds" parameterType="java.util.List">
+		DELETE FROM BIZ_AFTER_EXCEPTION_REPORT WHERE PID in
+		<foreach collection="list" item="item" index="index" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+	<!-- 贷后异常上报列表(分页查询) -->
+	<select id="queryAfterExceptionReportHisList" resultMap="afterExceptionReportMap"
+		parameterType="com.xlkfinance.bms.rpc.foreafterloan.AfterExceptionReport">
+		<if test="page!=-1">
+			SELECT D.* FROM (SELECT T.*, ROWNUM RN
+			FROM (
+		</if>
+		    SELECT A.PID,
+			       A.PROJECT_ID,
+			       A.MONITOR_USER_ID,
+			       A.EXCEPTION_TYPE,
+			       A.STATUS,
+			       A.MONITOR_DATE,
+			       A.NOTICE_WAY,
+			       A.REMARK,
+			       A.ATTACHMENT_ID,
+			       A.CREATER_DATE,
+			       A.CREATER_ID,
+			       A.UPDATE_ID,
+			       A.UPDATE_DATE,
+			       (SELECT U.REAL_NAME FROM SYS_USER U WHERE U.PID=A.CREATER_ID) AS CREATER_NAME
+			  FROM BIZ_AFTER_EXCEPTION_REPORT A
+		<where>
+			<trim>
+				<if test="projectId != null and projectId >0">
+		           A.PROJECT_ID=#{projectId}
+			    </if>
+			</trim>
+		</where>
+		ORDER BY A.CREATER_DATE DESC
+		<if test="page!=-1">
+	<![CDATA[
+	) T
+	WHERE ROWNUM <=#{page}*#{rows}
+	) D
+	WHERE D.RN > ((#{page}-1)*#{rows})
+	]]>
+		</if>
+	</select>
+	<!--贷后异常上报列表总数 -->
+	<select id="getAfterExceptionReportHisTotal" resultType="Integer"
+		parameterType="com.xlkfinance.bms.rpc.foreafterloan.AfterExceptionReport">
+	<![CDATA[
+	SELECT COUNT(1) FROM
+			( SELECT A.PID
+  FROM BIZ_AFTER_EXCEPTION_REPORT A
+	]]>
+		<where>
+			<trim>
+				<if test="projectId != null and projectId >0">
+		           A.PROJECT_ID=#{projectId}
+			    </if>
+			</trim>
+		</where>
+		) T
+	</select>
+
+		
+		<select id="getByProjectId" resultMap="afterExceptionReportMap" 
+		parameterType="java.util.Map" statementType="STATEMENT">
+		    SELECT A.PID,
+			       A.PROJECT_ID,
+			       A.EXCEPTION_TYPE,
+			       A.REMARK,
+			       A.CREATER_DATE,
+			       A.CREATER_ID,
+			       A.UPDATE_ID,
+			       A.UPDATE_DATE
+			  FROM BIZ_AFTER_EXCEPTION_REPORT A
+					where A.PROJECT_ID = ${projectId}
+		</select>
+</mapper>

@@ -1,0 +1,441 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.customer.mapper.CusComTeamMapper">
+ <resultMap id="CusComTeamMap" type="com.xlkfinance.bms.rpc.common.GridViewDTO">
+        <id property="pid" column="pid"/>
+        <result property="pid" column="pid" />
+        <result property="value1" column="NAME" />
+        <result property="value2" column="SEX" />
+        <result property="value3" column="CERT_TYPE"/>
+        <result property="value4" column="CERT_NO" />
+        <result property="value5" column="DUTY" />
+        <result property="value6" column="SKILL_OCC" />
+        <result property="value7" column="BOARD_MEMBER" />
+        <result property="value8" column="TELEPHONE"/>
+        <result property="value9" column="REMARK"/>
+</resultMap>
+ <resultMap id="cusComTeamMaps" type="com.xlkfinance.bms.rpc.customer.CusComTeam">
+        <id property="pid" column="pid"/>
+        <result property="pid" column="pid" />
+        <result property="name" column="NAME" />
+        <result property="sex" column="SEX" />
+        <result property="certType" column="CERT_TYPE"/>
+        <result property="certNo" column="CERT_NO" />
+        <result property="fixedPhone" column="FIXED_PHONE" />
+        <result property="fax" column="FAX" />
+        <result property="telephone" column="TELEPHONE" />
+        <result property="age" column="AGE" />
+        <result property="education" column="EDUCATION" />
+        <result property="graSchool" column="GRA_SCHOOL" />
+        <result property="workUnit" column="WORK_UNIT" />
+        <result property="duty" column="DUTY" />
+        <result property="dutyYear" column="DUTY_YEAR" />
+        <result property="boardMember" column="BOARD_MEMBER" />
+         <result property="workYear" column="WORK_YEAR" />
+        <result property="skillOcc" column="SKILL_OCC" />
+        <result property="tradeSuffer" column="TRADE_SUFFER"/>
+        <result property="manSuffer" column="MAN_SUFFER"/>
+        <result property="record" column="RECORD"/>
+        <result property="remark" column="REMARK"/>
+</resultMap>
+	<select id="getCusComTeams" resultMap="CusComTeamMap" parameterType="com.xlkfinance.bms.rpc.customer.CusComTeam">
+	   select * from( 
+	       SELECT rownum rn,
+	       		CCT.PID,
+	           CCT.CUS_COM_ID,
+		       CCT.NAME,
+		     CASE CCT.SEX
+                   WHEN 1 THEN
+                    '男'
+                   WHEN 2 THEN
+                    '女'
+                 END sex,
+               (select slv.lookup_val from sys_lookup_val slv where slv.pid=CCT.CERT_TYPE) CERT_TYPE, 
+		       CCT.CERT_NO,
+		       CCT.FIXED_PHONE,
+		       CCT.FAX,
+		       CCT.TELEPHONE,
+		       CCT.AGE,
+		       (select slv.lookup_val from sys_lookup_val slv where slv.pid=CCT.EDUCATION) EDUCATION,
+		       CCT.GRA_SCHOOL,
+		       CCT.WORK_UNIT,
+		       CCT.DUTY,
+		       CCT.DUTY_YEAR,
+		       CASE CCT.BOARD_MEMBER
+                   WHEN 1 THEN
+                    '是'
+                   WHEN 2 THEN
+                    '否'
+                 END BOARD_MEMBER,
+		       CCT.WORK_YEAR,
+		        (select slv.lookup_val from sys_lookup_val slv where slv.pid=CCT.SKILL_OCC) SKILL_OCC,
+		       CCT.TRADE_SUFFER,
+		       CCT.MAN_SUFFER,
+		       CCT.RECORD,
+		       CCT.REMARK
+  		  FROM CUS_COM_TEAM CCT
+  		  where CCT.status=1
+  		  and CCT.CUS_COM_ID=#{cusComBase.pid,jdbcType=INTEGER}
+  		  AND rownum<![CDATA[<=]]>#{page}*#{rows})
+    	  WHERE rn>=((#{page}-1)*#{rows})+1
+  	</select> 
+<!--   	查询总记录数 -->
+  	<select id="getTotal" parameterType="com.xlkfinance.bms.rpc.customer.CusComTeam" resultType="java.lang.Integer">
+  	      SELECT COUNT(PID) FROM (
+  	         SELECT CCT.PID,
+	           CCT.CUS_COM_ID,
+		       CCT.NAME,
+		     CASE CCT.SEX
+                   WHEN 1 THEN
+                    '男'
+                   WHEN 2 THEN
+                    '女'
+                 END sex,
+               (select slv.lookup_val from sys_lookup_val slv where slv.pid=CCT.CERT_TYPE) CERT_TYPE, 
+		       CCT.CERT_NO,
+		       CCT.FIXED_PHONE,
+		       CCT.FAX,
+		       CCT.TELEPHONE,
+		       CCT.AGE,
+		       (select slv.lookup_val from sys_lookup_val slv where slv.pid=CCT.EDUCATION) EDUCATION,
+		       CCT.GRA_SCHOOL,
+		       CCT.WORK_UNIT,
+		       CCT.DUTY,
+		       CCT.DUTY_YEAR,
+		       CASE CCT.BOARD_MEMBER
+                   WHEN 1 THEN
+                    '是'
+                   WHEN 2 THEN
+                    '否'
+                 END BOARD_MEMBER,
+		       CCT.WORK_YEAR,
+		        (select slv.lookup_val from sys_lookup_val slv where slv.pid=CCT.SKILL_OCC) SKILL_OCC,
+		       CCT.TRADE_SUFFER,
+		       CCT.MAN_SUFFER,
+		       CCT.RECORD,
+		       CCT.REMARK
+  		  FROM CUS_COM_TEAM CCT
+  		  where CCT.status=1
+  		  and CCT.CUS_COM_ID=#{cusComBase.pid,jdbcType=INTEGER})
+  	</select>
+<!--   	根据ID查 -->
+  	<select id="selectCusComTeamById" resultMap="cusComTeamMaps" parameterType="java.lang.Integer">
+	       SELECT CCT.PID,
+		         CCT.NAME,
+           CCT.SEX,
+           CCT.CERT_TYPE,
+           CCT.CERT_NO,
+           CCT.DUTY,
+           CCT.EDUCATION,
+           CCT.SKILL_OCC,
+           CCT.BOARD_MEMBER,
+           CCT.TELEPHONE,
+           CCT.REMARK,
+           CCT.FIXED_PHONE,
+           CCT.FAX,
+           CCT.AGE,
+           CCT.GRA_SCHOOL,
+           CCT.WORK_UNIT,
+           CCT.DUTY_YEAR,
+           CCT.WORK_YEAR,
+           CCT.TRADE_SUFFER,
+           CCT.MAN_SUFFER,
+           CCT.RECORD
+  		  FROM CUS_COM_TEAM CCT
+  		  WHERE 1 = 1
+  		  AND   CCT.STATUS=1
+       	  AND cct.pid = #{pid,jdbcType=INTEGER}
+  	</select> 
+  	
+  	
+<insert id="insert" parameterType="com.xlkfinance.bms.rpc.customer.CusComTeam">
+   <selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+		SELECT SEQ_CUS_COM_TEAM.Nextval as PID from DUAL
+	</selectKey>
+    insert into cus_com_team (
+    	PID, 
+    	<if test="cusComBase.pid !=null">
+    	CUS_COM_ID, 
+    	</if>
+    	<if test="name !=null and name !=''">
+    	NAME, 
+    	</if>
+    	<if test="sex !=null">
+    	SEX, 
+    	</if>
+    	<if test="certType !=null">
+    	CERT_TYPE, 
+    	</if>
+    	<if test="certNo !=null and certNo !=''">
+    	CERT_NO, 
+    	</if>
+    	<if test="age !=null">
+    	AGE, 
+    	</if>
+    	<if test="education !=null">
+    	EDUCATION, 
+    	</if>
+    	<if test="graSchool !=null and graSchool !=''">
+    	GRA_SCHOOL, 
+    	</if>
+    	<if test="workUnit !=null and workUnit !=''">
+    	WORK_UNIT, 
+    	</if>
+    	<if test="duty !=null and duty !=''">
+    	DUTY, 
+    	</if>
+    	<if test="dutyYear !=null">
+    	DUTY_YEAR, 
+    	</if>
+    	<if test="boardMember !=null">
+    	BOARD_MEMBER,
+    	</if>
+    	<if test="workYear !=null"> 
+    	WORK_YEAR, 
+    	</if>
+    	<if test="skillOcc !=null">
+    	SKILL_OCC, 
+    	</if>
+    	<if test="tradeSuffer !=null and tradeSuffer !=''">
+    	TRADE_SUFFER, 
+    	</if>
+    	<if test="manSuffer !=null and manSuffer !=''">
+    	MAN_SUFFER, 
+    	</if>
+    	<if test="record !=null and record !=''">
+    	RECORD, 
+    	</if>
+    	<if test="fixedPhone !=null and fixedPhone !=''">
+    	FIXED_PHONE, 
+    	</if>
+    	<if test="fax !=null and fax !=''">
+    	FAX, 
+    	</if>
+    	<if test="telephone !=null and telephone !=''">
+    	TELEPHONE, 
+    	</if>
+    	<if test="remark !=null and remark !=''">
+    	REMARK,
+    	</if>
+    	STATUS)
+    values (
+    	#{pid,jdbcType=INTEGER}, 
+    	<if test="cusComBase.pid !=null">
+    	#{cusComBase.pid,jdbcType=INTEGER}, 
+    	</if>
+    	<if test="name !=null and name !=''">
+    	#{name,jdbcType=VARCHAR}, 
+    	</if>
+    	<if test="sex !=null">
+    	#{sex,jdbcType=INTEGER},
+    	</if>
+    	<if test="certType !=null">
+     	#{certType,jdbcType=INTEGER}, 
+     	</if>
+     	<if test="certNo !=null and certNo !=''">
+     	#{certNo,jdbcType=VARCHAR},
+     	</if>
+     	<if test="age !=null">
+     	#{age,jdbcType=INTEGER}, 
+     	</if>
+     	<if test="education !=null">
+     	#{education,jdbcType=INTEGER},
+     	</if>
+     	<if test="graSchool !=null and graSchool !=''">
+     	#{graSchool,jdbcType=VARCHAR}, 
+     	</if>
+     	<if test="workUnit !=null and workUnit !=''">
+     	#{workUnit,jdbcType=VARCHAR},
+     	</if>
+     	<if test="duty !=null and duty !=''">
+     	#{duty,jdbcType=VARCHAR}, 
+     	</if>
+     	<if test="dutyYear !=null">
+     	#{dutyYear,jdbcType=INTEGER},
+     	</if>
+     	<if test="boardMember !=null">
+     	#{boardMember,jdbcType=INTEGER}, 
+     	</if>
+     	<if test="workYear !=null">
+     	#{workYear,jdbcType=INTEGER},
+     	</if>
+     	<if test="skillOcc !=null">
+     	#{skillOcc,jdbcType=INTEGER}, 
+     	</if>
+     	<if test="tradeSuffer !=null and tradeSuffer !=''">
+     	#{tradeSuffer,jdbcType=VARCHAR},
+     	</if>
+     	<if test="manSuffer !=null and manSuffer !=''">
+     	#{manSuffer,jdbcType=VARCHAR}, 
+     	</if>
+     	<if test="record !=null and record !=''">
+     	#{record,jdbcType=VARCHAR},
+     	</if>
+     	<if test="fixedPhone !=null and fixedPhone !=''">
+     	#{fixedPhone,jdbcType=VARCHAR},
+     	</if>
+     	<if test="fax !=null and fax !=''">
+     	#{fax,jdbcType=VARCHAR}, 
+     	</if>
+     	<if test="telephone !=null and telephone !=''">
+     	#{telephone,jdbcType=VARCHAR},
+     	</if>
+     	<if test="remark !=null and remark !=''">
+     	#{remark,jdbcType=VARCHAR},
+     	</if>
+     	#{status,jdbcType=INTEGER}) 
+  </insert>
+  <!-- 更新的方法 -->
+	<update id="updateByPrimaryKey" parameterType="com.xlkfinance.bms.rpc.customer.CusComTeam">
+		update cus_com_team
+		<set>
+		<if test="cusComBase.pid != null">
+		      CUS_COM_ID = #{cusComBase.pid,jdbcType=INTEGER}, 
+		</if>
+		<if test="name != null">
+		    NAME = #{name,jdbcType=VARCHAR}, 
+		</if>
+		<if test="sex != null">
+    		 SEX = #{sex,jdbcType=INTEGER},
+    	</if>
+    	<if test="certType != null">
+    		CERT_TYPE = #{certType,jdbcType=INTEGER}, 
+    	</if>
+    	<if test="certNo != null">
+     		CERT_NO = #{certNo,jdbcType=VARCHAR},
+     	</if>
+     	<if test="age != null">
+     		AGE = #{age,jdbcType=INTEGER}, 
+     	</if>
+     	<if test="education != null">
+     		EDUCATION = #{education,jdbcType=INTEGER},
+     	</if>
+     	<if test="graSchool != null">
+     		GRA_SCHOOL = #{graSchool,jdbcType=VARCHAR}, 
+     	</if>
+     	<if test="workUnit != null">
+     		WORK_UNIT = #{workUnit,jdbcType=VARCHAR},
+     	</if>
+     	<if test="duty != null">
+     		DUTY = #{duty,jdbcType=VARCHAR}, 
+     	</if>
+     	<if test="dutyYear != null">
+     		DUTY_YEAR = #{dutyYear,jdbcType=INTEGER},
+     	</if>
+     	<if test="boardMember != null">
+     		BOARD_MEMBER = #{boardMember,jdbcType=INTEGER}, 
+     	</if>
+     	<if test="worKYear != null">
+     		WORK_YEAR = #{worKYear,jdbcType=INTEGER},
+     	</if>
+     	<if test="skillOcc != null">
+     		SKILL_OCC = #{skillOcc,jdbcType=INTEGER},
+     	</if> 
+     	<if test="tradeSuffer != null">
+     		TRADE_SUFFER = #{tradeSuffer,jdbcType=VARCHAR},
+     	</if>
+     	<if test="manSuffer != null">
+     		MAN_SUFFER = #{manSuffer,jdbcType=VARCHAR}, 
+     	</if>
+     	<if test="record != null">
+     		RECORD = #{record,jdbcType=VARCHAR},
+     	</if>
+     	<if test="fixedPhone != null">
+     		FIXED_PHONE = #{fixedPhone,jdbcType=VARCHAR},
+     	</if>
+     	<if test="fax != null">
+     		FAX = #{fax,jdbcType=VARCHAR}, 
+     	</if>
+     	<if test="telephone != null">
+     		TELEPHONE = #{telephone,jdbcType=VARCHAR},
+     	</if>
+     	<if test="remark != null">
+     		REMARK = #{remark,jdbcType=VARCHAR},
+     	</if>
+     	<if test="status != null">
+     		STATUS = #{status,jdbcType=INTEGER},
+     	</if>
+		</set> 
+		where pid = #{pid,jdbcType=INTEGER}
+	</update>
+	
+	  <!-- 更新的方法 -->
+	<update id="updateById" parameterType="com.xlkfinance.bms.rpc.customer.CusComTeam">
+		update cus_com_team
+		<set>
+		<if test="name != null">
+		    NAME = #{name,jdbcType=VARCHAR}, 
+		</if>
+		<if test="sex != null">
+    		 SEX = #{sex,jdbcType=INTEGER},
+    	</if>
+    	<if test="certType != null">
+    		CERT_TYPE = #{certType,jdbcType=INTEGER}, 
+    	</if>
+    	<if test="certNo != null">
+     		CERT_NO = #{certNo,jdbcType=VARCHAR},
+     	</if>
+     	<if test="age != null">
+     		AGE = #{age,jdbcType=INTEGER}, 
+     	</if>
+     	<if test="education != null">
+     		EDUCATION = #{education,jdbcType=INTEGER},
+     	</if>
+     	<if test="graSchool != null">
+     		GRA_SCHOOL = #{graSchool,jdbcType=VARCHAR}, 
+     	</if>
+     	<if test="workUnit != null">
+     		WORK_UNIT = #{workUnit,jdbcType=VARCHAR},
+     	</if>
+     	<if test="duty != null">
+     		DUTY = #{duty,jdbcType=VARCHAR}, 
+     	</if>
+     	<if test="dutyYear != null">
+     		DUTY_YEAR = #{dutyYear,jdbcType=INTEGER},
+     	</if>
+     	<if test="boardMember != null">
+     		BOARD_MEMBER = #{boardMember,jdbcType=INTEGER}, 
+     	</if>
+     	<if test="workYear != null">
+     		WORK_YEAR = #{workYear,jdbcType=INTEGER},
+     	</if>
+     	<if test="skillOcc != null">
+     		SKILL_OCC = #{skillOcc,jdbcType=INTEGER},
+     	</if> 
+     	<if test="tradeSuffer != null">
+     		TRADE_SUFFER = #{tradeSuffer,jdbcType=VARCHAR},
+     	</if>
+     	<if test="manSuffer != null">
+     		MAN_SUFFER = #{manSuffer,jdbcType=VARCHAR}, 
+     	</if>
+     	<if test="record != null">
+     		RECORD = #{record,jdbcType=VARCHAR},
+     	</if>
+     	<if test="fixedPhone != null">
+     		FIXED_PHONE = #{fixedPhone,jdbcType=VARCHAR},
+     	</if>
+     	<if test="fax != null">
+     		FAX = #{fax,jdbcType=VARCHAR}, 
+     	</if>
+     	<if test="telephone != null">
+     		TELEPHONE = #{telephone,jdbcType=VARCHAR},
+     	</if>
+     	<if test="remark != null">
+     		REMARK = #{remark,jdbcType=VARCHAR},
+     	</if>
+     	<if test="status != null">
+     		STATUS = #{status,jdbcType=INTEGER},
+     	</if>
+		</set> 
+		where pid = #{pid,jdbcType=INTEGER}
+	</update>
+	<delete id="deleteCusComTeam" parameterType="java.util.List">
+	     update cus_com_team
+			set
+			status=0
+			where pid in 
+		<foreach item="itemId" collection="list" open="(" separator="," close=")">
+		          #{itemId}
+		</foreach>
+	</delete>
+</mapper>

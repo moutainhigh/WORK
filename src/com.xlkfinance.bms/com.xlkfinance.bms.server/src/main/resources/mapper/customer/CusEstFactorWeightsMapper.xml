@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.customer.mapper.CusEstFactorWeightsMapper">
+
+<resultMap id="selectAllResultMap" type="com.xlkfinance.bms.rpc.customer.CusEstFactorWeights" >
+   	<id column="PID" property="pid" jdbcType="INTEGER" />
+   	<result column="TEMPLATE_ID" property="cusEstTemplate.pid" jdbcType="INTEGER" />
+   	<result column="FACTOR_NAME" property="factorName" jdbcType="INTEGER" />
+   	<result column="weight" property="weight" jdbcType="DOUBLE" />
+   	<result column="REMARK" property="remark" jdbcType="VARCHAR" />
+   	<result column="STATUS" property="status" jdbcType="INTEGER" />
+</resultMap>
+
+<select id="selectByPrimaryKey" resultMap="selectAllResultMap" parameterType="java.lang.Integer">
+	select * from cus_est_factor_weights where pid=#{pid,jdbcType=INTEGER}
+</select> 
+
+<select id="getFactorWeights" resultMap="selectAllResultMap" parameterType="java.lang.Integer">
+	select * from cus_est_factor_weights where TEMPLATE_ID=#{templateId,jdbcType=INTEGER} and status=1
+</select> 
+
+<insert id="insert" parameterType="com.xlkfinance.bms.rpc.customer.CusEstFactorWeights">
+    <selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+		SELECT SEQ_CUS_EST_FACTOR.Nextval as PID from DUAL
+	</selectKey>
+    insert into cus_est_factor_weights (
+    	PID, 
+    	FACTOR_NAME, 
+    	REMARK,
+    	STATUS)
+    values (
+    	#{pid,jdbcType=INTEGER},
+		#{factorName,jdbcType=VARCHAR}, 
+		#{remark,jdbcType=VARCHAR},
+		#{status,jdbcType=INTEGER})
+  </insert>
+   <!-- 更新的方法 -->
+	<update id="updateByPrimaryKey" parameterType="com.xlkfinance.bms.rpc.customer.CusEstFactorWeights">
+		update cus_est_factor_weights
+		<set>
+		<if test="factorName != null">
+		     FACTOR_NAME = #{factorName,jdbcType=VARCHAR}, 
+		</if>
+		<if test="remark != null">
+		    REMARK = #{remark,jdbcType=VARCHAR}, 
+		</if>
+		<if test="status != null">
+		 	 STATUS = #{status,jdbcType=INTEGER},
+		</if>
+		</set>
+		where pid = #{pid,jdbcType=INTEGER}
+	</update>
+	
+	
+<insert id="insertEstFactors" parameterType="java.util.List">
+	insert into cus_est_factor_weights (
+    	PID, 
+    	TEMPLATE_ID, 
+    	FACTOR_NAME,
+    	WEIGHT, 
+    	REMARK, 
+    	STATUS) 
+select SEQ_CUS_EST_FACTOR_WEIGHTS.Nextval,A.* from(
+        <foreach collection="list" item="item" index="index"
+            separator="UNION">
+            SELECT
+            #{item.cusEstTemplate.pid,jdbcType=INTEGER},
+	    	#{item.factorName,jdbcType=INTEGER},
+	    	#{item.weight,jdbcType=DOUBLE},
+	     	#{item.remark,jdbcType=VARCHAR}, 
+	     	#{item.status,jdbcType=INTEGER}
+            from dual 
+             </foreach>
+        ) A
+</insert>
+  <!-- 批量更新的方法 -->
+<update id="updateEstFactors" parameterType="java.util.List">
+	begin
+	 <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+		update cus_est_factor_weights
+		<set>
+		<if test="item.cusEstTemplate.pid != null">
+		    TEMPLATE_ID = #{item.cusEstTemplate.pid,jdbcType=INTEGER},
+		</if>
+		<if test="item.factorName != null">
+		    FACTOR_NAME = #{item.factorName,jdbcType=INTEGER},
+		</if>
+    	<if test="item.weight != null">
+      		WEIGHT = #{item.weight,jdbcType=DOUBLE},
+      	</if>
+      	<if test="item.remark != null">
+      		REMARK = #{item.remark,jdbcType=VARCHAR}, 
+      	</if>
+      	
+      	<if test="item.status != null">
+      		STATUS = #{item.status,jdbcType=INTEGER},
+      	</if>
+		</set> 
+		where pid = #{item.pid,jdbcType=INTEGER}
+	 </foreach>
+	 ;end;
+</update>
+
+<update id="deleteEstFactors" parameterType="java.util.List">
+  	UPDATE CUS_EST_FACTOR_WEIGHTS
+  	   SET STATUS = 0
+ 	 WHERE TEMPLATE_ID =#{list[0].cusEstTemplate.pid}
+  	   AND PID NOT IN
+	<foreach item="item" collection="list" open="(" separator="," close=")">
+	          #{item.pid}
+	</foreach>
+</update>
+</mapper>

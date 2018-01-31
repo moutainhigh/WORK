@@ -1,0 +1,444 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xlkfinance.bms.server.aom.system.mapper.OrgUserInfoMapper">
+	<resultMap id="orgUserInfoMap" type="orgUserInfo">
+		<id property="pid" column="PID" />
+		<id property="userName" column="USER_NAME" />
+		<id property="password" column="PASSWORD" />
+		<id property="realName" column="REAL_NAME" />
+		<id property="nickName" column="NICK_NAME" />
+		<id property="jobNo" column="JOB_NO" />
+		<id property="deptName" column="DEPT_NAME" />
+		<id property="phone" column="PHONE" />
+		<id property="email" column="EMAIL" />
+		<id property="orgId" column="ORG_ID" />
+		<id property="role" column="ROLE" />
+		<id property="status" column="STATUS" />
+		<id property="userType" column="USER_TYPE" />
+		<id property="dateScope" column="DATE_SCOPE" />
+		<id property="createId" column="CREATE_ID" />
+		<id property="createDate" column="CREATE_DATE" />
+		<id property="updateId" column="UPDATE_ID" />
+		<id property="updateDate" column="UPDATE_DATE" />
+		<id property="remark" column="REMARK" />
+	</resultMap>
+	<resultMap id="orgEmpIndexMap" type="com.qfang.xk.aom.rpc.system.OrgEmpIndex">
+		<id property="pid" column="PID" />
+		<id property="userName" column="USER_NAME" />
+		<id property="password" column="PASSWORD" />
+		<id property="realName" column="REAL_NAME" />
+		<id property="nickName" column="NICK_NAME" />
+		<id property="jobNo" column="JOB_NO" />
+		<id property="deptName" column="DEPT_NAME" />
+		<id property="phone" column="PHONE" />
+		<id property="email" column="EMAIL" />
+		<id property="status" column="STATUS" />
+		<id property="dateScope" column="DATE_SCOPE" />
+	</resultMap>
+	<resultMap id="orgFnPermissionIndexMap" type="com.qfang.xk.aom.rpc.system.OrgFnPermissionIndex">
+		<id property="menuId" column="MENU_ID" />
+		<id property="menuName" column="MENU_NAME" />
+		<id property="status" column="STATUS" />
+		<id property="parentId" column="PARENT_ID" />
+	</resultMap>
+	<sql id="column_list">
+        PID,USER_NAME,"PASSWORD",REAL_NAME,NICK_NAME,JOB_NO,DEPT_NAME,PHONE,EMAIL,ORG_ID,"ROLE",STATUS,USER_TYPE,DATE_SCOPE,CREATE_ID,CREATE_DATE,UPDATE_ID,UPDATE_DATE,REMARK
+	</sql>
+	<!-- 查询所有 -->
+	<select id="getAll" resultMap="orgUserInfoMap" parameterType="orgUserInfo">
+		SELECT
+		<include refid="column_list" />
+		FROM ORG_USER_INFO
+		<where>
+			<trim>
+		      <if test="pid != null and pid >0">
+	          PID=#{pid}
+	          </if>
+		      <if test="userName != null and userName !=''">
+	          AND USER_NAME=#{userName}
+	          </if>
+		      <if test="password != null and password !=''">
+	          AND "PASSWORD"=#{password}
+	          </if>
+		      <if test="realName != null and realName !=''">
+	          AND REAL_NAME=#{realName}
+	          </if>
+		      <if test="nickName != null and nickName !=''">
+	          AND NICK_NAME=#{nickName}
+	          </if>
+		      <if test="jobNo != null and jobNo !=''">
+	          AND JOB_NO=#{jobNo}
+	          </if>
+		      <if test="phone != null and phone !=''">
+	          AND PHONE=#{phone}
+	          </if>
+		      <if test="email != null and email !=''">
+	          AND EMAIL=#{email}
+	          </if>
+		      <if test="orgId != null and orgId >0">
+	          AND ORG_ID=#{orgId}
+	          </if>
+		      <if test="role != null and role >0">
+	          AND "ROLE"=#{role}
+	          </if>
+		      <if test="status != null and status >0">
+	          AND STATUS=#{status}
+	          </if>
+		      <if test="userType != null and userType >0">
+	          AND USER_TYPE=#{userType}
+	          </if>
+		      <if test="dateScope != null and dateScope >0">
+	          AND DATE_SCOPE=#{dateScope}
+	          </if>
+		      <if test="createId != null and createId >0">
+	          AND CREATE_ID=#{createId}
+	          </if>
+		      <if test="createDate != null and createDate !=''">
+	          AND CREATE_DATE=#{createDate}
+	          </if>
+		      <if test="updateId != null and updateId >0">
+	          AND UPDATE_ID=#{updateId}
+	          </if>
+		      <if test="updateDate != null and updateDate !=''">
+	          AND UPDATE_DATE=#{updateDate}
+	          </if>
+		      <if test="remark != null and remark !=''">
+	          AND REMARK=#{remark}
+	          </if>
+			</trim>
+		</where>
+	</select>
+	<!-- 根据id获取 -->
+	<select id="getById" resultMap="orgUserInfoMap">
+		SELECT <include refid="column_list" /> FROM ORG_USER_INFO WHERE PID=#{pid}
+	</select>
+	<!-- 根据用户名获取用户 -->
+	<select id="queryOrgUserByName" resultMap="orgUserInfoMap">
+		SELECT <include refid="column_list" /> FROM ORG_USER_INFO WHERE USER_NAME=#{userName}
+	</select>
+	<!-- 根据手机号码获取用户 -->
+	<select id="getUserByPhone" resultMap="orgUserInfoMap">
+		SELECT <include refid="column_list" /> FROM ORG_USER_INFO WHERE PHONE=#{phone}
+	</select>
+	<!-- 根据EMAIL获取用户 -->
+	<select id="getUserByEmail" resultMap="orgUserInfoMap">
+		SELECT <include refid="column_list" /> FROM ORG_USER_INFO WHERE EMAIL=#{email}
+	</select>
+	<!-- 插入一条数据 -->
+	<insert id="insert" parameterType="orgUserInfo">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_ORG_USER_INFO.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO ORG_USER_INFO
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+				PID,
+			</if>
+		    <if test="userName != null and userName !=''">
+				USER_NAME,
+			</if>
+		    <if test="password != null and password !=''">
+				"PASSWORD",
+			</if>
+		    <if test="realName != null and realName !=''">
+				REAL_NAME,
+			</if>
+		    <if test="nickName != null and nickName !=''">
+				NICK_NAME,
+			</if>
+		    <if test="jobNo != null and jobNo !=''">
+				JOB_NO,
+			</if>
+		    <if test="deptName != null and deptName !=''">
+				DEPT_NAME,
+			</if>
+		    <if test="phone != null and phone !=''">
+				PHONE,
+			</if>
+		    <if test="email != null and email !=''">
+				EMAIL,
+			</if>
+		    <if test="orgId != null and orgId >0">
+				ORG_ID,
+			</if>
+		    <if test="role != null and role >0">
+				"ROLE",
+			</if>
+		    <if test="status != null and status >0">
+				STATUS,
+			</if>
+		    <if test="userType != null and userType >0">
+				USER_TYPE,
+			</if>
+		    <if test="dateScope != null and dateScope >0">
+				DATE_SCOPE,
+			</if>
+		    <if test="createId != null and createId >0">
+				CREATE_ID,
+			</if>
+				CREATE_DATE,
+		    <if test="updateId != null and updateId >0">
+				UPDATE_ID,
+			</if>
+				UPDATE_DATE,
+		    <if test="remark != null and remark !=''">
+				REMARK,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+		    #{pid},
+			</if>
+		    <if test="userName != null and userName !=''">
+		    #{userName},
+			</if>
+		    <if test="password != null and password !=''">
+		    #{password},
+			</if>
+		    <if test="realName != null and realName !=''">
+		    #{realName},
+			</if>
+		    <if test="nickName != null and nickName !=''">
+		    #{nickName},
+			</if>
+		    <if test="jobNo != null and jobNo !=''">
+		    #{jobNo},
+			</if>
+			<if test="deptName != null and deptName !=''">
+			 #{deptName},
+			</if>
+		    <if test="phone != null and phone !=''">
+		    #{phone},
+			</if>
+		    <if test="email != null and email !=''">
+		    #{email},
+			</if>
+		    <if test="orgId != null and orgId >0">
+		    #{orgId},
+			</if>
+		    <if test="role != null and role >0">
+		    #{role},
+			</if>
+		    <if test="status != null and status >0">
+		    #{status},
+			</if>
+		    <if test="userType != null and userType >0">
+		    #{userType},
+			</if>
+		    <if test="dateScope != null and dateScope >0">
+		    #{dateScope},
+			</if>
+		    <if test="createId != null and createId >0">
+		    #{createId},
+			</if>
+		    SYSDATE,
+		    <if test="updateId != null and updateId >0">
+		    #{updateId},
+			</if>
+		    SYSDATE,
+		    <if test="remark != null and remark !=''">
+		    #{remark},
+			</if>
+		</trim>
+	</insert>
+
+	<!-- 根据id更新数据 -->
+		<update id="update" parameterType="orgUserInfo">
+		UPDATE ORG_USER_INFO
+		<set>
+		    <if test="userName != null and userName !=''">
+		     USER_NAME=#{userName},
+			</if>
+		    <if test="password != null and password !=''">
+		     "PASSWORD"=#{password},
+			</if>
+		    <if test="realName != null and realName !=''">
+		     REAL_NAME=#{realName},
+			</if>
+		    <if test="nickName != null and nickName !=''">
+		     NICK_NAME=#{nickName},
+			</if>
+		    <if test="jobNo != null and jobNo !=''">
+		     JOB_NO=#{jobNo},
+			</if>
+			<if test="deptName != null and deptName !=''">
+			 DEPT_NAME=#{deptName},
+			</if>
+		    <if test="phone != null and phone !=''">
+		     PHONE=#{phone},
+			</if>
+		    <if test="email != null and email !=''">
+		     EMAIL=#{email},
+			</if>
+		    <if test="orgId != null and orgId >0">
+		     ORG_ID=#{orgId},
+			</if>
+		    <if test="role != null and role >0">
+		     "ROLE"=#{role},
+			</if>
+		    <if test="status != null and status >0">
+		     STATUS=#{status},
+			</if>
+		    <if test="userType != null and userType >0">
+		     USER_TYPE=#{userType},
+			</if>
+		    <if test="dateScope != null and dateScope >0">
+		     DATE_SCOPE=#{dateScope},
+			</if>
+		    <if test="updateId != null and updateId >0">
+		     UPDATE_ID=#{updateId},
+			</if>
+		     UPDATE_DATE=SYSDATE,
+		    <if test="remark != null and remark !=''">
+		     REMARK=#{remark},
+			</if>
+		</set>
+		WHERE PID = #{pid}
+	</update>
+	
+	<!--  -->
+	<update id="updateDateScopeByIds" parameterType="java.util.Map">
+		UPDATE ORG_USER_INFO SET DATE_SCOPE=#{dateScope} WHERE USER_TYPE=#{userType} AND ORG_ID=#{orgId} AND PID in
+		<foreach collection="idList" item="item" index="index" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</update>
+	<!-- 员工列表(分页查询) -->
+	<select id="findOrgEmpIndexPage" resultMap="orgEmpIndexMap" parameterType="com.qfang.xk.aom.rpc.system.OrgEmpIndex">
+		<if test="page!=-1">
+			SELECT D.* FROM (SELECT T.*, ROWNUM RN
+			FROM (
+		</if>
+		SELECT A.PID,
+		       A.USER_NAME,
+		       A.REAL_NAME,
+		       A.NICK_NAME,
+		       A.JOB_NO,
+		       A.DEPT_NAME,
+		       A.PHONE,
+		       A.STATUS,
+		       A.DATE_SCOPE,
+		       A.EMAIL
+       FROM ORG_USER_INFO A
+		<where>
+			<trim>
+				<if test="userName != null and userName !=''">
+					AND A.USER_NAME LIKE '%${userName}%'
+				</if>
+				<if test="realName != null and realName !=''">
+					AND A.REAL_NAME LIKE '%${realName}%'
+				</if>
+				<if test="jobNo != null and jobNo !=''">
+					AND A.JOB_NO LIKE '%${jobNo}%'
+				</if>
+				<if test="deptName != null and deptName !=''">
+					AND A.DEPT_NAME LIKE '%${deptName}%'
+				</if>
+				<if test="status != null and status >0">
+					AND A.STATUS = #{status}
+				</if>
+				<if test="dateScope != null and dateScope >0">
+					AND A.DATE_SCOPE = #{dateScope}
+				</if>
+				<if test="1==1">
+					AND A.ORG_ID =#{orgId} AND A.USER_TYPE=3
+				</if>
+			</trim>
+		</where>
+		<if test="page!=-1">
+			<![CDATA[
+			) T
+			WHERE ROWNUM <=#{page}*#{rows}
+			) D
+			WHERE D.RN > ((#{page}-1)*#{rows})
+			]]>
+		</if>
+	</select>
+	<!--员工列表总数 -->
+	<select id="getOrgEmpIndexTotal" resultType="Integer" parameterType="com.qfang.xk.aom.rpc.system.OrgEmpIndex">
+	SELECT COUNT(1) FROM
+			(SELECT A.PID
+       FROM ORG_USER_INFO A
+		<where>
+			<trim>
+				<if test="userName != null and userName !=''">
+					AND A.USER_NAME LIKE '%${userName}%'
+				</if>
+				<if test="realName != null and realName !=''">
+					AND A.REAL_NAME LIKE '%${realName}%'
+				</if>
+				<if test="jobNo != null and jobNo !=''">
+					AND A.JOB_NO LIKE '%${jobNo}%'
+				</if>
+				<if test="deptName != null and deptName !=''">
+					AND A.DEPT_NAME LIKE '%${deptName}%'
+				</if>
+				<if test="status != null and status >0">
+					AND A.STATUS = #{status}
+				</if>
+				<if test="dateScope != null and dateScope >0">
+					AND A.DATE_SCOPE = #{dateScope}
+				</if>
+				<if test="1==1">
+					AND A.ORG_ID =#{orgId} AND A.USER_TYPE=3
+				</if>
+			</trim>
+		</where>
+		) T
+	</select>
+	<!-- 机构管理平台,功能权限列表(分页查询) -->
+	<select id="findOrgFnPermissionIndexPage" resultMap="orgFnPermissionIndexMap" parameterType="com.qfang.xk.aom.rpc.system.OrgFnPermissionIndex">
+		<if test="page!=-1">
+			SELECT D.* FROM (SELECT T.*, ROWNUM RN
+			FROM (
+		</if>
+		SELECT A.PID AS MENU_ID,A.MENU_NAME,A.PARENT_ID,
+       (SELECT COUNT(1)
+          FROM ORG_USER_INFO U
+          LEFT JOIN ORG_USER_MENU_INFO UM
+            ON U.PID = UM.USER_ID
+         WHERE UM.MENU_ID = A.PID AND U.PID=#{userId}) STATUS
+        FROM ORG_SYS_MENU_INFO A
+		<where>
+			<trim>
+				<if test="1==1">
+					AND A.USER_TYPE =#{userType}
+				</if>
+				<if test="menuName != null and menuName !=''">
+					AND A.MENU_NAME LIKE '%${menuName}%'
+				</if>
+			</trim>
+		</where>
+		<if test="page!=-1">
+			<![CDATA[
+			) T
+			WHERE ROWNUM <=#{page}*#{rows}
+			) D
+			WHERE D.RN > ((#{page}-1)*#{rows})
+			]]>
+		</if>
+	</select>
+	<!--机构管理平台,功能权限列表总数 -->
+	<select id="getOrgFnPermissionIndexTotal" resultType="Integer" parameterType="com.qfang.xk.aom.rpc.system.OrgFnPermissionIndex">
+	SELECT COUNT(1) FROM
+			(SELECT A.PID
+        FROM ORG_SYS_MENU_INFO A
+		<where>
+			<trim>
+				<if test="1==1">
+					AND A.USER_TYPE =#{userType}
+				</if>
+				<if test="menuName != null and menuName !=''">
+					AND A.MENU_NAME LIKE '%${menuName}%'
+				</if>
+			</trim>
+		</where>
+		) T
+	</select>
+	<!-- 根据用户id删除 -->
+    <delete id="deleteById" parameterType="Integer">
+	 DELETE FROM ORG_USER_INFO T WHERE T.PID=#{pid}
+	</delete>
+</mapper>

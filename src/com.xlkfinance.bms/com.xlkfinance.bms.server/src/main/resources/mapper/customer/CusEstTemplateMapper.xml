@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.customer.mapper.CusEstTemplateMapper">
+
+
+	<resultMap id="baseResultMap" type="com.xlkfinance.bms.rpc.common.GridViewDTO">
+        <id property="pid" column="pid" />
+        <result property="value1" column="model_name" />
+        <result property="value2" column="model_type" />
+        <result property="value3" column="cre_time" jdbcType="DATE" javaType="String"/>
+        <result property="value4" column="remark" />
+    </resultMap>
+    
+    <resultMap id="selectAllResultMap" type="com.xlkfinance.bms.rpc.customer.CusEstTemplate" >
+	       <id column="PID" property="pid" jdbcType="INTEGER" />
+		   <result column="MODEL_NAME" property="modelName" jdbcType="VARCHAR" />
+		   <result column="MODEL_TYPE" property="modelType" jdbcType="INTEGER" />
+		   <result column="CRE_TIME" property="creTime" jdbcType="DATE" javaType="String" />
+		   <result column="REMARK" property="remark" jdbcType="VARCHAR" />
+		   <result column="STATUS" property="status" jdbcType="INTEGER" />
+	</resultMap>
+	
+	
+	
+	<!-- 生产资信评估  start -->
+	<resultMap id="selectModelResultMap" type="com.xlkfinance.bms.rpc.customer.CusEstTemplate" >
+	       <id column="PID" property="pid" jdbcType="INTEGER" />
+		   <result column="MODEL_NAME" property="modelName" jdbcType="VARCHAR" />
+		   <collection property="factors" javaType="java.util.List" resultMap="selectModelFactorResultMap"/>
+	</resultMap>
+	
+	<resultMap id="selectModelFactorResultMap" type="com.xlkfinance.bms.rpc.customer.CusEstFactorWeights" >
+	       <id column="factorid" property="pid" jdbcType="INTEGER" />
+		   <result column="f_name" property="fname" jdbcType="VARCHAR" />
+		   <result column="weight" property="weight" jdbcType="INTEGER" />
+		   <collection property="quotas" javaType="java.util.List" resultMap="selectQuotaResultMap"/>
+	</resultMap>
+	
+	<resultMap id="selectQuotaResultMap" type="com.xlkfinance.bms.rpc.customer.CusEstQuota" >
+       <id column="quotaid" property="pid" jdbcType="INTEGER" />
+	   <result column="QUOTA_NAME" property="quotaName" jdbcType="VARCHAR" />
+	   <collection property="options" javaType="java.util.List" resultMap="selectOptionResultMap"/>
+	</resultMap>
+	
+	<resultMap id="selectOptionResultMap" type="com.xlkfinance.bms.rpc.customer.CusEstOption" >
+	   	<id column="optionid" property="pid" jdbcType="INTEGER" />
+	   	<result column="OPTION_NAME" property="optionName" jdbcType="VARCHAR" />
+	   	<result column="SCORE" property="score" jdbcType="DOUBLE" />
+	</resultMap>
+	
+	<select id="getMakeEstTemplate" resultMap="selectModelResultMap" parameterType="java.lang.Integer">
+	SELECT cet.pid,
+		cet.model_name,
+		efw.pid factorid,
+		(SELECT slv.lookup_val FROM Sys_Lookup_Val slv WHERE slv.pid=efw.factor_name) AS f_name,
+		efw.weight,
+		ceq.pid quotaid,
+		ceq.quota_name,
+		ceo.pid optionid,
+		ceo.option_name,
+		ceo.score
+	  FROM CUS_EST_TEMPLATE       CET,
+	       CUS_EST_FACTOR_WEIGHTS EFW,
+	       CUS_EST_QUOTA          CEQ,
+	       CUS_EST_OPTION         CEO
+	 WHERE 1 = 1
+	   AND CET.PID = EFW.TEMPLATE_ID
+	   AND EFW.PID = CEQ.FACTOR_ID
+	   AND CEQ.PID = CEO.QUOTA_ID
+	   AND CET.PID = #{pid,jdbcType=INTEGER}
+	   AND CET.STATUS=1
+	   AND EFW.STATUS=1
+	   AND CEQ.STATUS=1
+	   AND CEO.STATUS=1
+	</select>
+	<!-- 生产资信评估  end -->
+
+ <resultMap id="selectModelNameResultMap" type="com.xlkfinance.bms.rpc.customer.CusEstTemplate" >
+       <id column="PID" property="pid" jdbcType="INTEGER" />
+	   <result column="MODEL_NAME" property="modelName" jdbcType="VARCHAR" />
+</resultMap>
+<select id="selectModelName" resultMap="selectModelNameResultMap" parameterType="java.lang.Integer">
+	select * from cus_est_template where pid=#{pid,jdbcType=INTEGER}
+</select> 
+
+<!-- 下拉框获得所有模板  end -->
+<select id="selectAllEstTemplateName" resultMap="selectModelNameResultMap" parameterType="com.xlkfinance.bms.rpc.customer.CusEstTemplate">
+	select 
+		pid,model_name 
+	from 
+		cus_est_template 
+	where status=1 
+	<if test="modelType !=null and modelType !=0">
+		and model_type=#{modelType,jdbcType=INTEGER}
+	</if>
+</select>
+	
+<insert id="insert" parameterType="com.xlkfinance.bms.rpc.customer.CusEstTemplate">
+    <selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+		SELECT SEQ_CUS_EST_TEMPLATE.Nextval as PID from DUAL
+	</selectKey>
+    insert into CUS_EST_TEMPLATE (
+	    PID, 
+	    MODEL_NAME, 
+	    MODEL_TYPE, 
+	    CRE_TIME, 
+	    REMARK,
+	    STATUS)
+    values (
+    	#{pid,jdbcType=INTEGER}, 
+    	#{modelName,jdbcType=VARCHAR}, 
+    	#{modelType,jdbcType=INTEGER}, 
+      	#{creTime,jdbcType=DATE,javaType=String},
+      	#{remark,jdbcType=VARCHAR},
+      	#{status,jdbcType=INTEGER}) 
+  </insert>
+  <!-- 更新的方法 -->
+	<update id="updateByPrimaryKey" parameterType="com.xlkfinance.bms.rpc.customer.CusEstTemplate">
+		update CUS_EST_TEMPLATE
+		<set>
+		<if test="modelName != null">
+		     MODEL_NAME = #{modelName,jdbcType=VARCHAR}, 
+		</if>
+		<if test="modelType != null">
+		     MODEL_TYPE = #{modelType,jdbcType=INTEGER},  
+		</if>
+    	<if test="creTime != null">
+      		CRE_TIME = #{creTime,jdbcType=DATE,javaType=String},
+      	</if>
+      	<if test="remark != null">
+      		REMARK = #{remark,jdbcType=VARCHAR},
+      	</if>
+      	<if test="status != null">
+      		STATUS = #{status,jdbcType=INTEGER},
+      	</if>
+		</set> 
+		where pid = #{pid,jdbcType=INTEGER}
+	</update>
+	
+	<select id="selectByPrimaryKey" resultMap="selectAllResultMap" parameterType="java.lang.Integer">
+  		SELECT *
+ 		FROM 
+         CUS_EST_TEMPLATE CET
+ 		WHERE cet.pid=#{pid,jdbcType=INTEGER}
+  	</select>
+  	
+  	<select id="getCusEstTemplates" resultMap="baseResultMap" parameterType="com.xlkfinance.bms.rpc.customer.CusEstTemplate">
+  		SELECT CET.PID,
+	       CET.MODEL_NAME,
+	       (SELECT LK.LOOKUP_VAL
+	          FROM SYS_LOOKUP_VAL LK
+	         WHERE LK.PID = CET.MODEL_TYPE) MODEL_TYPE,
+	       CET.CRE_TIME,
+	       CET.REMARK
+		FROM CUS_EST_TEMPLATE CET
+		WHERE cet.status=1
+		<if test="modelName != null and modelName !=''">
+      		AND cet.model_name LIKE '%${modelName}%'
+      	</if>
+		<if test="modelType != null and modelType !=0">
+      		AND cet.model_type=#{modelType,jdbcType=INTEGER}
+      	</if>
+  	</select>
+  	
+  	<update id="deleteEstTemplates" parameterType="java.util.List">
+	  	update 
+	  		CUS_EST_TEMPLATE 
+  		set 
+  			status=0 
+		where pid in 
+		<foreach item="itemId" collection="list" open="(" separator="," close=")">
+		          #{itemId}
+		</foreach>
+	</update>
+</mapper>

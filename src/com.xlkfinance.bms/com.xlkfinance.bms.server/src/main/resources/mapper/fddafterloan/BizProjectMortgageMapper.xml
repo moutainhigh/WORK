@@ -1,0 +1,458 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.xlkfinance.bms.server.fddafterloan.mapper.BizProjectMortgageMapper">
+	<resultMap id="bizProjectMortgageMap"
+		type="com.xlkfinance.bms.rpc.fddafterloan.BizProjectMortgage">
+		<id property="pid" column="PID" />
+		<id property="projectId" column="PROJECT_ID" />
+		<id property="mortgageStatus" column="MORTGAGE_STATUS" />
+		<id property="registerTime" column="REGISTER_TIME" />
+		<id property="registerId" column="REGISTER_ID" />
+		<id property="issueTime" column="ISSUE_TIME" />
+		<id property="issueId" column="ISSUE_ID" />
+		<id property="issueUserName" column="ISSUE_USER_NAME" />
+		<id property="issueMaterial" column="ISSUE_MATERIAL" />
+		<id property="cancelId" column="CANCEL_ID" />
+		<id property="cancelUserName" column="CANCEL_USER_NAME" />
+		<id property="cancelTime" column="CANCEL_TIME" />
+		<id property="cancelMaterial" column="CANCEL_MATERIAL" />
+		<id property="returnId" column="RETURN_ID" />
+		<id property="returnUserName" column="RETURN_USER_NAME" />
+		<id property="returnTime" column="RETURN_TIME" />
+		<id property="returnMaterial" column="RETURN_MATERIAL" />
+		<id property="createDate" column="CREATE_DATE" />
+		<id property="createrId" column="CREATER_ID" />
+		<id property="updateId" column="UPDATE_ID" />
+		<id property="updateDate" column="UPDATE_DATE" />
+	</resultMap>
+	<resultMap id="projectMortgageIndexPageMap"
+		type="com.xlkfinance.bms.rpc.fddafterloan.BizProjectMortgageIndexPage">
+		<id property="pid" column="PID" />
+		<id property="projectId" column="PROJECT_ID" />
+		<id property="mortgageStatus" column="MORTGAGE_STATUS" />
+		<id property="projectNumber" column="PROJECT_NUMBER" />
+		<id property="projectName" column="PROJECT_NAME" />
+		<id property="repaymentStatus" column="REPAYMENT_STATUS" />
+		<id property="finishRepaymentDate" column="finish_REPAYMENT_DATE" />
+		<id property="pmUserId" column="PM_USER_ID" />
+	</resultMap>
+	<sql id="column_list">
+		PID,PROJECT_ID,MORTGAGE_STATUS,REGISTER_TIME,REGISTER_ID,ISSUE_TIME,ISSUE_ID,ISSUE_USER_NAME,ISSUE_MATERIAL,CANCEL_ID,CANCEL_USER_NAME,CANCEL_TIME,CANCEL_MATERIAL,RETURN_ID,RETURN_USER_NAME,RETURN_TIME,RETURN_MATERIAL,CREATE_DATE,CREATER_ID,UPDATE_ID,UPDATE_DATE
+	</sql>
+	<!-- 查询所有 -->
+	<select id="getAll" resultMap="bizProjectMortgageMap"
+		parameterType="com.xlkfinance.bms.rpc.fddafterloan.BizProjectMortgage">
+		SELECT
+		<include refid="column_list" />
+		FROM BIZ_PROJECT_MORTGAGE
+		<where>
+			<trim>
+				<if test="pid != null and pid >0">
+					PID=#{pid}
+				</if>
+				<if test="projectId != null and projectId >0">
+					AND PROJECT_ID=#{projectId}
+				</if>
+				<if test="mortgageStatus != null and mortgageStatus >0">
+					AND MORTGAGE_STATUS=#{mortgageStatus}
+				</if>
+				<if test="registerTime != null and registerTime !=''">
+					AND REGISTER_TIME=#{registerTime}
+				</if>
+				<if test="registerId != null and registerId >0">
+					AND REGISTER_ID=#{registerId}
+				</if>
+				<if test="issueTime != null and issueTime !=''">
+					AND ISSUE_TIME=#{issueTime}
+				</if>
+				<if test="issueId != null and issueId >0">
+					AND ISSUE_ID=#{issueId}
+				</if>
+				<if test="issueUserName != null and issueUserName !=''">
+					AND ISSUE_USER_NAME=#{issueUserName}
+				</if>
+				<if test="issueMaterial != null and issueMaterial !=''">
+					AND ISSUE_MATERIAL=#{issueMaterial}
+				</if>
+				<if test="cancelId != null and cancelId >0">
+					AND CANCEL_ID=#{cancelId}
+				</if>
+				<if test="cancelUserName != null and cancelUserName !=''">
+					AND CANCEL_USER_NAME=#{cancelUserName}
+				</if>
+				<if test="cancelTime != null and cancelTime !=''">
+					AND CANCEL_TIME=#{cancelTime}
+				</if>
+				<if test="cancelMaterial != null and cancelMaterial !=''">
+					AND CANCEL_MATERIAL=#{cancelMaterial}
+				</if>
+				<if test="returnId != null and returnId >0">
+					AND RETURN_ID=#{returnId}
+				</if>
+				<if test="returnUserName != null and returnUserName !=''">
+					AND RETURN_USER_NAME=#{returnUserName}
+				</if>
+				<if test="returnTime != null and returnTime !=''">
+					AND RETURN_TIME=#{returnTime}
+				</if>
+				<if test="returnMaterial != null and returnMaterial !=''">
+					AND RETURN_MATERIAL=#{returnMaterial}
+				</if>
+				<if test="createDate != null and createDate !=''">
+					AND CREATE_DATE=#{createDate}
+				</if>
+				<if test="createrId != null and createrId >0">
+					AND CREATER_ID=#{createrId}
+				</if>
+				<if test="updateId != null and updateId >0">
+					AND UPDATE_ID=#{updateId}
+				</if>
+				<if test="updateDate != null and updateDate !=''">
+					AND UPDATE_DATE=#{updateDate}
+				</if>
+			</trim>
+		</where>
+	</select>
+	<!-- 根据id获取 -->
+	<select id="getById" resultMap="bizProjectMortgageMap">
+		SELECT
+		<include refid="column_list" />
+		FROM BIZ_PROJECT_MORTGAGE WHERE PID=#{pid}
+	</select>
+	<!-- 插入一条数据 -->
+	<insert id="insert"
+		parameterType="com.xlkfinance.bms.rpc.fddafterloan.BizProjectMortgage">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_BIZ_PROJECT_MORTGAGE.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_PROJECT_MORTGAGE
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="pid != null and pid >0">
+				PID,
+			</if>
+			<if test="projectId != null and projectId >0">
+				PROJECT_ID,
+			</if>
+			<if test="mortgageStatus != null and mortgageStatus >0">
+				MORTGAGE_STATUS,
+			</if>
+			<if test="registerTime != null and registerTime !=''">
+				REGISTER_TIME,
+			</if>
+			<if test="registerId != null and registerId >0">
+				REGISTER_ID,
+			</if>
+			<if test="issueTime != null and issueTime !=''">
+				ISSUE_TIME,
+			</if>
+			<if test="issueId != null and issueId >0">
+				ISSUE_ID,
+			</if>
+			<if test="issueUserName != null and issueUserName !=''">
+				ISSUE_USER_NAME,
+			</if>
+			<if test="issueMaterial != null and issueMaterial !=''">
+				ISSUE_MATERIAL,
+			</if>
+			<if test="cancelId != null and cancelId >0">
+				CANCEL_ID,
+			</if>
+			<if test="cancelUserName != null and cancelUserName !=''">
+				CANCEL_USER_NAME,
+			</if>
+			<if test="cancelTime != null and cancelTime !=''">
+				CANCEL_TIME,
+			</if>
+			<if test="cancelMaterial != null and cancelMaterial !=''">
+				CANCEL_MATERIAL,
+			</if>
+			<if test="returnId != null and returnId >0">
+				RETURN_ID,
+			</if>
+			<if test="returnUserName != null and returnUserName !=''">
+				RETURN_USER_NAME,
+			</if>
+			<if test="returnTime != null and returnTime !=''">
+				RETURN_TIME,
+			</if>
+			<if test="returnMaterial != null and returnMaterial !=''">
+				RETURN_MATERIAL,
+			</if>
+			CREATE_DATE,
+			<if test="createrId != null and createrId >0">
+				CREATER_ID,
+			</if>
+			<if test="updateId != null and updateId >0">
+				UPDATE_ID,
+			</if>
+			UPDATE_DATE
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="pid != null and pid >0">
+				#{pid},
+			</if>
+			<if test="projectId != null and projectId >0">
+				#{projectId},
+			</if>
+			<if test="mortgageStatus != null and mortgageStatus >0">
+				#{mortgageStatus},
+			</if>
+			<if test="registerTime != null and registerTime !=''">
+				#{registerTime,jdbcType= DATE,javaType=
+				java.lang.String},
+			</if>
+			<if test="registerId != null and registerId >0">
+				#{registerId},
+			</if>
+			<if test="issueTime != null and issueTime !=''">
+				#{issueTime,jdbcType= DATE,javaType=
+				java.lang.String},
+			</if>
+			<if test="issueId != null and issueId >0">
+				#{issueId},
+			</if>
+			<if test="issueUserName != null and issueUserName !=''">
+				#{issueUserName},
+			</if>
+			<if test="issueMaterial != null and issueMaterial !=''">
+				#{issueMaterial},
+			</if>
+			<if test="cancelId != null and cancelId >0">
+				#{cancelId},
+			</if>
+			<if test="cancelUserName != null and cancelUserName !=''">
+				#{cancelUserName},
+			</if>
+			<if test="cancelTime != null and cancelTime !=''">
+				#{cancelTime,jdbcType= DATE,javaType=
+				java.lang.String},
+			</if>
+			<if test="cancelMaterial != null and cancelMaterial !=''">
+				#{cancelMaterial},
+			</if>
+			<if test="returnId != null and returnId >0">
+				#{returnId},
+			</if>
+			<if test="returnUserName != null and returnUserName !=''">
+				#{returnUserName},
+			</if>
+			<if test="returnTime != null and returnTime !=''">
+				#{returnTime,jdbcType= DATE,javaType=
+				java.lang.String},
+			</if>
+			<if test="returnMaterial != null and returnMaterial !=''">
+				#{returnMaterial},
+			</if>
+			SYSDATE,
+			<if test="createrId != null and createrId >0">
+				#{createrId},
+			</if>
+			<if test="updateId != null and updateId >0">
+				#{updateId},
+			</if>
+			SYSDATE
+		</trim>
+	</insert>
+	<!-- 根据id删除数据 -->
+	<delete id="deleteById"
+		parameterType="com.xlkfinance.bms.rpc.fddafterloan.BizProjectMortgage">
+		<![CDATA[DELETE FROM BIZ_PROJECT_MORTGAGE WHERE PID=#{pid}]]>
+	</delete>
+	<!-- 根据id更新数据 -->
+	<update id="update"
+		parameterType="com.xlkfinance.bms.rpc.fddafterloan.BizProjectMortgage">
+		UPDATE BIZ_PROJECT_MORTGAGE
+		<set>
+			<if test="pid != null and pid >0">
+				PID=#{pid},
+			</if>
+			<if test="projectId != null and projectId >0">
+				PROJECT_ID=#{projectId},
+			</if>
+			<if test="mortgageStatus != null and mortgageStatus >0">
+				MORTGAGE_STATUS=#{mortgageStatus},
+			</if>
+			<if test="registerTime != null and registerTime !=''">
+				REGISTER_TIME=#{registerTime,jdbcType=DATE,javaType=
+				java.lang.String},
+			</if>
+			<if test="registerId != null and registerId >0">
+				REGISTER_ID=#{registerId},
+			</if>
+			<if test="issueTime != null and issueTime !=''">
+				ISSUE_TIME=#{issueTime,jdbcType= DATE,javaType=
+				java.lang.String},
+			</if>
+			<if test="issueId != null and issueId >0">
+				ISSUE_ID=#{issueId},
+			</if>
+			<if test="issueUserName != null and issueUserName !=''">
+				ISSUE_USER_NAME=#{issueUserName},
+			</if>
+			<if test="issueMaterial != null and issueMaterial !=''">
+				ISSUE_MATERIAL=#{issueMaterial},
+			</if>
+			<if test="cancelId != null and cancelId >0">
+				CANCEL_ID=#{cancelId},
+			</if>
+			<if test="cancelUserName != null and cancelUserName !=''">
+				CANCEL_USER_NAME=#{cancelUserName},
+			</if>
+			<if test="cancelTime != null and cancelTime !=''">
+				CANCEL_TIME=#{cancelTime,jdbcType= DATE,javaType=
+				java.lang.String},
+			</if>
+			<if test="cancelMaterial != null and cancelMaterial !=''">
+				CANCEL_MATERIAL=#{cancelMaterial},
+			</if>
+			<if test="returnId != null and returnId >0">
+				RETURN_ID=#{returnId},
+			</if>
+			<if test="returnUserName != null and returnUserName !=''">
+				RETURN_USER_NAME=#{returnUserName},
+			</if>
+			<if test="returnTime != null and returnTime !=''">
+				RETURN_TIME=#{returnTime,jdbcType= DATE,javaType=
+				java.lang.String},
+			</if>
+			<if test="returnMaterial != null and returnMaterial !=''">
+				RETURN_MATERIAL=#{returnMaterial},
+			</if>
+			<if test="updateId != null and updateId >0">
+				UPDATE_ID=#{updateId},
+			</if>
+			UPDATE_DATE=SYSDATE
+		</set>
+		WHERE PID = #{pid}
+	</update>
+	<!-- 根据传入多个id删除数据 -->
+	<delete id="deleteByIds" parameterType="java.util.List">
+		DELETE FROM BIZ_PROJECT_MORTGAGE WHERE PID in
+		<foreach collection="list" item="item" index="index" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+	<!-- 抵押管理列表（分页查询） -->
+	<select id="queryMortgageIndexPage" resultMap="projectMortgageIndexPageMap"
+		parameterType="com.xlkfinance.bms.rpc.fddafterloan.BizProjectMortgageIndexPage">
+		<if test="page!=-1">
+			SELECT D.* FROM (SELECT T.*, ROWNUM RN
+			FROM (
+		</if>
+		SELECT A.PID AS PROJECT_ID,
+		C.PID,
+		A.PROJECT_NAME,
+		A.PROJECT_NUMBER,
+		A.PM_USER_ID,
+		B.STATUS AS REPAYMENT_STATUS,
+		B.NEW_REPAYMENT_DATE AS
+		FINISH_REPAYMENT_DATE,
+		C.MORTGAGE_STATUS
+		FROM BIZ_PROJECT A
+		INNER JOIN
+		BIZ_PROJECT_MORTGAGE C
+		ON A.PID = C.PROJECT_ID
+		LEFT JOIN
+		BIZ_LOAN_REPAYMENT B
+		ON A.PID = B.PROJECT_ID
+
+		<where>
+			<trim>
+				<if test="userIds!=null and userIds.size()>0">
+					AND A.PM_USER_ID IN
+					<foreach item="itemId" collection="userIds" open="("
+						separator="," close=")">
+						#{itemId}
+					</foreach>
+				</if>
+				<if test="projectId != null and projectId >0">
+					AND A.PROJECT_ID=#{projectId}
+				</if>
+				<if test="repaymentStatus != null and repaymentStatus >0">
+					AND B.STATUS=#{repaymentStatus}
+				</if>
+				<if test="mortgageStatus != null and mortgageStatus >0">
+					AND C.MORTGAGE_STATUS=#{mortgageStatus}
+				</if>
+				<if test="projectName!=null and projectName!=''">
+					AND A.PROJECT_NAME LIKE '%${projectName}%'
+				</if>
+				<if test="projectNumber!=null and projectNumber!=''">
+					AND A.PROJECT_NUMBER LIKE '%${projectNumber}%'
+				</if>
+				<if test="finishRepaymentDate !=null and finishRepaymentDate !=''">
+					AND B.NEW_REPAYMENT_DATE <![CDATA[>=]]>
+					TO_DATE(#{finishRepaymentDate},'yyyy-MM-dd')
+				</if>
+				<if test="finishRepaymentEndDate !=null and finishRepaymentEndDate !=''">
+					AND B.NEW_REPAYMENT_DATE <![CDATA[<=]]>
+					TO_DATE(CONCAT(#{finishRepaymentEndDate},' 23:59:59'),'yyyy-mm-dd
+					hh24:mi:ss')
+				</if>
+			</trim>
+		</where>
+		<if test="page!=-1">
+	<![CDATA[
+	ORDER BY C.CREATE_DATE DESC
+	) T
+	WHERE ROWNUM <=#{page}*#{rows}
+	) D
+	WHERE D.RN > ((#{page}-1)*#{rows})
+	]]>
+		</if>
+	</select>
+	<!--抵押管理条数（分页查询） -->
+	<select id="getMortgageIndexPageTotal" resultType="Integer"
+		parameterType="com.xlkfinance.bms.rpc.fddafterloan.BizProjectMortgageIndexPage">
+	<![CDATA[
+	SELECT COUNT(1) FROM
+			(
+				      SELECT A.PID                AS PROJECT_ID
+          
+        FROM BIZ_PROJECT A
+        INNER JOIN BIZ_PROJECT_MORTGAGE C
+          ON A.PID = C.PROJECT_ID
+        LEFT JOIN BIZ_LOAN_REPAYMENT B
+          ON A.PID = B.PROJECT_ID
+	]]>
+		<where>
+			<trim>
+				<if test="userIds!=null and userIds.size()>0">
+					AND A.PM_USER_ID IN
+					<foreach item="itemId" collection="userIds" open="("
+						separator="," close=")">
+						#{itemId}
+					</foreach>
+				</if>
+				<if test="projectId != null and projectId >0">
+					AND A.PROJECT_ID=#{projectId}
+				</if>
+				<if test="repaymentStatus != null and repaymentStatus >0">
+					AND B.STATUS=#{repaymentStatus}
+				</if>
+				<if test="mortgageStatus != null and mortgageStatus >0">
+					AND C.MORTGAGE_STATUS=#{mortgageStatus}
+				</if>
+				<if test="projectName!=null and projectName!=''">
+					AND A.PROJECT_NAME LIKE '%${projectName}%'
+				</if>
+				<if test="projectNumber!=null and projectNumber!=''">
+					AND A.PROJECT_NUMBER LIKE '%${projectNumber}%'
+				</if>
+				<if test="finishRepaymentDate !=null and finishRepaymentDate !=''">
+					AND B.NEW_REPAYMENT_DATE <![CDATA[>=]]>
+					TO_DATE(#{finishRepaymentDate},'yyyy-MM-dd')
+				</if>
+				<if test="finishRepaymentEndDate !=null and finishRepaymentEndDate !=''">
+					AND B.NEW_REPAYMENT_DATE <![CDATA[<=]]>
+					TO_DATE(CONCAT(#{finishRepaymentEndDate},' 23:59:59'),'yyyy-mm-dd
+					hh24:mi:ss')
+				</if>
+			</trim>
+		</where>
+		) T
+	</select>
+</mapper>

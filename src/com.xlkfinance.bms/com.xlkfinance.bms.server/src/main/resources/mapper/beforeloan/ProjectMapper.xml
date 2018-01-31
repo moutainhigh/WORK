@@ -1,0 +1,1965 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.beforeloan.mapper.ProjectMapper">
+	<resultMap id="ProjectResultMap" type="com.xlkfinance.bms.rpc.beforeloan.Project">
+		<id column="PID" property="pid"/>
+		<result column="ACCT_ID" property="acctId"/>
+		<result column="PROJECT_TYPE" property="projectType"/>
+		<result column="projectTypeText" property="projectTypeText"/>
+		<result column="PROJECT_NAME" property="projectName"/>
+		<result column="PROJECT_NUMBER" property="projectNumber"/>
+		<result column="PM_USER_ID" property="pmUserId"/>
+		<result column="REAL_NAME" property="realName"/>
+		<result column="BUSINESS_CATELOG" property="businessCatelog"/>
+		<result column="BUSINESS_TYPE" property="businessType"/>
+		<result column="FLOW_CATELOG" property="flowCatelog"/>
+		<result column="MY_TYPE" property="myType"/>
+		<result column="MY_MAIN" property="myMain"/>
+		<result column="LOAN_INTEREST_RECORD" property="loanInterestRecord"/>
+		<result column="LOAN_MGR_RECORD" property="loanMgrRecord"/>
+		<result column="LOAN_OTHER_FEE" property="loanOtherFee"/>
+		<result column="IS_ALLOW_PREPAY" property="isAllowPrepay"/>
+		<result column="IS_RETURN_INTEREST" property="isReturnInterest"/>
+		<result column="REQUEST_STATUS" property="requestStatus"/>
+		<result column="STATUS" property="status"/>
+		<result column="REQUEST_DTTM" property="requestDttm" javaType="String" jdbcType="TIMESTAMP"/>
+		<result column="COMPLETE_DTTM" property="completeDttm" javaType="String" jdbcType="TIMESTAMP"/>
+		<result column="FINISH_DATE" property="finishDate" javaType="String" jdbcType="DATE"/>
+		<result column="acctTypeText" property="acctTypeText" />
+		<result column="ACCT_TYPE" property="acctType" />
+		<result column="CREDTI_START_DT" property="credtiStartDt" />
+		<result column="CREDTI_END_DT" property="credtiEndDt" />
+		<result column="CREDIT_AMT" property="creditAmt" />
+		<result column="SURVEY_RESULT" property="surveyResult" />
+		<result column="IS_HOOP" property="isHoop" />
+		
+		<!--新增的字段-->
+		<result column="PRODUCT_ID" property="productId" />
+		<result column="BUSINESS_SOURCE" property="businessSource" />
+		<result column="ADDRESS" property="address" />
+		<result column="BUSINESS_CONTACTS" property="businessContacts" />
+		<result column="CONTACTS_PHONE" property="contactsPhone" />
+		<result column="INNER_OR_OUT" property="innerOrOut" />
+		<result column="BUSINESS_CATEGORY" property="businessCategory" />
+		<result column="MANAGERS" property="managers" />
+		<result column="MANAGERS_PHONE" property="managersPhone" />
+		<result column="FORECLOSURE_STATUS" property="foreclosureStatus" />
+		<result column="BUSINESS_SOURCE_NO" property="businessSourceNo" />
+		<result column="COLLECT_FILE_STATUS" property="collectFileStatus" />
+		<result column="REFUND_FILE_STATUS" property="refundFileStatus" />
+		<result column="PROJECT_SOURCE" property="projectSource" />
+		<result column="BUSINESS_SOURCE_STR" property="businessSourceStr" />
+		<result column="PRODUCT_TYPE" property="productType" />
+		<result column="AUDITOR_OPINION" property="auditorOpinion" />
+		<result column="DECLARATION" property="declaration" />
+		<result column="IS_SELLER" property="isSeller" />
+		<result column="SOURCE_STR" property="sourceStr" />
+		
+		<!-- 贷款信息 -->
+		<result column="loanId" property="loanId" />
+		<result column="loanAmt" property="loanAmt" />
+		<result column="CURRENCY" property="currency" />
+		<result column="DATE_MODE" property="dateMode" />
+		<result column="REPAY_FUN" property="repayFun" />
+		<result column="REPAYFUNTEXT" property="repayFunText" />
+		<result column="REPAY_CYCLE_TYPE" property="repayCycleType" />
+		<result column="REPAY_CYCLE_DATE" property="repayCycleDate" />
+		<result column="REPAY_CYCLE" property="repayCycle" />
+		<result column="PLAN_OUT_LOAN_DT" property="planOutLoanDt"  javaType="String" jdbcType="DATE"/>
+		<result column="PLAN_REPAY_LOAN_DT" property="planRepayLoanDt"  javaType="String" jdbcType="DATE"/>
+		<result column="REPAY_OPTION" property="repayOption" />
+		<result column="REPAY_DATE" property="repayDate" />
+		<result column="MONTH_LOAN_INTEREST" property="monthLoanInterest" />
+		<result column="MONTH_LOAN_MGR" property="monthLoanMgr" />
+		<result column="MONTH_LOAN_OTHER_FEE" property="monthLoanOtherFee" />
+		<result column="YEAR_LOAN_INTEREST" property="yearLoanInterest" />
+		<result column="YEAR_LOAN_MGR" property="yearLoanMgr" />
+		<result column="YEAR_LOAN_OTHER_FEE" property="yearLoanOtherFee" />
+		<result column="DAY_LOAN_INTEREST" property="dayLoanInterest" />
+		<result column="DAY_LOAN_MGR" property="dayLoanMgr" />
+		<result column="DAY_LOAN_OTHER_FEE" property="dayLoanOtherFee" />
+		<result column="LIQ_DMG_PROPORTION" property="liqDmgProportion" />
+		<result column="OVERDUE_LOAN_INTEREST" property="overdueLoanInterest" />
+		<result column="OVERDUE_FINE_INTEREST" property="overdueFineInterest" />
+		<result column="MIS_FINE_INTEREST" property="misFineInterest" />
+		<result column="PREPAY_LIQ_DMG_PROPORTION" property="prepayLiqDmgProportion" />
+		<result column="CIRCULATE_TYPE" property="circulateType" />
+		<result column="REQUEST_STATUS_VAL" property="requestStatusVal" />
+		<result column="ecoTradeText" property="ecoTradeText" />
+		<result column="COMMENTS" property="comments" />
+		<result property="businessCatelogText" column="BUSINESS_CATELOG_TEXT" />
+        <result property="businessTypeText" column="BUSINESS_TYPE_TEXT" />
+        <result property="flowCatelogText" column="flowCatelogText" />
+		<result column="eachissue_option" property="eachissueOption" />
+		<result column="FEES_PROPORTION" property="feesProportion" />
+		<result column="CREDIT_STATUS" property="creditStatus" />
+		
+		<result column="IS_CHECHAN" property="isChechan" />
+		<result column="CHECHAN_DATE" property="chechanDate" />
+		<result column="CHECHAN_USER_ID" property="chechanUserId" />
+		<result column="CHECHAN_USER_NAME" property="chechanUserName" />
+		<result column="CHECHAN_CAUSE" property="chechanCause" />
+		
+		<result column="ORG_ID" property="orgId" />
+		<result property="orgCustomerName" column="ORG_CUSTOMER_NAME" />
+		<result property="orgCustomerPhone" column="ORG_CUSTOMER_PHONE" />
+		<result property="orgCustomerCard" column="ORG_CUSTOMER_CARD" />
+		<result property="planLoanDate" column="PLAN_LOAN_DATE" />
+		<result property="planLoanMoney" column="PLAN_LOAN_MONEY" />
+		<result property="loanRate" column="LOAN_RATE" />
+		<result property="maxLoanRate" column="MAX_LOAN_RATE" />
+		<result property="isClosed" column="IS_CLOSED" />
+		<result property="areaCode" column="AREA_CODE" />
+		<result property="applyUserId" column="APPLY_USER_ID" />
+		<result column="IS_NEED_HANDLE" property="isNeedHandle" />
+		<result property="cancelGuaranteeDate" column="CANCEL_GUARANTEE_DATE" javaType="String" jdbcType="TIMESTAMP"/>
+		<result column="IS_NEED_FINANCIAL" property="isNeedFinancial" />
+		<result property="isReject" column="IS_REJECT" />
+		<result property="isAssigned" column="IS_ASSIGNED" />
+		<result property="recordClerkId" column="RECORD_CLERK_ID" />
+		<!-- 客户id -->
+		<result property="acctId" column="ACCT_ID" />
+		<!-- 房抵贷放款资方字段 -->
+		<result property="nextUserId" column="NEXT_USER_ID" />
+		<result property="capitalName" column="CAPITAL_NAME" />
+		<result property="loanType" column="LOAN_TYPE" />
+		
+	</resultMap>
+    
+    <resultMap id="FinanceProCreLoanResultMap" type="com.xlkfinance.bms.rpc.beforeloan.Project">
+        <result property="projectName" column="project_name" />
+        <result property="projectId" column="PROJECT_NUMBER" />
+        <result property="businessCatelogText" column="BUSINESS_CATELOG_TEXT" />
+        <result property="businessTypeText" column="BUSINESS_TYPE_TEXT" />
+        <result property="flowCatelogText" column="flowCatelogText" />
+        <result property="flowCatelog" column="FLOW_CATELOG" />
+        <result property="pmUserName" column="real_name" />
+        <result property="loanInterestRec" column="Loan_Interest_Record" />
+        <result property="loanInterestRecNo" column="LOAN_INTEREST_REC_NO" />
+        <result property="loanMgrRecord" column="LOAN_MGR_RECORD" />
+        <result property="loanMgrRecordNo" column="LOAN_MGR_RECORD_NO" />
+        <result property="loanOtherFee" column="LOAN_OTHER_FEE" />
+        <result property="loanOtherFeeNo" column="LOAN_OTHER_FEE_NO" />
+    </resultMap>
+    <resultMap id="regCgapplyFileMaps"
+		type="com.xlkfinance.bms.rpc.repayment.RegAdvapplyFileview">
+		<result property="pId" column="PID" />
+		<result property="filePath" column="FILE_URL" />
+		<result property="fileType" column="FILE_TYPE" />
+		<result property="fileName" column="FILE_NAME" />
+		<result property="fileSize" column="FILE_SIZE" />
+		<result property="uploadDttm" column="UPLOAD_DTTM" />
+		<result property="fileFunType" column="FILE_FUN_TYPE" />
+		<result property="fileDesc" column="FILE_DESC" />
+	</resultMap>
+    
+    <resultMap id="FinanceReconResultMap" type="com.xlkfinance.bms.rpc.repayment.RepaymentPlanBaseDTO">
+        <result property="pid" column="pid" />
+        <result property="planCycleNum" column="PLAN_CYCLE_NUM" />
+    </resultMap>
+    
+    <resultMap type="com.xlkfinance.bms.rpc.beforeloan.AfterLoanArchive" id="AfterLoanArchiveMap">
+    	<result property="pid" column="PID"/>
+    	<result property="projectId" column="PROJECT_ID"/>
+    	<result property="afterloanStatus" column="AFTERLOAN_STATUS"/>
+    	<result property="afterloanDttm" column="AFTERLOAN_DTTM" javaType="String" jdbcType="TIMESTAMP"/>
+    	<result property="afterloanComments" column="AFTERLOAN_COMMENTS"/>
+    </resultMap>
+    
+     <resultMap id="ProjectDto" type="com.xlkfinance.bms.rpc.beforeloan.ProjectDto">
+        <result property="projectId" column="PROJECT_ID" />
+        <result property="orgName" column="ORG_NAME" />
+        <result property="foreAccount" column="FORE_ACCOUNT" />
+        <result property="managerName" column="MANAGER_NAME" />
+        <result property="pmUserName" column="PM_USER_NAME" />
+        <result property="acctName" column="ACCT_NAME" />
+        <result property="loanMoney" column="LOAN_MONEY" />
+        <result property="sellerName" column="SELLER_NAME" />
+        <result property="promiseMoney" column="PROMISE_MONEY" />
+        <result property="productName" column="PRODUCT_NAME" />
+        <result property="loanDay" column="LOAN_DAY" />
+        <result property="paymentBank" column="PAYMENT_BANK" />
+        <result property="foreBank" column="FORE_BANK" />
+        <result property="houseCardNo" column="HOUSE_CARD_NO" />
+        <result property="houseName" column="HOUSE_NAME" />
+        <result property="loanFee" column="LOAN_FEE" />
+        <result property="poundage" column="POUNDAGE" />
+        <result property="paymentMoney" column="PAYMENT_MONEY" />
+        <result property="projectNumber" column="PROJECT_NUMBER" />
+        <result property="loanRequestProcess" column="LOAN_REQUEST_PROCESS" />
+        
+        <result property="managerPhone" column="MANAGER_PHONE" />
+        <result property="sellerPhone" column="SELLER_PHONE" />
+        <result property="bankUser" column="BANK_USER" />
+        <result property="bankPhone" column="BANK_PHONE" />
+        <result property="projectName" column="PROJECT_NAME" />
+        <result property="projectSource" column="PROJECT_SOURCE" />
+        <result property="brokerage" column="BROKERAGE" />
+        <result property="isNeedHandle" column="IS_NEED_HANDLE" />
+        
+        <result property="paymentName" column="PAYMENT_NAME" />
+        <result property="paymentAccount" column="PAYMENT_ACCOUNT" />
+        <result property="businessSourceStr" column="BUSINESS_SOURCE_STR" />
+    </resultMap>
+    
+    <!-- 赎楼产品项目列表展示 -->
+<resultMap id="BaseResultMap" type="com.xlkfinance.bms.rpc.common.GridViewDTO">
+    <id property="pid" column="pid" />
+    <result property="value1" column="FORECLOSURE_STATUS" />
+    <result property="value2" column="project_number" />
+    <result property="value3" column="product_name" />
+    <result property="value4" column="house_property_card" />
+    <result property="value5" column="seller_name" />
+    <result property="value6" column="buyer_name" />
+    <result property="value7" column="loan_money" />
+    <result property="value8" column="guarantee_fee" />
+    <result property="value9" column="real_name" />
+    <result property="value10" column="name" />
+    <result property="value11" column="payment_date" />
+    <result property="value12" column="business_source" />
+    <result property="value13" column="CHINA_NAME" />
+    <result property="value14" column="TELEPHONE" />
+    <result property="value15" column="CERT_NUMBER" />
+    <!--录单员-->
+    <result property="value16" column="DECLARATION" />
+    <result property="value17" column="old_loan_bank" />
+     <!--收保费金额-->
+    <result property="value18" column="recMoney" />
+     <!--收保费日期-->
+    <result property="value19" column="recDate" />
+     <!--出账日期-->
+    <result property="value20" column="payDate" />
+     <!--回款时间-->
+    <result property="value21" column="finishDate" />
+    <!--费用合计-->
+    <result property="value22" column="feeSum" />
+    <result property="value23" column="PROJECT_NAME" />
+    <result property="value24" column="NOTARIZATION_DATE" />
+    <result property="value25" column="LOAN_WORK_PROCESS_ID" />
+    <result property="value26" column="requestDttm" />
+    <result property="value27" column="pm_user_id" />
+    <result property="value28" column="project_source" />
+    <result property="value29" column="BUSINESS_SOURCE_STR" />
+    <result property="value30" column="IS_REJECT" />
+	<result property="value31" column="IS_ASSIGNED" />
+	<result property="value32" column="RECORD_CLERK_ID" />
+</resultMap>
+<!--查询单笔上线等 -->
+     <resultMap id="OrgCooperatResultMap"
+		type="com.xlkfinance.bms.rpc.beforeloan.OrgCooperat">
+		<result property="projectId" column="project_Id" />
+		<result property="availableLimit" column="AVAILABLE_LIMIT" />
+		<result property="singleUpperLimit" column="SINGLE_UPPER_LIMIT" />
+		<result property="assureMoney" column="ASSURE_MONEY" />
+	</resultMap>
+    
+	<!-- 查询所需列 -->
+	<sql id="LoanProject_Column_List">
+		p.pid,p.PROJECT_NAME,p.PROJECT_NUMBER,p.REQUEST_STATUS,
+		CASE
+         WHEN P.REQUEST_STATUS = 1 AND P.IS_REJECTED=0 THEN
+          '申请中'
+         WHEN P.REQUEST_STATUS = 2 AND P.IS_REJECTED=0 THEN
+          '审核中'
+         WHEN P.REQUEST_STATUS = 3 AND P.IS_REJECTED=0 THEN
+          '已放款'
+         WHEN P.REQUEST_STATUS = 4 AND P.IS_REJECTED=0 THEN
+          '已归档'
+         WHEN P.IS_REJECTED = 1 THEN
+          '已否决'
+       END REQUEST_STATUS_VAL,
+	    val.LOOKUP_VAL AS acctTypeText,acct.ACCT_NAME,acct.ECO_TRADE AS ecoTradeText,credit.CREDTI_START_DT,credit.CREDTI_END_DT,
+	    acct.ACCT_TYPE,u.REAL_NAME,p.SURVEY_RESULT,p.REQUEST_DTTM,to_char(p.COMPLETE_DTTM,'yyyy-MM-dd HH24:MI:SS') endCompleteDttm,
+	    p.PROJECT_TYPE,credit.CREDIT_STATUS
+	</sql>
+	
+	<!-- 查询条件(信用类产品) -->
+	<sql id="queryCondition_project">
+		FROM biz_project p,CUS_ACCT_V acct,sys_lookup_val val,BIZ_CREDIT credit,sys_user u,biz_product d
+		WHERE p.acct_id = acct.ACCT_ID 
+	    AND acct.ACCT_TYPE = val.pid 
+	    AND u.pid = p.pm_user_id 
+  		AND CREDIT.Project_Id = p.pid
+  		AND P.STATUS=1 
+  		And p.product_id = d.pid AND d.product_type = 1
+		<if test="projectName != null and projectName != '' ">
+			AND p.PROJECT_NAME like '%${projectName}%'  
+		</if>
+		<if test="projectNumber != null and projectNumber != '' ">
+			AND p.PROJECT_NUMBER like '%${projectNumber}%' 
+		</if>
+		<if test="acctName != null and acctName != '' ">
+			AND acct.ACCT_NAME like '%${acctName}%' 
+		</if>
+		<if test="acctType != null and acctType != -1 and acctType != 0">
+			AND acct.ACCT_TYPE = #{acctType} 
+		</if>
+		<if test="ecoTrade != null and ecoTrade !=-1">
+			AND acct.ECO_TRADE=#{ecoTrade}
+		</if>
+		<!-- 预留，根据项目经理真实姓名查询 -->
+		<if test="realName != null and realName != '' ">
+			AND u.REAL_NAME like '%${realName}%' 
+		</if>
+		<if test="requestStatus != null and requestStatus != -1 and requestStatus != 0">
+			<choose>
+				<when test="requestStatus == 7">
+					AND P.IS_REJECTED = 1
+				</when>
+				<otherwise>
+					AND p.REQUEST_STATUS = #{requestStatus} 
+					AND P.IS_REJECTED =0
+				</otherwise>
+			</choose>
+		</if>
+		<if test="beginRequestDttm != null and beginRequestDttm !=''">
+			 AND p.REQUEST_DTTM <![CDATA[>= ]]> #{beginRequestDttm,jdbcType=TIMESTAMP,javaType=String}
+		</if>
+		<if test="endRequestDttm != null and endRequestDttm !=''">
+			 AND p.REQUEST_DTTM <![CDATA[<= ]]> #{endRequestDttm,jdbcType=TIMESTAMP,javaType=String} +1
+		</if>
+		<!-- 授信状态查询条件 -->
+		<if test="creditStatus != null and creditStatus != -1 ">
+			AND credit.CREDIT_STATUS=#{creditStatus}
+		</if>
+		<!-- 数据权限 -->
+		<if test="userIds!=null and userIds.size()>0">
+			AND	P.pm_user_id in
+		<foreach item="itemId" collection="userIds" open="(" separator="," close=")">
+		          #{itemId}
+		</foreach>
+		</if>
+		<if test="pmUserId != null and pmUserId >0">
+			AND	P.pm_user_id =#{pmUserId}
+		</if>
+		<!-- 撤单查询条件 -->
+		<if test="isChechan != null and isChechan != -1 ">
+			AND p.is_chechan=#{isChechan}
+		</if>
+	</sql>
+
+	<!-- 查询贷前申请 根据条件查询 -->
+	<select id="getAllProject" resultMap="ProjectResultMap" parameterType="com.xlkfinance.bms.rpc.beforeloan.Project">
+		SELECT * FROM (
+		SELECT rownum rnum ,aa.* FROM (  
+		SELECT  rownum rid, 
+		<include refid="LoanProject_Column_List" /> 
+		<include refid="queryCondition_project" /> 
+		 ORDER BY p.REQUEST_DTTM DESC ) aa
+		) bb 
+		where 1=1 
+		<if test="page != null and page !=0 and rows!=null and rows!=0">
+			and rnum<![CDATA[<=]]>#{page}*#{rows}
+			and rnum>=((#{page}-1)*#{rows})+1
+		</if>
+	</select>
+	
+	<!-- 根据条件查询贷前申请的总数 -->
+	<select id="getAllProjectCount" resultType="java.lang.Integer" parameterType="com.xlkfinance.bms.rpc.beforeloan.Project">
+		SELECT  count(*)
+		<include refid="queryCondition_project" /> 
+	</select>
+	
+	<!-- 项目归档查询查询所需的列 -->
+	<sql id="AfterLoadFile_Column_List">
+		P.PID,
+       P.PROJECT_NAME,
+       P.PROJECT_NUMBER,
+       P.REQUEST_STATUS,
+       (SELECT LOOKUP_DESC
+          FROM SYS_LOOKUP_VAL S1
+         WHERE S1.PID = P.BUSINESS_CATELOG) BUSINESSCATELOGTEXT,
+       (SELECT LOOKUP_DESC
+          FROM SYS_LOOKUP_VAL S1
+         WHERE S1.PID = P.BUSINESS_TYPE) BUSINESSTYPETEXT,
+       (SELECT LOOKUP_DESC
+          FROM SYS_LOOKUP_VAL S1
+         WHERE S1.PID = P.FLOW_CATELOG) FLOWCATELOGTEXT,
+       VAL.LOOKUP_VAL AS ACCTTYPETEXT,
+       ACCT.ACCT_NAME,
+       ACCT.ECO_TRADE AS ECOTRADETEXT,
+       ACCT.ACCT_TYPE,
+       U.REAL_NAME,
+       MBL.CREDIT_AMT,
+       P.REQUEST_DTTM,
+       BAA.AFTERLOAN_COMMENTS COMMENTS,
+       BAA.AFTERLOAN_DTTM COMPLETE_DTTM,
+       CASE
+         WHEN BAA.AFTERLOAN_STATUS IS NULL OR BAA.AFTERLOAN_STATUS = 0 THEN
+          '未归档'
+         ELSE
+          '已归档'
+       END REQUEST_STATUS_VAL
+	</sql>
+	<!-- 查询贷后申请列表 根据条件查询 -->
+	<select id="getAfterLoadFileList" resultMap="ProjectResultMap" parameterType="com.xlkfinance.bms.rpc.beforeloan.Project">
+		SELECT * FROM (
+		SELECT rownum rnum ,aa.* FROM (  
+		SELECT  rownum rid, 
+		<include refid="AfterLoadFile_Column_List" /> 
+		  FROM BIZ_PROJECT P
+		  LEFT JOIN BIZ_AFTERLOAN_ARCHIVE BAA
+		    ON P.PID = BAA.PROJECT_ID, CUS_ACCT_V ACCT, SYS_LOOKUP_VAL VAL,
+		 SYS_USER U,
+		 (SELECT * FROM BIZ_LOAN LO
+		         WHERE PID IN (SELECT LOAN_INFO_ID
+		                         FROM BIZ_LOAN_REPAYMENT_PLAN
+		                       UNION
+		                       SELECT LOAN_ID FROM BIZ_LOAN_REALTIME_PLAN)
+		           AND PID NOT IN (SELECT LOAN_INFO_ID
+		                             FROM BIZ_LOAN_REPAYMENT_PLAN
+		                            WHERE STATUS != '1'
+		                           UNION
+		                           SELECT LOAN_ID
+		                             FROM BIZ_LOAN_REALTIME_PLAN
+		                            WHERE STATUS != '1')) MBL
+		 WHERE P.ACCT_ID = ACCT.ACCT_ID
+		   AND ACCT.ACCT_TYPE = VAL.PID
+		   AND U.PID = P.PM_USER_ID
+		   AND P.PID = MBL.PROJECT_ID
+		   AND P.PID IN (SELECT BPC.PROJECT_ID
+		                   FROM BIZ_PROJECT_COMPLETE BPC
+		                  WHERE BPC.IS_COMPLETE = 1)
+		   AND P.STATUS = 1
+		<if test="projectName != null and projectName != '' ">
+			AND p.PROJECT_NAME like #{projectName}||'%'  
+		</if>
+		<if test="projectNumber != null and projectNumber != '' ">
+			AND p.PROJECT_NUMBER like #{projectNumber}||'%' 
+		</if>
+		<if test="acctName != null and acctName != '' ">
+			AND acct.ACCT_NAME like  #{acctName} ||'%'  
+		</if>
+		<if test="acctType != null and acctType != -1 and acctType != 0">
+			AND acct.ACCT_TYPE = #{acctType} 
+		</if>
+		<if test="ecoTrade != null and ecoTrade != '' and ecoTrade !=-1">
+			AND acct.ECO_TRADE like '#${ecoTrade}%'
+		</if>
+		<!-- 预留，根据项目经理真实姓名查询 -->
+		<if test="realName != null and realName != '' ">
+			AND u.REAL_NAME like '%'||#{realName}||'%' 
+		</if>
+		<if test="requestStatus == 2">
+			AND ( BAA.AFTERLOAN_STATUS IS NULL OR BAA.AFTERLOAN_STATUS =0 )
+		</if>
+		<if test="requestStatus == 1">
+			AND BAA.AFTERLOAN_STATUS =1
+		</if>
+		<if test="beginRequestDttm != null and beginRequestDttm !=''">
+			 AND to_char(p.REQUEST_DTTM,'yyyy-mm-dd') <![CDATA[>= ]]> #{beginRequestDttm}
+		</if>
+		<if test="endRequestDttm != null and endRequestDttm !=''">
+			 AND to_char(p.REQUEST_DTTM,'yyyy-mm-dd') <![CDATA[<= ]]> #{endRequestDttm} +1
+		</if>
+		<if test="beginCompleteDttm != null and beginCompleteDttm !=''">
+			 AND to_char(BAA.AFTERLOAN_DTTM,'yyyy-mm-dd') <![CDATA[>= ]]> #{beginCompleteDttm}
+		</if>
+		<if test="endCompleteDttm != null and endCompleteDttm !=''">
+			 AND to_char(BAA.AFTERLOAN_DTTM,'yyyy-mm-dd') <![CDATA[<= ]]> #{endCompleteDttm} +1
+		</if> ) aa
+		) bb 
+		where 1=1 
+		<if test="page != null and page !=0 and rows!=null and rows!=0">
+			and rnum<![CDATA[<=]]>#{page}*#{rows}
+			and rnum>=((#{page}-1)*#{rows})+1
+		</if>
+	</select>
+	
+	<!-- 查询归档申请列表 根据条件查询 -->
+	<select id="getAfterLoadFileCount" resultType="java.lang.Integer" parameterType="com.xlkfinance.bms.rpc.beforeloan.Project">
+		SELECT COUNT(1) FROM(
+		SELECT ROWNUM RID,
+		       P.PID,
+		       P.PROJECT_NAME,
+		       P.PROJECT_NUMBER,
+		       P.REQUEST_STATUS,
+		       (SELECT LOOKUP_DESC
+		          FROM SYS_LOOKUP_VAL S1
+		         WHERE S1.PID = P.BUSINESS_CATELOG) BUSINESSCATELOGTEXT,
+		       (SELECT LOOKUP_DESC
+		          FROM SYS_LOOKUP_VAL S1
+		         WHERE S1.PID = P.BUSINESS_TYPE) BUSINESSTYPETEXT,
+		       (SELECT LOOKUP_DESC
+		          FROM SYS_LOOKUP_VAL S1
+		         WHERE S1.PID = P.FLOW_CATELOG) FLOWCATELOGTEXT,
+		       VAL.LOOKUP_VAL AS ACCTTYPETEXT,
+		       ACCT.ACCT_NAME,
+		       ACCT.ECO_TRADE AS ECOTRADETEXT,
+		       ACCT.ACCT_TYPE,
+		       U.REAL_NAME,
+		       MBL.CREDIT_AMT,
+		       P.REQUEST_DTTM,
+		       BAA.AFTERLOAN_COMMENTS COMMENTS,
+		       BAA.AFTERLOAN_DTTM COMPLETE_DTTM,
+		       CASE
+		         WHEN BAA.AFTERLOAN_STATUS IS NULL OR BAA.AFTERLOAN_STATUS = 0 THEN
+		          '未归档'
+		         ELSE
+		          '已归档'
+		       END REQUEST_STATUS_VAL
+		  FROM BIZ_PROJECT P
+		  LEFT JOIN BIZ_AFTERLOAN_ARCHIVE BAA
+		    ON P.PID = BAA.PROJECT_ID, CUS_ACCT_V ACCT, SYS_LOOKUP_VAL VAL,
+		 SYS_USER U,
+		 (SELECT * FROM BIZ_LOAN LO
+		         WHERE PID IN (SELECT LOAN_INFO_ID
+		                         FROM BIZ_LOAN_REPAYMENT_PLAN
+		                       UNION
+		                       SELECT LOAN_ID FROM BIZ_LOAN_REALTIME_PLAN)
+		           AND PID NOT IN (SELECT LOAN_INFO_ID
+		                             FROM BIZ_LOAN_REPAYMENT_PLAN
+		                            WHERE STATUS != '1'
+		                           UNION
+		                           SELECT LOAN_ID
+		                             FROM BIZ_LOAN_REALTIME_PLAN
+		                            WHERE STATUS != '1')) MBL
+		 WHERE P.ACCT_ID = ACCT.ACCT_ID
+		   AND ACCT.ACCT_TYPE = VAL.PID
+		   AND U.PID = P.PM_USER_ID
+		   AND P.PID = MBL.PROJECT_ID
+		   AND P.PID IN (SELECT BPC.PROJECT_ID
+		                   FROM BIZ_PROJECT_COMPLETE BPC
+		                  WHERE BPC.IS_COMPLETE = 1)
+		   AND P.STATUS = 1
+		<if test="projectName != null and projectName != '' ">
+			AND p.PROJECT_NAME like #{projectName}||'%'  
+		</if>
+		<if test="projectNumber != null and projectNumber != '' ">
+			AND p.PROJECT_NUMBER like #{projectNumber}||'%' 
+		</if>
+		<if test="acctName != null and acctName != '' ">
+			AND acct.ACCT_NAME like #{acctName}||'%' 
+		</if>
+		<if test="acctType != null and acctType != -1 and acctType != 0">
+			AND acct.ACCT_TYPE = #{acctType} 
+		</if>
+		<if test="ecoTrade != null and ecoTrade !='' and ecoTrade !=-1">
+			AND acct.ECO_TRADE=#{ecoTrade}
+		</if>
+		<!-- 预留，根据项目经理真实姓名查询 -->
+		<if test="realName != null and realName != '' ">
+			AND u.REAL_NAME like '%'||#{realName}||'%' 
+		</if>
+		<if test="requestStatus == 2">
+			AND ( BAA.AFTERLOAN_STATUS IS NULL OR BAA.AFTERLOAN_STATUS =0 )
+		</if>
+		<if test="requestStatus == 1">
+			AND BAA.AFTERLOAN_STATUS =1
+		</if>
+		<if test="beginRequestDttm != null and beginRequestDttm !=''">
+			 AND to_char(p.REQUEST_DTTM,'yyyy-mm-dd') <![CDATA[>= ]]> #{beginRequestDttm}
+		</if>
+		<if test="endRequestDttm != null and endRequestDttm !=''">
+			 AND to_char(p.REQUEST_DTTM,'yyyy-mm-dd') <![CDATA[<= ]]> #{endRequestDttm} +1
+		</if>
+		<if test="beginCompleteDttm != null and beginCompleteDttm !=''">
+			 AND to_char(BAA.AFTERLOAN_DTTM,'yyyy-mm-dd') <![CDATA[>= ]]> #{beginCompleteDttm}
+		</if>
+		<if test="endCompleteDttm != null and endCompleteDttm !=''">
+			 AND to_char(BAA.AFTERLOAN_DTTM,'yyyy-mm-dd') <![CDATA[<= ]]> #{endCompleteDttm} +1
+		</if>)
+	</select>
+	
+	
+	<!-- 删除贷前申请 -->
+	<update id="batchDelete" parameterType="java.lang.String">
+        UPDATE BIZ_PROJECT SET
+       	STATUS = 0 
+        WHERE PID in 
+        <foreach item="idItem" collection="array" open="(" separator="," close=")">
+			#{idItem}
+		</foreach>
+	</update>
+	
+	<!-- 更新项目名称 -->
+	<update id="updateProjectName" parameterType="com.xlkfinance.bms.rpc.beforeloan.Project">
+        UPDATE BIZ_PROJECT SET
+       		PROJECT_NAME = #{projectName} 
+        WHERE PID = #{pid} 
+	</update>
+	
+	<!-- 根据项目ID查询项目详细信息 -->
+	<select id="getLoanProjectByProjectId" resultMap="ProjectResultMap" parameterType="java.lang.Integer">
+		SELECT P.*,
+       VAL.LOOKUP_VAL AS ACCTTYPETEXT,
+       ACCT.ACCT_NAME,
+       ACCT.ACCT_TYPE,
+       U.REAL_NAME,
+       P.MY_MAIN AS MYMAINTEXT,
+       PRODUCT.LOAN_WORK_PROCESS_ID FLOWCATELOGTEXT,
+       PRODUCT.PRODUCT_TYPE AS PRODUCT_TYPE,
+       (SELECT LOOKUP_DESC
+          FROM SYS_LOOKUP_VAL S1
+         WHERE S1.PID = P.BUSINESS_SOURCE) BUSINESS_SOURCE_STR,
+       (SELECT V.BUSINESS_SOURCE_STR
+          FROM BUSINESS_SOURCE_V V
+         WHERE V.PID = P.PID) SOURCE_STR,
+       PRODUCT.PRODUCT_NAME AS BUSINESS_TYPE_TEXT,
+       (SELECT U.REAL_NAME FROM SYS_USER U WHERE U.PID = P.CHECHAN_USER_ID) AS CHECHAN_USER_NAME
+  FROM BIZ_PROJECT    P,
+       CUS_ACCT_V     ACCT,
+       SYS_LOOKUP_VAL VAL,
+       SYS_USER       U,
+       BIZ_PRODUCT    PRODUCT
+ WHERE P.STATUS = 1
+   AND P.ACCT_ID = ACCT.ACCT_ID(+)
+   AND ACCT.ACCT_TYPE = VAL.PID(+)
+   AND U.PID = P.PM_USER_ID(+)
+   AND P.PRODUCT_ID = PRODUCT.PID
+		AND P.PID = #{projectId} 
+	</select>
+	
+	<!-- 根据项目ID查询项目名称和项目编号 -->
+	<select id="getProjectNameOrNumber" resultMap="ProjectResultMap" parameterType="java.lang.Integer">
+		SELECT P.PID,P.PROJECT_NAME,P.PROJECT_NUMBER,P.PM_USER_ID,U.REAL_NAME
+	    FROM BIZ_PROJECT P,SYS_USER U
+	    WHERE P.PM_USER_ID =  U.PID 
+		AND P.PID = #{projectId} 
+	</select>
+	
+	<!-- 获取贷前申请项目的PID -->
+	<select id="getSeqBizProject" resultType="java.lang.Integer">
+		SELECT SEQ_BIZ_PROJECT.Nextval as PID from DUAL 
+	</select>
+	
+	<!-- 添加贷前申请 -->
+	<insert id="insert" parameterType="com.xlkfinance.bms.rpc.beforeloan.Project">
+		INSERT INTO BIZ_PROJECT
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			PID,IS_REJECTED,
+			<if test="acctId != null and acctId != -1 ">
+				ACCT_ID,
+			</if>
+			<if test="projectName != null and projectName != '' ">
+				PROJECT_NAME,
+			</if>
+			<if test="projectNumber != null and projectNumber != '' ">
+				PROJECT_NUMBER,
+			</if>
+			<if test="pmUserId != null and pmUserId != -1 ">
+				PM_USER_ID,
+			</if>
+			<if test="requestStatus != null and requestStatus != -1 ">
+				REQUEST_STATUS,
+			</if>
+			<if test="requestDttm != null and requestDttm != '' ">
+				REQUEST_DTTM,
+			</if>
+			<if test="status != null and status != -1 ">
+				STATUS,
+			</if>
+			<if test="projectType != null and projectType > 0 ">
+				PROJECT_TYPE,
+			</if>
+			
+			<if test="isChechan != null and isChechan != -1 ">
+				IS_CHECHAN,
+			</if>
+
+			<if test="productId != null and productId >0 ">
+				PRODUCT_ID,
+			</if>
+			<if test="businessSource != null and businessSource >0 ">
+				BUSINESS_SOURCE,
+			</if>
+			<if test="address != null and address != '' ">
+				ADDRESS,
+			</if>
+			<if test="businessContacts != null and businessContacts !='' ">
+				BUSINESS_CONTACTS,
+			</if>
+			<if test="contactsPhone != null and contactsPhone !='' ">
+				CONTACTS_PHONE,
+			</if>
+			
+			<if test="innerOrOut != null and innerOrOut >0 ">
+				INNER_OR_OUT,
+			</if>
+			<if test="businessCategory != null and businessCategory >0 ">
+				BUSINESS_CATEGORY,
+			</if>
+			<if test="managers != null and managers != '' ">
+				MANAGERS,
+			</if>
+			<if test="managersPhone != null and managersPhone != '' ">
+				MANAGERS_PHONE,
+			</if>
+			<if test="foreclosureStatus != null and foreclosureStatus >0 ">
+				FORECLOSURE_STATUS,
+			</if>
+			<if test="businessSourceNo != null and businessSourceNo!=-1 ">
+				BUSINESS_SOURCE_NO,
+			</if>
+			<if test="projectSource != null and projectSource>0 ">
+				PROJECT_SOURCE,
+			</if>
+			<if test="myMainText != null and myMainText !='' ">
+				MY_MAIN ,
+			</if>
+			<if test="isSeller != null and isSeller>0 ">
+				IS_SELLER,
+			</if>
+			<if test="declaration != null and declaration !='' ">
+				DECLARATION ,
+			</if>
+			<if test="recordClerkId != null and recordClerkId>0 ">
+				RECORD_CLERK_ID,
+			</if>
+			<if test="areaCode != null and areaCode !='' ">
+				AREA_CODE,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+				#{pid},0,
+			<if test="acctId != null and acctId != -1 ">
+				#{acctId},
+			</if>
+			<if test="projectName != null and projectName != '' ">
+				#{projectName},
+			</if>
+			<if test="projectNumber != null and projectNumber != '' ">
+				#{projectNumber},
+			</if>
+			<if test="pmUserId != null and pmUserId != -1 ">
+				#{pmUserId},
+			</if>
+			<if test="requestStatus != null and requestStatus != -1 ">
+				#{requestStatus},
+			</if>
+			<if test="requestDttm != null and requestDttm != '' ">
+				#{requestDttm,javaType=String, jdbcType=TIMESTAMP},
+			</if>
+			<if test="status != null and status != -1 ">
+				#{status},
+			</if>
+			<if test="projectType != null and projectType > 0 ">
+				#{projectType},
+			</if>
+			<if test="isChechan != null and isChechan != -1 ">
+				#{isChechan},
+			</if>
+
+			<if test="productId != null and productId >0 ">
+				#{productId},
+			</if>
+			<if test="businessSource != null and businessSource >0 ">
+				#{businessSource},
+			</if>
+			<if test="address != null and address != '' ">
+				#{address},
+			</if>
+			<if test="businessContacts != null and businessContacts !='' ">
+				#{businessContacts},
+			</if>
+			<if test="contactsPhone != null and contactsPhone !='' ">
+				#{contactsPhone},
+			</if>
+			
+			<if test="innerOrOut != null and innerOrOut >0 ">
+				#{innerOrOut},
+			</if>
+			<if test="businessCategory != null and businessCategory >0 ">
+				#{businessCategory},
+			</if>
+			<if test="managers != null and managers != '' ">
+				#{managers},
+			</if>
+			<if test="managersPhone != null and managersPhone != '' ">
+				#{managersPhone},
+			</if>
+			<if test="foreclosureStatus != null and foreclosureStatus >0 ">
+				#{foreclosureStatus},
+			</if>
+			<if test="businessSourceNo != null and businessSourceNo!=-1 ">
+				#{businessSourceNo},
+			</if>
+			<if test="projectSource != null and projectSource>0 ">
+				#{projectSource},
+			</if>
+			<if test="myMainText != null and myMainText !='' ">
+				#{myMainText} ,
+			</if>
+			<if test="isSeller != null and isSeller>0 ">
+				#{isSeller} ,
+			</if>
+			<if test="declaration != null and declaration !='' ">
+				#{declaration} ,
+			</if>
+			<if test="recordClerkId != null and recordClerkId>0 ">
+				#{recordClerkId} ,
+			</if>
+			<if test="areaCode != null and areaCode !='' ">
+				#{areaCode} ,
+			</if>
+		</trim>
+	</insert>
+	
+	<!-- 添加展期 -->
+	<insert id="insertProjectInfo" parameterType="com.xlkfinance.bms.rpc.beforeloan.Project">
+		INSERT INTO BIZ_PROJECT
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			PID,IS_REJECTED,
+			<if test="acctId != null and acctId != -1 ">
+				ACCT_ID,
+			</if>
+			<if test="projectName != null and projectName != '' ">
+				PROJECT_NAME,
+			</if>
+			<if test="projectNumber != null and projectNumber != '' ">
+				PROJECT_NUMBER,
+			</if>
+			<if test="pmUserId != null and pmUserId != -1 ">
+				PM_USER_ID,
+			</if>
+			<if test="requestStatus != null and requestStatus != -1 ">
+				REQUEST_STATUS,
+			</if>
+			<if test="requestDttm != null and requestDttm != '' ">
+				REQUEST_DTTM,
+			</if>
+			<if test="status != null and status != -1 ">
+				STATUS,
+			</if>
+			<if test="projectType != null and projectType >0 ">
+				PROJECT_TYPE,
+			</if>
+			<if test="businessCatelog != null and businessCatelog != -1 ">
+				BUSINESS_CATELOG,
+			</if>
+			<if test="businessType != null and businessType != -1 ">
+				BUSINESS_TYPE ,
+			</if>
+			<if test="flowCatelog != null and flowCatelog != -1 ">
+				FLOW_CATELOG,
+			</if>
+			<if test="myType != null and myType != '' ">
+				MY_TYPE,
+			</if>
+			<if test="myMainText != null and myMainText != '' ">
+				MY_MAIN ,
+			</if>
+			<if test="loanInterestRecord != null and loanInterestRecord != -1 ">
+				LOAN_INTEREST_RECORD,
+			</if>
+			<if test="loanMgrRecord != null and loanMgrRecord != -1 ">
+				LOAN_MGR_RECORD,
+			</if>
+			<if test="loanOtherFee != null and loanOtherFee != -1 ">
+				LOAN_OTHER_FEE,
+			</if>
+			
+			<if test="isChechan != null and isChechan != -1 ">
+				IS_CHECHAN,
+			</if>
+
+			<if test="productId != null and productId >0 ">
+				PRODUCT_ID,
+			</if>
+			<if test="businessSource != null and businessSource >0 ">
+				BUSINESS_SOURCE,
+			</if>
+			<if test="address != null and address != '' ">
+				ADDRESS,
+			</if>
+			<if test="businessContacts != null and businessContacts !='' ">
+				BUSINESS_CONTACTS,
+			</if>
+			<if test="contactsPhone != null and contactsPhone !='' ">
+				CONTACTS_PHONE,
+			</if>
+			
+			<if test="innerOrOut != null and innerOrOut >0 ">
+				INNER_OR_OUT,
+			</if>
+			<if test="businessCategory != null and businessCategory >0 ">
+				BUSINESS_CATEGORY,
+			</if>
+			<if test="managers != null and managers != '' ">
+				MANAGERS,
+			</if>
+			<if test="managersPhone != null and managersPhone != '' ">
+				MANAGERS_PHONE,
+			</if>
+			<if test="foreclosureStatus != null and foreclosureStatus >0 ">
+				FORECLOSURE_STATUS,
+			</if>
+			<if test="businessSourceNo != null and businessSourceNo!=-1 ">
+				BUSINESS_SOURCE_NO,
+			</if>
+			<if test="projectSource != null and projectSource>0 ">
+				PROJECT_SOURCE,
+			</if>
+			<if test="isSeller != null and isSeller>0 ">
+				IS_SELLER,
+			</if>
+			<if test="declaration != null and declaration !='' ">
+				DECLARATION,
+			</if>
+			<if test="recordClerkId != null and recordClerkId>0 ">
+				RECORD_CLERK_ID,
+			</if>
+			<if test="areaCode != null and areaCode !='' ">
+				AREA_CODE,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+				#{pid},0,
+			<if test="acctId != null and acctId != -1 ">
+				#{acctId},
+			</if>
+			<if test="projectName != null and projectName != '' ">
+				#{projectName},
+			</if>
+			<if test="projectNumber != null and projectNumber != '' ">
+				#{projectNumber},
+			</if>
+			<if test="pmUserId != null and pmUserId != -1 ">
+				#{pmUserId},
+			</if>
+			<if test="requestStatus != null and requestStatus != -1 ">
+				#{requestStatus},
+			</if>
+			<if test="requestDttm != null and requestDttm != '' ">
+				#{requestDttm,javaType=String, jdbcType=TIMESTAMP},
+			</if>
+			<if test="status != null and status != -1 ">
+				#{status},
+			</if>
+			<if test="projectType != null and projectType >0 ">
+				#{projectType},
+			</if>
+			<if test="businessCatelog != null and businessCatelog != -1 ">
+				 #{businessCatelog},
+			</if>
+			<if test="businessType != null and businessType != -1 ">
+				#{businessType},
+			</if>
+			<if test="flowCatelog != null and flowCatelog != -1 ">
+				#{flowCatelog},
+			</if>
+			<if test="myType != null and myType != '' ">
+			    #{myType},
+			</if>
+			<if test="myMainText != null and myMainText != '' ">
+				#{myMain},
+			</if>
+			<if test="loanInterestRecord != null and loanInterestRecord != -1 ">
+				#{loanInterestRecord},
+			</if>
+			<if test="loanMgrRecord != null and loanMgrRecord != -1 ">
+				#{loanMgrRecord},
+			</if>
+			<if test="loanOtherFee != null and loanOtherFee != -1 ">
+				#{loanOtherFee},
+			</if>
+			<if test="isChechan != null and isChechan != -1 ">
+				#{isChechan},
+			</if>
+
+			<if test="productId != null and productId >0 ">
+				#{productId},
+			</if>
+			<if test="businessSource != null and businessSource >0 ">
+				#{businessSource},
+			</if>
+			<if test="address != null and address != '' ">
+				#{address},
+			</if>
+			<if test="businessContacts != null and businessContacts !='' ">
+				#{businessContacts},
+			</if>
+			<if test="contactsPhone != null and contactsPhone !='' ">
+				#{contactsPhone},
+			</if>
+			
+			<if test="innerOrOut != null and innerOrOut >0 ">
+				#{innerOrOut},
+			</if>
+			<if test="businessCategory != null and businessCategory >0 ">
+				#{businessCategory},
+			</if>
+			<if test="managers != null and managers != '' ">
+				#{managers},
+			</if>
+			<if test="managersPhone != null and managersPhone != '' ">
+				#{managersPhone},
+			</if>
+			<if test="foreclosureStatus != null and foreclosureStatus >0 ">
+				#{foreclosureStatus},
+			</if>
+			<if test="businessSourceNo != null and businessSourceNo!=-1 ">
+				#{businessSourceNo},
+			</if>
+			<if test="projectSource != null and projectSource>0 ">
+				#{projectSource},
+			</if>
+			<if test="isSeller != null and isSeller>0 ">
+				#{isSeller} ,
+			</if>
+			<if test="declaration != null and declaration !='' ">
+				#{declaration} ,
+			</if>
+			<if test="recordClerkId != null and recordClerkId>0 ">
+				#{recordClerkId} ,
+			</if>
+			<if test="areaCode != null and areaCode !='' ">
+				#{areaCode} ,
+			</if>
+		</trim>
+	</insert>
+	
+	<!-- 修改贷前申请 -->
+	<update id="updateByPrimaryKey" parameterType="com.xlkfinance.bms.rpc.beforeloan.Project">
+		UPDATE BIZ_PROJECT
+		<trim prefix="set" suffixOverrides=",">
+			<if test="pmUserId != null and pmUserId !=-1">
+				PM_USER_ID = #{pmUserId},
+			</if>
+			<if test="managers != null and managers !=''">
+				MANAGERS = #{managers},
+			</if>
+			<if test="businessCatelog != null and businessCatelog != -1 ">
+				BUSINESS_CATELOG = #{businessCatelog},
+			</if>
+			<if test="businessType != null and businessType != -1 ">
+				BUSINESS_TYPE = #{businessType},
+			</if>
+			<if test="flowCatelog != null and flowCatelog != -1 ">
+				FLOW_CATELOG = #{flowCatelog},
+			</if>
+			<if test="myType != null and myType != -1 ">
+				MY_TYPE = #{myType},
+			</if>
+			<if test="myMainText != null">
+				MY_MAIN = #{myMainText},
+			</if>
+			<if test="surveyResult != null and surveyResult !=''">
+		     SURVEY_RESULT=#{surveyResult},
+			</if>
+			<if test="loanInterestRecord != null and loanInterestRecord != -1 ">
+				LOAN_INTEREST_RECORD = #{loanInterestRecord},
+			</if>
+			<if test="loanMgrRecord != null and loanMgrRecord != -1 ">
+				LOAN_MGR_RECORD = #{loanMgrRecord},
+			</if>
+			<if test="loanOtherFee != null and loanOtherFee != -1 ">
+				LOAN_OTHER_FEE = #{loanOtherFee},
+			</if>
+			<if test="circulateType != null and circulateType != -1 ">
+				CIRCULATE_TYPE = #{circulateType},
+			</if>
+			<if test="projectType != null and  projectType >0 ">
+				PROJECT_TYPE = #{projectType},
+			</if>
+			<if test="productId != null and productId >0 ">
+				PRODUCT_ID = #{productId},
+			</if>
+			<if test="businessSource != null and businessSource >0 ">
+				BUSINESS_SOURCE = #{businessSource},
+			</if>
+			<if test="address != null">
+				ADDRESS = #{address},
+			</if>
+			<if test="businessContacts != null and businessContacts !='' ">
+				BUSINESS_CONTACTS = #{businessContacts},
+			</if>
+			<if test="contactsPhone != null and contactsPhone !='' ">
+				CONTACTS_PHONE = #{contactsPhone},
+			</if>
+			
+			<if test="innerOrOut != null and innerOrOut >0 ">
+				INNER_OR_OUT = #{innerOrOut},
+			</if>
+			<if test="businessCategory != null and businessCategory >0 ">
+				BUSINESS_CATEGORY = #{businessCategory},
+			</if>
+			<if test="isChechan != null and isChechan != -1 ">
+				IS_CHECHAN = #{isChechan},
+			</if>
+			<if test="businessSourceNo != null and businessSourceNo!=-1 ">
+				BUSINESS_SOURCE_NO = #{businessSourceNo},
+			</if>
+			<if test="isSeller != null and isSeller>0 ">
+				IS_SELLER = #{isSeller} ,
+			</if>
+			<if test="declaration != null and declaration !='' ">
+				DECLARATION = #{declaration} ,
+			</if>
+			<if test="auditorOpinion != null">
+				AUDITOR_OPINION = #{auditorOpinion} ,
+			</if>
+			<if test="isNeedHandle != null and isNeedHandle >0">
+	          IS_NEED_HANDLE=#{isNeedHandle},
+	        </if>
+	        <if test="planLoanDate != null and planLoanDate !=''">
+		     PLAN_LOAN_DATE=#{planLoanDate,jdbcType= DATE,javaType= java.lang.String},
+			</if>
+		    <if test="planLoanMoney != null and planLoanMoney >0">
+		     PLAN_LOAN_MONEY=#{planLoanMoney},
+			</if>
+		    <if test="loanRate != null and loanRate >0">
+		     LOAN_RATE=#{loanRate},
+			</if>
+		    <if test="maxLoanRate != null and maxLoanRate >0">
+		     MAX_LOAN_RATE=#{maxLoanRate},
+			</if>
+			<if test="recordClerkId != null and recordClerkId>0 ">
+				RECORD_CLERK_ID = #{recordClerkId} ,
+			</if>
+			<if test="areaCode != null and areaCode !='' ">
+				AREA_CODE = #{areaCode} ,
+			</if>
+			<if test="nextUserId != null and nextUserId !='' ">
+				NEXT_USER_ID = #{nextUserId} ,
+			</if>
+		</trim>
+		WHERE PID = #{pid}
+	</update>
+	
+	<!-- 修改审批意见 -->
+	<update id="updateProceduresByPrimaryKey" parameterType="com.xlkfinance.bms.rpc.beforeloan.Project">
+		UPDATE BIZ_PROJECT
+		<trim prefix="set" suffixOverrides=",">
+			<if test="isAllowPrepay != null and isAllowPrepay != -1 ">
+				IS_ALLOW_PREPAY = #{isAllowPrepay},
+			</if>
+			<if test="isReturnInterest != null and isReturnInterest != -1 ">
+				IS_RETURN_INTEREST = #{isReturnInterest},
+			</if>
+			<if test="surveyResult != null and surveyResult != '' ">
+				SURVEY_RESULT = #{surveyResult},
+			</if>
+		</trim>
+		WHERE PID = #{pid}
+	</update>
+	
+	<!-- 修改项目状态 -->
+	<update id="updateProjectStatusByPrimaryKey" parameterType="java.util.Map">
+		UPDATE BIZ_PROJECT 
+		SET REQUEST_STATUS = #{requestStatus}
+		<if test="endDttm != null and endDttm != '' ">
+			,COMPLETE_DTTM = #{endDttm,javaType=String,jdbcType=TIMESTAMP}
+		</if>
+		WHERE PID = #{pid}
+	</update>
+	
+	<!-- 查询当前日期的项目名称最大的最后2位自然数 -->
+	<select id="getMaxProjectName" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+		SELECT CASE WHEN COUNT(acct_id)+1 IS NULL THEN  1 ELSE COUNT(acct_id)+1 END as maxNumber 
+      	FROM BIZ_PROJECT 
+      	WHERE (select to_char(request_dttm,'yyyy-MM-dd') from dual) = 
+        (select to_char(SYSDATE,'yyyy-MM-dd') from dual)
+        AND acct_id = #{acctId} 
+	</select>
+	
+	<!-- 查询当前年份的项目编号的最后5位自然数 -->
+	<select id="getMaxProjectNumber" resultType="java.lang.String" >
+		SELECT MAX(SUBSTR(PROJECT_NUMBER,-5,5)) FROM biz_project
+		WHERE (select to_char(request_dttm,'yyyy') from dual) = 
+			  (select to_char(SYSDATE,'yyyy') from dual)
+	</select>
+	
+	 <!-- 财务管理-手工对账-收款信息查询-->
+	 <select id="getProjectCreLoans"  resultMap="FinanceProCreLoanResultMap" parameterType="java.lang.Integer">
+	 	SELECT LK1.LOOKUP_VAL   BUSINESS_CATELOG_TEXT,
+                 LK2.LOOKUP_VAL   BUSINESS_TYPE_TEXT,
+                 LK3.LOOKUP_VAL   FLOW_CATELOG_TEXT,
+                 BP.PROJECT_NAME,
+                 BP.PROJECT_NUMBER,
+                 SU.REAL_NAME,
+                 BP.Loan_Interest_Record,
+                 FK1.BANK_NUM LOAN_INTEREST_REC_NO,
+                 BP.LOAN_MGR_RECORD,
+                 FK2.BANK_NUM LOAN_MGR_RECORD_NO,
+                 BP.LOAN_OTHER_FEE,
+                 FK3.BANK_NUM LOAN_OTHER_FEE_NO
+            FROM BIZ_PROJECT    BP,
+                 BIZ_LOAN BL,
+                 SYS_USER SU,
+                 SYS_LOOKUP_VAL LK1,
+                 SYS_LOOKUP_VAL LK2,
+                 SYS_LOOKUP_VAL LK3,
+                 BIZ_FINANCE_BANK FK1,
+                 BIZ_FINANCE_BANK FK2,
+                 BIZ_FINANCE_BANK FK3
+           WHERE BL.PID = #{loanId,jdbcType=INTEGER}
+             AND BP.PM_USER_ID=SU.PID(+)
+             AND BP.PID=BL.PROJECT_ID
+             AND BP.LOAN_INTEREST_RECORD=FK1.PID(+)
+             AND BP.LOAN_MGR_RECORD=FK2.PID(+)
+             AND BP.LOAN_OTHER_FEE= FK3.PID(+)
+             AND BP.BUSINESS_CATELOG = LK1.PID(+)
+             AND BP.BUSINESS_TYPE = LK2.PID(+)
+             AND BP.FLOW_CATELOG = LK3.PID(+)
+	 </select>
+	 
+	 <!-- 财务管理-手工对账-未对账的期数列表-->
+	 <select id="getNoReconciliations" resultMap="FinanceReconResultMap" parameterType="java.lang.Integer">
+	 	SELECT PID, PLAN_CYCLE_NUM
+		  FROM BIZ_LOAN_REPAYMENT_PLAN
+		 WHERE LOAN_INFO_ID = 1
+		   AND IS_RECONCILIATION != 1
+		   AND PLAN_VERSION = PKG_FINANCE.FUN_MAX_VERSION(1)
+		 ORDER BY PLAN_CYCLE_NUM ASC
+	 </select>
+
+	<insert id="addAfterLoanArchive" parameterType="com.xlkfinance.bms.rpc.beforeloan.AfterLoanArchive">
+		<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+			SELECT SEQ_BIZ_AFTERLOAN_ARCHIVE.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_AFTERLOAN_ARCHIVE(PID,
+			                              PROJECT_ID,
+			                              AFTERLOAN_STATUS,
+			                              AFTERLOAN_DTTM,
+			                              AFTERLOAN_COMMENTS,
+			                              STATUS) 
+	                             VALUES(  #{pid},
+							              #{projectId},
+							              #{afterloanStatus},
+							              #{afterloanDttm},
+							              #{afterloanComments},
+							              1)
+
+	</insert>
+	<!-- 修改项目归档状态 -->
+	<update id="updateAfterLoanArchive" parameterType="com.xlkfinance.bms.rpc.beforeloan.AfterLoanArchive">
+		UPDATE BIZ_AFTERLOAN_ARCHIVE set  
+		AFTERLOAN_COMMENTS=#{afterloanComments} , 
+		AFTERLOAN_DTTM=#{afterloanDttm,javaType=String,jdbcType=TIMESTAMP}
+			<if test="afterloanStatus != null and afterloanStatus != -1">
+				, AFTERLOAN_STATUS=#{afterloanStatus}
+			</if>
+		  where PROJECT_ID = #{projectId}
+	</update>
+	
+	 <!-- 查询项目归档资料状态 是否全部是已归档 -->
+	 <select id="getProjectFileStatus" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+	 	SELECT COUNT(*) AS mcount FROM BIZ_PROJECT_ARCHIVE WHERE PROJECT_ID =#{projectId}  AND  IS_ARCHIVE=0 
+	 </select>
+	 <!--   插入file表-->
+	 <insert id="insertFileInfo"
+		parameterType="com.xlkfinance.bms.rpc.repayment.UploadinstAdvapplyBaseDTO">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pId">
+			SELECT SEQ_BIZ_FILE.Nextval as PID from DUAL
+		</selectKey>
+		insert into BIZ_FILE (
+		PID,
+		FILE_NAME,
+		FILE_TYPE,
+		FILE_SIZE,
+		UPLOAD_USER_ID,
+		FILE_URL,
+		UPLOAD_DTTM,
+		STATUS)
+		values (
+		#{pId,jdbcType=INTEGER},
+		#{fileName,jdbcType=VARCHAR},
+		#{fileType,jdbcType=VARCHAR},
+		#{fileSize,jdbcType=INTEGER},
+		#{uploadUserid,jdbcType=INTEGER},
+		#{filePath,jdbcType=VARCHAR},
+		sysdate,
+		1
+		)
+	</insert>
+		 <!--  担保基本信息 插入BIZ_PROJECT_ASS_FILE表 -->
+	<insert id="insertAssBaseFileInfo"
+		parameterType="com.xlkfinance.bms.rpc.repayment.UploadinstAdvapplyBaseDTO">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pId">
+			SELECT SEQ_BIZ_PROJECT_ASS_FILE.Nextval as PID from
+			DUAL
+		</selectKey>
+		insert into BIZ_PROJECT_ASS_FILE(
+		PID,
+	   BASE_ID,
+		FILE_ID,
+		STATUS,
+		FILE_TYPE,
+		FILE_DESC
+		)
+		values (
+		#{pId,jdbcType=INTEGER},
+		#{baseId,jdbcType=INTEGER},
+		#{fileId,jdbcType=INTEGER},
+		1,
+		#{fileKinds,jdbcType=VARCHAR},
+		#{fileDesc,jdbcType=VARCHAR}
+		)
+	</insert>
+		<select id="queryAssBaseFile" resultMap="regCgapplyFileMaps"
+		parameterType="java.lang.Integer">
+	 SELECT BF.FILE_NAME,
+    BPFF.FILE_TYPE as FILE_FUN_TYPE,
+    BF.UPLOAD_DTTM,
+    BF.PID,
+    BF.FILE_TYPE as FILE_TYPE,
+    BPFF.FILE_DESC,
+    BF.FILE_SIZE,
+    BF.FILE_URL
+    FROM BIZ_PROJECT_ASS_FILE BPFF, BIZ_FILE BF
+		WHERE BPFF.FILE_ID = BF.PID(+)
+		AND BPFF.BASE_ID =#{baseId}
+		AND
+		BF.STATUS=1
+	</select>
+	 
+	 
+	<insert id="addProjectRecord" parameterType="com.xlkfinance.bms.rpc.beforeloan.ProjectRecord">
+	<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+			SELECT SEQ_BIZ_PROJECT_HIS.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_PROJECT_HIS
+		  (PID, PROJECT_ID, PROCESS_USER_ID, PROCESS_TYPE, COMPLETE_DTTM, STATUS)
+		VALUES
+		  (#{pid},
+		   #{projectId},
+		   #{processUserId},
+		   #{processType},
+		   #{completeDttm,jdbcType=TIMESTAMP,javaType=String},
+		   1)
+	</insert>
+	
+	
+	<update id="updateProjectRejected" parameterType="java.lang.Integer">
+		UPDATE BIZ_PROJECT SET IS_REJECTED = 1 
+		WHERE PID = #{projectId}
+	</update>
+	
+	<select id="getAfterLoadFileOne" resultMap="AfterLoanArchiveMap" parameterType="java.lang.Integer">
+		SELECT BAA.PID,
+		       BAA.PROJECT_ID,
+		       BAA.AFTERLOAN_STATUS,
+		       BAA.AFTERLOAN_DTTM,
+		       BAA.AFTERLOAN_COMMENTS
+		  FROM BIZ_AFTERLOAN_ARCHIVE BAA
+		 WHERE BAA.PROJECT_ID = #{projectId}
+	</select>
+	
+	<!-- 获取已经过期的授信ID  -->
+	<select id="getCreaditInvalidIds" resultType="java.lang.String" parameterType="java.util.Map">
+        SELECT TO_CHAR(wm_concat(PROJECT_ID)) FROM BIZ_CREDIT T
+		 WHERE T.STATUS = 1
+		   AND T.CREDIT_STATUS = 1
+		   AND T.CREDTI_END_DT <![CDATA[<]]> #{map.creditEndDt,jdbcType=DATE}
+	</select>
+	
+	<!-- 批量设置授信项目为无效 -->
+	<update id="updateProjectInvalid" parameterType="java.lang.String">
+        UPDATE BIZ_CREDIT SET
+       	CREDIT_STATUS = 2 
+        WHERE PROJECT_ID in 
+        <foreach item="idItem" collection="array" open="(" separator="," close=")">
+			#{idItem}
+		</foreach>
+	</update>
+	
+	<!-- 设置授信项目为有效 -->
+	<update id="setProjectEffective" parameterType="java.lang.Integer">
+		UPDATE BIZ_CREDIT SET
+       	CREDIT_STATUS = 1 
+        WHERE PROJECT_ID = #{projectId} 
+	</update>
+	
+	<!-- 根据项目ID查询当前客户是否存在有效的授信项目 -->
+	<select id="getCountProjectCredit" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+		SELECT COUNT(*)
+		FROM biz_credit c
+		WHERE c.project_id IN(
+		      SELECT pt.pid FROM biz_project pt WHERE pt.acct_id = (
+		             SELECT pjt.acct_id FROM biz_project pjt WHERE pjt.PID = #{projectId} 
+		      ) AND (pt.project_type = 1 OR pt.project_type = 5) AND pt.STATUS = 1
+		)
+		AND c.credit_status = 1
+	</select>
+	
+	<!-- 根据客户ID查询当前客户是否存在有效的授信项目  lvmingjian 增加了  and pt.status!=0 -->
+	<select id="getCountProjectCreditByAcctId" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+		SELECT COUNT(*)
+		FROM biz_credit c
+		WHERE c.project_id IN(
+		      SELECT pt.pid FROM biz_project pt 
+		      WHERE pt.acct_id = #{acctId}
+		      AND (pt.project_type = 1 OR pt.project_type = 5) AND PT.STATUS!=0
+		)
+		AND c.credit_status = 1
+	</select>
+	
+	<!-- 根据客户ID查询当前客户是否存在正在(申请中  or 审核中  or 已放款  or 已归档)的贷款项目  -->
+	<select id="getCountProjectLoanByAcctId" resultType="java.lang.Integer" parameterType="com.xlkfinance.bms.rpc.beforeloan.Project"> 
+		SELECT COUNT(*) 
+		FROM BIZ_PROJECT p
+		WHERE p.acct_id = #{acctId}
+		AND p.IS_REJECTED = 0
+		AND (P.PROJECT_TYPE = #{projectType} OR p.PROJECT_TYPE IS NULL)
+		AND p.REQUEST_STATUS IN(1,2,3)
+		AND p.status = 1 
+	</select>
+	
+	<select id="getProjectById" resultMap="ProjectResultMap" parameterType="java.lang.Integer">
+		SELECT BL.CREDIT_AMT,
+		       BL.REPAY_CYCLE,
+		       (SELECT SLV.LOOKUP_DESC
+		          FROM SYS_LOOKUP_VAL SLV
+		         WHERE SLV.PID = BL.REPAY_FUN) REPAYFUNTEXT,
+		       CAV.ACCT_NAME,
+		       (SELECT SLV.LOOKUP_VAL
+		          FROM SYS_LOOKUP_VAL SLV
+		         WHERE SLV.PID = BP.BUSINESS_TYPE) BUSINESS_TYPE_TEXT,
+		       CAV.ACCT_NAME ACCTNAME,
+		       BP.PROJECT_TYPE,
+		       BP.PID
+		  FROM BIZ_PROJECT BP, BIZ_LOAN BL, CUS_ACCT_V CAV
+		 WHERE BP.PID = BL.PROJECT_ID
+		   AND BP.ACCT_ID = CAV.ACCT_ID
+		   AND BP.PID = #{projectId}
+	</select>
+	
+	<select id="getProjectInfoById" resultMap="ProjectResultMap" parameterType="java.lang.Integer">
+		SELECT A.*,B.PRODUCT_NAME AS BUSINESS_TYPE_TEXT,S.LOOKUP_DESC AS BUSINESS_SOURCE_STR
+		  FROM BIZ_PROJECT A,BIZ_PRODUCT B,SYS_LOOKUP_VAL S
+		 WHERE A.PRODUCT_ID = B.PID AND A.BUSINESS_SOURCE = S.PID(+) AND A.PID = #{projectId}
+	</select>
+	
+	<select id="getProjectCredtiEndDt" resultMap="ProjectResultMap" parameterType="java.lang.Integer">
+		SELECT BC.CREDTI_START_DT, BC.CREDTI_END_DT
+		FROM BIZ_CREDIT BC
+		WHERE BC.PROJECT_ID = (SELECT BPR.REF_PROJECT_ID
+		FROM BIZ_PROJECT_RELATION BPR
+		WHERE BPR.PROJECT_ID = #{projectId})
+	</select>
+	
+	<select id="getProjectOldProjectId" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+		SELECT BPR.REF_PROJECT_ID
+		FROM BIZ_PROJECT_RELATION BPR
+		WHERE BPR.PROJECT_ID = #{projectId}
+	</select>
+	<!-- 检查同一借款人，同金额，同日期放款， -->
+	<select id="getCheckAcctProject" resultMap="ProjectResultMap" parameterType="com.xlkfinance.bms.rpc.beforeloan.Project">
+		SELECT T.* FROM BIZ_PROJECT T ,
+        BIZ_LOAN L  WHERE T.PID =L.PROJECT_ID AND T.ACCT_ID=#{acctId} and l.CREDIT_AMT=#{loanAmt}
+        AND L.PLAN_OUT_LOAN_DT=TO_DATE( #{planOutLoanDt},'yyyy-mm-dd')
+	</select>
+	
+	<!-- 赎楼项目列表查询 -->
+	<select id="getAllForeProjects" resultMap="BaseResultMap" parameterType="com.xlkfinance.bms.rpc.beforeloan.Project">
+	<![CDATA[SELECT D.* FROM (SELECT T.*, ROWNUM RN
+	        FROM (
+		SELECT TO_CHAR(P.REQUEST_DTTM, 'yyyy-MM-dd hh24:mi:ss') requestDttm,
+       P.PID,
+       P.PROJECT_NUMBER,
+       D.PRODUCT_NAME,
+       TO_CHAR(H.HOUSE_PROPERTY_CARD) AS HOUSE_PROPERTY_CARD,
+       PP.SELLER_NAME,
+       PP.BUYER_NAME,
+       GU.LOAN_MONEY,
+       GU.GUARANTEE_FEE,
+       U.REAL_NAME,
+       O.NAME,
+       TO_CHAR(F.PAYMENT_DATE, 'yyyy-MM-dd') PAYMENT_DATE,
+       P.BUSINESS_SOURCE,
+       TO_CHAR(S.BANK_NAME) OLD_LOAN_BANK,
+       p.FORECLOSURE_STATUS,
+       (CASE WHEN BLF.STATUS > 1 THEN BLA.REC_MONEY ELSE 0 END) recMoney,
+       TO_CHAR(BLA.REC_DATE, 'yyyy-MM-dd') recDate,
+       TO_CHAR(BAF.REC_DATE, 'yyyy-MM-dd') payDate,
+       TO_CHAR(BHD.FINISH_DATE, 'yyyy-MM-dd') finishDate,
+       P.PROJECT_NAME,
+       F.NOTARIZATION_DATE,
+       D.LOAN_WORK_PROCESS_ID,
+       P.PM_USER_ID,
+       V.BUSINESS_SOURCE_STR BUSINESS_SOURCE_STR,
+       CP.CHINA_NAME,CP.TELEPHONE,CP.CERT_NUMBER,
+       P.DECLARATION,P.IS_REJECT,P.RECORD_CLERK_ID,P.PROJECT_SOURCE
+    FROM (SELECT * FROM BIZ_PROJECT
+        WHERE IS_CHECHAN = 0 
+        AND STATUS = 1
+         AND PROJECT_TYPE IN (2,6)
+         AND IS_ASSIGNED = 2
+        AND IS_CLOSED = 2
+        AND IS_REJECT  IN(2,3)
+    ) P 
+    LEFT JOIN  BIZ_PRODUCT D
+    ON P.PRODUCT_ID = D.PID 
+    LEFT JOIN  BIZ_PROJECT_PROPERTY PP
+    ON PP.PROJECT_ID = P.PID
+    LEFT JOIN BIZ_PROJECT_GUARANTEE GU
+    ON P.PID = GU.PROJECT_ID
+    LEFT JOIN BIZ_PROJECT_FORECLOSURE F
+    ON P.PID = F.PROJECT_ID
+    LEFT JOIN SYS_USER U
+    ON P.PM_USER_ID = U.PID
+    LEFT JOIN SYS_ORG_INFO O
+    ON U.ORG_ID = O.ID
+    LEFT JOIN (SELECT P.PID,WM_CONCAT(S.BANK_NAME) BANK_NAME
+				      FROM BIZ_ORIGINAL_LOAN BO, SYS_BANK_INFO S, BIZ_PROJECT P
+				     WHERE S.PID = BO.OLD_LOAN_BANK
+				       AND BO.PROJECT_ID = P.PID
+				       AND BO.STATUS = 1
+				 GROUP BY P.PID) S
+    ON S.PID = P.PID
+    LEFT JOIN BUSINESS_SOURCE_V V
+    ON V.PID = P.PID
+    LEFT JOIN 
+       (SELECT ACCT_ID,
+                  CHINA_NAME,
+                  TELEPHONE,
+                  CERT_NUMBER
+             FROM CUS_PERSON
+            WHERE RELATION_TYPE = 1) CP
+    ON CP.ACCT_ID = P.ACCT_ID
+    LEFT JOIN BIZ_LOAN_FINANCE_HANDLE BLF
+    ON P.PID = BLF.PROJECT_ID
+    LEFT JOIN (
+        SELECT FINANCE_HANDLE_ID,REC_MONEY,REC_DATE
+          FROM BIZ_LOAN_APPLY_FINANCE_HANDLE
+         WHERE REC_PRO = 1 
+    )BLA
+    ON BLA.FINANCE_HANDLE_ID = BLF.PID
+    LEFT JOIN (
+        SELECT FINANCE_HANDLE_ID,REC_DATE
+          FROM BIZ_LOAN_APPLY_FINANCE_HANDLE
+         WHERE REC_PRO = 3 
+    )BAF
+    ON BAF.FINANCE_HANDLE_ID = BLF.PID
+    LEFT JOIN BIZ_LOAN_HANDLE_INFO BLH
+    ON BLH.PROJECT_ID = P.PID
+    LEFT JOIN (
+         SELECT HANDLE_ID, FINISH_DATE
+          FROM BIZ_LOAN_HANDLE_DYNAMIC B
+         WHERE HANDLE_FLOW_ID = 10
+    )BHD
+    ON BLH.PID = BHD.HANDLE_ID
+    LEFT JOIN (
+    SELECT P.PID,WM_CONCAT(S.HOUSE_PROPERTY_CARD) AS HOUSE_PROPERTY_CARD
+              FROM BIZ_PROJECT_ESTATE S, BIZ_PROJECT P
+             WHERE S.PROJECT_ID = P.PID
+               AND S.STATUS = 1
+         GROUP BY P.PID
+    )H
+    ON H.PID = P.PID
+    
+   WHERE D.PRODUCT_TYPE = 2
+]]>
+		<!-- 数据权限 -->
+		<if test="userIds!=null and userIds.size()>0">
+			AND (
+			<if test="recordClerkId != null and recordClerkId >0">
+		  		P.RECORD_CLERK_ID =#{recordClerkId} OR  
+			</if>
+		   P.PM_USER_ID IN
+		<foreach item="itemId" collection="userIds" open="(" separator="," close=")">
+		          #{itemId}
+		</foreach>
+		)
+		</if>
+		<if test="projectName != null and projectName != '' ">
+			AND P.PROJECT_NAME LIKE '%${projectName}%'
+		</if>
+		<if test="projectNumber != null and projectNumber != '' ">
+			AND P.PROJECT_NUMBER LIKE '%${projectNumber}%'
+		</if>
+		<if test="pmUserId != null and pmUserId >0">
+			AND	P.PM_USER_ID =#{pmUserId}
+		</if>
+		<if test="productId != null and productId >0">
+			AND	P.PRODUCT_ID =#{productId}
+		</if>
+		<if test="businessSource != null and businessSource >0">
+			AND	P.BUSINESS_SOURCE =#{businessSource}
+		</if>
+		<if test="businessSourceStr != null and businessSourceStr!=''">
+			AND	V.BUSINESS_SOURCE_STR LIKE '%${businessSourceStr}%'
+		</if>
+		<if test="innerOrOut != null and innerOrOut >0">
+			AND	P.INNER_OR_OUT =#{innerOrOut}
+		</if>
+		<if test="oldLoanBank != null and oldLoanBank !=''">
+			AND	S.BANK_NAME like '%${oldLoanBank}%'
+		</if>
+		<if test="orgId != null and orgId>0">
+			AND	O.ID =#{orgId}
+		</if>
+		<!-- 赎楼状态 -->
+		<if test="foreclosureStatus != null and foreclosureStatus >0">
+			AND	P.FORECLOSURE_STATUS =#{foreclosureStatus}
+		</if>
+		<if test="beginRequestDttm != null and beginRequestDttm !=''">
+			 AND P.REQUEST_DTTM <![CDATA[>= ]]> #{beginRequestDttm,jdbcType=TIMESTAMP,javaType=String}
+		</if>
+		<if test="endRequestDttm != null and endRequestDttm !=''">
+			 AND P.REQUEST_DTTM <![CDATA[<= ]]> #{endRequestDttm,jdbcType=TIMESTAMP,javaType=String}
+		</if>
+		<if test="projectSource != null and projectSource>0 ">
+			AND P.PROJECT_SOURCE = #{projectSource}
+		</if>
+		
+		<if test="declaration != null and declaration !='' ">
+			AND P.DECLARATION LIKE '%${declaration}%'
+		</if>
+		<![CDATA[ORDER BY P.REQUEST_DTTM desc) T
+		WHERE ROWNUM <=#{page}*#{rows}
+		) D
+	WHERE D.RN > ((#{page}-1)*#{rows})]]>
+	</select>
+	
+	
+	<!-- 赎楼项目列表查询 -->
+	<select id="getForeProjectCount" resultType="Integer" parameterType="com.xlkfinance.bms.rpc.beforeloan.Project">
+	SELECT count(*) FROM (
+		SELECT P.PID
+		 FROM (SELECT * FROM BIZ_PROJECT
+    		WHERE IS_CHECHAN = 0 
+    		AND STATUS = 1
+     		AND PROJECT_TYPE IN (2,6)
+     		AND IS_ASSIGNED = 2
+		    AND IS_CLOSED = 2
+		    AND IS_REJECT  IN(2,3)
+    		) P 
+		  LEFT JOIN  BIZ_PRODUCT D
+		  ON P.PRODUCT_ID = D.PID 
+		  LEFT JOIN  BIZ_PROJECT_PROPERTY PP
+		  ON PP.PROJECT_ID = P.PID
+		  LEFT JOIN BIZ_PROJECT_GUARANTEE GU
+		  ON P.PID = GU.PROJECT_ID
+		  LEFT JOIN BIZ_PROJECT_FORECLOSURE F
+		  ON P.PID = F.PROJECT_ID
+		  LEFT JOIN SYS_USER U
+		  ON P.PM_USER_ID = U.PID
+		  LEFT JOIN SYS_ORG_INFO O
+		  ON U.ORG_ID = O.ID
+		  LEFT JOIN OLD_LOAN_BANK_V S
+    		ON S.PID = P.PID
+		  LEFT JOIN BUSINESS_SOURCE_V V
+      	  ON V.PID = P.PID
+      	  LEFT JOIN 
+      	  (SELECT ACCT_ID,
+                  CHINA_NAME,
+                  TELEPHONE,
+                  CERT_NUMBER
+             FROM CUS_PERSON
+            WHERE RELATION_TYPE = 1) CP
+    	  ON CP.ACCT_ID = P.ACCT_ID
+		 WHERE D.PRODUCT_TYPE = 2
+		<!-- 数据权限 -->
+			
+		<if test="userIds!=null and userIds.size()>0">
+			AND (
+			<if test="recordClerkId != null and recordClerkId >0">
+		  		P.RECORD_CLERK_ID =#{recordClerkId} OR  
+			</if>
+		   P.PM_USER_ID IN
+		<foreach item="itemId" collection="userIds" open="(" separator="," close=")">
+		          #{itemId}
+		</foreach>
+		)
+		</if>
+		
+		<if test="projectName != null and projectName != '' ">
+			AND P.PROJECT_NAME LIKE '%${projectName}%'
+		</if>
+		<if test="projectNumber != null and projectNumber != '' ">
+			AND P.PROJECT_NUMBER LIKE '%${projectNumber}%'
+		</if>
+		<if test="pmUserId != null and pmUserId >0">
+			AND	P.PM_USER_ID =#{pmUserId}
+		</if>
+		<if test="productId != null and productId >0">
+			AND	P.PRODUCT_ID =#{productId}
+		</if>
+		<if test="businessSource != null and businessSource >0">
+			AND	P.BUSINESS_SOURCE =#{businessSource}
+		</if>
+		<if test="businessSourceStr != null and businessSourceStr!=''">
+			AND	V.BUSINESS_SOURCE_STR LIKE '%${businessSourceStr}%'
+		</if>
+		<if test="innerOrOut != null and innerOrOut >0">
+			AND	P.INNER_OR_OUT =#{innerOrOut}
+		</if>
+		<if test="oldLoanBank != null and oldLoanBank !=''">
+			AND	S.BANK_NAME like '%${oldLoanBank}%'
+		</if>
+		<if test="orgId != null and orgId>0">
+			AND	O.ID =#{orgId}
+		</if>
+		<!-- 赎楼状态 -->
+		<if test="foreclosureStatus != null and foreclosureStatus >0">
+			AND	P.FORECLOSURE_STATUS =#{foreclosureStatus}
+		</if>
+		<if test="beginRequestDttm != null and beginRequestDttm !=''">
+			 AND P.REQUEST_DTTM <![CDATA[>= ]]> #{beginRequestDttm,jdbcType=TIMESTAMP,javaType=String}
+		</if>
+		<if test="endRequestDttm != null and endRequestDttm !=''">
+			 AND P.REQUEST_DTTM <![CDATA[<= ]]> #{endRequestDttm,jdbcType=TIMESTAMP,javaType=String}
+		</if>
+		<if test="projectSource != null and projectSource>0 ">
+			AND P.PROJECT_SOURCE = #{projectSource}
+		</if>
+		<if test="declaration != null and declaration !='' ">
+			AND P.DECLARATION LIKE '%${declaration}%'
+		</if>
+		 ) DP
+	</select>
+	
+	<!--赎楼项目撤单-->
+	<update id="updateProjectChechan" parameterType="com.xlkfinance.bms.rpc.beforeloan.Project">
+        UPDATE BIZ_PROJECT SET
+       	IS_CHECHAN = 1,CHECHAN_DATE=SYSDATE,CHECHAN_USER_ID=#{chechanUserId},CHECHAN_CAUSE=#{chechanCause}
+        WHERE PID = #{pid}  
+	</update>
+	
+	<!-- 批量恢复赎楼项目撤单状态 -->
+	<update id="setProjectChechan" parameterType="java.lang.String">
+		UPDATE BIZ_PROJECT SET
+       	IS_CHECHAN = 0 
+        WHERE PID IN
+        <foreach item="idItem" collection="array" open="(" separator="," close=")">
+			#{idItem}
+		</foreach> 
+	</update>
+	
+	<!-- 修改项目赎楼状态 -->
+	<update id="updateProjectForeStatusByPid" parameterType="java.util.Map">
+		UPDATE BIZ_PROJECT 
+		SET FORECLOSURE_STATUS = #{foreclosureStatus}
+		<if test="endDttm != null and endDttm != '' ">
+			,COMPLETE_DTTM = #{endDttm,javaType=String,jdbcType=TIMESTAMP}
+		</if>
+		WHERE PID = #{pid}
+	</update>
+	
+	<!--要件借出项目信息列表-->
+	<select id="findProjectInfo" resultMap="ProjectResultMap" parameterType="com.xlkfinance.bms.rpc.beforeloan.Project">
+		SELECT P.PID,P.PROJECT_NAME FROM BIZ_PROJECT P WHERE P.IS_CHECHAN = 0 AND P.STATUS = 1 AND P.PROJECT_TYPE = 2
+		<!-- 数据权限 -->
+		<if test="userIds!=null and userIds.size()>0">
+			AND	P.PM_USER_ID IN
+		<foreach item="itemId" collection="userIds" open="(" separator="," close=")">
+		          #{itemId}
+		</foreach>
+		</if>
+		 AND P.FORECLOSURE_STATUS IN(10,11,12,13)
+	</select>
+	<!-- 根据客户ID查询当前客户是否存在正在进行的赎楼贷款项目，以业务办理为节点，业务办理已完成的则可以继续贷款 -->
+	<select id="getCountForeLoanByAcctId"  resultType="java.lang.Integer" parameterType="java.lang.Integer">
+		SELECT COUNT(*) 
+		FROM BIZ_PROJECT p
+		WHERE P.ACCT_ID = #{acctId}
+		AND P.IS_REJECTED = 0
+		AND (P.PROJECT_TYPE = 2 OR p.PROJECT_TYPE IS NULL OR P.PROJECT_TYPE = 4 )
+		AND P.FORECLOSURE_STATUS IN(1,2,3,4,5,6,7,8,9,10,11,14,15)
+		AND P.STATUS = 1
+		AND P.IS_CHECHAN = 0
+	</select>
+	
+	<select id="printProjectInfo" parameterType="java.lang.Integer" resultMap="ProjectDto">
+	SELECT PRO.PID PROJECT_ID,
+       SO.NAME ORG_NAME,
+       BPF.FORE_ACCOUNT,
+       SU.REAL_NAME PM_USER_NAME,
+       CP.CHINA_NAME ACCT_NAME,
+       BPG.LOAN_MONEY LOAN_MONEY,
+       BPP.SELLER_NAME SELLER_NAME,
+       BPF.NEW_LOAN_MONEY PROMISE_MONEY,
+       PD.PRODUCT_NAME,
+       BPF.LOAN_DAYS LOAN_DAY,
+       TO_CHAR(H.HOUSE_PROPERTY_CARD) AS HOUSE_CARD_NO,
+       PRO.PROJECT_NUMBER,
+       PRO.IS_NEED_HANDLE,
+       TO_CHAR(H.HOUSE_NAME) AS HOUSE_NAME,
+       BPF.PAYMENT_NAME,
+       BPF.PAYMENT_ACCOUNT,
+       BV.BUSINESS_SOURCE_STR,
+       (SELECT T.REC_MONEY
+          FROM BIZ_LOAN_APPLY_FINANCE_HANDLE T
+         WHERE T.REC_PRO = 1
+           AND T.FINANCE_HANDLE_ID = FH.PID) AS LOAN_FEE,
+       (SELECT T.REC_MONEY
+          FROM BIZ_LOAN_APPLY_FINANCE_HANDLE T
+         WHERE T.REC_PRO = 2
+           AND T.FINANCE_HANDLE_ID = FH.PID) AS POUNDAGE,
+       (SELECT T.REC_MONEY
+          FROM BIZ_LOAN_APPLY_FINANCE_HANDLE T
+         WHERE T.REC_PRO = 7
+           AND T.FINANCE_HANDLE_ID = FH.PID) AS BROKERAGE,
+       PD.LOAN_WORK_PROCESS_ID LOAN_REQUEST_PROCESS,
+       (SELECT S.BANK_NAME
+          FROM SYS_BANK_INFO S
+         WHERE S.PID = BPF.NEW_LOAN_BANK) AS PAYMENT_BANK,
+       S.BANK_NAME AS FORE_BANK,
+       (SELECT SUM(AFH.REC_MONEY)
+          FROM BIZ_LOAN_APPLY_FINANCE_HANDLE AFH, BIZ_LOAN_FINANCE_HANDLE J
+         WHERE J.PID = AFH.FINANCE_HANDLE_ID
+           AND AFH.REC_PRO IN (3, 4, 5, 6)
+           AND J.PROJECT_ID = #{PROJECTID}) AS PAYMENT_MONEY,
+       (SELECT T.REAL_NAME FROM SYS_USER T WHERE T.PID = SU.SUPERIOR_USER_ID) AS MANAGER_NAME,
+       PRO.PROJECT_SOURCE
+  FROM BIZ_PROJECT PRO
+  LEFT JOIN BIZ_PRODUCT PD
+    ON PRO.PRODUCT_ID = PD.PID
+  LEFT JOIN SYS_USER SU
+    ON PRO.PM_USER_ID = SU.PID
+  LEFT JOIN SYS_ORG_INFO SO
+    ON SU.ORG_ID = SO.ID
+ INNER JOIN CUS_PERSON CP
+    ON CP.ACCT_ID = PRO.ACCT_ID
+   AND CP.RELATION_TYPE = 1
+  LEFT JOIN BIZ_PROJECT_FORECLOSURE BPF
+    ON PRO.PID = BPF.PROJECT_ID
+  LEFT JOIN BIZ_PROJECT_GUARANTEE BPG
+    ON PRO.PID = BPG.PROJECT_ID
+  LEFT JOIN BIZ_PROJECT_PROPERTY BPP
+    ON PRO.PID = BPP.PROJECT_ID
+  LEFT JOIN BIZ_LOAN_FINANCE_HANDLE FH
+    ON FH.PROJECT_ID = PRO.PID
+  LEFT JOIN BUSINESS_SOURCE_V BV
+    ON BV.PID = PRO.PID
+ LEFT JOIN OLD_LOAN_BANK_V S
+      	  ON S.PID = PRO.PID
+  LEFT JOIN (
+    SELECT P.PID,WM_CONCAT(S.HOUSE_PROPERTY_CARD) AS HOUSE_PROPERTY_CARD,WM_CONCAT(S.HOUSE_NAME) AS HOUSE_NAME
+              FROM BIZ_PROJECT_ESTATE S, BIZ_PROJECT P
+             WHERE S.PROJECT_ID = P.PID
+               AND S.STATUS = 1
+         GROUP BY P.PID
+    )H
+    ON H.PID = PRO.PID
+ WHERE PRO.PID = #{PROJECTID}
+	</select>
+		<!-- 修改收件状态 -->
+	<update id="updatecollectFileStatusByPid" parameterType="java.util.Map">
+		UPDATE BIZ_PROJECT 
+		SET COLLECT_FILE_STATUS = #{collectFileStatus}
+		WHERE PID = #{pid}
+	</update>
+		<!-- 修改退件状态 -->
+	<update id="updaterefundFileStatusByPid" parameterType="java.util.Map">
+		UPDATE BIZ_PROJECT 
+		SET REFUND_FILE_STATUS = #{refundFileStatus}
+		WHERE PID = #{pid}
+	</update>
+		<!-- 解保 -->
+	<update id="updateCancelGuaranteeByPid" parameterType="java.util.Map">
+		UPDATE BIZ_PROJECT 
+		SET FORECLOSURE_STATUS=13 , CANCEL_GUARANTEE_DATE = #{cancelGuaranteeDate,jdbcType= DATE,javaType= java.lang.String}
+		WHERE PID = #{pid}
+	</update>
+	
+	<update id="updateAuditorOpinionByPid" parameterType="java.util.Map">
+		UPDATE BIZ_PROJECT 
+		SET AUDITOR_OPINION = #{auditorOpinion}
+		WHERE PID = #{pid}
+	</update>
+	<!-- 查询项目信息是否存在 -->
+	<select id="getProjectAcctCount" resultType="Integer" parameterType="java.util.Map"> 
+		SELECT COUNT(*)  FROM BIZ_PROJECT T,BIZ_PROJECT_GUARANTEE G,BIZ_PROJECT_FORECLOSURE F,BIZ_PROJECT_PROPERTY P
+ 		WHERE T.PID = G.PROJECT_ID AND T.PID = P.PROJECT_ID AND T.PID = F.PROJECT_ID AND T.IS_CLOSED = 2 AND T.IS_CHECHAN = 0 AND G.GUARANTEE_FEE =${guaranteeFee}
+		AND T.ACCT_ID =${acctId} AND G.LOAN_MONEY =${loanMoney} AND F.LOAN_DAYS =${loanDays} AND P.HOUSE_NAME LIKE '${houseName}'
+	</select>
+	<!-- 打印赎楼清单信息 -->
+	<select id="printForeInfo" parameterType="java.lang.Integer" resultMap="ProjectDto">
+		SELECT PRO.PID PROJECT_ID,SO.NAME ORG_NAME, SU.REAL_NAME PM_USER_NAME,
+    BPG.LOAN_MONEY LOAN_MONEY,BPP.SELLER_NAME SELLER_NAME,BPP.SELLER_PHONE SELLER_PHONE,
+    PRO.Project_Name PROJECT_NAME,PRO.MANAGERS AS MANAGER_NAME,PRO.MANAGERS_PHONE as MANAGER_PHONE,TO_CHAR(H.HOUSE_NAME) HOUSE_NAME,
+       (SELECT S.BANK_NAME  FROM SYS_BANK_INFO S WHERE S.PID = bpf.new_loan_bank) AS FORE_BANK,
+       BPF.OLD_LOAN_PERSON BANK_USER,BPF.OLD_LOAN_PHONE BANK_PHONE
+   FROM BIZ_PROJECT PRO  
+          LEFT JOIN BIZ_PRODUCT PD
+          ON PRO.PRODUCT_ID = PD.PID
+          LEFT JOIN SYS_USER SU
+          ON PRO.PM_USER_ID = SU.PID
+          LEFT JOIN SYS_ORG_INFO SO
+          ON SU.ORG_ID = SO.ID
+          LEFT JOIN BIZ_PROJECT_FORECLOSURE BPF 
+          ON PRO.PID = BPF.PROJECT_ID
+          LEFT JOIN BIZ_PROJECT_GUARANTEE BPG
+          ON PRO.PID = BPG.PROJECT_ID
+          LEFT JOIN BIZ_PROJECT_PROPERTY BPP
+          ON PRO.PID = BPP.PROJECT_ID
+          LEFT JOIN (
+    SELECT P.PID,WM_CONCAT(S.HOUSE_NAME) AS HOUSE_NAME
+              FROM BIZ_PROJECT_ESTATE S, BIZ_PROJECT P
+             WHERE S.PROJECT_ID = P.PID
+               AND S.STATUS = 1
+         GROUP BY P.PID
+    )H
+    ON H.PID = PRO.PID
+    WHERE PRO.PID = #{projectId}
+	</select>
+	<!-- 修改万通推送业务给小科的数据项 -->
+	<update id="updateProjectNeed" parameterType="com.xlkfinance.bms.rpc.beforeloan.Project">
+		UPDATE BIZ_PROJECT SET IS_NEED_FINANCIAL = #{isNeedFinancial} WHERE PID = #{pid}
+	</update>
+	<!-- 修改赎楼贷后监控状态：无异常=1，有异常=2 -->
+	<update id="updateForeAfterMonitorStatus" parameterType="java.util.Map">
+		UPDATE BIZ_PROJECT 
+		SET FORE_AFTER_MONITOR_STATUS=#{foreAfterMonitorStatus}
+		WHERE PID = #{projectId}
+	</update>
+		<!-- 修改赎楼贷后监控状态：无异常=1，有异常=2 -->
+	<update id="updateMonitorStatusAndReturnNormalRemark" parameterType="java.util.Map">
+		UPDATE BIZ_PROJECT 
+		SET FORE_AFTER_MONITOR_STATUS=#{foreAfterMonitorStatus},return_normal_remark = #{returnNormalRemark}
+		WHERE PID = #{projectId}
+	</update>
+	
+	
+		<!-- 修改赎楼贷后监控状态：新增=1，修改=2 -->
+	<update id="updateForeAfterReportStatus" parameterType="java.util.Map">
+		UPDATE BIZ_PROJECT 
+		SET FORE_AFTER_REPORT_STATUS=2
+		WHERE PID = #{projectId}
+	</update>																		
+	<!--查询单笔上限等-->
+	<select id="getOrgCooperatById" resultMap="OrgCooperatResultMap" parameterType="com.xlkfinance.bms.rpc.beforeloan.OrgCooperat">
+		SELECT OA.ORG_NAME, 
+  			FH.PROJECT_ID,
+         OC.AVAILABLE_LIMIT as AVAILABLE_LIMIT,
+         OC.SINGLE_UPPER_LIMIT AS SINGLE_UPPER_LIMIT,
+         OC.ASSURE_MONEY AS ASSURE_MONEY FROM BIZ_LOAN_FINANCE_HANDLE FH
+           INNER JOIN BIZ_LOAN_APPLY_FINANCE_HANDLE AFH ON FH.PID = AFH.FINANCE_HANDLE_ID
+         LEFT JOIN BIZ_LOAN_REPAYMENT RE ON RE.PROJECT_ID = FH.PROJECT_ID
+         LEFT JOIN BIZ_PROJECT BP ON BP.PID = FH.PROJECT_ID
+         LEFT JOIN BIZ_PROJECT_PARTNER B  ON B.PROJECT_ID = FH.PROJECT_ID
+         LEFT JOIN CAPITAL_ORG_INFO A ON  A.ORG_CODE = B.PARTNER_NO
+         LEFT JOIN  ORG_COOPERAT_COMPANY_APPLY_INF OC ON BP.Business_Source_No = OC.ORG_ID
+         LEFT JOIN ORG_ASSETS_COOPERATION_INFO OA ON OC.ORG_ID = OA.PID
+         LEFT JOIN ORG_BIZ_ADVISER_ALLOCATION_INF D ON OC.ORG_ID= D.SERVICE_OBJ_ID
+          WHERE  OC.APPLY_STATUS IN (1,2,3,4,5) AND D.PID >0
+                 AND BP.STATUS = 1
+                 AND BP.IS_CHECHAN = 0 and A.ORG_CODE = B.PARTNER_NO
+                 AND BP.PROJECT_SOURCE IN (2, 3)
+                 AND AFH.REC_PRO = 3
+                 AND FH.STATUS = 3
+                 AND (RE.STATUS = 1 OR RE.STATUS IS NULL) 
+                 AND FH.PROJECT_ID = #{projectId}
+                  GROUP BY  OA.ORG_NAME ,
+                  AVAILABLE_LIMIT,SINGLE_UPPER_LIMIT,ASSURE_MONEY,FH.PROJECT_ID
+	</select>
+	<!-- 根据项目ID查询该项目正处于资金方放款申请中的总数 -->
+	<select id="getPartnerLoanCount" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+		SELECT COUNT(*) FROM BIZ_PROJECT_PARTNER T WHERE T.LOAN_STATUS != 1 AND T.IS_CLOSED = 1 AND T.PROJECT_ID = #{projectId}
+	
+	</select>
+	
+		<!--要件借出项目信息列表-->
+	<select id="checkProjectByNoAndCode" resultMap="ProjectResultMap" parameterType="com.xlkfinance.bms.rpc.beforeloan.Project">
+		SELECT P.PID,P.PROJECT_NAME FROM BIZ_PROJECT P 
+		  WHERE P.area_code = #{areaCode} and p.business_source_no = #{businessSourceNo}
+	</select>
+			<!-- 修改资方信息 -->
+	<update id="updateCapitalNameInfo" parameterType="com.qfang.xk.aom.rpc.project.BizProject">
+		UPDATE BIZ_PROJECT
+		<set>
+			<if test="capitalName != null and capitalName !=''">
+				CAPITAL_NAME=#{capitalName},
+			</if>
+			<if test="loanType != null and loanType !=''">
+				LOAN_TYPE=#{loanType},
+			</if>
+		</set>
+		WHERE PID = #{pid}
+	</update>
+</mapper>

@@ -1,0 +1,277 @@
+.stencil-group > li{
+	font-size: 14px;
+}
+.selected-item-title{
+	font-size: 16px;
+}
+
+.editor-toolbar .btn.btn-inverse{
+	font-size: 16px;
+	padding: 0;
+	height: 26px;
+    min-width: 26px; 
+}
+.subheader{
+	min-height: 40px;
+}
+.editor-toolbar > .btn-group {
+    margin: 7px 15px 0px 0px;
+}
+.subheader >div>.pull-right {
+    margin-top: 7px;
+}
+.editor-toolbar .btn.btn-inverse.separator {
+    padding: 0;
+}
+.selected-item-body{
+	/* height: auto; */
+	height: 199px;
+}
+.selected-item-body .property-row{
+	font-size: 12px;
+}
+.property-row span.title{
+	font-size: 12px;
+}
+h1.ng-scope{
+	font-size: 12px;
+	margin: 0;
+	text-align: center;
+}
+h2, .h2 {
+    font-size: 20px;
+}
+.modal-content{
+	border-radius: 5px;
+}
+.modal .modal-header {
+    min-height: 30px;
+    padding: 15px;
+    border-radius: 5px 5px 0 0;
+}
+.modal .modal-header h2,.modal .modal-header h3{
+	font-size: 20px;
+	margin-top: 0px;
+    margin-bottom: 0px;
+}
+.modal-footer{
+	text-align: center;
+	margin-top: 0;
+	padding: 10px;
+	border-radius: 0 0 5px 5px;
+}
+.modal-footer button{
+	-webkit-border-radius: 30px !important;
+    -moz-border-radius: 30px !important;
+    border-radius: 30px !important;
+    /* width:80px; */
+    border: none;
+}
+.btn-group .btn-lg, .btn-group-lg>.btn{
+	padding: 5px 8px;
+	margin-bottom: 5px;
+}
+.btn-toolbar>.btn{
+	filter: progid:DXImageTransform.Microsoft.Gradient(startColorStr='#5b5fe5',endColorStr='#4ca4da',gradientType='1');
+    background: -moz-linear-gradient(left, #5b5fe5, #4ca4da);
+    background: -o-linear-gradient(left,#5b5fe5, #4ca4da);
+    background: -webkit-gradient(linear, 25% 100%, 100% 25%, from(#5b5fe5), to(#4ca4da));
+    color: #cbc9fe !important;
+}
+.selected-item-body > div{
+	border-radius: 3px;
+}
+.stencil-group > li{
+	border-radius: 3px;
+}
+.form-control{
+    border-radius: 4px;
+}
+.form-group .form-control{
+    border-radius: 4px;
+}
+.form-group #rethrowField{
+	display: inline;
+    width: auto;
+    height: auto;
+    /* vertical-align: bottom; */
+}
+.form-group #requiredField,.form-group #readableField,.form-group #writableField{
+	height: auto;
+	margin-top: 0;
+}
+.btn-group>.btn:focus{
+	z-index: 0; 
+}
+.kis-field-grid .kis-listener-grid{
+	border-radius: 3px;
+}
+
+/* 样式 */
+body.skin_default{
+	color: #cbc9fe;
+}
+.skin_default .full{
+	background: #161727;
+}
+.skin_default .stencil-group > li {
+    background-color: #38375a;
+    color: #cbc9fe;
+    border-radius: 3px;
+}
+.skin_default .stencil-group > li > ul{
+	background: rgb(44, 44, 74);
+}
+.skin_default .stencil-group.collapsed > li {
+    color: #cbc9fe;
+}
+.skin_default .subheader.editor-toolbar{
+	background: #161727;
+}
+.skin_default .full .canvas-wrapper{
+	background: #161727;
+}
+.skin_default .selected-item-title a {
+    color: #cbc9fe;
+}
+/* 分割线 */
+.skin_default .selected-item-title {
+	background-color: #38375a;
+    border-bottom: 1px solid #607D8B;   
+}
+.skin_default .stencils{
+	border-right: 1px solid #607D8B;
+}
+.skin_default .subheader{
+	border-bottom: 1px solid #607D8B;
+}
+
+.skin_default .selected-item-title a:hover, .selected-item-title a:focus {
+    color: #cbc9fe;
+    text-decoration: none;
+}
+.skin_default .selected-item-body > div {
+    background: #2c2c4a;
+    border-radius: 3px;
+}
+.skin_default .ORYX_Editor svg{
+	background: #2c2c4a;
+}
+
+.skin_default div.propertySection{
+	background: #161727;
+}
+.skin_default .form-control:focus {
+    outline: 0;
+    color: #b1acd6;
+    border: 1px solid #6B86D2 !important;
+}
+.skin_default .form-control{
+    color: #b1acd6;
+    background: #21213B;
+    background-image: none;
+    border: 1px solid #21213B;
+    border-radius: 4px;
+}
+.skin_default .selected-item-body .property-row:hover {
+    background-color: #30304f;
+}
+.skin_default .modal-backdrop{
+	background-color: #161727;
+	opacity: 0.5;
+}
+.skin_default .modal-header .close{
+	color: #cbc9fe;
+	opacity: 0.9;
+}
+.skin_default .modal-content{
+	background: #38375a;
+} 
+.skin_default .modal .modal-header{
+	background: #38375a
+}
+.skin_default .modal-content .modal-header {
+    border-bottom: none;
+    background: #38375a
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+.skin_default .modal-content .modal-body{
+	background: #2c2c4a;
+}
+.skin_default .modal-footer{
+	border-top:#607D8B;
+	
+}
+.skin_default button.btn-primary{
+	color: #cbc9fe;
+    filter: progid:DXImageTransform.Microsoft.Gradient(startColorStr='#5b5fe5',endColorStr='#4ca4da',gradientType='1');
+    background: -moz-linear-gradient(left, #5b5fe5, #4ca4da);
+    background: -o-linear-gradient(left,#5b5fe5, #4ca4da);
+    background: -webkit-gradient(linear, 25% 100%, 100% 25%, from(#5b5fe5), to(#4ca4da));
+}
+.skin_default textarea.form-control{
+	color: #cbc9fe;
+    background: #21213B;
+    background-image: none;
+    border: 1px solid #21213B;
+    border-radius: 5px;
+    transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+}
+.skin_default .ngGrid{
+	color: #b1acd6;
+    background: #21213B;
+    background-image: none;
+    border: 1px solid #21213B;
+}
+.skin_default .ngTopPanel{
+	background-color: #38375a;
+	color:#fff;
+}
+.skin_default .ngRow.even {
+    background: #2c2c4a;
+}
+.skin_default .ngRow.odd {
+    background-color: #30304f;
+}
+.skin_default .ng-scope .ngRow:hover{
+	background-color: #323254;
+}
+.skin_default .ngVerticalBarVisible{
+	border-color: grey;
+}
+.skin_default .form-group label{
+	color: #cbc9fe;
+}
+.skin_default .form-group .form-control{
+	color: #555;
+    background: #21213B;
+    background-image: none;
+    border: 1px solid #21213B;
+}
+
+.skin_default .form-group ::-webkit-input-placeholder { 
+　　color: #919191;
+}
+.skin_default .form-group :-moz-placeholder { 
+　　color: #919191;
+}
+.skin_default .form-group ::-moz-placeholder { 
+　　color: #919191;
+}
+.skin_default .form-group :-ms-input-placeholder { 
+　　color: #919191;
+}
+.skin_default .form-group #rethrowField{
+	display: inline;
+    width: auto;
+    height: auto;
+    /* vertical-align: bottom; */
+}
+.skin_default button.btn, a.btn{
+	background: -webkit-gradient(linear, 25% 100%, 100% 25%, from(#4c50cb), to(#3991c7));
+    border: none;
+}
+.skin_default #shapeTextInput{
+	color:#000;
+}

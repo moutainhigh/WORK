@@ -1,0 +1,673 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.xlkfinance.bms.server.inloan.mapper.IntermediateTransferMapper">
+	<resultMap type="intermediateTransferDTO" id="intermediateTransferMap">
+		<id property="pid" column="PID" />
+		<id property="projectId" column="PROJECT_ID" />
+		<id property="applyStatus" column="APPLY_STATUS" />
+		<id property="recMoney" column="REC_MONEY" />
+		<id property="recAccount" column="REC_ACCOUNT" />
+		<id property="recDate" column="REC_DATE" />
+		<id property="transferMoney" column="TRANSFER_MONEY" />
+		<id property="transferAccount" column="TRANSFER_ACCOUNT" />
+		<id property="transferDate" column="TRANSFER_DATE" />
+		<id property="remark" column="REMARK" />
+		<id property="createrDate" column="CREATER_DATE" />
+		<id property="createrId" column="CREATER_ID" />
+		<id property="updateId" column="UPDATE_ID" />
+		<id property="updateDate" column="UPDATE_DATE" />
+		<id property="specialType" column="SPECIAL_TYPE" />
+		<id property="recAccountName" column="REC_ACCOUNT_NAME" />
+		<id property="transferAccountName" column="TRANSFER_ACCOUNT_NAME" />
+	</resultMap>
+	<resultMap type="intermediateTransferIndexDTO" id="intermediateTransferIndexMap">
+		<id property="pid" column="PID" />
+		<id property="projectId" column="PROJECT_ID" />
+		<id property="projectNumber" column="PROJECT_NUMBER" />
+		<id property="projectName" column="PROJECT_NAME" />
+		<id property="requestDate" column="REQUEST_DATE" />
+		<id property="bizApplyHandleStatus" column="APPLY_HANDLE_STATUS" />
+		<id property="recStatus" column="REC_STATUS" />
+		<id property="applyHandleStatus" column="APPLY_STATUS" />
+		<id property="recMoney" column="REC_MONEY" />
+		<id property="recAccount" column="REC_ACCOUNT" />
+		<id property="recDate" column="REC_DATE" />
+		<id property="transferMoney" column="TRANSFER_MONEY" />
+		<id property="transferAccount" column="TRANSFER_ACCOUNT" />
+		<id property="transferDate" column="TRANSFER_DATE" />
+		<id property="customerName" column="CUSTOMER_NAME" />
+		<id property="oldHome" column="OLD_HOME" />
+		<id property="cancelGuaranteeDate" column="CANCEL_GUARANTEE_DATE" />
+		<id property="projectPassDate" column="PROJECT_PASS_DATE" />
+		<id property="loanMoney" column="LOAN_MONEY" />
+		<id property="productType" column="PRODUCT_TYPE" />
+		<id property="productId" column="PRODUCT_ID" />
+		<id property="productName" column="PRODUCT_NAME" />
+		<id property="realLoan" column="REAL_LOAN" />
+		<id property="specialType" column="SPECIAL_TYPE" />
+		<id property="houseName" column="HOUSE_NAME"/>
+  		<id property="buyerName" column="BUYER_NAME"/>
+  		<id property="sellerName" column="SELLER_NAME"/>
+  		<id property="isChechan" column="IS_CHECHAN"/>
+  		<id property="pmUserId" column="PM_USER_ID"/>
+	</resultMap>
+	<!-- 添加中途划转信息 -->
+	<insert id="addIntermediateTransfer" parameterType="intermediateTransferDTO">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_INTERMEDIATE_TRANSFER.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_INTERMEDIATE_TRANSFER
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			PID,
+			<if test="projectId != null and projectId >0">
+				PROJECT_ID,
+			</if>
+			<if test="applyStatus != null and applyStatus >0">
+				APPLY_STATUS,
+			</if>
+			<if test="recMoney != null and recMoney >0">
+				REC_MONEY,
+			</if>
+			<if test="recAccount != null and recAccount !=''">
+				REC_ACCOUNT,
+			</if>
+			<if test="recDate != null and recDate !=''">
+				REC_DATE,
+			</if>
+			<if test="transferMoney != null and transferMoney >0">
+				TRANSFER_MONEY,
+			</if>
+			<if test="transferAccount != null and transferAccount !=''">
+				TRANSFER_ACCOUNT,
+			</if>
+			<if test="transferDate != null and transferDate !=''">
+				TRANSFER_DATE,
+			</if>
+			<if test="createrId != null and createrId >0">
+				CREATER_ID,
+			</if>
+			<if test="updateId != null and updateId >0">
+				UPDATE_ID,
+			</if>
+			<if test="remark != null">
+				REMARK,
+			</if>
+			<if test="recAccountName != null and recAccountName !=''">
+				REC_ACCOUNT_NAME,
+			</if>
+			<if test="transferAccountName != null and transferAccountName !=''">
+				TRANSFER_ACCOUNT_NAME,
+			</if>
+			<if test="specialType != null and specialType >0">
+				SPECIAL_TYPE,
+			</if>
+			CREATER_DATE,
+			UPDATE_DATE
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{pid},
+			<if test="projectId != null and projectId >0">
+				#{projectId},
+			</if>
+			<if test="applyStatus != null and applyStatus >0">
+				#{applyStatus},
+			</if>
+			<if test="recMoney != null and recMoney >0">
+				#{recMoney},
+			</if>
+			<if test="recAccount != null and recAccount !=''">
+				#{recAccount},
+			</if>
+			<if test="recDate != null and recDate !=''">
+				#{recDate,jdbcType=DATE,javaType=String},
+			</if>
+			<if test="transferMoney != null and transferMoney >0">
+				#{transferMoney},
+			</if>
+			<if test="transferAccount != null and transferAccount !=''">
+				#{transferAccount},
+			</if>
+			<if test="transferDate != null and transferDate !=''">
+				#{transferDate,jdbcType=DATE,javaType=String},
+			</if>
+			<if test="createrId != null and createrId >0">
+				#{createrId},
+			</if>
+			<if test="updateId != null and updateId >0">
+				#{updateId},
+			</if>
+			<if test="remark != null">
+				decode(#{remark},null,'',#{remark}),
+			</if>
+			<if test="recAccountName != null and recAccountName !=''">
+				#{recAccountName},
+			</if>
+			<if test="transferAccountName != null and transferAccountName !=''">
+				#{transferAccountName},
+			</if>
+			<if test="specialType != null and specialType >0">
+				#{specialType},
+			</if>
+			SYSDATE,
+			SYSDATE
+		</trim>
+	</insert>
+	<!-- 根据id更新中途划转信息 -->
+	<update id="updateIntermediateTransfer" parameterType="intermediateTransferDTO">
+		UPDATE BIZ_INTERMEDIATE_TRANSFER
+		<set>
+			<if test="applyStatus != null and applyStatus >0">
+				APPLY_STATUS=#{applyStatus},
+			</if>
+			<if test="recMoney != null and recMoney >0">
+				REC_MONEY=#{recMoney},
+			</if>
+			<if test="recAccount != null and recAccount !=''">
+				REC_ACCOUNT=#{recAccount},
+			</if>
+			<if test="recDate != null and recDate !=''">
+				REC_DATE=#{recDate,jdbcType=DATE,javaType=String},
+			</if>
+			<if test="transferMoney != null and transferMoney >0">
+				TRANSFER_MONEY=#{transferMoney},
+			</if>
+			<if test="transferAccount != null and transferAccount !=''">
+				TRANSFER_ACCOUNT=#{transferAccount},
+			</if>
+			<if test="transferDate != null and transferDate !=''">
+				TRANSFER_DATE=#{transferDate,jdbcType=DATE,javaType=String},
+			</if>
+			<if test="updateId != null and updateId >0">
+				UPDATE_ID=#{updateId},
+			</if>
+			<if test="createrId != null and createrId >0">
+				CREATER_ID=#{createrId},
+			</if>
+			  <if test="remark != null">
+				REMARK=decode(#{remark},null,'',#{remark}),
+			</if>
+			<if test="recAccountName != null and recAccountName !=''">
+				REC_ACCOUNT_NAME=#{recAccountName},
+			</if>
+			<if test="transferAccountName != null and transferAccountName !=''">
+				TRANSFER_ACCOUNT_NAME=#{transferAccountName},
+			</if>
+			<if test="specialType != null and specialType >0">
+				SPECIAL_TYPE=#{specialType},
+			</if>
+			UPDATE_DATE=SYSDATE
+		</set>
+		where pid = #{pid}
+	</update>
+	<!-- 根据条件查询中途划转信息（分页查询） -->
+	<select id="queryIntermediateTransfer" resultMap="intermediateTransferMap"
+		parameterType="intermediateTransferDTO">
+	<![CDATA[
+	SELECT D.* FROM (SELECT T.*, ROWNUM RN
+	        FROM ( SELECT * FROM BIZ_INTERMEDIATE_TRANSFER A
+	]]>
+		<where>
+			<trim>
+				<if test="userIds!=null and userIds.size()>0">
+					AND A.CREATER_ID IN
+					<foreach item="itemId" collection="userIds" open="("
+						separator="," close=")">
+						#{itemId}
+					</foreach>
+				</if>
+				<if test="applyStatusList!=null and applyStatusList.size()>0">
+					AND A.APPLY_STATUS IN
+					<foreach item="itemId" collection="userIds" open="("
+						separator="," close=")">
+						#{itemId}
+					</foreach>
+				</if>
+				<if test="applyStatus != null and applyStatus >0">
+					AND A.APPLY_STATUS = #{applyStatus}
+				</if>
+				<if test="projectId !=null and projectId >0">
+					AND A.PROJECT_ID = #{projectId}
+				</if>
+				<if test="pid!=null and pid>0">
+					AND A.PID = #{pid}
+				</if>
+			</trim>
+		</where>
+	<![CDATA[
+	) T
+	WHERE ROWNUM <=#{page}*#{rows}
+	) D
+	WHERE D.RN > ((#{page}-1)*#{rows})
+	]]>
+	</select>
+	<!-- 根据条件查询中途划转信息总数 -->
+	<select id="getIntermediateTransferTotal" resultType="Integer"
+		parameterType="intermediateTransferDTO">
+	<![CDATA[
+	SELECT COUNT(1) FROM
+			(SELECT * FROM BIZ_INTERMEDIATE_TRANSFER A
+	]]>
+		<where>
+			<trim>
+			   <if test="userIds!=null and userIds.size()>0">
+					AND A.CREATER_ID IN
+					<foreach item="itemId" collection="userIds" open="("
+						separator="," close=")">
+						#{itemId}
+					</foreach>
+				</if>
+				<if test="applyStatusList!=null and applyStatusList.size()>0">
+					AND A.APPLY_STATUS IN
+					<foreach item="itemId" collection="userIds" open="("
+						separator="," close=")">
+						#{itemId}
+					</foreach>
+				</if>
+				<if test="applyStatus != null and applyStatus >0">
+					AND A.APPLY_STATUS = #{applyStatus}
+				</if>
+				<if test="projectId !=null and projectId >0">
+					AND A.PROJECT_ID = #{projectId}
+				</if>
+				<if test="pid!=null and pid>0">
+					AND A.PID = #{pid}
+				</if>
+			</trim>
+		</where>
+		) T
+	</select>
+	<!-- 根据条件查询中途划转列表（分页查询）-->
+<select id="queryIntermediateTransferRequestIndex" resultMap="intermediateTransferIndexMap" parameterType="intermediateTransferIndexDTO">
+	<![CDATA[
+	SELECT D.* FROM (SELECT T.*, ROWNUM RN
+	        FROM ( SELECT 
+       A.PID AS PROJECT_ID,
+       A.PROJECT_NUMBER,
+       A.PROJECT_NAME,
+       A.IS_CHECHAN,
+       A.PM_USER_ID,
+       B.PID,
+       B.APPLY_STATUS,
+       B.REC_MONEY,
+       B.REC_ACCOUNT,
+       B.REC_DATE,
+       B.TRANSFER_MONEY,
+       B.TRANSFER_ACCOUNT,
+       B.TRANSFER_DATE,
+       B.SPECIAL_TYPE,
+       TO_CHAR(A.REQUEST_DTTM, 'yyyy-MM-dd') AS REQUEST_DATE,
+       CASE
+         WHEN C.APPLY_HANDLE_STATUS > 0 THEN
+          C.APPLY_HANDLE_STATUS
+         ELSE
+          1
+       END AS APPLY_HANDLE_STATUS,
+       CASE
+         WHEN C.REC_STATUS > 0 THEN
+          C.REC_STATUS
+         ELSE
+          1
+       END AS REC_STATUS,
+       E.SELLER_NAME AS OLD_HOME,
+       EH.HOUSE_NAME,
+       E.BUYER_NAME,
+       E.SELLER_NAME,
+       G.CHINA_NAME AS CUSTOMER_NAME,
+       A.CANCEL_GUARANTEE_DATE,
+       TO_CHAR(I.CREATER_DATE,'yyyy-MM-dd') AS PROJECT_PASS_DATE,
+       J.LOAN_MONEY,
+       K.PID AS PRODUCT_ID,
+       K.PRODUCT_TYPE,
+       K.PRODUCT_NAME,
+       (SELECT SUM(AFH.REC_MONEY)
+          FROM BIZ_LOAN_APPLY_FINANCE_HANDLE AFH
+         WHERE AFH.FINANCE_HANDLE_ID = I.PID
+           AND AFH.REC_PRO IN (3, 4, 5, 6)) AS REAL_LOAN
+  FROM BIZ_PROJECT A
+  LEFT JOIN BIZ_INTERMEDIATE_TRANSFER B
+    ON A.PID = B.PROJECT_ID
+  LEFT JOIN BIZ_LOAN_HANDLE_INFO C
+    ON A.PID = C.PROJECT_ID
+  LEFT JOIN BIZ_PROJECT_PROPERTY E
+    ON E.PROJECT_ID = A.PID
+    LEFT JOIN V_HOUSE_NAME EH ON EH.PROJECT_ID = A.PID
+ INNER JOIN CUS_ACCT F
+    ON A.ACCT_ID = F.PID
+ INNER JOIN CUS_PERSON G
+    ON G.ACCT_ID = F.PID
+   AND G.RELATION_TYPE = 1
+  LEFT JOIN BIZ_LOAN_FINANCE_HANDLE I
+    ON I.PROJECT_ID = A.PID
+  LEFT JOIN BIZ_PROJECT_GUARANTEE J
+    ON A.PID = J.PROJECT_ID
+  LEFT JOIN BIZ_PRODUCT K
+    ON A.PRODUCT_ID = K.PID
+	]]>
+	<where>
+		<trim>
+			<if test="1==1">
+				AND A.PROJECT_TYPE !=4
+			</if>
+		   <if test="userIds!=null and userIds.size()>0">
+				AND A.PM_USER_ID IN
+				<foreach item="itemId" collection="userIds" open="("
+					separator="," close=")">
+					#{itemId}
+				</foreach>
+			</if>
+			<if test="type==2">
+				AND B.APPLY_STATUS IS NOT NULL
+			</if>
+			<if test="specialType !=null and specialType >0">
+				AND B.SPECIAL_TYPE = #{specialType}
+			</if>
+			<if test="projectName!=null and projectName !=''">
+				AND A.PROJECT_NAME LIKE '%${projectName}%'
+			</if>
+			<if test="customerName and customerName !=''">
+				AND G.CHINA_NAME LIKE '%${customerName}%'
+			</if>
+			<if test="oldHome and oldHome !=''">
+				AND E.SELLER_NAME LIKE '%${oldHome}%'
+			</if>
+			<if test="projectNumber!=null and projectNumber!=''">
+				AND A.PROJECT_NUMBER LIKE '%${projectNumber}%'
+			</if>
+			<if test="houseName !=null and houseName !=''">
+			     AND EH.HOUSE_NAME LIKE '%${houseName}%'
+		    </if>
+		    <if test="buyerName !=null and buyerName !=''">
+			     AND E.BUYER_NAME LIKE '%${buyerName}%'
+		    </if>
+		    <if test="sellerName !=null and sellerName !=''">
+			     AND E.SELLER_NAME LIKE '%${sellerName}%'
+		    </if>
+			<if test="recStatus !=null and recStatus >0">
+				AND C.REC_STATUS = #{recStatus}
+			</if>
+			<if test="productId !=null and productId >0">
+				AND K.PID = #{productId}
+			</if>
+			<if test="projectId !=null and projectId >0">
+				AND A.PID = #{projectId}
+			</if>
+		</trim>
+	</where>
+	ORDER BY A.REQUEST_DTTM DESC
+	<![CDATA[
+	) T
+	WHERE ROWNUM <=#{page}*#{rows}
+	) D
+	WHERE D.RN > ((#{page}-1)*#{rows})
+	]]>
+</select>
+<!-- 根据条件查询中途划转列表总数 -->
+<select id="getIntermediateTransferRequestIndexTotal" resultType="Integer" parameterType="intermediateTransferIndexDTO">
+	<![CDATA[
+	SELECT COUNT(1) FROM
+			( SELECT 
+       A.PID
+  FROM BIZ_PROJECT A
+  LEFT JOIN BIZ_INTERMEDIATE_TRANSFER B
+    ON A.PID = B.PROJECT_ID
+    LEFT JOIN V_HOUSE_NAME EH ON EH.PROJECT_ID = A.PID
+  LEFT JOIN BIZ_LOAN_HANDLE_INFO C
+    ON A.PID = C.PROJECT_ID
+  LEFT JOIN BIZ_PROJECT_PROPERTY E
+    ON E.PROJECT_ID = A.PID
+ INNER JOIN CUS_ACCT F
+    ON A.ACCT_ID = F.PID
+ INNER JOIN CUS_PERSON G
+    ON G.ACCT_ID = F.PID
+   AND G.RELATION_TYPE = 1
+  LEFT JOIN BIZ_LOAN_FINANCE_HANDLE I
+    ON I.PROJECT_ID = A.PID
+  LEFT JOIN BIZ_PROJECT_GUARANTEE J
+    ON A.PID = J.PROJECT_ID
+  LEFT JOIN BIZ_PRODUCT K
+    ON A.PRODUCT_ID = K.PID
+	]]>
+	<where>
+		<trim>
+		  <if test="1==1">
+				AND A.PROJECT_TYPE !=4
+		  </if>
+		  <if test="userIds!=null and userIds.size()>0">
+				AND A.PM_USER_ID IN
+				<foreach item="itemId" collection="userIds" open="("
+					separator="," close=")">
+					#{itemId}
+				</foreach>
+			</if>
+			<if test="type==2">
+				AND B.APPLY_STATUS IS NOT NULL
+			</if>
+			<if test="specialType !=null and specialType >0">
+				AND B.SPECIAL_TYPE = #{specialType}
+			</if>
+			<if test="projectName!=null and projectName !=''">
+				AND A.PROJECT_NAME LIKE '%${projectName}%'
+			</if>
+			<if test="customerName and customerName !=''">
+				AND G.CHINA_NAME LIKE '%${customerName}%'
+			</if>
+			<if test="oldHome and oldHome !=''">
+				AND E.SELLER_NAME LIKE '%${oldHome}%'
+			</if>
+			<if test="projectNumber!=null and projectNumber!=''">
+				AND A.PROJECT_NUMBER LIKE '%${projectNumber}%'
+			</if>
+			<if test="houseName !=null and houseName !=''">
+			     AND EH.HOUSE_NAME LIKE '%${houseName}%'
+		    </if>
+		    <if test="buyerName !=null and buyerName !=''">
+			     AND E.BUYER_NAME LIKE '%${buyerName}%'
+		    </if>
+		    <if test="sellerName !=null and sellerName !=''">
+			     AND E.SELLER_NAME LIKE '%${sellerName}%'
+		    </if>
+			<if test="recStatus !=null and recStatus >0">
+				AND C.REC_STATUS = #{recStatus}
+			</if>
+			<if test="productId !=null and productId >0">
+				AND K.PID = #{productId}
+			</if>
+			<if test="projectId !=null and projectId >0">
+				AND A.PID = #{projectId}
+			</if>
+		</trim>
+	</where>
+	) T
+</select>
+<select id="queryIntermediateTransferIndex" resultMap="intermediateTransferIndexMap" parameterType="intermediateTransferIndexDTO">
+	<![CDATA[
+	SELECT D.* FROM (SELECT T.*, ROWNUM RN
+	        FROM ( SELECT 
+       A.PID AS PROJECT_ID,
+       A.PROJECT_NUMBER,
+       A.PROJECT_NAME,
+       A.IS_CHECHAN,
+       A.PM_USER_ID,
+       TO_CHAR(A.REQUEST_DTTM, 'yyyy-MM-dd') AS REQUEST_DATE,
+       CASE
+         WHEN C.APPLY_HANDLE_STATUS > 0 THEN
+          C.APPLY_HANDLE_STATUS
+         ELSE
+          1
+       END AS APPLY_HANDLE_STATUS,
+       CASE
+         WHEN C.REC_STATUS > 0 THEN
+          C.REC_STATUS
+         ELSE
+          1
+       END AS REC_STATUS,
+       E.SELLER_NAME AS OLD_HOME,
+       EH.HOUSE_NAME,
+       E.BUYER_NAME,
+       E.SELLER_NAME,
+       G.CHINA_NAME AS CUSTOMER_NAME,
+       A.CANCEL_GUARANTEE_DATE,
+       TO_CHAR(I.CREATER_DATE,'yyyy-MM-dd') AS PROJECT_PASS_DATE,
+       J.LOAN_MONEY,
+       K.PID AS PRODUCT_ID,
+       K.PRODUCT_TYPE,
+       K.PRODUCT_NAME,
+       (SELECT SUM(AFH.REC_MONEY)
+          FROM BIZ_LOAN_APPLY_FINANCE_HANDLE AFH
+         WHERE AFH.FINANCE_HANDLE_ID = I.PID
+           AND AFH.REC_PRO IN (3, 4, 5, 6)) AS REAL_LOAN
+  FROM BIZ_PROJECT A
+  LEFT JOIN BIZ_LOAN_HANDLE_INFO C
+    ON A.PID = C.PROJECT_ID
+  LEFT JOIN BIZ_PROJECT_PROPERTY E
+    ON E.PROJECT_ID = A.PID
+ INNER JOIN CUS_ACCT F
+    ON A.ACCT_ID = F.PID
+ INNER JOIN CUS_PERSON G
+    ON G.ACCT_ID = F.PID
+   AND G.RELATION_TYPE = 1
+  LEFT JOIN BIZ_LOAN_FINANCE_HANDLE I
+    ON I.PROJECT_ID = A.PID
+  LEFT JOIN BIZ_PROJECT_GUARANTEE J
+    ON A.PID = J.PROJECT_ID
+  LEFT JOIN BIZ_PRODUCT K
+    ON A.PRODUCT_ID = K.PID
+    LEFT JOIN V_HOUSE_NAME EH ON EH.PROJECT_ID = A.PID
+	]]>
+	<where>
+		<trim>
+			<if test="1==1">
+				AND A.PROJECT_TYPE !=4 
+				AND A.PID NOT IN (SELECT IT.PROJECT_ID FROM BIZ_INTERMEDIATE_TRANSFER IT
+                      WHERE IT.APPLY_STATUS IN (2, 3, 4))
+			</if>
+		   <if test="userIds!=null and userIds.size()>0">
+				AND A.PM_USER_ID IN
+				<foreach item="itemId" collection="userIds" open="("
+					separator="," close=")">
+					#{itemId}
+				</foreach>
+			</if>
+			<if test="projectName!=null and projectName !=''">
+				AND A.PROJECT_NAME LIKE '%${projectName}%'
+			</if>
+			<if test="customerName and customerName !=''">
+				AND G.CHINA_NAME LIKE '%${customerName}%'
+			</if>
+			<if test="oldHome and oldHome !=''">
+				AND E.SELLER_NAME LIKE '%${oldHome}%'
+			</if>
+			<if test="projectNumber!=null and projectNumber!=''">
+				AND A.PROJECT_NUMBER LIKE '%${projectNumber}%'
+			</if>
+			<if test="houseName !=null and houseName !=''">
+			     AND EH.HOUSE_NAME LIKE '%${houseName}%'
+		    </if>
+		    <if test="buyerName !=null and buyerName !=''">
+			     AND E.BUYER_NAME LIKE '%${buyerName}%'
+		    </if>
+		    <if test="sellerName !=null and sellerName !=''">
+			     AND E.SELLER_NAME LIKE '%${sellerName}%'
+		    </if>
+			<if test="recStatus !=null and recStatus >0">
+				AND C.REC_STATUS = #{recStatus}
+			</if>
+			<if test="productId !=null and productId >0">
+				AND K.PID = #{productId}
+			</if>
+			<if test="projectId !=null and projectId >0">
+				AND A.PID = #{projectId}
+			</if>
+		</trim>
+	</where>
+	<![CDATA[
+	ORDER BY A.REQUEST_DTTM DESC
+	) T
+	WHERE ROWNUM <=#{page}*#{rows}
+	) D
+	WHERE D.RN > ((#{page}-1)*#{rows})
+	]]>
+</select>
+<!-- 根据条件查询中途划转列表总数 -->
+<select id="getIntermediateTransferIndexTotal" resultType="Integer" parameterType="intermediateTransferIndexDTO">
+	<![CDATA[
+	SELECT COUNT(1) FROM
+			( SELECT 
+       A.PID
+  FROM BIZ_PROJECT A
+  LEFT JOIN BIZ_LOAN_HANDLE_INFO C
+    ON A.PID = C.PROJECT_ID
+  LEFT JOIN BIZ_PROJECT_PROPERTY E
+    ON E.PROJECT_ID = A.PID
+ INNER JOIN CUS_ACCT F
+    ON A.ACCT_ID = F.PID
+ INNER JOIN CUS_PERSON G
+    ON G.ACCT_ID = F.PID
+   AND G.RELATION_TYPE = 1
+  LEFT JOIN BIZ_LOAN_FINANCE_HANDLE I
+    ON I.PROJECT_ID = A.PID
+  LEFT JOIN BIZ_PROJECT_GUARANTEE J
+    ON A.PID = J.PROJECT_ID
+  LEFT JOIN BIZ_PRODUCT K
+    ON A.PRODUCT_ID = K.PID
+    LEFT JOIN V_HOUSE_NAME EH ON EH.PROJECT_ID = A.PID
+	]]>
+	<where>
+		<trim>
+		  <if test="1==1">
+				AND A.PROJECT_TYPE !=4
+				AND A.PID NOT IN (SELECT IT.PROJECT_ID FROM BIZ_INTERMEDIATE_TRANSFER IT
+                      WHERE IT.APPLY_STATUS IN (2, 3, 4))
+		  </if>
+		  <if test="userIds!=null and userIds.size()>0">
+				AND A.PM_USER_ID IN
+				<foreach item="itemId" collection="userIds" open="("
+					separator="," close=")">
+					#{itemId}
+				</foreach>
+			</if>
+			<if test="projectName!=null and projectName !=''">
+				AND A.PROJECT_NAME LIKE '%${projectName}%'
+			</if>
+			<if test="customerName and customerName !=''">
+				AND G.CHINA_NAME LIKE '%${customerName}%'
+			</if>
+			<if test="oldHome and oldHome !=''">
+				AND E.SELLER_NAME LIKE '%${oldHome}%'
+			</if>
+			<if test="projectNumber!=null and projectNumber!=''">
+				AND A.PROJECT_NUMBER LIKE '%${projectNumber}%'
+			</if>
+			<if test="houseName !=null and houseName !=''">
+			     AND EH.HOUSE_NAME LIKE '%${houseName}%'
+		    </if>
+		    <if test="buyerName !=null and buyerName !=''">
+			     AND E.BUYER_NAME LIKE '%${buyerName}%'
+		    </if>
+		    <if test="sellerName !=null and sellerName !=''">
+			     AND E.SELLER_NAME LIKE '%${sellerName}%'
+		    </if>
+			<if test="recStatus !=null and recStatus >0">
+				AND C.REC_STATUS = #{recStatus}
+			</if>
+			<if test="productId !=null and productId >0">
+				AND K.PID = #{productId}
+			</if>
+			<if test="projectId !=null and projectId >0">
+				AND A.PID = #{projectId}
+			</if>
+		</trim>
+	</where>
+	) T
+</select>
+<!-- 根据项目id和状态（查询的条件为>=状态值） 检查是否有工作流在运行,返回值大于0则有工作流运行 -->
+<select id="checkWorkFlowExist" resultType="Integer" parameterType="intermediateTransferDTO">
+SELECT COUNT(1)
+  FROM BIZ_INTERMEDIATE_TRANSFER A
+  WHERE A.PROJECT_ID =#{projectId}
+      AND A.APPLY_STATUS between #{applyStatus} and 4
+  
+</select>
+</mapper>

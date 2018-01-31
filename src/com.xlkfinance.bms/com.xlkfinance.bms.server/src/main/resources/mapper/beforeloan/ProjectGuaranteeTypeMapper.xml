@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.beforeloan.mapper.ProjectGuaranteeTypeMapper">
+	<resultMap id="ProjectGuaranteeTypeResultMap" type="com.xlkfinance.bms.rpc.beforeloan.ProjectGuaranteeType">
+		<id column="PID" property="pid"/>
+		<result column="PROJECT_ID" property="projectId"/>
+		<result column="GUARANTEE_TYPE" property="guaranteeType"/>
+		<result column="guaranteeTypeText" property="guaranteeTypeText"/>
+		<result column="STATUS" property="status"/>
+	</resultMap>
+    
+    <!-- 根据项目ID查询担保方式 -->
+    <select id="getProjectGuaranteeTypeByProjectId" resultMap="ProjectGuaranteeTypeResultMap" parameterType="java.lang.Integer">
+		SELECT pgt.PID,pgt.PROJECT_ID,pgt.GUARANTEE_TYPE,pgt.STATUS,
+       (SELECT lv.lookup_desc  FROM Sys_Lookup_Val lv WHERE lv.pid = pgt.guarantee_type) guaranteeTypeText
+		FROM BIZ_PROJECT_GUARANTEE_TYPE pgt
+		WHERE pgt.status = 1
+		AND PROJECT_ID = #{projectId} 
+  	</select>
+	
+	<!-- 添加担保方式 -->
+	<insert id="insert" parameterType="com.xlkfinance.bms.rpc.beforeloan.ProjectGuaranteeType">
+		<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+			SELECT SEQ_BIZ_PROJECT_GUARANTEE_TYPE.Nextval as PID from DUAL
+		</selectKey>
+		
+		INSERT INTO BIZ_PROJECT_GUARANTEE_TYPE
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			PID,
+			<if test="projectId != null and projectId != -1 ">
+				PROJECT_ID,
+			</if>
+			<if test="guaranteeType != null and guaranteeType != '' ">
+				GUARANTEE_TYPE,
+			</if>
+			<if test="status != null and status != -1 ">
+				STATUS,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+				#{pid},
+			<if test="projectId != null and projectId != -1 ">
+				#{projectId},
+			</if>
+			<if test="guaranteeType != null and guaranteeType != '' ">
+				#{guaranteeType},
+			</if>
+			<if test="status != null and status != -1 ">
+				#{status},
+			</if>
+		</trim>
+	</insert>
+	
+	<!-- 根据项目ID删除当前项目的所有担保方式 -->
+	<delete id="deleteProjectGuaranteeTypeByProjectId" parameterType="java.lang.Integer">
+        DELETE BIZ_PROJECT_GUARANTEE_TYPE 
+        WHERE PROJECT_ID = #{projectId} 
+	</delete>
+</mapper>

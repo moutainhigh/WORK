@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.beforeloan.mapper.ProjectPublicManMapper">
+	<resultMap id="ProjectPublicManResultMap" type="com.xlkfinance.bms.rpc.beforeloan.ProjectPublicMan">
+		<id column="PID" property="pid" />
+		<result column="PROJECT_ID" property="projectId" />
+		<result column="PERSON_ID" property="personId" />
+		<result column="STATUS" property="status" />
+	</resultMap>
+	
+	<!-- 查询共同借款人 -->
+	<select id="getAllProjectPublicMan" resultMap="ProjectPublicManResultMap" parameterType="java.lang.Integer">
+		SELECT PID, PROJECT_ID, PERSON_ID, STATUS
+		FROM BIZ_PROJECT_PUBLIC_MAN 
+		WHERE PROJECT_ID = #{projectId}	
+	</select>
+	
+	<!-- 根据项目ID和共同借款人ID查询是否当前项目存在当前共同借款人 -->
+	<select id="getCountByPersonIdAndProjectId" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+		SELECT count(*)
+		FROM BIZ_PROJECT_PUBLIC_MAN
+		WHERE PROJECT_ID = #{projectId}	
+		AND PERSON_ID = #{personId}
+	</select>
+	
+	<!-- 批量删除共同借款人 -->
+	<delete id="batchDelete" parameterType="java.lang.String">
+		DELETE BIZ_PROJECT_PUBLIC_MAN 
+		WHERE PID in 
+		<foreach item="idItem" collection="array" open="(" separator="," close=")">
+			#{idItem}
+		</foreach>
+	</delete>
+	
+	<!-- 添加共同借款人 -->
+	<insert id="insert" parameterType="com.xlkfinance.bms.rpc.beforeloan.ProjectPublicMan">
+		<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+			SELECT SEQ_BIZ_PROJECT_PUBLIC_MAN.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_PROJECT_PUBLIC_MAN
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			PID,
+			<if test="projectId != null and projectId != -1 ">
+				PROJECT_ID,
+			</if>
+			<if test="personId != null and personId != -1 ">
+				PERSON_ID,
+			</if>
+			<if test="status != null and status != -1 ">
+				STATUS,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+				#{pid},
+			<if test="projectId != null and projectId != -1 ">
+				#{projectId},
+			</if>
+			<if test="personId != null and personId != -1 ">
+				#{personId},
+			</if>
+			<if test="status != null and status != -1 ">
+				#{status},
+			</if>
+		</trim>
+	</insert>
+	
+	
+	<delete id="deleteByProjectId" parameterType="java.lang.Integer">
+		DELETE BIZ_PROJECT_PUBLIC_MAN 
+		WHERE PROJECT_ID =  #{projectId}
+	</delete>
+</mapper>

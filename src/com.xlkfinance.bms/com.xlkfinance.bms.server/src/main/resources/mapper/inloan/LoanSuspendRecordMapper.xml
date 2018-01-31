@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xlkfinance.bms.server.inloan.mapper.LoanSuspendRecordMapper">
+	<resultMap id="loanSuspendRecordMap" type="com.xlkfinance.bms.rpc.inloan.LoanSuspendRecord">
+		<id property="pid" column="PID" />
+		<id property="projectId" column="PROJECT_ID" />
+		<id property="startDate" column="START_DATE" />
+		<id property="endDate" column="END_DATE" />
+		<id property="suspendDay" column="SUSPEND_DAY" />
+		<id property="remark" column="REMARK" />
+		<id property="createrId" column="CREATER_ID" />
+		<id property="createrDate" column="CREATER_DATE" />
+	</resultMap>
+	<sql id="column_list">
+        PID,PROJECT_ID,TO_CHAR(START_DATE,'YYYY-MM-DD') AS START_DATE,TO_CHAR(END_DATE,'YYYY-MM-DD') AS END_DATE,SUSPEND_DAY,REMARK,CREATER_ID,CREATER_DATE
+	</sql>
+	<!-- 查询所有 -->
+	<select id="getAll" resultMap="loanSuspendRecordMap" parameterType="com.xlkfinance.bms.rpc.inloan.LoanSuspendRecord">
+		SELECT
+		<include refid="column_list" />
+		FROM BIZ_LOAN_SUSPEND_RECORD
+		<where>
+			<trim>
+		      <if test="pid != null and pid >0">
+	          PID=#{pid}
+	          </if>
+		      <if test="projectId != null and projectId >0">
+	          AND PROJECT_ID=#{projectId}
+	          </if>
+		      <if test="startDate != null and startDate !=''">
+	          AND START_DATE=#{startDate}
+	          </if>
+		      <if test="endDate != null and endDate !=''">
+	          AND END_DATE=#{endDate}
+	          </if>
+		      <if test="suspendDay != null and suspendDay >0">
+	          AND SUSPEND_DAY=#{suspendDay}
+	          </if>
+		      <if test="createrId != null and createrId >0">
+	          AND CREATER_ID=#{createrId}
+	          </if>
+		      <if test="createrDate != null and createrDate !=''">
+	          AND CREATER_DATE=#{createrDate}
+	          </if>
+			</trim>
+		</where>
+	</select>
+	<!-- 根据id获取 -->
+	<select id="getById" resultMap="loanSuspendRecordMap">
+		SELECT <include refid="column_list" /> FROM BIZ_LOAN_SUSPEND_RECORD WHERE PID=#{pid}
+	</select>
+	<!-- 插入一条数据 -->
+	<insert id="insert" parameterType="com.xlkfinance.bms.rpc.inloan.LoanSuspendRecord">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_LOANS_SUSPEND_RECORD.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_LOAN_SUSPEND_RECORD
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+				PID,
+			</if>
+		    <if test="projectId != null and projectId >0">
+				PROJECT_ID,
+			</if>
+		    <if test="startDate != null and startDate !=''">
+				START_DATE,
+			</if>
+		    <if test="endDate != null and endDate !=''">
+				END_DATE,
+			</if>
+		    <if test="suspendDay != null and suspendDay >0">
+				SUSPEND_DAY,
+			</if>
+		    <if test="remark != null and remark !=''">
+				REMARK,
+			</if>
+		    <if test="createrId != null and createrId >0">
+				CREATER_ID,
+			</if>
+				CREATER_DATE
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+		    #{pid},
+			</if>
+		    <if test="projectId != null and projectId >0">
+		    #{projectId},
+			</if>
+		    <if test="startDate != null and startDate !=''">
+		    #{startDate,jdbcType= DATE,javaType= java.lang.String},
+			</if>
+		    <if test="endDate != null and endDate !=''">
+		    #{endDate,jdbcType= DATE,javaType= java.lang.String},
+			</if>
+		    <if test="suspendDay != null and suspendDay >0">
+		    #{suspendDay},
+			</if>
+			<if test="remark != null and remark !=''">
+			#{remark},
+			</if>
+		    <if test="createrId != null and createrId >0">
+		    #{createrId},
+			</if>
+		    SYSDATE
+		</trim>
+	</insert>
+</mapper>

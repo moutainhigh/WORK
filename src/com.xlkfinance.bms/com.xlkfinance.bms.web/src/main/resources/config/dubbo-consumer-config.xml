@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:cache="http://www.springframework.org/schema/cache"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans-3.0.xsd 
+						http://www.springframework.org/schema/tx 
+						http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+						http://www.springframework.org/schema/aop 
+						http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+						http://www.springframework.org/schema/util
+						http://www.springframework.org/schema/util/spring-util-3.0.xsd
+						http://www.springframework.org/schema/cache
+						http://www.springframework.org/schema/cache/spring-cache.xsd
+						http://www.springframework.org/schema/context 
+						http://www.springframework.org/schema/context/spring-context-3.0.xsd 
+						http://www.springframework.org/schema/mvc 
+						http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+						http://code.alibabatech.com/schema/dubbo  
+        				http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+ 
+ 	 <!-- 消费方应用名，用于计算依赖关系，不是匹配条件，不要与提供方一样 -->  
+    <dubbo:application name="qfang-data-facade-consumer" />
+	<!-- 测试环境-->
+    <!-- <dubbo:registry  protocol="zookeeper" address="192.168.0.56:2181" check="false"/> -->
+	<!-- 正式环境-->
+    <dubbo:registry  protocol="zookeeper" address="10.251.92.138:2181,10.251.92.139:2181,10.251.92.140:2181" check="false" />
+	<!-- 生成远程服务代理 -->  
+	
+	<!-- 楼盘查询 -->
+    <dubbo:reference id="gardenFacade" interface="com.qfang.data.facade.GardenFacade"  check="false" /> 
+    <!-- 楼栋/单元查询 -->
+    <dubbo:reference id="buildingFacade" interface="com.qfang.data.facade.BuildingFacade" check="false"  /> 
+    <!-- 楼层查询-->
+    <dubbo:reference id="floorFacade" interface="com.qfang.data.facade.FloorFacade" check="false"  /> 
+    <!-- 房号查询-->
+    <dubbo:reference id="roomFacade" interface="com.qfang.data.facade.RoomFacade" check="false"  /> 
+    <!-- 房产估价查询-->
+    <dubbo:reference id="evaluationHousePriceGuidingFacade" interface="com.qfang.data.facade.EvaluationHousePriceGuidingFacade" check="false"  /> 
+
+ 
+</beans>

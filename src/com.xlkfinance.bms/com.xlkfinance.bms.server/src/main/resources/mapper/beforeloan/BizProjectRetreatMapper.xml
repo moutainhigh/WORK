@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xlkfinance.bms.server.beforeloan.mapper.BizProjectRetreatMapper">
+	<resultMap id="bizProjectRetreatMap" type="com.xlkfinance.bms.rpc.beforeloan.BizProjectRetreat">
+		<id property="pid" column="PID" />
+		<id property="oldProjectId" column="OLD_PROJECT_ID" />
+		<id property="newProjectId" column="NEW_PROJECT_ID" />
+		<id property="retreatUserId" column="RETREAT_USER_ID" />
+		<id property="retreatTime" column="RETREAT_TIME" />
+	</resultMap>
+	<sql id="column_list">
+        PID,OLD_PROJECT_ID,NEW_PROJECT_ID,RETREAT_USER_ID,RETREAT_TIME
+	</sql>
+	<!-- 查询所有 -->
+	<select id="getAll" resultMap="bizProjectRetreatMap" parameterType="com.xlkfinance.bms.rpc.beforeloan.BizProjectRetreat">
+		SELECT
+		<include refid="column_list" />
+		FROM BIZ_PROJECT_RETREAT
+		<where>
+			<trim>
+		      <if test="pid != null and pid >0">
+	          PID=#{pid}
+	          </if>
+		      <if test="oldProjectId != null and oldProjectId >0">
+	          AND OLD_PROJECT_ID=#{oldProjectId}
+	          </if>
+		      <if test="newProjectId != null and newProjectId >0">
+	          AND NEW_PROJECT_ID=#{newProjectId}
+	          </if>
+		      <if test="retreatUserId != null and retreatUserId >0">
+	          AND RETREAT_USER_ID=#{retreatUserId}
+	          </if>
+		      <if test="retreatTime != null and retreatTime !=''">
+	          AND RETREAT_TIME=#{retreatTime}
+	          </if>
+			</trim>
+		</where>
+	</select>
+	<!-- 根据id获取 -->
+	<select id="getById" resultMap="bizProjectRetreatMap">
+		SELECT <include refid="column_list" /> FROM BIZ_PROJECT_RETREAT WHERE PID=#{pid}
+	</select>
+	<!-- 插入一条数据 -->
+	<insert id="insert" parameterType="com.xlkfinance.bms.rpc.beforeloan.BizProjectRetreat">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_BIZ_PROJECT_RETREAT.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_PROJECT_RETREAT
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+				PID,
+			</if>
+		    <if test="oldProjectId != null and oldProjectId >0">
+				OLD_PROJECT_ID,
+			</if>
+		    <if test="newProjectId != null and newProjectId >0">
+				NEW_PROJECT_ID,
+			</if>
+		    <if test="retreatUserId != null and retreatUserId >0">
+				RETREAT_USER_ID,
+			</if>
+				RETREAT_TIME,
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+		    #{pid},
+			</if>
+		    <if test="oldProjectId != null and oldProjectId >0">
+		    #{oldProjectId},
+			</if>
+		    <if test="newProjectId != null and newProjectId >0">
+		    #{newProjectId},
+			</if>
+		    <if test="retreatUserId != null and retreatUserId >0">
+		    #{retreatUserId},
+			</if>
+		    SYSDATE,
+		</trim>
+	</insert>
+
+	<!-- 根据id更新数据 -->
+		<update id="update" parameterType="com.xlkfinance.bms.rpc.beforeloan.BizProjectRetreat">
+		UPDATE BIZ_PROJECT_RETREAT
+		<set>
+		    <if test="pid != null and pid >0">
+		     PID=#{pid},
+			</if>
+		    <if test="oldProjectId != null and oldProjectId >0">
+		     OLD_PROJECT_ID=#{oldProjectId},
+			</if>
+		    <if test="newProjectId != null and newProjectId >0">
+		     NEW_PROJECT_ID=#{newProjectId},
+			</if>
+		    <if test="retreatUserId != null and retreatUserId >0">
+		     RETREAT_USER_ID=#{retreatUserId},
+			</if>
+		    <if test="retreatTime != null and retreatTime !=''">
+		     RETREAT_TIME=#{retreatTime,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		</set>
+		WHERE PID = #{pid}
+	</update>
+
+</mapper>

@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xlkfinance.bms.server.aom.org.mapper.OrgAdditionalCooperationInfMapper">
+	<resultMap id="orgAdditionalCooperationInfMap" type="com.qfang.xk.aom.rpc.org.OrgAdditionalCooperationInf">
+		<id property="pid" column="PID" />
+		<id property="cooperationId" column="COOPERATION_ID" />
+		<id property="contractNo" column="CONTRACT_NO" />
+		<id property="contractUrl" column="CONTRACT_URL" />
+		<id property="creditContractId" column="CREDIT_CONTRACT_ID" />
+		<id property="creditContractUrl" column="CREDIT_CONTRACT_URL" />
+		<id property="guranteeNo" column="GURANTEE_NO" />
+		<id property="guranteePath" column="GURANTEE_PATH" />
+		<id property="creatorId" column="CREATOR_ID" />
+		<id property="createdDatetime" column="CREATED_DATETIME" />
+		<id property="updateId" column="UPDATE_ID" />
+		<id property="updateDate" column="UPDATE_DATE" />
+		<id property="remark" column="REMARK" />
+	</resultMap>
+	<sql id="column_list">
+        PID,COOPERATION_ID,CONTRACT_NO,CONTRACT_URL,CREDIT_CONTRACT_ID,CREDIT_CONTRACT_URL,GURANTEE_NO,GURANTEE_PATH,CREATOR_ID,CREATED_DATETIME,UPDATE_ID,UPDATE_DATE,REMARK
+	</sql>
+	<!-- 查询所有 -->
+	<select id="getAll" resultMap="orgAdditionalCooperationInfMap" parameterType="com.qfang.xk.aom.rpc.org.OrgAdditionalCooperationInf">
+		SELECT
+		<include refid="column_list" />
+		FROM ORG_ADDITIONAL_COOPERATION_INF
+		<where>
+			<trim>
+		      <if test="pid != null and pid >0">
+	          PID=#{pid}
+	          </if>
+		      <if test="cooperationId != null and cooperationId >0">
+	          AND COOPERATION_ID=#{cooperationId}
+	          </if>
+		      <if test="contractNo != null and contractNo !=''">
+	          AND CONTRACT_NO=#{contractNo}
+	          </if>
+		      <if test="contractUrl != null and contractUrl !=''">
+	          AND CONTRACT_URL=#{contractUrl}
+	          </if>
+		      <if test="creditContractId != null and creditContractId !=''">
+	          AND CREDIT_CONTRACT_ID=#{creditContractId}
+	          </if>
+		      <if test="creditContractUrl != null and creditContractUrl !=''">
+	          AND CREDIT_CONTRACT_URL=#{creditContractUrl}
+	          </if>
+		      <if test="guranteeNo != null and guranteeNo !=''">
+	          AND GURANTEE_NO=#{guranteeNo}
+	          </if>
+		      <if test="guranteePath != null and guranteePath !=''">
+	          AND GURANTEE_PATH=#{guranteePath}
+	          </if>
+		      <if test="creatorId != null and creatorId >0">
+	          AND CREATOR_ID=#{creatorId}
+	          </if>
+		      <if test="createdDatetime != null and createdDatetime !=''">
+	          AND CREATED_DATETIME=#{createdDatetime}
+	          </if>
+		      <if test="updateId != null and updateId >0">
+	          AND UPDATE_ID=#{updateId}
+	          </if>
+		      <if test="updateDate != null and updateDate !=''">
+	          AND UPDATE_DATE=#{updateDate}
+	          </if>
+		      <if test="remark != null and remark !=''">
+	          AND REMARK=#{remark}
+	          </if>
+			</trim>
+		</where>
+	</select>
+	<!-- 根据id获取 -->
+	<select id="getById" resultMap="orgAdditionalCooperationInfMap">
+		SELECT <include refid="column_list" /> FROM ORG_ADDITIONAL_COOPERATION_INF WHERE PID=#{pid}
+	</select>
+	<!-- 插入一条数据 -->
+	<insert id="insert" parameterType="com.qfang.xk.aom.rpc.org.OrgAdditionalCooperationInf">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_ORG_ADDITIONAL_COOPERATION.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO ORG_ADDITIONAL_COOPERATION_INF
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+				PID,
+			</if>
+		    <if test="cooperationId != null and cooperationId >0">
+				COOPERATION_ID,
+			</if>
+		    <if test="contractNo != null and contractNo !=''">
+				CONTRACT_NO,
+			</if>
+		    <if test="contractUrl != null and contractUrl !=''">
+				CONTRACT_URL,
+			</if>
+		    <if test="creditContractId != null and creditContractId !=''">
+				CREDIT_CONTRACT_ID,
+			</if>
+		    <if test="creditContractUrl != null and creditContractUrl !=''">
+				CREDIT_CONTRACT_URL,
+			</if>
+		    <if test="guranteeNo != null and guranteeNo !=''">
+				GURANTEE_NO,
+			</if>
+		    <if test="guranteePath != null and guranteePath !=''">
+				GURANTEE_PATH,
+			</if>
+		    <if test="creatorId != null and creatorId >0">
+				CREATOR_ID,
+			</if>
+				CREATED_DATETIME,
+		    <if test="remark != null and remark !=''">
+				REMARK,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+		    #{pid},
+			</if>
+		    <if test="cooperationId != null and cooperationId >0">
+		    #{cooperationId},
+			</if>
+		    <if test="contractNo != null and contractNo !=''">
+		    #{contractNo},
+			</if>
+		    <if test="contractUrl != null and contractUrl !=''">
+		    #{contractUrl},
+			</if>
+		    <if test="creditContractId != null and creditContractId !=''">
+		    #{creditContractId},
+			</if>
+		    <if test="creditContractUrl != null and creditContractUrl !=''">
+		    #{creditContractUrl},
+			</if>
+		    <if test="guranteeNo != null and guranteeNo !=''">
+		    #{guranteeNo},
+			</if>
+		    <if test="guranteePath != null and guranteePath !=''">
+		    #{guranteePath},
+			</if>
+		    <if test="creatorId != null and creatorId >0">
+		    #{creatorId},
+			</if>
+		    SYSDATE,
+		    <if test="remark != null and remark !=''">
+		    #{remark},
+			</if>
+		</trim>
+	</insert>
+	<!-- 根据id更新数据 -->
+		<update id="update" parameterType="com.qfang.xk.aom.rpc.org.OrgAdditionalCooperationInf">
+		UPDATE ORG_ADDITIONAL_COOPERATION_INF
+		<set>
+		    <if test="contractNo != null and contractNo !=''">
+		     CONTRACT_NO=#{contractNo},
+			</if>
+		    <if test="contractUrl != null and contractUrl !=''">
+		     CONTRACT_URL=#{contractUrl},
+			</if>
+		    <if test="creditContractId != null and creditContractId !=''">
+		     CREDIT_CONTRACT_ID=#{creditContractId},
+			</if>
+		    <if test="creditContractUrl != null and creditContractUrl !=''">
+		     CREDIT_CONTRACT_URL=#{creditContractUrl},
+			</if>
+		    <if test="guranteeNo != null and guranteeNo !=''">
+		     GURANTEE_NO=#{guranteeNo},
+			</if>
+		    <if test="guranteePath != null and guranteePath !=''">
+		     GURANTEE_PATH=#{guranteePath},
+			</if>
+		    <if test="updateId != null and updateId >0">
+		     UPDATE_ID=#{updateId},
+			</if>
+		     UPDATE_DATE=SYSDATE,
+		    <if test="remark != null and remark !=''">
+		     REMARK=#{remark},
+			</if>
+		</set>
+		WHERE PID = #{pid}
+	</update>
+</mapper>

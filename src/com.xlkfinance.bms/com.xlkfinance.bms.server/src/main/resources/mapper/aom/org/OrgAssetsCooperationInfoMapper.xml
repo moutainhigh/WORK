@@ -1,0 +1,488 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xlkfinance.bms.server.aom.org.mapper.OrgAssetsCooperationInfoMapper">
+	<resultMap id="orgAssetsCooperationInfoMap" type="com.qfang.xk.aom.rpc.org.OrgAssetsCooperationInfo">
+		<id property="pid" column="PID" />
+		<id property="orgName" column="ORG_NAME" />
+		<id property="code" column="CODE" />
+		<id property="address" column="ADDRESS" />
+		<id property="email" column="EMAIL" />
+		<id property="contact" column="CONTACT" />
+		<id property="phone" column="PHONE" />
+		<id property="auditStatus" column="AUDIT_STATUS" />
+		<id property="cooperateStatus" column="COOPERATE_STATUS" />
+		<id property="bizAdviserId" column="BIZ_ADVISER_ID" />
+		<id property="partnerId" column="PARTNER_ID" />
+		<id property="level" column="LEVEL" />
+		<id property="creatorId" column="CREATOR_ID" />
+		<id property="createdDate" column="CREATED_DATE" />
+		<id property="updateId" column="UPDATE_ID" />
+		<id property="updateDate" column="UPDATE_DATE" />
+		<id property="remark" column="REMARK" />
+		
+		<id property="loginName" column="LOGIN_NAME" />
+		<id property="partnerName" column="PARTNER_NAME" />
+		<id property="auditDesc" column="AUDIT_DESC" />
+	</resultMap>
+	<!-- 合伙人的客户（机构）列表 -->
+	<resultMap id="partnerOrgIndexMap" type="com.qfang.xk.aom.rpc.org.PartnerOrgIndex">
+		<id property="userName" column="USER_NAME" />
+		<id property="orgId" column="ORG_ID" />
+		<id property="orgName" column="ORG_NAME" />
+		<id property="orgCode" column="ORG_CODE" />
+		<id property="contact" column="CONTACT" />
+		<id property="phone" column="PHONE" />
+		<id property="auditStatus" column="AUDIT_STATUS" />
+		<id property="cooperateStatus" column="COOPERATE_STATUS" />
+		<id property="cooperateApplyStatus" column="COOPERATE_APPLY_STATUS" />
+	</resultMap>
+		<!--城市信息表 -->
+	<resultMap id="orgCooperateCityInfoMap" type="com.qfang.xk.aom.rpc.org.OrgCooperateCityInfo">
+		<id property="areaCode" column="AREA_CODE" />
+		<id property="cityName" column="CITY_NAME" />
+		<id property="provinceCode" column="PROVINCE_CODE" />
+		<id property="provinceName" column="PROVINCE_NAME" />
+		<id property="contact" column="CONTACT" />
+		<id property="phone" column="PHONE" />
+		<id property="remark" column="REMARK" />
+	</resultMap>
+	
+	<sql id="column_list">
+        PID,ORG_NAME,"CODE",ADDRESS,EMAIL,CONTACT,PHONE,AUDIT_STATUS,COOPERATE_STATUS,BIZ_ADVISER_ID,PARTNER_ID,"LEVEL",CREATOR_ID,CREATED_DATE,UPDATE_ID,UPDATE_DATE,REMARK
+	</sql>
+	<!-- 查询所有 -->
+	<select id="getAll" resultMap="orgAssetsCooperationInfoMap" parameterType="com.qfang.xk.aom.rpc.org.OrgAssetsCooperationInfo">
+		SELECT
+		<include refid="column_list" />
+		FROM ORG_ASSETS_COOPERATION_INFO
+		<where>
+			<trim>
+		      <if test="pid != null and pid >0">
+	          PID=#{pid}
+	          </if>
+		      <if test="orgName != null and orgName !=''">
+	          AND ORG_NAME=#{orgName}
+	          </if>
+		      <if test="code != null and code !=''">
+	          AND "CODE"=#{code}
+	          </if>
+		      <if test="address != null and address !=''">
+	          AND ADDRESS=#{address}
+	          </if>
+		      <if test="email != null and email !=''">
+	          AND EMAIL=#{email}
+	          </if>
+		      <if test="contact != null and contact !=''">
+	          AND CONTACT=#{contact}
+	          </if>
+		      <if test="phone != null and phone !=''">
+	          AND PHONE=#{phone}
+	          </if>
+		      <if test="auditStatus != null and auditStatus >0">
+	          AND AUDIT_STATUS=#{auditStatus}
+	          </if>
+		      <if test="cooperateStatus != null and cooperateStatus >0">
+	          AND COOPERATE_STATUS=#{cooperateStatus}
+	          </if>
+		      <if test="bizAdviserId != null and bizAdviserId >0">
+	          AND BIZ_ADVISER_ID=#{bizAdviserId}
+	          </if>
+		      <if test="partnerId != null and partnerId >0">
+	          AND PARTNER_ID=#{partnerId}
+	          </if>
+		      <if test="level != null and level >0">
+	          AND "LEVEL"=#{level}
+	          </if>
+		      <if test="creatorId != null and creatorId >0">
+	          AND CREATOR_ID=#{creatorId}
+	          </if>
+		      <if test="createdDate != null and createdDate !=''">
+	          AND CREATED_DATE=#{createdDate}
+	          </if>
+		      <if test="updateId != null and updateId >0">
+	          AND UPDATE_ID=#{updateId}
+	          </if>
+		      <if test="updateDate != null and updateDate !=''">
+	          AND UPDATE_DATE=#{updateDate}
+	          </if>
+		      <if test="remark != null and remark !=''">
+	          AND REMARK=#{remark}
+	          </if>
+		      <if test="auditDesc != null and auditDesc !=''">
+	          AND AUDIT_DESC=#{auditDesc}
+	          </if>
+			</trim>
+		</where>
+	</select>
+	<!-- 根据id获取 -->
+	<select id="getById" resultMap="orgAssetsCooperationInfoMap">
+		SELECT OA.PID,OA.ORG_NAME,OA.EMAIL,OA.CONTACT,OA.PHONE,OU.STATUS AS STATUS,OA."CODE",
+		OA.AUDIT_STATUS,OA.COOPERATE_STATUS,OU.USER_NAME LOGIN_NAME,OA.REMARK,OA.AUDIT_DESC,OA.ADDRESS,OA.PARTNER_ID,
+		U.REAL_NAME AS PARTNER_NAME,
+		OA.CREATOR_ID
+        FROM ORG_ASSETS_COOPERATION_INFO OA 
+          LEFT JOIN ORG_USER_INFO OU 
+          ON OA.PID = OU.PID
+          LEFT JOIN ORG_PARTNER_INFO OP
+          ON OA.PARTNER_ID = OP.PID
+          LEFT JOIN (SELECT PID,REAL_NAME FROM ORG_USER_INFO) U
+          ON U.PID= OP.USER_ID WHERE OA.PID=#{pid}
+	</select>
+	<!-- 根据机构代码查询 -->
+	<select id="getOrgByCode" resultMap="orgAssetsCooperationInfoMap">
+		SELECT <include refid="column_list" />
+        FROM ORG_ASSETS_COOPERATION_INFO 
+           WHERE CODE=#{code}
+	</select>
+	<!-- 插入一条数据 -->
+	<insert id="insert" parameterType="com.qfang.xk.aom.rpc.org.OrgAssetsCooperationInfo">
+		INSERT INTO ORG_ASSETS_COOPERATION_INFO
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+				PID,
+			</if>
+		    <if test="orgName != null and orgName !=''">
+				ORG_NAME,
+			</if>
+		    <if test="code != null and code !=''">
+				"CODE",
+			</if>
+		    <if test="address != null and address !=''">
+				ADDRESS,
+			</if>
+		    <if test="email != null and email !=''">
+				EMAIL,
+			</if>
+		    <if test="contact != null and contact !=''">
+				CONTACT,
+			</if>
+		    <if test="phone != null and phone !=''">
+				PHONE,
+			</if>
+		    <if test="auditStatus != null and auditStatus >0">
+				AUDIT_STATUS,
+			</if>
+		    <if test="cooperateStatus != null and cooperateStatus >0">
+				COOPERATE_STATUS,
+			</if>
+		    <if test="bizAdviserId != null and bizAdviserId >0">
+				BIZ_ADVISER_ID,
+			</if>
+		    <if test="partnerId != null and partnerId >0">
+				PARTNER_ID,
+			</if>
+		    <if test="level != null and level >0">
+				"LEVEL",
+			</if>
+		    <if test="creatorId != null and creatorId >0">
+				CREATOR_ID,
+			</if>
+				CREATED_DATE,
+		    <if test="remark != null and remark !=''">
+				REMARK,
+			</if>
+			
+			 <if test="auditDesc != null and auditDesc !=''">
+	          AUDIT_DESC,
+	          </if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+		    #{pid},
+			</if>
+		    <if test="orgName != null and orgName !=''">
+		    #{orgName},
+			</if>
+		    <if test="code != null and code !=''">
+		    #{code},
+			</if>
+		    <if test="address != null and address !=''">
+		    #{address},
+			</if>
+		    <if test="email != null and email !=''">
+		    #{email},
+			</if>
+		    <if test="contact != null and contact !=''">
+		    #{contact},
+			</if>
+		    <if test="phone != null and phone !=''">
+		    #{phone},
+			</if>
+		    <if test="auditStatus != null and auditStatus >0">
+		    #{auditStatus},
+			</if>
+		    <if test="cooperateStatus != null and cooperateStatus >0">
+		    #{cooperateStatus},
+			</if>
+		    <if test="bizAdviserId != null and bizAdviserId >0">
+		    #{bizAdviserId},
+			</if>
+		    <if test="partnerId != null and partnerId >0">
+		    #{partnerId},
+			</if>
+		    <if test="level != null and level >0">
+		    #{level},
+			</if>
+		    <if test="creatorId != null and creatorId >0">
+		    #{creatorId},
+			</if>
+		    SYSDATE,
+		    <if test="remark != null and remark !=''">
+		    #{remark},
+			</if>
+			 <if test="auditDesc != null and auditDesc !=''">
+	          #{auditDesc},
+	          </if>
+		</trim>
+	</insert>
+	<!-- 根据id更新数据 -->
+		<update id="update" parameterType="com.qfang.xk.aom.rpc.org.OrgAssetsCooperationInfo">
+		UPDATE ORG_ASSETS_COOPERATION_INFO
+		<set>
+		    <if test="orgName != null and orgName !=''">
+		     ORG_NAME=#{orgName},
+			</if>
+		    <if test="code != null and code !=''">
+		     "CODE"=#{code},
+			</if>
+		    <if test="address != null and address !=''">
+		     ADDRESS=#{address},
+			</if>
+		    <if test="email != null and email !=''">
+		     EMAIL=#{email},
+			</if>
+		    <if test="contact != null and contact !=''">
+		     CONTACT=#{contact},
+			</if>
+		    <if test="phone != null and phone !=''">
+		     PHONE=#{phone},
+			</if>
+		    <if test="auditStatus != null and auditStatus >0">
+		     AUDIT_STATUS=#{auditStatus},
+			</if>
+		    <if test="cooperateStatus != null and cooperateStatus >0">
+		     COOPERATE_STATUS=#{cooperateStatus},
+			</if>
+		    <if test="bizAdviserId != null and bizAdviserId >0">
+		     BIZ_ADVISER_ID=#{bizAdviserId},
+			</if>
+		    <if test="partnerId != null and partnerId >0">
+		     PARTNER_ID=#{partnerId},
+			</if>
+		    <if test="level != null and level >0">
+		     "LEVEL"=#{level},
+			</if>
+		    <if test="updateId != null and updateId >0">
+		     UPDATE_ID=#{updateId},
+			</if>
+		     UPDATE_DATE=SYSDATE,
+		    <if test="remark != null and remark !=''">
+		     REMARK=#{remark},
+			</if>
+			<if test="auditDesc != null and auditDesc !=''">
+	         	AUDIT_DESC=#{auditDesc}
+	        </if>
+		</set>
+		WHERE PID = #{pid}
+	</update>
+	
+	<!-- 根据id更新数据 -->
+		<update id="updateOrgCooperateCityInfo" parameterType="com.qfang.xk.aom.rpc.org.OrgCooperateCityInfo">
+		UPDATE ORG_COOPERATE_CITY_INFO
+		<set>
+		    <if test="areaCode != null and areaCode !=''">
+		     AREA_CODE=#{areaCode}
+			</if>
+		    <if test="contact != null and contact !=''">
+		     ,CONTACT=#{contact}
+			</if>
+		    <if test="phone != null and phone !=''">
+		     ,PHONE=#{phone}
+			</if>
+		    <if test="remark != null and remark !=''">
+		     ,REMARK=#{remark}
+			</if>
+		</set>
+		WHERE PID = #{pid}
+	</update>
+	
+	
+	<!-- 根据id查询城市表信息 -->
+	<select id="getOrgCityInfoListByOrgId" resultMap="orgCooperateCityInfoMap" parameterType="Integer">
+				SELECT A.PID,A.AREA_CODE,A.CITY_NAME,A.PROVINCE_CODE,A.CONTACT,A.PROVINCE_NAME,
+				A.PHONE,A.REMARK FROM ORG_COOPERATE_CITY_INFO A 
+	    <if test="orgId != null and orgId >0">
+	     	 where A.ORG_ID=#{orgId}
+		</if>
+	</select>
+	
+	<!-- 分页查询机构信息 -->
+	<select id="getOrgAssetsByPage" resultMap="orgAssetsCooperationInfoMap" parameterType="com.qfang.xk.aom.rpc.org.OrgAssetsCooperationInfo">
+		<![CDATA[SELECT D.* FROM (SELECT T.*, ROWNUM RN
+	        FROM (
+		SELECT OA.PID,OA.ORG_NAME,OA.EMAIL,OA.CONTACT,OA.PHONE,OU.STATUS AS STATUS,OA."CODE",
+		OA.AUDIT_STATUS,OA.COOPERATE_STATUS,TO_CHAR(OA.UPDATE_DATE, 'yyyy-mm-dd hh24:mi:ss') UPDATE_DATE,
+		TO_CHAR(OA.CREATED_DATE, 'yyyy-mm-dd hh24:mi:ss') CREATED_DATE,OU.USER_NAME LOGIN_NAME,
+		U.REAL_NAME AS PARTNER_NAME
+        FROM ORG_ASSETS_COOPERATION_INFO OA 
+          LEFT JOIN ORG_USER_INFO OU 
+          ON OA.PID = OU.PID
+          LEFT JOIN ORG_PARTNER_INFO OP
+          ON OA.PARTNER_ID = OP.PID
+          LEFT JOIN (SELECT PID,REAL_NAME FROM ORG_USER_INFO) U
+          ON U.PID= OP.USER_ID 
+          WHERE OU.STATUS IN (1,2)
+		]]>
+		<if test="loginName != null and loginName != ''">
+			AND OU.USER_NAME LIKE '%${loginName}%'
+		</if>
+		<if test="orgName != null and orgName != ''">
+			AND OA.ORG_NAME LIKE '%${orgName}%'
+		</if>
+		<if test="auditStatus != null and auditStatus >0">
+		     AND OA.AUDIT_STATUS=#{auditStatus}
+		</if>
+	    <if test="cooperateStatus != null and cooperateStatus >0">
+	     	 AND OA.COOPERATE_STATUS=#{cooperateStatus}
+		</if>
+		<![CDATA[ORDER BY OA.CREATED_DATE DESC) T
+			WHERE ROWNUM <=#{page}*#{rows}
+			) D
+		WHERE D.RN > ((#{page}-1)*#{rows})]]>
+	</select>
+	<!-- 查询机构总数 -->
+	<select id="getOrgAssetsCount"  parameterType="com.qfang.xk.aom.rpc.org.OrgAssetsCooperationInfo" resultType="Integer">
+		SELECT COUNT(*) FROM (
+		SELECT OA.PID
+        FROM ORG_ASSETS_COOPERATION_INFO OA 
+          LEFT JOIN ORG_USER_INFO OU 
+          ON OA.PID = OU.PID
+          LEFT JOIN ORG_PARTNER_INFO OP
+          ON OA.PARTNER_ID = OP.PID
+          WHERE OU.STATUS IN (1,2)
+		<if test="loginName != null and loginName != ''">
+			AND OU.USER_NAME LIKE '%${loginName}%'
+		</if>
+		<if test="orgName != null and orgName != ''">
+			AND OA.ORG_NAME LIKE '%${orgName}%'
+		</if>
+		<if test="auditStatus != null and auditStatus >0">
+		     AND OA.AUDIT_STATUS=#{auditStatus}
+		</if>
+	    <if test="cooperateStatus != null and cooperateStatus >0">
+	     	 AND OA.COOPERATE_STATUS=#{cooperateStatus}
+		</if>
+		) DP
+	</select>
+	<!-- 修改认证状态 -->
+	<update id="updateAuthStatus" parameterType="com.qfang.xk.aom.rpc.org.OrgAssetsCooperationInfo">
+		UPDATE ORG_ASSETS_COOPERATION_INFO SET AUDIT_STATUS = #{auditStatus},UPDATE_DATE = SYSDATE,AUDIT_DESC=#{auditDesc} WHERE PID = #{pid}
+	</update>
+	
+	<!-- 修改合作状态 -->
+	<update id="updateCooperateStatus" parameterType="com.qfang.xk.aom.rpc.org.OrgAssetsCooperationInfo">
+		UPDATE ORG_ASSETS_COOPERATION_INFO SET COOPERATE_STATUS = #{cooperateStatus},UPDATE_DATE = SYSDATE WHERE PID = #{pid}
+	</update>
+	
+	<!-- 合伙人的客户（机构）列表（分页查询） -->
+	<select id="findPartnerOrgIndex" resultMap="partnerOrgIndexMap"
+		parameterType="com.qfang.xk.aom.rpc.org.PartnerOrgIndex">
+		<if test="page!=-1">
+			SELECT D.* FROM (SELECT T.*, ROWNUM RN
+			FROM (
+			SELECT A.USER_NAME,
+			       B.PID              AS ORG_ID,
+			       B.ORG_NAME,
+			       B.CODE             AS ORG_CODE,
+			       B.CONTACT,
+			       B.PHONE,
+			       B.AUDIT_STATUS,
+			       B.COOPERATE_STATUS,
+			       C.APPLY_STATUS     AS COOPERATE_APPLY_STATUS
+			  FROM ORG_USER_INFO A
+			  LEFT JOIN ORG_ASSETS_COOPERATION_INFO B
+			    ON A.PID = B.PID
+			  LEFT JOIN ORG_COOPERAT_COMPANY_APPLY_INF C
+			    ON C.ORG_ID = B.PID
+		</if>
+		<where>
+			<trim>
+				<if test="orgName != null and orgName !=''">
+					AND B.ORG_NAME LIKE '%${orgName}%'
+				</if>
+				<if test="orgCode != null and orgCode !=''">
+					AND B.CODE LIKE '%${orgCode}%'
+				</if>
+				<if test="contact != null and contact !=''">
+					AND B.CONTACT LIKE '%${contact}%'
+				</if>
+				<if test="auditStatus != null and auditStatus >0">
+					AND B.AUDIT_STATUS = #{auditStatus}
+				</if>
+				<if test="cooperateStatus != null and cooperateStatus >0">
+					AND B.COOPERATE_STATUS = #{cooperateStatus}
+				</if>
+				<if test="cooperateApplyStatus != null and cooperateApplyStatus >0">
+					AND C.APPLY_STATUS = #{cooperateApplyStatus}
+				</if>
+				<if test="partnerId != null and partnerId >0">
+					AND B.PARTNER_ID = #{partnerId}
+				</if>
+			</trim>
+		</where>
+		<if test="page!=-1">
+			<![CDATA[
+			) T
+			WHERE ROWNUM <=#{page}*#{rows}
+			) D
+			WHERE D.RN > ((#{page}-1)*#{rows})
+			]]>
+		</if>
+	</select>
+	<!--合伙人的客户（机构）列表总数 -->
+	<select id="getPartnerOrgIndexTotal" resultType="Integer"
+		parameterType="com.qfang.xk.aom.rpc.org.PartnerOrgIndex">
+		SELECT COUNT(1) FROM
+		(SELECT A.USER_NAME
+			  FROM ORG_USER_INFO A
+			  LEFT JOIN ORG_ASSETS_COOPERATION_INFO B
+			    ON A.PID = B.PID
+			  LEFT JOIN ORG_COOPERAT_COMPANY_APPLY_INF C
+			    ON C.ORG_ID = B.PID
+		<where>
+			<trim>
+				<if test="orgName != null and orgName !=''">
+					AND B.ORG_NAME LIKE '%${orgName}%'
+				</if>
+			    <if test="orgCode != null and orgCode !=''">
+					AND B.CODE LIKE '%${orgCode}%'
+				</if>
+				<if test="contact != null and contact !=''">
+					AND B.CONTACT LIKE '%${contact}%'
+				</if>
+				<if test="auditStatus != null and auditStatus >0">
+					AND B.AUDIT_STATUS = #{auditStatus}
+				</if>
+				<if test="cooperateStatus != null and cooperateStatus >0">
+					AND B.COOPERATE_STATUS = #{cooperateStatus}
+				</if>
+				<if test="cooperateApplyStatus != null and cooperateApplyStatus >0">
+					AND C.APPLY_STATUS = #{cooperateApplyStatus}
+				</if>
+				<if test="partnerId != null and partnerId >0">
+					AND B.PARTNER_ID = #{partnerId}
+				</if>
+			</trim>
+		</where>
+		) T
+	</select>
+	<delete id="deleteById" parameterType="Integer">
+	 DELETE FROM ORG_ASSETS_COOPERATION_INFO T WHERE T.PID=#{pid}
+	</delete>
+	
+	<delete id="delOrgCooperateCityInfoById" parameterType="Integer">
+	 DELETE FROM ORG_COOPERATE_CITY_INFO T WHERE T.PID=#{pid}
+	</delete>
+	
+	
+</mapper>

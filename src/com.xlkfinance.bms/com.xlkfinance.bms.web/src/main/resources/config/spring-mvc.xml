@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:cache="http://www.springframework.org/schema/cache"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans-3.0.xsd 
+						http://www.springframework.org/schema/tx 
+						http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+						http://www.springframework.org/schema/aop 
+						http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+						http://www.springframework.org/schema/util
+						http://www.springframework.org/schema/util/spring-util-3.0.xsd
+						http://www.springframework.org/schema/cache
+						http://www.springframework.org/schema/cache/spring-cache.xsd
+						http://www.springframework.org/schema/context 
+						http://www.springframework.org/schema/context/spring-context-3.0.xsd 
+						http://www.springframework.org/schema/mvc 
+						http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+						http://www.springframework.org/schema/task
+	  					http://www.springframework.org/schema/task/spring-task-3.0.xsd">
+
+	<mvc:annotation-driven />  
+	<!-- 自动扫描controller包下的所有类，使其认为spring mvc的控制器 -->
+	<context:component-scan base-package="com.xlkfinance.bms.web" />
+	
+	<!-- 定时任务注解 -->
+	<!-- <task:annotation-driven scheduler="qbScheduler" mode="proxy"/>   -->
+	<!-- 任务池 -->
+    <!-- <task:scheduler id="qbScheduler" pool-size="1000"/> -->
+
+	<!-- 避免IE执行AJAX时,返回JSON出现下载文件 -->
+	<bean id="mappingJacksonHttpMessageConverter"
+		class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">
+		<property name="supportedMediaTypes">
+			<list>
+				<value>text/html;charset=UTF-8</value>
+				<value>text/json;charset=UTF-8</value>
+			</list>
+		</property>
+	</bean>
+
+	<!-- 参数配置 -->
+	<bean id="app-properties-file-loader"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:web-config.properties</value>
+				<value>classpath:thrift-config.properties</value>
+				<value>classpath:business-log.properties</value>
+			</list>
+		</property>
+	</bean>
+	
+	<!-- 日志开关 -->
+	<bean id="logSwitch" class="java.util.HashMap">
+		<constructor-arg>
+			<map>
+				<entry key="foreafterloan" value="${log.foreafterloan.record}" />
+				<entry key="afterloan" value="${log.afterloan.record}" />
+				<entry key="beforeloan" value="${log.beforeloan.record}" />
+				<entry key="contract" value="${log.contract.record}" />
+				<entry key="credits" value="${log.credits.record}" />
+				<entry key="customer" value="${log.customer.record}" />
+				<entry key="finance" value="${log.finance.record}" />
+				<entry key="mortgage" value="${log.mortgage.record}" />
+				<entry key="repayment" value="${log.repayment.record}" />
+				<entry key="system" value="${log.system.record}" />
+				<entry key="task" value="${log.task.record}" />
+				<entry key="inloan" value="${log.inloan.record}" />
+				<entry key="partner" value="${log.partner.record}" />
+				<entry key="element" value="${log.element.record}" />
+				<entry key="report" value="${log.report.record}" />
+				<entry key="org" value="${log.org.record}" />
+				<entry key="fee" value="${log.fee.record}" />
+				<entry key="workDay" value="${log.workDay.record}" /> 
+			</map>
+		</constructor-arg>
+	</bean>
+
+
+	<!-- 全局系统参数 -->
+	<bean name="globalConfig" class="com.xlkfinance.bms.common.config.GlobalConfig">
+		<property name="logSwitch" ref="logSwitch" />
+	</bean>
+
+	<!-- 系统参数 -->
+	<bean name="webSysConfig" class="com.xlkfinance.bms.web.util.WebSysConfig">
+		<property name="thriftServerIp" value="${thrift.server.ip}" />
+		<property name="thriftServerPort" value="${thrift.server.port}" />
+		<property name="rpcPackage" value="${thrift.rpc.package}" />
+		<property name="aomPackage" value="${thrift.rpc.org.package}" />
+		<property name="thriftTimeout" value="${thrift.timeout}" />
+		<property name="uploadFileRoot" value="${upload.file.root.path}" />
+		<property name="maxRequestSize" value="${upload.file.max.request.size}" />
+		<property name="maxFileSize" value="${upload.file.max.file.size}" />
+		<property name="fileType" value="${upload.file.type}" />
+		<property name="aomFilePath" value="${upload.file.aom.path}" />
+	</bean>
+	
+	<!-- 启动Spring MVC的注解功能，完成请求和注解POJO的映射 -->
+	<bean
+		class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+		<property name="messageConverters">
+			<list>
+				<bean
+					class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter" />
+				<bean
+					class="org.springframework.http.converter.StringHttpMessageConverter">
+					<property name="supportedMediaTypes">
+						<list>
+							<value>text/plain;charset=UTF-8</value>
+						</list>
+					</property>
+				</bean>
+			</list>
+		</property>
+	</bean>
+
+	<!-- 对模型视图名称的解析，即在模型视图名称添加前后缀 -->
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/page/" />
+		<property name="suffix" value=".jsp" /><!--可为空,方便实现自已的依据扩展名来选择视图解释类的逻辑 -->
+		<property name="viewClass"
+			value="org.springframework.web.servlet.view.JstlView" />
+	</bean>
+
+	<!-- shiro的配置 -->
+	<import resource="classpath:config/security-config.xml" />
+	<!-- dubbo的配置 -->
+<!-- 	<import resource="classpath:config/dubbo-consumer-config.xml" /> -->
+	
+	<!-- 定时任务的配置 -->
+<!-- 	<import resource="classpath:config/job-config.xml" /> -->
+	
+	
+	<!-- 拦截器配置 -->
+	<mvc:interceptors>
+		<!-- 配置Token拦截器，防止用户重复提交数据 -->
+		<mvc:interceptor>
+			<mvc:mapping path="/**"/>
+			<bean class="com.xlkfinance.bms.web.interceptor.TokenInterceptor"></bean>
+		</mvc:interceptor>
+	</mvc:interceptors>
+	<!-- 全局异常处理类 -->
+	<bean id="exceptionResolver" class="com.xlkfinance.bms.web.controller.ExceptionResolver"/>
+</beans>

@@ -1,0 +1,81 @@
+<project name="project" default="init" basedir=".">
+  <property name="folder_100" value="D:/BMS打包"></property>
+  <property name="folder_bms_service" value="D:/BMS打包"></property>
+  <property name="folder_aom" value="D:/aom-tomcat-7.0.40/webapps"></property>
+  <property name="folder_bms" value="D:/bms-tomcat-7.0.40/webapps"></property>
+	<target name="init">
+		<echo>部署开始</echo>
+	</target>
+	<target name="delete" depends="init">
+		<echo>删除文件BMS.war</echo>
+		<delete file="${folder_bms}/BMS.war" />
+		<echo>删除BMS目录</echo>
+		<delete dir="${folder_bms}/BMS" />
+		<echo>删除文件AOM.war</echo>
+		<delete file="${folder_aom}/AOM.war" />
+		<echo>删除AOM目录</echo>
+		<delete dir="${folder_aom}/AOM" />
+		<echo>删除文件RES.war</echo>
+		<delete file="${folder_bms}/RES.war" />
+		<echo>删除BMS目录</echo>
+		<delete dir="${folder_bms}/RES" />
+		<echo>删除文件BMS-SERVER.zip</echo>
+		<delete dir="${folder_bms_service}/BMS-SERVER.zip" />
+		<echo>删除BMS-SERVER目录</echo>
+		<delete dir="${folder_bms_service}/BMS-SERVER" />
+	</target>
+	<target name="devWar" depends="delete">
+		<echo>部署BMS.war</echo>
+		<copy tofile="${folder_bms}/BMS.war">
+			<fileset dir="${basedir}/com.xlkfinance.bms.web/target" includes="BMS.war" />
+		</copy>
+		<echo>部署AOM.war</echo>
+		<copy tofile="${folder_aom}/AOM.war">
+			<fileset dir="${basedir}/com.qfang.xk.aom.web/target" includes="AOM.war" />
+		</copy>
+		<echo>部署RES.war</echo>
+		<copy tofile="${folder_bms}/RES.war">
+			<fileset dir="${basedir}/com.xlkfinance.bms.res/target" includes="RES.war" />
+		</copy>
+		<echo>部署BMS-SERVER.zip</echo>
+		<copy tofile="${folder_bms_service}/BMS-SERVER.zip">
+			<fileset dir="${basedir}/com.xlkfinance.bms.server/target" includes="BMS-SERVER.zip" />
+		</copy>
+		<echo>部署成功</echo>
+	</target>
+		<target name="delete100" depends="init">
+		<echo>删除文件BMS.war</echo>
+		<delete file="${folder_100}BMS.war" />
+		<echo>删除文件AOM.war</echo>
+		<delete file="${folder_100}AOM.war" />
+		<echo>删除BMS目录</echo>
+		<delete dir="${folder_100}/webapps/BMS" />
+		<echo>删除文件RES.war</echo>
+		<delete file="${folder_100}/RES.war" />
+		<echo>删除BMS目录</echo>
+		<delete dir="${folder_100}/RES" />
+		<echo>删除文件BMS-SERVER.zip</echo>
+		<delete dir="${folder_100}/BMS-SERVER.zip" />
+		<echo>删除BMS-SERVER目录</echo>
+		<delete dir="${folder_100}/BMS-SERVER" />
+	</target>
+	<target name="copyPackeTo100" depends="delete100">
+		<echo>拷贝BMS.war</echo>
+		<copy tofile="${folder_100}/BMS.war">
+			<fileset dir="${basedir}/com.xlkfinance.bms.web/target" includes="BMS.war" />
+		</copy>
+		<echo>拷贝AOM.war</echo>
+		<copy tofile="${folder_100}/AOM.war">
+			<fileset dir="${basedir}/com.qfang.xk.aom.web/target" includes="AOM.war" />
+		</copy>
+		<echo>拷贝RES.war</echo>
+		<copy tofile="${folder_100}/RES.war">
+			<fileset dir="${basedir}/com.xlkfinance.bms.res/target" includes="RES.war" />
+		</copy>
+		<echo>拷贝BMS-SERVER.zip</echo>
+		<copy tofile="${folder_100}/BMS-SERVER.zip">
+			<fileset dir="${basedir}/com.xlkfinance.bms.server/target" includes="BMS-SERVER.zip" />
+		</copy>
+		<echo>拷贝成功,目录${folder_100}</echo>
+	</target>
+</project>

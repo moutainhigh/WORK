@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.system.mapper.SysUserSignMapper">
+	<resultMap id="sysUserSignMap" type="com.xlkfinance.bms.rpc.system.SysUserSign">
+		<id property="pid" column="PID" />
+		<result property="userId" column="USER_ID" />
+		<result property="createDate" column="CREATE_DATE" />
+	</resultMap>
+	<!-- 添加系统用户签到信息 -->
+	<insert id="addSysUserSign" parameterType="com.xlkfinance.bms.rpc.system.SysUserSign">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_USER_SIGN.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO SYS_USER_SIGN_INFO
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			PID,
+			<if test="userId != null and userId >0">
+				USER_ID,
+			</if>
+			CREATE_DATE
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{pid},
+			<if test="userId != null and userId >0">
+				#{userId},
+			</if>
+			SYSDATE
+		</trim>
+	</insert>
+	<!-- 根据用户id查询签到天数 -->
+	<select id="getSignDaysByUserId" resultType="int" parameterType="int">
+		SELECT COUNT(1) FROM SYS_USER_SIGN_INFO T
+		WHERE T.USER_ID=#{userId}
+	</select>
+	<!-- 根据用户id检查今天是否已经签到 -->
+	<select id="checkToDayIsSign" resultType="int" parameterType="int">
+		SELECT COUNT(1)
+		FROM SYS_USER_SIGN_INFO T
+		WHERE TO_CHAR(T.CREATE_DATE, 'yyyy-MM-dd') =
+		TO_CHAR(SYSDATE, 'yyyy-MM-dd')
+		AND T.USER_ID=#{userId}
+	</select>
+</mapper>

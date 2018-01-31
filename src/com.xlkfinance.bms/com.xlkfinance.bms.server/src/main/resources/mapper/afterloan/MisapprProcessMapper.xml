@@ -1,0 +1,891 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.xlkfinance.bms.server.afterloan.mapper.MisapprProcessMapper">
+	<resultMap id="MisapprProcessMap"
+		type="com.xlkfinance.bms.rpc.afterloan.MisapprProcess">
+		<result property="pid" column="PID" />
+	 <result property="divertId" column="DIVERT_ID" />
+		<result property="projectName" column="PROJECT_NAME" />
+		<result property="projectNumber" column="PROJECT_NUMBER" />
+		<result property="cusType" column="ACCT_TYPE" />
+		<result property="divertAmt" column="DIVERT_AMT" />
+		<result property="divertFineEndDt" column="DIVERT_FINE_END_DT" />
+		<result property="reviewStatus" column="REQUEST_STATUS" />
+		<result property="requestDttm" column="REQUEST_DTTM" />
+		<result property="divertFinePayAmt" column="DIVERT_FINE_PAY_AMT" />
+		<result property="divertFinePayDt" column="DIVERT_FINE_PAY_DT" />
+	</resultMap>
+	
+	<resultMap id="regCgapplyFileMaps"
+		type="com.xlkfinance.bms.rpc.repayment.RegAdvapplyFileview">
+		<result property="pId" column="PID" />
+		<result property="filePath" column="FILE_URL" />
+		<result property="fileType" column="FILE_TYPE" />
+		<result property="fileName" column="FILE_NAME" />
+		<result property="fileSize" column="FILE_SIZE" />
+		<result property="uploadDttm" column="UPLOAD_DTTM" />
+		<result property="fileFunType" column="FILE_FUN_TYPE" />
+		<result property="fileDesc" column="FILE_DESC" />
+	</resultMap>
+
+	<resultMap id="BreachDisposeMap"
+		type="com.xlkfinance.bms.rpc.afterloan.BreachDisposeBeas">
+		<result property="pid" column="PID" />
+		<result property="projectName" column="PROJECT_NAME" />
+		<result property="projectNumber" column="PROJECT_NUMBER" />
+		<result property="cusType" column="CUS_TYPE" />
+		<result property="isTermination" column="IS_TERMINATION" />
+		<result property="isBacklist" column="IS_BACKLIST" />
+		<result property="violationAmt" column="VIOLATION_AMT" />
+		<result property="violationDt" column="VIOLATION_DT" />
+		<result property="reviewStatus" column="REQUEST_STATUS" />
+		<result property="requestDttm" column="REQUEST_DTTM" />
+		<result property="projectId" column="PROJECTID" />
+		<result property="violationId" column="VIOLATION_ID" />
+	
+	</resultMap>
+
+	<resultMap id="getBizProjectViolation"
+		type="com.xlkfinance.bms.rpc.afterloan.BizProjectViolation">
+		<result property="pid" column="PID" />
+		<result property="projectId" column="PROJECT_ID" />
+		<result property="isTermInAtion" column="IS_TERMINATION" />
+		<result property="loanAmt" column="LOAN_AMT" />
+		<result property="violationProportion" column="VIOLATION_PROPORTION" />
+		<result property="violationAmt" column="VIOLATION_AMT" />
+		<result property="violationDt" column="VIOLATION_DT" />
+		<result property="violationOtInterest" column="VIOLATION_OT_INTEREST" />
+		<result property="isBackList" column="IS_BACKLIST" />
+		<result property="remark" column="REMARK" />
+		<result property="status" column="STATUS" />
+		<result property="requestStatus" column="REQUEST_STATUS" />
+		<result property="regHistoryId" column="REG_HISTORY_ID" />
+		<result property="badId" column="BAD_ID" />
+	</resultMap>
+	<resultMap id="FileInfoMap" type="com.xlkfinance.bms.rpc.file.FileInfo">
+		<result property="dataId" column="PID" />
+		<result property="refId" column="refId" />
+		<result property="fileUrl" column="FILE_URL" />
+		<result property="fileId" column="FILE_ID" />	
+		<result property="fileType" column="FILE_TYPE" />
+		<result property="fileName" column="FILE_NAME" />
+		<result property="fileSize" column="FILE_SIZE" />
+		<result property="uploadDttm" column="UPLOAD_DTTM" javaType="String"
+			jdbcType="TIMESTAMP" />
+		<result property="fileDesc" column="FILE_DESC" />
+	<!-- 	<result property="uploadUserId" column="uploadUserId" />
+		<result property="filePropertyName" column="filePropertyName" />
+		<result property="fileProperty" column="fileProperty" />
+		<result property="status" column="STATUS" />
+		<result property="projectId" column="PROJECT_ID" /> -->
+	</resultMap>
+	
+	
+	
+	<sql id="padding">
+		where ROWNUM <![CDATA[<=]]>
+		#{page}*#{rows}) d
+		WHERE d.rn <![CDATA[>=]]>
+		((#{page}-1)*#{rows})+1
+	</sql>
+	
+	<select id="getFileDataList" parameterType="com.xlkfinance.bms.rpc.file.FileInfo"
+		resultMap="FileInfoMap">
+		SELECT ROWNUM RNUM, AA.*
+            FROM (
+            SELECT ROWNUM         RNUM,
+                         A.PID          PID,
+                         A.VIOLATION_ID refId,
+                         B.FILE_URL     FILE_URL,
+                         A.FILE_ID      FILE_ID,
+                         FILE_TYPE      FILE_TYPE,
+                         FILE_NAME      FILE_NAME,
+                         FILE_SIZE      FILE_SIZE,
+                         UPLOAD_DTTM    UPLOAD_DTTM,
+                         B.REMARK         FILE_DESC
+                    FROM BIZ_PROJECT_VIOLATION_FILE A
+                    LEFT JOIN BIZ_FILE B
+                      ON A.FILE_ID = B.PID
+                    LEFT JOIN BIZ_PROJECT_VIOLATION C
+                      ON A.VIOLATION_ID = C.PID
+                    WHERE 1=1
+                       and  A.VIOLATION_ID = #{refId}
+                  ) AA 
+     WHERE 1 = 1
+     AND RNUM &lt;=#{page}*#{rows}
+	 AND RNUM >=((#{page}-1)*#{rows})+1
+	</select>
+	<select id="getFileDataTotal" parameterType="com.xlkfinance.bms.rpc.file.FileInfo"  resultType="java.lang.Integer">
+		SELECT count(1)
+          FROM (SELECT ROWNUM RNUM, AA.*
+            FROM (
+            SELECT ROWNUM         RID,
+                         A.PID          PID
+                    FROM BIZ_PROJECT_VIOLATION_FILE A
+                    LEFT JOIN BIZ_FILE B
+                      ON A.FILE_ID = B.PID
+                    LEFT JOIN BIZ_PROJECT_VIOLATION C
+                      ON A.VIOLATION_ID = C.PID
+                    WHERE 1=1
+                       and  A.VIOLATION_ID = #{refId}
+                  ) AA ) BB
+        WHERE 1 = 1
+	</select>
+	<!-- 创建违约文件说明 -->
+	<insert id="createProjectViolationFile" parameterType="com.xlkfinance.bms.rpc.file.FileInfo">
+		<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="dataId">
+			SELECT SEQ_BIZ_PROJECT_VIOLATION_FILE.Nextval as PID from DUAL
+		</selectKey>
+		    INSERT INTO BIZ_PROJECT_VIOLATION_FILE(
+		    	PID,
+		    	violation_id, 
+		    	file_id, 
+		    	STATUS)
+		    VALUES (
+		    	#{dataId,jdbcType=INTEGER}, 
+		     	#{refId,jdbcType=INTEGER},
+		     	#{fileId,jdbcType=INTEGER},
+		     	1)
+	</insert>
+	<update id="editFileAndViolation"  parameterType="com.xlkfinance.bms.rpc.file.FileInfo" >
+	    update BIZ_PROJECT_VIOLATION_FILE set 
+	      violation_id=#{refId},
+		  file_id=#{fileId}
+		where pid=#{dataId}
+	</update>
+	<!-- 创建文件 -->
+	<insert id="createFile"  parameterType="com.xlkfinance.bms.rpc.file.FileInfo">
+	     <selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="dataId">
+			SELECT SEQ_BIZ_FILE.Nextval as PID from DUAL
+		 </selectKey>
+	     insert into BIZ_FILE(
+	     pid,
+	     file_name,
+	     file_type,
+	     file_size,
+	     upload_dttm,
+	     upload_user_id,
+	     file_url,
+	     REMARK,
+	     status
+	     )
+	     values(
+	            #{dataId}, 
+		     	#{fileName},
+		     	#{fileType},
+		     	#{fileSize},
+		     	#{uploadDttm,jdbcType=TIMESTAMP,javaType=String},
+		     	#{uploadUserId},
+		     	#{fileUrl},
+		     	#{fileDesc},
+		     	1
+	     )
+	</insert>
+	<delete id="deleteFileAndViolationFile" parameterType="java.lang.String"   >
+	     delete from BIZ_PROJECT_VIOLATION_FILE where pid=#{pid}
+	</delete>
+	<delete id="deleteFile" parameterType="java.lang.Integer"   >
+	     delete from BIZ_FILE where pid=#{fileId}
+	</delete>
+	<delete id="deleteFileAndViolation" parameterType="java.lang.Integer"  >
+	     delete from BIZ_PROJECT_VIOLATION where pid=#{refId}
+	</delete>
+	<!-- 根据pid 删除违约数据 -->
+	<delete id="deleteBreachDispose" parameterType="Integer">
+		UPDATE BIZ_PROJECT_VIOLATION BVP SET BVP.STATUS = 0 WHERE BVP.PID = #{pid}
+	</delete>
+	<select id="getBizProjectViolationFile"  parameterType="java.lang.Integer"
+		resultMap="FileInfoMap"  >
+	   select   pid PID, violation_id refId, file_id FILE_ID
+	   from BIZ_PROJECT_VIOLATION_FILE
+	   where pid=#{pid}
+	</select>
+  
+	<select id="getLoanId" parameterType="java.lang.Integer"
+		resultType="java.lang.Integer">
+		SELECT PID FROM BIZ_LOAN WHERE PROJECT_ID = #{pid}
+	</select>
+	<!-- 创建违约处理 -->
+	<insert id="createBizProjectViolation"
+		parameterType="com.xlkfinance.bms.rpc.afterloan.BizProjectViolation">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_BIZ_PROJECT_VIOLATION.Nextval as PID from DUAL
+		</selectKey>
+		insert into BIZ_PROJECT_VIOLATION(
+		PID,
+		PROJECT_ID,
+		IS_TERMINATION,
+		LOAN_AMT,
+		VIOLATION_PROPORTION,
+		VIOLATION_AMT,
+		VIOLATION_DT,
+		VIOLATION_OT_INTEREST,
+		IS_BACKLIST,
+		REMARK,
+		STATUS,
+		REG_HISTORY_ID,
+		BAD_ID,
+        REQUEST_DTTM,
+        REQUEST_STATUS
+		)
+		values(
+		#{pid,jdbcType=INTEGER},
+		#{projectId},
+		#{isTermInAtion},
+		#{loanAmt},
+		#{violationProportion},
+		#{violationAmt},
+		#{violationDt,jdbcType=DATE,javaType=String},
+		#{violationOtInterest},
+		#{isBackList},
+		#{remark},
+		#{status},
+		#{regHistoryId},
+		#{badId},
+		sysdate,
+		1
+		)
+	</insert>
+	<select id="searchBizProjectViolation" parameterType="java.lang.Integer"
+		resultMap="getBizProjectViolation">
+		select PID,
+		PROJECT_ID,
+		IS_TERMINATION,
+		LOAN_AMT,
+		VIOLATION_PROPORTION,
+		VIOLATION_AMT,
+		VIOLATION_DT,
+		VIOLATION_OT_INTEREST,
+		IS_BACKLIST,
+		REMARK,
+		REQUEST_STATUS,
+		STATUS
+		from
+		BIZ_PROJECT_VIOLATION
+		where
+		PROJECT_ID=#{projectId}
+	</select>
+	
+	<select id="getBizProjectViolationById" parameterType="java.lang.Integer"
+		resultMap="getBizProjectViolation">
+		select PID,
+		PROJECT_ID,
+		IS_TERMINATION,
+		LOAN_AMT,
+		VIOLATION_PROPORTION,
+		VIOLATION_AMT,
+		VIOLATION_DT,
+		VIOLATION_OT_INTEREST,
+		IS_BACKLIST,
+		REMARK,
+		REQUEST_STATUS,
+		REG_HISTORY_ID,
+		BAD_ID,
+		STATUS
+		from
+		BIZ_PROJECT_VIOLATION
+		where
+		PID=#{pid}
+	</select>
+	
+	<update id="updateBizProjectViolation"
+		parameterType="com.xlkfinance.bms.rpc.afterloan.BizProjectViolation">
+		update BIZ_PROJECT_VIOLATION
+		set
+		LOAN_AMT=#{loanAmt},
+		VIOLATION_PROPORTION=#{violationProportion},
+		VIOLATION_AMT=#{violationAmt},
+		VIOLATION_DT=#{violationDt,jdbcType=DATE,javaType=String},
+		VIOLATION_OT_INTEREST=#{violationOtInterest},
+		IS_BACKLIST=#{isBackList},
+		BAD_ID=#{badId},
+		REMARK=#{remark,jdbcType=VARCHAR}
+		where
+		PID=#{pid}
+	</update>
+
+         <!--挪用列表  -->
+	<select id="getMisappProcess" resultMap="MisapprProcessMap"
+		parameterType="com.xlkfinance.bms.rpc.afterloan.MisapprProcessCriteria">
+   SELECT d.* FROM(
+		select t.*,rownum rn FROM
+		(SELECT DISTINCT (BPD.PID) AS DIVERT_ID,
+                PROJEC.PID,
+                PROJEC.PROJECT_NAME,
+                PROJEC.PROJECT_NUMBER,
+                ACCT.acct_TYPE,
+                BPD.DIVERT_AMT,
+                TO_CHAR(BPD.DIVERT_FINE_END_DT, 'yyyy-mm-dd') DIVERT_FINE_END_DT,
+                CASE BPD.REQUEST_STATUS
+                  WHEN 1 THEN
+                   '申请中'
+                  WHEN 2 THEN
+                   '审核中'
+                  WHEN 4 THEN
+                   '处理结束'
+                  ELSE
+                   '—'
+                END REQUEST_STATUS,
+                TO_CHAR(BPD.REQUEST_DTTM, 'yyyy-mm-dd') REQUEST_DTTM,
+                BPD.DIVERT_FINE_PAY_AMT,
+                TO_CHAR(BPD.DIVERT_FINE_PAY_DT, 'yyyy-mm-dd') DIVERT_FINE_PAY_DT
+  FROM BIZ_PROJECT_DIVERT BPD
+  LEFT JOIN BIZ_LOAN LOAN
+    ON (BPD.PROJECT_ID = LOAN.PROJECT_ID)
+  LEFT JOIN BIZ_PROJECT PROJEC
+    ON (BPD.PROJECT_ID = LOAN.PROJECT_ID AND LOAN.PROJECT_ID = PROJEC.PID)
+  LEFT JOIN CUS_ACCT_V ACCT
+    ON (BPD.PROJECT_ID = LOAN.PROJECT_ID AND LOAN.PROJECT_ID = PROJEC.PID AND
+       PROJEC.ACCT_ID = ACCT.acct_id)
+  LEFT JOIN SYS_USER SYS
+    ON (BPD.PROJECT_ID = LOAN.PROJECT_ID AND LOAN.PROJECT_ID = PROJEC.PID AND
+       PROJEC.PM_USER_ID = SYS.PID)
+  LEFT JOIN CUS_COM_BASE COMBASE
+    ON (BPD.PROJECT_ID = LOAN.PROJECT_ID AND LOAN.PROJECT_ID = PROJEC.PID AND
+       PROJEC.ACCT_ID = COMBASE.ACCT_ID)
+  LEFT JOIN CUS_PERSON PERSON
+    ON (BPD.PROJECT_ID = LOAN.PROJECT_ID AND LOAN.PROJECT_ID = PROJEC.PID AND
+       PROJEC.ACCT_ID = COMBASE.ACCT_ID AND
+       PROJEC.ACCT_ID = PERSON.ACCT_ID)
+ WHERE BPD.STATUS = 1
+   AND PROJEC.STATUS = 1
+   AND LOAN.STATUS = 1
+		<if test="projectName != null and projectName != '' ">
+			AND PROJEC.PROJECT_NAME like '%${projectName}%'
+		</if>
+		<if test="projectNumber != null and projectNumber != '' ">
+			AND PROJEC.PROJECT_NUMBER like '%${projectNumber}%'
+		</if>
+		<if test="cusName != null and cusName != '' ">
+			AND ACCT.acct_name like '%${cusName}%'
+		</if>
+		<if test="cusType != null and cusType != '' ">
+			AND ACCT.acct_TYPE like '%${cusType}%'
+		</if>
+		<if test="ecoTrade != null and ecoTrade != '' ">
+		       AND COMBASE.ECO_TRADE like '%${ecoTrade}%'
+		</if>
+		<if test="reviewStatus != null and reviewStatus != '' ">
+			AND BPD.REQUEST_STATUS like '%${reviewStatus}%'
+		</if>
+		<if test="divertFineEndDt != null and divertFineEndDt !=''">
+			AND BPD.REQUEST_DTTM <![CDATA[>= ]]>
+			#{divertFineEndDt,jdbcType=DATE,javaType=String}
+		</if>
+		<if test="divertFinePayDt != null and divertFinePayDt !=''">
+			AND BPD.REQUEST_DTTM <![CDATA[<= ]]>
+			#{divertFinePayDt,jdbcType=DATE,javaType=String}+1
+		</if>
+		)t
+		<include refid="padding" />
+	</select>
+
+
+
+  <!--挪用列表 总数 -->
+	<select id="getMisappProcessCount" resultType="java.lang.Integer"
+		parameterType="com.xlkfinance.bms.rpc.afterloan.MisapprProcess">
+		SELECT count(*)
+			   FROM (SELECT DISTINCT (BPD.PID) AS DIVERT_ID,
+               PROJEC.PID,
+                PROJEC.PROJECT_NAME,
+                PROJEC.PROJECT_NUMBER,
+                ACCT.acct_TYPE,
+                BPD.DIVERT_AMT,
+                TO_CHAR(BPD.DIVERT_FINE_END_DT, 'yyyy-mm-dd') DIVERT_FINE_END_DT,
+                CASE BPD.REQUEST_STATUS
+                  WHEN 1 THEN
+                   '申请中'
+                  WHEN 2 THEN
+                   '审核中'
+                  WHEN 4 THEN
+                   '处理结束'
+                  ELSE
+                   '—'
+                END REQUEST_STATUS,
+                TO_CHAR(BPD.REQUEST_DTTM, 'yyyy-mm-dd') REQUEST_DTTM,
+                BPD.DIVERT_FINE_PAY_AMT,
+                TO_CHAR(BPD.DIVERT_FINE_PAY_DT, 'yyyy-mm-dd') DIVERT_FINE_PAY_DT
+  FROM BIZ_PROJECT_DIVERT BPD
+  LEFT JOIN BIZ_LOAN LOAN
+    ON (BPD.PROJECT_ID = LOAN.PROJECT_ID)
+  LEFT JOIN BIZ_PROJECT PROJEC
+    ON (BPD.PROJECT_ID = LOAN.PROJECT_ID AND LOAN.PROJECT_ID = PROJEC.PID)
+  LEFT JOIN CUS_ACCT_V ACCT
+    ON (BPD.PROJECT_ID = LOAN.PROJECT_ID AND LOAN.PROJECT_ID = PROJEC.PID AND
+       PROJEC.ACCT_ID = ACCT.acct_id)
+  LEFT JOIN SYS_USER SYS
+    ON (BPD.PROJECT_ID = LOAN.PROJECT_ID AND LOAN.PROJECT_ID = PROJEC.PID AND
+       PROJEC.PM_USER_ID = SYS.PID)
+  LEFT JOIN CUS_COM_BASE COMBASE
+    ON (BPD.PROJECT_ID = LOAN.PROJECT_ID AND LOAN.PROJECT_ID = PROJEC.PID AND
+       PROJEC.ACCT_ID = COMBASE.ACCT_ID)
+  LEFT JOIN CUS_PERSON PERSON
+    ON (BPD.PROJECT_ID = LOAN.PROJECT_ID AND LOAN.PROJECT_ID = PROJEC.PID AND
+       PROJEC.ACCT_ID = COMBASE.ACCT_ID AND
+       PROJEC.ACCT_ID = PERSON.ACCT_ID)
+ WHERE BPD.STATUS = 1
+   AND PROJEC.STATUS = 1
+   AND LOAN.STATUS = 1
+		<if test="projectName != null and projectName != '' ">
+			AND PROJEC.PROJECT_NAME like '%${projectName}%'
+		</if>
+		<if test="projectNumber != null and projectNumber != '' ">
+			AND PROJEC.PROJECT_NUMBER like '%${projectNumber}%'
+		</if>
+		<if test="cusName != null and cusName != '' ">
+			AND ACCT.acct_name like '%${cusName}%'
+		</if>
+		<if test="cusType != null and cusType != '' ">
+			AND ACCT.acct_TYPE like '%${cusType}%'
+		</if>
+		<if test="reviewStatus != null and reviewStatus != '' ">
+			AND BPD.REVIEW_STATUS like '%${reviewStatus}%'
+		</if>)
+	</select>
+	
+	<!--违约列表  -->
+	<select id="getBreachDispose" resultMap="BreachDisposeMap"
+		parameterType="com.xlkfinance.bms.rpc.afterloan.BreachDisposeCriteria">
+		SELECT U.* FROM (
+			SELECT A.*, ROWNUM RN FROM(
+				SELECT  PROJEC.*, BPV.PROJECT_ID PROJECTID,
+			       BPV.PID AS VIOLATION_ID,
+			       CASE BPV.IS_TERMINATION
+			         WHEN 1 THEN
+			          '是'
+			         WHEN 0 THEN
+			          '否'
+			         ELSE
+			          '全部'
+			       END IS_TERMINATION,
+			       CASE BPV.IS_BACKLIST
+			         WHEN 1 THEN
+			          '是'
+			         WHEN 0 THEN
+			          '否'
+			         ELSE
+			          '全部'
+			       END IS_BACKLIST,
+			       BPV.VIOLATION_AMT,
+			       TO_CHAR(BPV.VIOLATION_DT, 'yyyy-mm-dd') VIOLATION_DT,
+			       CASE BPV.REQUEST_STATUS
+			         WHEN 1 THEN
+			          '申请中'
+			         WHEN 2 THEN
+			          '审核中'
+			         WHEN 4 THEN
+			          '处理结束'
+			         ELSE
+			          '—'
+			       END REQUEST_STATUS
+			  FROM BIZ_PROJECT_VIOLATION BPV,
+			       (SELECT Distinct PROJEC.PID,
+		               PROJEC.PROJECT_NAME,
+		               PROJEC.PROJECT_NUMBER,
+		               CASE ACCT.ACCT_TYPE
+		                 WHEN 1 THEN
+		                  '个人'
+		                 WHEN 2 THEN
+		                  '企业'
+		                 ELSE
+		                  '全部'
+		               END CUS_TYPE,
+		               TO_CHAR(PROJEC.REQUEST_DTTM, 'yyyy-mm-dd') REQUEST_DTTM
+		          FROM BIZ_LOAN LOAN
+		          LEFT JOIN BIZ_PROJECT PROJEC
+		            ON LOAN.PROJECT_ID = PROJEC.PID
+		          LEFT JOIN CUS_ACCT_V  ACCT
+		            ON (LOAN.PROJECT_ID = PROJEC.PID AND PROJEC.ACCT_ID = ACCT.acct_id)
+		          LEFT JOIN SYS_USER SYS
+		            ON (LOAN.PROJECT_ID = PROJEC.PID AND PROJEC.PM_USER_ID = SYS.PID)
+		               WHERE 1=1 
+		               	  AND LOAN.STATUS = 1
+		               	  AND PROJEC.STATUS = 1
+		               	  AND ACCT.STATUS = 1
+		               	  AND SYS.STATUS = 1
+		               <if test="projectName != null and projectName != '' ">
+		                  AND PROJEC.PROJECT_NAME like '%${projectName}%'
+		                </if>
+		                <if test="projectNumber != null and projectNumber != '' ">
+		                  AND PROJEC.PROJECT_NUMBER like '%${projectNumber}%'
+		                </if>
+		                <if test="cusType != null and cusType != '' ">
+		                  AND ACCT.ACCT_TYPE like '%${cusType}%'
+		                </if>
+		                <if test="cusName != null and cusName != '' ">
+		                  AND ACCT.ACCT_NAME like '%${cusName}%'
+		                </if>
+		                <if test="ecoTrade != null and ecoTrade != '' ">
+		                  AND ACCT.ECO_TRADE like '%${ecoTrade}%'
+		                </if>
+		                <if test="startRequestDttm != null and startRequestDttm !=''">
+		                  AND PROJEC.REQUEST_DTTM <![CDATA[>= ]]>
+		                  #{startRequestDttm,jdbcType=DATE,javaType=String}
+		                </if>
+		                <if test="endRequestDttm != null and endRequestDttm !=''">
+		                  AND PROJEC.REQUEST_DTTM <![CDATA[<= ]]>
+		                  #{endRequestDttm,jdbcType=DATE,javaType=String}+1
+		                </if>            
+		               ) PROJEC
+            WHERE BPV.PROJECT_ID = PROJEC.PID
+            	AND BPV.STATUS = 1
+		 	<if test="reviewStatus != null and reviewStatus != '' ">
+				AND BPV.REQUEST_STATUS = #{reviewStatus}
+			</if>
+			) A) U
+		WHERE RN BETWEEN (((#{page}-1) * #{rows})+1) AND (#{page} * #{rows})
+	</select>
+	
+	<!--违约列表总记录条数  -->
+	<select id="getBreachDisposeTotal" resultType="Integer"
+		parameterType="com.xlkfinance.bms.rpc.afterloan.BreachDisposeCriteria">
+		SELECT COUNT(1)
+		  FROM BIZ_PROJECT_VIOLATION BPV,
+		       (SELECT Distinct PROJEC.PID,
+	               PROJEC.PROJECT_NAME,
+	               PROJEC.PROJECT_NUMBER,
+	               CASE ACCT.ACCT_TYPE
+	                 WHEN 1 THEN
+	                  '个人'
+	                 WHEN 2 THEN
+	                  '企业'
+	                 ELSE
+	                  '全部'
+	               END CUS_TYPE,
+	               TO_CHAR(PROJEC.REQUEST_DTTM, 'yyyy-mm-dd') REQUEST_DTTM
+	          FROM BIZ_LOAN LOAN
+	          LEFT JOIN BIZ_PROJECT PROJEC
+	            ON LOAN.PROJECT_ID = PROJEC.PID
+	          LEFT JOIN CUS_ACCT_V ACCT
+	            ON (LOAN.PROJECT_ID = PROJEC.PID AND PROJEC.ACCT_ID = ACCT.acct_id)
+	          LEFT JOIN SYS_USER SYS
+	            ON (LOAN.PROJECT_ID = PROJEC.PID AND PROJEC.PM_USER_ID = SYS.PID)
+	               WHERE 1=1 
+	                  AND LOAN.STATUS = 1
+	               	  AND PROJEC.STATUS = 1
+	               	  AND ACCT.STATUS = 1
+	               	  AND SYS.STATUS = 1
+	                <if test="projectName != null and projectName != '' ">
+		                  AND PROJEC.PROJECT_NAME like '%${projectName}%'
+	                </if>
+	                <if test="projectNumber != null and projectNumber != '' ">
+	                  AND PROJEC.PROJECT_NUMBER like '%${projectNumber}%'
+	                </if>
+	                <if test="cusType != null and cusType != '' ">
+	                  AND ACCT.ACCT_TYPE like '%${cusType}%'
+	                </if>
+	                <if test="cusName != null and cusName != '' ">
+	                  AND ACCT.ACCT_NAME like '%${cusName}%'
+	                </if>
+	                <if test="ecoTrade != null and ecoTrade != '' ">
+	                  AND ACCT.ECO_TRADE like '%${ecoTrade}%'
+	                </if>
+	                <if test="startRequestDttm != null and startRequestDttm !=''">
+	                  AND PROJEC.REQUEST_DTTM <![CDATA[>= ]]>
+	                  #{startRequestDttm,jdbcType=DATE,javaType=String}
+	                </if>
+	                <if test="endRequestDttm != null and endRequestDttm !=''">
+	                  AND PROJEC.REQUEST_DTTM <![CDATA[<= ]]>
+	                  #{endRequestDttm,jdbcType=DATE,javaType=String}+1
+	                </if>                
+	               ) PROJEC
+	            WHERE BPV.PROJECT_ID = PROJEC.PID
+	            AND BPV.STATUS = 1
+			 	<if test="reviewStatus != null and reviewStatus != '' ">
+						AND BPV.REVIEW_STATUS like '%${reviewStatus}%'
+				</if>
+	</select>
+	 <!--   modify by qcxian  start               -->
+	<resultMap id="BadDebtMap" type="com.xlkfinance.bms.rpc.afterloan.BadDebtBeas">
+		<result property="pid" column="pid" />
+		<result property="projectId" column="PROJECTID" />
+		<result property="loanId" column="loanId"/>
+		<result property="projectName" column="projectName" />
+		<result property="projectNumber" column="projectNumber" />
+		<result property="cusType" column="ACCT_TYPE" />
+		<result property="badShouldAmt" column="badShouldAmt" />
+		<result property="shouldDt" column="shouldDt"/>
+		<result property="badLossAmt" column="badLossAmt"/>
+		<result property="reviewStatus" column="REVIEW_STATUS"/>
+		<result property="requestDttm" column="requestDttm"/>
+	</resultMap>
+	
+   <select id="getBadDebt" resultMap="BadDebtMap"  parameterType="com.xlkfinance.bms.rpc.afterloan.BadDebtBeasCriteria">
+    SELECT S3.*,PKG_COMMON.FUN_GET_LOANID(S3.projectId) AS loanId,
+	       CASE CA.acct_type
+	         WHEN 1 THEN
+	          '个人'
+	         WHEN 2 THEN
+	          '企业'
+	         ELSE
+	          '未选择'
+	       END ACCT_TYPE
+						  FROM (SELECT S2.*,
+						               BP.PROJECT_NAME   AS PROJECTNAME,
+						               BP.PROJECT_NUMBER AS PROJECTNUMBER,
+						               BP.ACCT_ID        AS ACCID,
+						               BP.REQUEST_DTTM  AS  requestDttm
+										          FROM (SELECT S1.*
+													               FROM (SELECT BPB.PID AS PID,
+													                               BPB.SHOULD_DT AS SHOULDDT,
+													                               BPB.PROJECT_ID AS PROJECTID,
+													                               ROWNUM AS ROWNO,
+													                               BPB.BAD_SHOULD_AMT AS BADSHOULDAMT,
+													                               BPB.BAD_LOSS_AMT BADLOSSAMT,
+													                               CASE BPB.REVIEW_STATUS
+													                                 WHEN 0 THEN
+													                                  '处理中'
+													                                 WHEN 1 THEN
+													                                  '处理完成'
+													                                 ELSE
+													                                  '其他'
+													                               END REVIEW_STATUS
+													                          FROM BIZ_PROJECT_BAD BPB
+													                         WHERE BPB.STATUS = 1
+													                          <if test="reviewStatus != null and reviewStatus != '' and reviewStatus != '-1'">
+													                            AND BPB.REVIEW_STATUS like '%${reviewStatus}%'
+													                          </if>
+													                         ) S1
+										                 WHERE S1.ROWNO BETWEEN  (((#{page}-1) * #{rows})+1) AND (#{page} * #{rows}) ) S2,
+						               BIZ_PROJECT BP
+						         WHERE BP.PID = S2.PROJECTID
+						           AND BP.STATUS = 1
+						          <if test="projectName != null and projectName != '' ">
+						            AND BP.PROJECT_NAME like '%${projectName}%'
+						          </if>
+						           <if test="projectNumber != null and projectNumber != '' ">
+						            AND BP.PROJECT_NUMBER like '%${projectNumber}%'
+						          </if>
+					               <if test="startRequestDttm != null and startRequestDttm !=''">
+		                               AND BP.REQUEST_DTTM <![CDATA[>= ]]> #{startRequestDttm,jdbcType=DATE,javaType=String}
+		                          </if>
+		                          <if test="endRequestDttm != null and endRequestDttm !=''">
+		                               AND BP.REQUEST_DTTM <![CDATA[<= ]]> #{endRequestDttm,jdbcType=DATE,javaType=String}+1 
+		                          </if> 
+						    ) S3,
+       Cus_Acct_V CA
+     WHERE S3.ACCID = CA.acct_id
+     <if test="cusType != null and cusType != '' ">
+			AND CA.acct_type like '%${cusType}%'
+	 </if>
+	  <if test="cusName != null and cusName != '' ">
+			AND CA.acct_name like '%${cusName}%'
+	 </if>
+	</select>
+
+   <select id="getBadDebtBean" parameterType="java.lang.Integer" resultType="com.xlkfinance.bms.rpc.afterloan.BadDebtBean">
+       SELECT B.PID           AS PID,
+	       B.PROJECT_ID    AS PROJECTID,
+	       B.BEGIN_CYCLE_NUM as beginCycleNum,
+	       B.AS_OF_DT      AS ASOFDT,
+	       B.SHOULD_DT     AS SHOULDDT,
+	       B.BAD_SHOULD_AMT as badShouldAmt,
+	       B.BAD_LOSS_AMT as badLossAmt,
+	       B.REVIEW_STATUS AS REVIEWSTATUS,
+	       B.REMARK        AS REMARK,
+	       B.STATUS as status
+          FROM BIZ_PROJECT_BAD B WHERE b.pid=#{pid}
+   </select>
+    <!-- 新增坏账呆账记录 -->
+    <insert id="createBadDebtBean" parameterType="com.xlkfinance.bms.rpc.afterloan.BadDebtBean">
+        <selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+		    SELECT SEQ_BIZ_PROJECT_BAD.Nextval as PID from DUAL
+	    </selectKey>
+		    insert into BIZ_PROJECT_BAD (
+			    PID, 
+			    PROJECT_ID,
+			    BEGIN_CYCLE_NUM,
+			    AS_OF_DT,
+			    SHOULD_DT, 
+			    BAD_SHOULD_AMT,
+			    BAD_LOSS_AMT,
+			    REVIEW_STATUS,
+			    STATUS
+			    )
+		    values (
+			    #{pid,jdbcType=INTEGER},
+			    #{projectId,jdbcType=INTEGER},
+			    #{beginCycleNum,jdbcType=INTEGER},
+			    #{asOfDT,jdbcType=DATE,javaType=String},
+			    #{shouldDt,jdbcType=DATE,javaType=String},
+			    #{badShouldAmt,jdbcType=DOUBLE},
+			    #{badLossAmt,jdbcType=DOUBLE},
+			    0,
+			    #{status,jdbcType=INTEGER}
+			  )
+    </insert>
+    
+     <!-- 修改坏账呆账记录 -->
+    <update id="updateBadDebtBean" parameterType="com.xlkfinance.bms.rpc.afterloan.BadDebtBean">
+        update BIZ_PROJECT_BAD 
+		<set>
+		 <if test="shouldDt !=null and shouldDt !='' ">
+		 	SHOULD_DT = #{shouldDt,jdbcType=DATE,javaType=String},
+		 </if>
+		 <if test="asOfDT !=null and asOfDT !='' ">
+		 	AS_OF_DT = #{asOfDT,jdbcType=DATE,javaType=String},
+		 </if>
+		 REVIEW_STATUS = #{reviewStatus},
+       	 REMARK = #{remark}
+		</set> 
+        where pid=#{pid}
+    </update>
+    
+      <!-- 修改坏账呆账记录状态 -->
+    <update id="updateBadDebtBeanStatus" parameterType="com.xlkfinance.bms.rpc.afterloan.BadDebtBean">
+        update BIZ_PROJECT_BAD set 
+        STATUS= #{status}
+        where pid=#{pid}
+    </update>
+    
+    <delete id="deleteBadDebtBeanById" parameterType="java.lang.Integer">
+        delete from biz_project_bad where pid=#{pid}
+    </delete>
+    
+	 <!--   modify by qcxian  end               -->
+	 <!-- 坏账上传文件开始 -->
+	  <!--   插入file表-->
+	 <insert id="insertFileInfo"
+		parameterType="com.xlkfinance.bms.rpc.repayment.UploadinstAdvapplyBaseDTO">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pId">
+			SELECT SEQ_BIZ_FILE.Nextval as PID from DUAL
+		</selectKey>
+		insert into BIZ_FILE (
+		PID,
+		FILE_NAME,
+		FILE_TYPE,
+		FILE_SIZE,
+		UPLOAD_USER_ID,
+		FILE_URL,
+		UPLOAD_DTTM,
+		STATUS)
+		values (
+		#{pId,jdbcType=INTEGER},
+		#{fileName,jdbcType=VARCHAR},
+		#{fileType,jdbcType=VARCHAR},
+		#{fileSize,jdbcType=INTEGER},
+		#{uploadUserid,jdbcType=INTEGER},
+		#{filePath,jdbcType=VARCHAR},
+		sysdate,
+		1
+		)
+	</insert>
+		 <!--  担保基本信息 插入BIZ_PROJECT_ASS_FILE表 -->
+	<insert id="insertBaddealFileInfo"
+		parameterType="com.xlkfinance.bms.rpc.repayment.UploadinstAdvapplyBaseDTO">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pId">
+			SELECT SEQ_BIZ_PROJECT_BAD_FILE.Nextval as PID from
+			DUAL
+		</selectKey>
+		insert into BIZ_PROJECT_BAD_FILE(
+		PID,
+	   BAD_ID,
+		FILE_ID,
+		STATUS,
+		FILE_TYPE,
+		FILE_DESC
+		)
+		values (
+		#{pId,jdbcType=INTEGER},
+		#{badId,jdbcType=INTEGER},
+		#{fileId,jdbcType=INTEGER},
+		1,
+		#{fileKinds,jdbcType=VARCHAR},
+		#{fileDesc,jdbcType=VARCHAR}
+		)
+	</insert>
+		<select id="queryBaddealFile" resultMap="regCgapplyFileMaps"
+		parameterType="java.lang.Integer">
+	 SELECT BF.FILE_NAME,
+    BPFF.FILE_TYPE as FILE_FUN_TYPE,
+    BF.UPLOAD_DTTM,
+    BF.PID,
+    BF.FILE_TYPE as FILE_TYPE,
+    BPFF.FILE_DESC,
+    BF.FILE_SIZE,
+    BF.FILE_URL
+    FROM BIZ_PROJECT_BAD_FILE BPFF, BIZ_FILE BF
+		WHERE BPFF.FILE_ID = BF.PID(+)
+		AND BPFF.BAD_ID =#{badId}
+		AND
+		BF.STATUS=1
+	</select>
+	 <!-- 坏账上传文件结束 -->
+	 <!-- add by yql -->
+	 <!-- 总账流水查询返回map -->
+	 <resultMap type="com.xlkfinance.bms.rpc.afterloan.LoanProReconciliationDtlView" id="LoanProReconciliationDtlMap">
+  		<id property="pid" column="pid"/>
+        <result property="cycleName" column="CYCLE_NAME" />
+        <result property="reconciliationDt" column="RECONCILIATION_DT" />
+        <result property="delTypeName" column="DEL_TYPE_NAME" />
+        <result property="reconciliationAmt" column="Dtl_Amt" />
+        <result property="description" column="DESCRIPTION" />
+	</resultMap>
+	 <!-- 项目对账信息 -->
+	 <select id="getProjectReconciliationList" resultMap="LoanProReconciliationDtlMap" parameterType="com.xlkfinance.bms.rpc.afterloan.LoanProRecCondition">
+   	  SELECT d.pid,(CASE
+           WHEN D.RECONCILIATION_CYCLE_NUM = -1 THEN
+            L.DEL_TYPE_NAME
+           ELSE
+           CONCAT(d.reconciliation_cycle_num,'期')
+         END) AS CYCLE_NAME,
+         L.PID,to_char(D.RECONCILIATION_DT,'yyyy-MM-dd') RECONCILIATION_DT ,L.DEL_TYPE_NAME,
+         D.RECONCILIATION_AMT,L.DESCRIPTION,L.Dtl_Amt,d.realtime_id
+    FROM BIZ_LOAN_RECONCILIATION D, BIZ_LOAN_RECONCILIATION_DTL L
+    WHERE L.RECON_ID = D.PID and L.Status=1 
+   			and D.Loan_Info_Id=#{loanId} 
+   		<if test="recCycleNums!=null and recCycleNums!=''  and realtimeIds != null and realtimeIds !='' ">
+	   		and (d.reconciliation_cycle_num in
+	        <foreach item="itemId" collection="recCycleNums" open="(" separator="," close=")">
+			          #{itemId}
+			</foreach>
+			or d.realtime_id in 
+			<foreach item="itemId" collection="realtimeIds" open="(" separator="," close=")">
+			          #{itemId}
+			</foreach>
+			)
+		</if>
+		<if test="realtimeIds != null and realtimeIds !='' and (recCycleNums==null or recCycleNums=='') ">
+	 		and d.realtime_id in (
+	 		  select p1.pid from biz_loan_realtime_plan p1 where p1.loan_id=#{loanId}  and p1.oper_type in(
+		select p.oper_type from biz_loan_realtime_plan p where p.pid in  <foreach item="itemId" collection="realtimeIds" open="(" separator="," close=")">
+			          #{itemId}
+			</foreach> )
+	 		)
+			
+		</if>
+		<if test="recCycleNums != null and recCycleNums !='' and ( realtimeIds ==null or realtimeIds =='') ">
+	 		and  d.reconciliation_cycle_num in 
+			<foreach item="itemId" collection="recCycleNums" open="(" separator="," close=")">
+			          #{itemId}
+			</foreach>
+		</if>
+	 
+    order by D.RECONCILIATION_DT desc
+   
+    </select>
+	 <!-- add by yql end  -->
+<update id="changeReqstViolation" parameterType="com.xlkfinance.bms.rpc.afterloan.BizProjectViolation">
+		UPDATE BIZ_PROJECT_VIOLATION
+	     SET REQUEST_STATUS =#{requestStatus}
+		WHERE PID = #{pid}
+	</update>
+<!-- 	根据projectId查acctId -->
+     <select id="searchAcctIdByProjectId" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+         select bp.acct_id  from biz_project bp where bp.pid= #{projectId}
+     </select>
+     
+     <update id="actionViolationBadBebStatus" parameterType="java.lang.Integer">
+          UPDATE biz_project_bad b SET status=1 WHERE b.pid=(SELECT v.bad_id FROM biz_project_violation v WHERE v.pid = #{pid} AND v.is_termination=1)
+	</update>
+	
+	<select id="getViolationIsBacklist" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+		SELECT IS_BACKLIST FROM BIZ_PROJECT_VIOLATION WHERE PID=#{pid}
+	</select>
+     
+</mapper>

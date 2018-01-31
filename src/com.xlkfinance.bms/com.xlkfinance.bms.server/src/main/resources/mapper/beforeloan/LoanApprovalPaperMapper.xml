@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.beforeloan.mapper.LoanApprovalPaperMapper">
+	<resultMap id="BizFileMap" type="com.xlkfinance.bms.rpc.system.BizFile">
+		<id property="pid" column="PID"/>
+        <result property="fileName" column="FILE_NAME" />
+        <result property="fileType" column="FILE_TYPE" />
+        <result property="fileSize" column="FILE_SIZE" />
+        <result property="uploadDttm" column="UPLOAD_DTTM" />
+        <result property="uploadUserId" column="UPLOAD_USER_ID" />
+        <result property="fileUrl" column="FILE_URL" />
+        <result property="status" column="STATUS" />
+	</resultMap>
+	
+	<resultMap type="com.xlkfinance.bms.rpc.beforeloan.LoanApprovalInvoiceInfo" id="loanApprovalInvoiceInfoMap">
+		<result property="name" column="ACCT_NAME"/>
+		<result property="contractNo" column="CONTRACT_NO"/>
+		<result property="meetingNo" column="meetingNo"/>
+		<result property="cusType" column="CUSTYPE" javaType="java.lang.String" jdbcType="INTEGER"/>
+		<!-- <result property="meetingNo" column=""/> -->
+		<result property="repayCycle" column="REPAY_CYCLE"/>
+		<result property="pmUser" column="REAL_NAME"/>
+		<result property="guaranteeType" column="GUARANTEE_TYPE"/>
+		<result property="creditAmt" column="CREDIT_AMT"/>
+		<result property="monthLoanInterest" column="MONTH_LOAN_INTEREST"/>
+		<!-- <result property="shouldPrincipal" column=""/> -->
+		<result property="monthLoanMgr" column="MONTH_LOAN_MGR"/>
+		<!-- <result property="shouldMangCost" column=""/> -->
+		<result property="planOutLoanDT" column="PLAN_OUT_LOAN_DT"/>
+		<result property="planRepayLoanDT" column="PLAN_REPAY_LOAN_DT"/>
+		<result property="repayDate" column="REPAY_DATE"/>
+		<result property="repayFun" column="REPAYFUN"/>
+		<result property="accName" column="ACC_NAME"/>
+		<result property="bankName" column="BANK_NAME"/>
+		<result property="loanCardId" column="LOAN_CARD_ID"/>
+	</resultMap>
+	
+	<insert id="saveBizLoanApprovalInvoice" parameterType="com.xlkfinance.bms.rpc.beforeloan.BizLoanApprovalInvoice">
+	   <selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+			SELECT SEQ_BIZ_LOAN_APPROVAL_INVOICE.Nextval as PID from DUAL
+		</selectKey>
+		    INSERT INTO BIZ_LOAN_APPROVAL_INVOICE(
+		    	PID,
+		    	LOAN_ID, 
+		    	FILE_ID, 
+		    	STATUS)
+		    values (
+		    	#{pid,jdbcType=INTEGER}, 
+		     	#{loanId,jdbcType=INTEGER},
+		     	#{fileId,jdbcType=INTEGER},
+		     	#{status,jdbcType=INTEGER})
+  	</insert>
+  	
+  	<select id="searchBizLoanPidByProjectId" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+		    SELECT BL.PID
+			  FROM BIZ_LOAN BL
+			 WHERE 1 = 1
+			   AND BL.PROJECT_ID = #{projectId,jdbcType=INTEGER}
+  	</select> 
+  	
+  	<select id="obtainLoanApprovalPaperFile" resultMap="BizFileMap" parameterType="java.lang.Integer">
+		       SELECT BF.PID,
+			          BF.FILE_NAME,
+			          BF.FILE_TYPE,
+			          BF.FILE_SIZE,
+			          to_char(BF.UPLOAD_DTTM,'yyyy-MM-DD HH24-mi-ss') UPLOAD_DTTM,
+			          BF.UPLOAD_USER_ID,
+			          BF.FILE_URL,
+			          BF.STATUS
+			     FROM BIZ_LOAN BL, BIZ_LOAN_APPROVAL_INVOICE BLAI, BIZ_FILE BF
+			    WHERE 1 = 1
+			      AND BL.PID = BLAI.LOAN_ID
+			      AND BLAI.FILE_ID = BF.PID
+			      AND BL.PROJECT_ID = #{projectId,jdbcType=INTEGER}
+  	</select> 
+  	
+  	<select id="obtainLoanApprovalPaperFileTotal" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+  		 	SELECT COUNT(1) FROM(
+  		 		SELECT BF.PID,
+			          BF.FILE_NAME,
+			          BF.FILE_TYPE,
+			          BF.FILE_SIZE,
+			          to_char(BF.UPLOAD_DTTM,'yyyy-MM-DD HH24-mi-ss') UPLOAD_DTTM,
+			          BF.UPLOAD_USER_ID,
+			          BF.FILE_URL,
+			          BF.STATUS
+			     FROM BIZ_LOAN BL, BIZ_LOAN_APPROVAL_INVOICE BLAI, BIZ_FILE BF
+			    WHERE 1 = 1
+			      AND BL.PID = BLAI.LOAN_ID
+			      AND BLAI.FILE_ID = BF.PID
+			      AND BL.PROJECT_ID = #{projectId,jdbcType=INTEGER})
+  	</select>
+  	
+  	<select id="listApprovalInvoiceInfo" parameterType="java.lang.Integer" resultMap="loanApprovalInvoiceInfoMap">
+			SELECT A.*,
+			       B.*,
+			       CAV.ACCT_TYPE CUSTYPE,
+			       CAV.ACCT_NAME ,
+			       (SELECT SU.REAL_NAME FROM SYS_USER SU WHERE SU.PID = CAV.PM_USER_ID) REAL_NAME
+			  FROM (SELECT BL.PROJECT_ID AS PID,
+			               BP.ACCT_ID,
+			               BL.CREDIT_AMT,
+			               BL.REPAY_CYCLE,
+			               SLV.LOOKUP_DESC AS REPAYFUN,
+			               BL.REPAY_DATE,
+			               BL.MONTH_LOAN_INTEREST,
+			               BL.MONTH_LOAN_MGR,
+			               (SELECT BPM1.MEETING_NUM
+							  FROM BIZ_PROJECT_MEETING BPM1
+							 WHERE BPM1.PID = (SELECT MAX(BPM.PID)
+							                     FROM BIZ_PROJECT_MEETING BPM
+							                    WHERE BPM.PROJECT_ID = #{projectId})) meetingNo,
+			               TO_CHAR(BL.PLAN_OUT_LOAN_DT, 'YYYY-MM-DD') AS PLAN_OUT_LOAN_DT,
+			               TO_CHAR(BL.PLAN_REPAY_LOAN_DT, 'YYYY-MM-DD') AS PLAN_REPAY_LOAN_DT,
+			               TMP.MOR_TYPE GUARANTEE_TYPE,
+			               cn.CONTRACT_NO
+			          FROM BIZ_LOAN BL
+			          LEFT JOIN (SELECT PROJECT_ID, TO_CHAR(WM_CONCAT(MT)) MOR_TYPE
+			                      FROM (SELECT DISTINCT T2.PROJECT_ID, LV.LOOKUP_DESC MT
+			                              FROM BIZ_PROJECT_GUARANTEE_TYPE T2,
+			                                   SYS_LOOKUP                 SL,
+			                                   SYS_LOOKUP_VAL             LV
+			                             WHERE 1 = 1
+			                               AND T2.GUARANTEE_TYPE = LV.PID
+			                               AND SL.LOOKUP_TYPE = 'ASS_WAY'
+			                               AND T2.STATUS = 1
+			                               AND LV.LOOKUP_ID = SL.PID)
+			                     GROUP BY PROJECT_ID) TMP
+			            ON BL.PROJECT_ID = TMP.PROJECT_ID
+			          LEFT JOIN SYS_LOOKUP_VAL SLV
+			            ON BL.REPAY_FUN = SLV.PID
+			          LEFT JOIN BIZ_PROJECT BP
+			            ON BL.PROJECT_ID = BP.PID
+			          LEFT JOIN (SELECT PC.CONTRACT_NO, PC.PROJECT_ID
+					               FROM BIZ_PROJECT_CONTRACT PC, BIZ_CONTRACT_TEMPLATE CT
+					              WHERE 1 = 1
+					                AND CT.PID = PC.CONTRACT_TEMPLATE_ID
+					                AND ct.CONTRACT_TYPE_CODE	='JK' AND pc.status=1) CN
+			            ON CN.PROJECT_ID = BL.PROJECT_ID 
+			        ) A
+			  LEFT JOIN CUS_ACCT_V CAV
+			    ON A.ACCT_ID = CAV.ACCT_ID
+			  LEFT JOIN (SELECT T.ACCT_ID, T.BANK_NAME, T.ACC_NAME, T.LOAN_CARD_ID
+			               FROM CUS_ACCT_BANK T, SYS_LOOKUP_VAL SLV
+			              WHERE SLV.PID = T.ACC_USE
+			                AND SLV.LOOKUP_DESC LIKE '%放款%' AND t.status=1) B
+			    ON A.ACCT_ID = B.ACCT_ID
+ 			  WHERE A.PID =#{projectId}
+  	
+  	</select>
+  	
+  
+
+</mapper>

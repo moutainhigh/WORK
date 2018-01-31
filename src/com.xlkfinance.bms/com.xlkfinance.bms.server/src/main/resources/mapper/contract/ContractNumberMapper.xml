@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.contract.mapper.ContractNumberMapper">
+	<resultMap id="ContractNumberResultMap" type="com.xlkfinance.bms.rpc.contract.ContractNumber">
+		<id column="PID" property="pid" />
+		<result column="YEAR_CODE" property="yearCode" />
+		<result column="ORG_CODE" property="orgCode" />
+		<result column="CONTRACT_TYPE" property="contractType" />
+		<result column="CONTRACT_INDEX" property="contractIndex" />
+		<result column="CONTRACT_ID" property="contractId" />
+		<result column="STATUS" property="status" />
+		<result column="PARENT_CONTRACT_INDEX" property="parentContractIndex" />
+	</resultMap>
+    
+    <!-- 根据年份and组织前缀and合同类型代码查询合同序号 -->
+    <select id="getContractIndexByContractRule" resultType="com.xlkfinance.bms.rpc.contract.ContractNumber" 
+    	parameterType="com.xlkfinance.bms.rpc.contract.ContractNumber" > 
+		SELECT PID,YEAR_CODE yearCode,ORG_CODE orgCode,CONTRACT_TYPE contractType,CONTRACT_ID contractId,
+		CONTRACT_INDEX contractIndex,STATUS status
+		FROM BIZ_CONTRACT_NUMBER 
+		WHERE YEAR_CODE = #{yearCode}  
+		AND ORG_CODE = #{orgCode} 
+		AND CONTRACT_TYPE = #{contractType} 
+		<if test="parentContractIndex != null and parentContractIndex != '' ">
+			AND PARENT_CONTRACT_INDEX = #{parentContractIndex}
+		</if>
+		<if test="parentContractIndex == null or parentContractIndex == '' ">
+			AND PARENT_CONTRACT_INDEX IS NULL 
+		</if>
+  	</select>
+	
+	<!-- 修改合同编号 -->
+	<update id="updateByPrimaryKey" parameterType="com.xlkfinance.bms.rpc.contract.ContractNumber">
+		UPDATE BIZ_CONTRACT_NUMBER
+		<trim prefix="set" suffixOverrides=",">
+			<if test="yearCode != null and yearCode != '' ">
+				YEAR_CODE = #{yearCode},
+			</if>
+			<if test="orgCode != null and orgCode != '' ">
+				ORG_CODE = #{orgCode},
+			</if>
+			<if test="contractType != null and contractType != '' ">
+				CONTRACT_TYPE = #{contractType},
+			</if>
+			<if test="contractIndex != null and contractIndex != -1 ">
+				CONTRACT_INDEX = #{contractIndex},
+			</if>
+		</trim>
+		WHERE PID = #{pid}
+	</update>
+	
+	<!-- 添加合同编号 -->
+	<insert id="insert" parameterType="com.xlkfinance.bms.rpc.contract.ContractNumber">
+		<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid" >
+			SELECT SEQ_BIZ_CONTRACT_NUMBER.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_CONTRACT_NUMBER
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+				PID,
+			<if test="yearCode != null and yearCode != '' ">
+				YEAR_CODE,
+			</if>
+			<if test="orgCode != null and orgCode != '' ">
+				ORG_CODE,
+			</if>
+			<if test="contractType != null and contractType != '' ">
+				CONTRACT_TYPE,
+			</if>
+			<if test="contractIndex != null and contractIndex != -1 ">
+				CONTRACT_INDEX,
+			</if>
+			<if test="contractId != null and contractId != -1 ">
+				CONTRACT_ID,
+			</if>
+			<if test="status != null and status != -1 ">
+				STATUS,
+			</if>
+			<if test="parentContractIndex != null and parentContractIndex != '' ">
+				PARENT_CONTRACT_INDEX,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+				#{pid},
+			<if test="yearCode != null and yearCode != '' ">
+				#{yearCode},
+			</if>
+			<if test="orgCode != null and orgCode != '' ">
+				#{orgCode},
+			</if>
+			<if test="contractType != null and contractType != '' ">
+				#{contractType},
+			</if>
+			<if test="contractIndex != null and contractIndex != -1 ">
+				#{contractIndex},
+			</if>
+			<if test="contractId != null and contractId != -1 ">
+				#{contractId},
+			</if>
+			<if test="status != null and status != -1 ">
+				#{status},
+			</if>
+			<if test="parentContractIndex != null and parentContractIndex != '' ">
+				#{parentContractIndex},
+			</if>
+		</trim>
+	</insert>
+	
+</mapper>

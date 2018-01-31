@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.customer.mapper.CashFlowMetaReportMapper">
+  <resultMap id="CusComIncomeReportMap" type="com.xlkfinance.bms.rpc.customer.CashFlowReport">
+        <id property="pid" column="PID"/>
+        <result property="reportId" column="REPORT_ID" />
+        <result property="cashFlowItemId" column="INCOME_ITEM_ID" />
+        <result property="thisMonthVal" column="THIS_MONTH_VAL" />
+        <result property="thisYearVal" column="THIS_YEAR_VAL" />
+         <result property="isMain" column="IS_MAIN" />
+        <result property="status" column="STATUS" />
+    </resultMap>
+    
+    
+<insert id="addCusComCashFlowMetaReport" parameterType="com.xlkfinance.bms.rpc.customer.CashFlowReport">
+   <selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+		SELECT SEQ_CUS_COM_CASH_FLOW.Nextval as PID from DUAL
+	</selectKey>
+    INSERT INTO CUS_COM_CASH_FLOW(
+    	PID, 
+    	REPORT_ID, 
+    	CASH_FLOW_ITEM_ID, 
+    	THIS_MONTH_VAL, 
+    	THIS_YEAR_VAL, 
+    	IS_MAIN,
+    	STATUS)
+    values (
+    	#{pid,jdbcType=INTEGER}, 
+     	#{reportId,jdbcType=INTEGER},
+     	#{cashFlowItemId,jdbcType=INTEGER},
+     	#{thisMonthVal,jdbcType=DECIMAL,javaType=DOUBLE},
+     	#{thisYearVal,jdbcType=DECIMAL,javaType=DOUBLE}, 
+     	#{isMain,jdbcType=INTEGER},
+     	#{status,jdbcType=INTEGER})
+  </insert>
+</mapper>
+
+

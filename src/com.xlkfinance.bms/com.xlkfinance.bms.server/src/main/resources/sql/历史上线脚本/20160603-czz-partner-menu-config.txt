@@ -1,0 +1,55 @@
+========添加菜单 ======================================
+
+1、新增根菜单：==============================
+	菜单名称：机构合作管理
+	菜单链接：#
+	菜单名称：机构合作管理
+	菜单样式：icon15
+	显示顺序：13
+
+2、新增二级菜单：========================
+
+2.1	父级菜单：机构合作管理
+	菜单名称：机构合作项目
+	菜单链接：/projectPartnerController/partnerIndex.action
+	显示顺序：1
+
+2.2	父级菜单：机构合作管理
+	菜单名称：机构审核列表
+	菜单链接：/projectPartnerController/approvalIndex.action
+	显示顺序：2
+
+2.3	父级菜单：机构合作管理
+	菜单名称：放款申请
+	菜单链接：/projectPartnerController/loanIndex.action
+	显示顺序：3
+
+2.4	父级菜单：机构合作管理
+	菜单名称：还款、回购
+	菜单链接：/projectPartnerController/repaymentIndex.action
+	显示顺序：4
+
+2.5	父级菜单：机构合作管理
+	菜单名称：息费结算
+	菜单链接：/projectPartnerController/xiFeeIndex.action
+	显示顺序：5
+
+====================BMS-WEB添加配置项======================================
+web-config.properties 文件添加小赢操作用户白名单
+
+	#(xiaoying)partner institutions White list 
+	xiaoying.partner.param.add.user=11
+	
+	#(xiaoying)partner public key
+	xiaoying.partner.public.key=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDvZWrVlz2vK3ZFyd4T/BsrLw2zJlHggS9EIajwoNd8QWb3MOINUJ4u/WaOLrlUAMGX6G7flAhXGMTo/hyOqoYwq9xR6Lfc2u+1Dgbx8oMtkIRyunqW8SoJtxm2ZI+tazM4CEqXsHhKU7X8YJSRQ4buOmU30KQmJRB1F1+xN7O6PQIDAQAB
+	
+	#(xiaoying)partner private key (QFANG )
+	xiaoying.partner.qfang.private.key=MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAL9EX2fZEOGW/aUZm7brEBx/1FeZaut248UBJi74oPXpMHQLQMvB/1nGMt+nchCwf0KgwP7uZNQq+QuMkXCsT5O687fUhNm4A+Fu177A+A7PPNEHENSi4RhJQjgT6goP0quFheoo0O+soyFTp/tKyokvnFbVcpEY0eO1n4aO8OCJAgMBAAECgYAp6Lle79kbFRKO0oWkFu140Smd6CfdYDeYOyA6uo/KUkYjpzOTcfaZnSwYhYAg2AuKdd7T/ThqpN/c//f+UEM/IlBqfs1OifHPg3Bm8fL8+PLHG/ffp/WNYXeT+bmEmHxvzhnlET8GU6/VjOpGZrKarBxKq8sKVZmwPsqMueCkAQJBAOxxmJWgR38fXX6Cuss7s0p0pCOLwsIg3G0ZAV62EEYTf1ddUhyem9ipqEfMWorEOJJo9m80B8jgc6AT1l6Vm1ECQQDPFjeBNsRLbUKrKeb3aah2YcY50nJu/b/xLhu6z1EtaypH8TOWmyjZ/0xSdQa0dGRRfSHJ1Sy91IZS9t/jGrO5AkEAmsRYjkhVxF4xgqfrwTAY0bm73xCSsSN1ZWwiu24NBPGqPvN01gr0FEQpRKX89iwuo5dVB8FU/yX8SWHyxgLDoQJATl4I+TQhiq25Wg7MYfqxDsOngUA7n/cVCQ863TIRdU+lu33y2N600fKEDnxM4kNdp1zkSX4LpXbkskbMqSP0uQJBAJW8/UzWnuLJiWRRcuTOCSYDQD6ECklKUFT3cgYIIY+VGQkToapzLkVTKJGzqF0/R8/hVfZJyAVf9MnoBBDc4Gs=
+	
+	#(xiaoying)partner public key (QFANG )
+	xiaoying.partner.qfang.public.key=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC/RF9n2RDhlv2lGZu26xAcf9RXmWrrduPFASYu+KD16TB0C0DLwf9ZxjLfp3IQsH9CoMD+7mTUKvkLjJFwrE+TuvO31ITZuAPhbte+wPgOzzzRBxDUouEYSUI4E+oKD9KrhYXqKNDvrKMhU6f7SsqJL5xW1XKRGNHjtZ+GjvDgiQIDAQAB
+	
+	#(xiaoying)partner api.url (need config host ip) 
+	xiaoying.partner.api.url=http://qf.rc.yingzhongtong.com:8000/api/sld/qf
+	
+ 

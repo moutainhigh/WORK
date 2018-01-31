@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.workday.mapper.WorkDayMapper">
+	<resultMap type="com.xlkfinance.bms.rpc.workday.WorkDay" id="workDayMap">
+		<id property="pid" column="PID" />
+		<id property="correctYear" column="CORRECT_YEAR" />
+		<id property="correctDate" column="CORRECT_DATE" />
+		<id property="isHolidays" column="IS_HOLIDAYS" />
+		<id property="remark" column="REMARK" />
+	</resultMap>
+	
+	<!-- 查询法定节假日分页 -->
+	<select id="getWorkDay" resultMap="workDayMap" parameterType="com.xlkfinance.bms.rpc.workday.WorkDay">
+		<if test="page!=-1">
+			SELECT D.* FROM (SELECT T.*, ROWNUM RN
+			FROM (
+		</if>
+		SELECT T.PID,T.CORRECT_YEAR,T.CORRECT_DATE,T.IS_HOLIDAYS,T.REMARK FROM BIZ_WORK_DAY T
+		<where>
+			<trim>
+				<if test="correctYear != null and correctYear > 0">
+					T.CORRECT_YEAR like '%'||#{correctYear}||'%'
+				</if>
+				<if test="correctDate != null and correctDate !=''">
+					AND T.CORRECT_DATE = #{correctDate}
+				</if>
+				<if test="isHolidays ==1">
+					AND T.IS_HOLIDAYS = 1
+				</if>
+				<if test="isHolidays ==2">
+					AND T.IS_HOLIDAYS = 2
+				</if>
+				
+				<if test="fromCorrectDate != null and fromCorrectDate !=''">
+					AND T.CORRECT_DATE <![CDATA[>=]]>  #{fromCorrectDate}
+				</if>
+				<if test="toCorrectDate != null and toCorrectDate !=''">
+					AND T.CORRECT_DATE <![CDATA[<=]]>  #{toCorrectDate}
+				</if>
+			</trim>
+		</where>
+		ORDER BY T.CORRECT_DATE DESC
+		<if test="page!=-1">
+			<![CDATA[
+			) T
+			WHERE ROWNUM <=#{page}*#{rows}
+			) D
+			WHERE D.RN > ((#{page}-1)*#{rows})
+			]]>
+		</if>
+	</select>
+
+	<!-- 查询法定节假日总数 -->
+	<select id="getWorkDayTotal" resultType="Integer" parameterType="com.xlkfinance.bms.rpc.workday.WorkDay">
+		SELECT COUNT(1) FROM
+		(
+		SELECT T.PID,T.CORRECT_YEAR,T.CORRECT_DATE,T.IS_HOLIDAYS FROM BIZ_WORK_DAY T
+		<where>
+			<trim>
+				<if test="correctYear != null and correctYear > 0">
+					T.CORRECT_YEAR LIKE '%'||#{correctYear}||'%'
+				</if>
+				<if test="correctDate != null and correctDate !=''">
+					AND T.CORRECT_DATE = #{correctDate}
+				</if>
+				<if test="isHolidays ==1">
+					AND T.IS_HOLIDAYS = 1
+				</if>
+				<if test="isHolidays ==2">
+					AND T.IS_HOLIDAYS = 2
+				</if>
+				<if test="fromCorrectDate != null and fromCorrectDate !=''">
+					AND T.CORRECT_DATE <![CDATA[>=]]>  #{fromCorrectDate}
+				</if>
+				<if test="toCorrectDate != null and toCorrectDate !=''">
+					AND T.CORRECT_DATE <![CDATA[<=]]>  #{toCorrectDate}
+				</if>
+			</trim>
+		</where>
+		) T
+	</select>
+	
+	<!-- 插入一条数据 -->
+	<insert id="insert" parameterType="com.xlkfinance.bms.rpc.workday.WorkDay">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_BIZ_WORK_DAY.Nextval as PID from DUAL
+		</selectKey>
+		 INSERT INTO BIZ_WORK_DAY
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+				PID,
+			</if>
+		    <if test="correctYear != null and correctYear > 0">
+				CORRECT_YEAR,
+			</if>
+		    <if test="correctDate != null and correctDate !=''">
+				CORRECT_DATE,
+			</if>
+		    <if test="isHolidays != null and isHolidays !=-1">
+				IS_HOLIDAYS,
+			</if>
+		    <if test="remark != null and remark !=''">
+				REMARK,
+			</if>
+		    <if test="createId != null and createId > 0">
+				CREAT_ID,
+			</if>
+				CREAT_DATE
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+		     #{pid},
+			</if>
+		    <if test="correctYear != null and correctYear > 0">
+		   	 #{correctYear},
+			</if>
+		   <if test="correctDate != null and correctDate !=''">
+		   	 #{correctDate},
+			</if>
+		   <if test="isHolidays != null and isHolidays !=-1">
+		   	 #{isHolidays},
+			</if>
+		   <if test="remark != null and remark !=''">
+		   	 #{remark},
+			</if>
+		     <if test="createId != null and createId > 0">
+		   	 #{createId},
+			</if>
+			 SYSDATE
+		</trim>
+	</insert>
+	
+	<!-- 法定节假日修改 -->
+	<update id="update" parameterType="com.xlkfinance.bms.rpc.workday.WorkDay">
+		UPDATE BIZ_WORK_DAY T 
+		<trim prefix="set" suffixOverrides=",">
+		<if test="correctYear != null and correctYear > 0">
+		  CORRECT_YEAR=#{correctYear},
+			</if>
+			<if test="correctDate != null and correctDate !=''">
+		    	CORRECT_DATE=#{correctDate},
+			</if>
+			<if test="remark != null and remark !=''">
+		    	REMARK=#{remark},
+			</if>
+			<if test="updateId != null and updateId > 0">
+		    	UPDATE_ID= #{updateId},
+			</if>
+				UPDATE_DATE=SYSDATE
+		</trim>
+		WHERE T.PID=#{pid}
+	</update>
+	
+	<!-- 删除法定节假日表 -->
+	<delete id="deleteById" parameterType="Integer">
+		DELETE FROM BIZ_WORK_DAY
+		WHERE PID=#{pid}
+	</delete>
+</mapper>

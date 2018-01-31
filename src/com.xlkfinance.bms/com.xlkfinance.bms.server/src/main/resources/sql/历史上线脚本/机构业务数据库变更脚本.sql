@@ -1,0 +1,125 @@
+--公司表中添加机构ID
+alter table CUS_COM_BASE
+add (
+  ORG_ID   INTEGER,
+  COM_OWN_NAME         VARCHAR2(255),
+  COM_OWN_PHONE        VARCHAR2(255),
+  COM_OWN_CARD         VARCHAR2(255)
+);
+comment on column CUS_COM_BASE.ORG_ID is
+'机构ID';
+
+comment on column CUS_COM_BASE.COM_OWN_NAME is
+'法人';
+
+comment on column CUS_COM_BASE.COM_OWN_PHONE is
+'手机号码';
+
+comment on column CUS_COM_BASE.COM_OWN_CARD is
+'身份证号码';
+
+
+alter table BIZ_PROJECT
+add (
+   ORG_ID               INTEGER,
+   ORG_CUSTOMER_NAME    VARCHAR2(255),
+   ORG_CUSTOMER_PHONE   VARCHAR2(255),
+   ORG_CUSTOMER_CARD    VARCHAR2(255),
+   PLAN_LOAN_DATE       TIMESTAMP,
+   PLAN_LOAN_MONEY      NUMBER(12,2),
+   LOAN_RATE            NUMBER(12,2),
+   MAX_LOAN_RATE        NUMBER(12,2),
+   IS_CLOSED            INTEGER  default 2,
+   AREA_CODE			VARCHAR2(255),
+   APPLY_USER_ID        INTEGER,
+   IS_NEED_HANDLE       INTEGER default 1,
+   IS_REJECT 			INTEGER default 2,
+   IS_ASSIGNED    		INTEGER default 1
+);
+comment on column BIZ_PROJECT.PROJECT_TYPE is
+'项目类型（授信=1、贷款=2、额度提取=3、贷款展期=4  授信and贷款=5,6机构提交业务）';
+comment on column BIZ_PROJECT.ORG_ID is
+'机构ID';
+
+comment on column BIZ_PROJECT.ORG_CUSTOMER_NAME is
+'客户姓名';
+
+comment on column BIZ_PROJECT.ORG_CUSTOMER_PHONE is
+'客户电话';
+
+comment on column BIZ_PROJECT.ORG_CUSTOMER_CARD is
+'客户身份证';
+
+comment on column BIZ_PROJECT.PLAN_LOAN_DATE is
+'希望放款日期';
+
+comment on column BIZ_PROJECT.PLAN_LOAN_MONEY is
+'借款金额';
+
+comment on column BIZ_PROJECT.LOAN_RATE is
+'借款利率';
+
+comment on column BIZ_PROJECT.MAX_LOAN_RATE is
+'最高承受利率';
+
+comment on column BIZ_PROJECT.IS_CLOSED is
+'是否关闭1、关闭2、正常';
+comment on column BIZ_PROJECT.IS_REJECT is
+'是否驳回1、驳回2、正常';
+comment on column BIZ_PROJECT.IS_ASSIGNED is
+'是否已分配1、未分配2、已分配';
+comment on column BIZ_PROJECT.AREA_CODE
+  is '业务申请所属城市编码';
+comment on column BIZ_PROJECT.APPLY_USER_ID
+  is '业务申请提交人';
+comment on column BIZ_PROJECT.IS_NEED_HANDLE
+  is '是否需要办理贷中1、办理2、不办理';
+comment on column BIZ_PROJECT.PROJECT_SOURCE
+  is '项目来源1、万通2、小科3、其他机构';
+  
+UPDATE BIZ_PROJECT T SET T.IS_CLOSED = 2 ;
+UPDATE BIZ_PROJECT T SET T.IS_NEED_HANDLE = 1 ;
+
+--创建机构的项目视图
+CREATE OR REPLACE VIEW ORG_BIZ_PROJECT_VIEW
+AS SELECT *
+  FROM BIZ_PROJECT A
+ WHERE A.PROJECT_TYPE = 6
+   AND A.STATUS = 1
+   AND A.IS_CLOSED = 2;
+
+
+alter table BIZ_PRODUCT
+ADD (
+	PRODUCT_SOURCE   INTEGER default 1
+);
+comment on column BIZ_PRODUCT.PRODUCT_SOURCE is
+'产品来源（1、小科以及万通2、机构的产品）';	
+
+--修改产品表数据
+UPDATE BIZ_PRODUCT T SET T.TRADE_TYPE = 13756 WHERE T.BIZHANDLE_WORK_PROCESS_ID = 'nonTransactionCashRedemptionHomeProcess';
+UPDATE BIZ_PRODUCT T SET T.TRADE_TYPE = 13755 WHERE T.BIZHANDLE_WORK_PROCESS_ID = 'transactionCashRedemptionHomeProcess';
+--初始化合作机构产品
+INSERT INTO BIZ_PRODUCT (PID,CREATER_ID,PRODUCT_TYPE,PRODUCT_NAME,CITY_ID,
+PRODUCT_NUM,STATUS,TRADE_TYPE,LOAN_WORK_PROCESS_ID,BIZHANDLE_WORK_PROCESS_ID,PRODUCT_SOURCE,CREATE_DATE,UPDATE_DATE)
+ values(SEQ_BIZ_PRODUCT.NEXTVAL,20084,2,'非交易类业务',0,'ORG001',1,13756,
+ 'businessApplyRequestProcess','nonTransactionCashRedemptionHomeProcess',2,SYSDATE,SYSDATE);
+ 
+ INSERT INTO BIZ_PRODUCT (PID,CREATER_ID,PRODUCT_TYPE,PRODUCT_NAME,CITY_ID,
+PRODUCT_NUM,STATUS,TRADE_TYPE,LOAN_WORK_PROCESS_ID,BIZHANDLE_WORK_PROCESS_ID,PRODUCT_SOURCE,CREATE_DATE,UPDATE_DATE)
+ values(SEQ_BIZ_PRODUCT.NEXTVAL,20084,2,'交易类业务',0,'ORG002',1,13755,
+ 'businessApplyRequestProcess','transactionCashRedemptionHomeProcess',2,SYSDATE,SYSDATE);
+ commit;
+ 
+ ALTER TABLE BIZ_PROJECT_PROPERTY
+  ADD CONSTRAINT UNIQUE_BIZ_PROJECT_PROPERTY
+  UNIQUE (PROJECT_ID);
+  
+  ALTER TABLE BIZ_PROJECT_FORECLOSURE
+  ADD CONSTRAINT UNIQUE_BIZ_PROJECT_FORECLOSURE
+  UNIQUE (PROJECT_ID);
+  
+  ALTER TABLE BIZ_PROJECT_GUARANTEE
+  ADD CONSTRAINT UNIQUE_PROJECT_GUARANTEE
+  UNIQUE (PROJECT_ID);
+  

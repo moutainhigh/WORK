@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xlkfinance.bms.server.inloan.mapper.BizCapitalSelRecordMapper">
+	<resultMap id="bizCapitalSelRecordMap" type="com.xlkfinance.bms.rpc.inloan.BizCapitalSelRecord">
+		<id property="pid" column="PID" />
+		<id property="projectId" column="PROJECT_ID" />
+		<id property="capitalName" column="CAPITAL_NAME" />
+		<id property="capitalApprovalStatus" column="CAPITAL_APPROVAL_STATUS" />
+		<id property="capitalLoanStatus" column="CAPITAL_LOAN_STATUS" />
+		<id property="createrId" column="CREATER_ID" />
+		<id property="createDate" column="CREATE_DATE" />
+		<id property="reviewId" column="REVIEW_ID" />
+		<id property="reviewTime" column="REVIEW_TIME" />
+		
+		<id property="createrName" column="CREATER_NAME" />
+		<id property="reviewName" column="REVIEW_NAME" />
+	</resultMap>
+	<sql id="column_list">
+        PID,PROJECT_ID,CAPITAL_NAME,CAPITAL_APPROVAL_STATUS,CAPITAL_LOAN_STATUS,CREATER_ID,CREATE_DATE,REVIEW_ID,REVIEW_TIME
+	</sql>
+	<!-- 查询所有 -->
+	<select id="getAll" resultMap="bizCapitalSelRecordMap" parameterType="com.xlkfinance.bms.rpc.inloan.BizCapitalSelRecord">
+		SELECT
+		<include refid="column_list" />
+		FROM BIZ_CAPITAL_SEL_RECORD
+		<where>
+			<trim>
+		      <if test="pid != null and pid >0">
+	          PID=#{pid}
+	          </if>
+		      <if test="projectId != null and projectId >0">
+	          AND PROJECT_ID=#{projectId}
+	          </if>
+		      <if test="capitalName != null and capitalName !=''">
+	          AND CAPITAL_NAME=#{capitalName}
+	          </if>
+		      <if test="capitalApprovalStatus != null and capitalApprovalStatus >0">
+	          AND CAPITAL_APPROVAL_STATUS=#{capitalApprovalStatus}
+	          </if>
+		      <if test="capitalLoanStatus != null and capitalLoanStatus >0">
+	          AND CAPITAL_LOAN_STATUS=#{capitalLoanStatus}
+	          </if>
+		      <if test="createrId != null and createrId >0">
+	          AND CREATER_ID=#{createrId}
+	          </if>
+		      <if test="createDate != null and createDate !=''">
+	          AND CREATE_DATE=#{createDate}
+	          </if>
+		      <if test="reviewId != null and reviewId >0">
+	          AND REVIEW_ID=#{reviewId}
+	          </if>
+		      <if test="reviewTime != null and reviewTime !=''">
+	          AND REVIEW_TIME=#{reviewTime}
+	          </if>
+			</trim>
+		</where>
+	</select>
+	<!-- 根据id获取 -->
+	<select id="getById" resultMap="bizCapitalSelRecordMap">
+		SELECT <include refid="column_list" /> FROM BIZ_CAPITAL_SEL_RECORD WHERE PID=#{pid}
+	</select>
+	<!-- 插入一条数据 -->
+	<insert id="insert" parameterType="com.xlkfinance.bms.rpc.inloan.BizCapitalSelRecord">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_BIZ_CAPITAL_SEL_RECORD.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_CAPITAL_SEL_RECORD
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+				PID,
+			</if>
+		    <if test="projectId != null and projectId >0">
+				PROJECT_ID,
+			</if>
+		    <if test="capitalName != null and capitalName !=''">
+				CAPITAL_NAME,
+			</if>
+		    <if test="capitalApprovalStatus != null and capitalApprovalStatus >0">
+				CAPITAL_APPROVAL_STATUS,
+			</if>
+		    <if test="capitalLoanStatus != null and capitalLoanStatus >0">
+				CAPITAL_LOAN_STATUS,
+			</if>
+		    <if test="createrId != null and createrId >0">
+				CREATER_ID,
+			</if>
+				CREATE_DATE,
+		    <if test="reviewId != null and reviewId >0">
+				REVIEW_ID,
+			</if>
+		    <if test="reviewTime != null and reviewTime !=''">
+				REVIEW_TIME,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+		    #{pid},
+			</if>
+		    <if test="projectId != null and projectId >0">
+		    #{projectId},
+			</if>
+		    <if test="capitalName != null and capitalName !=''">
+		    #{capitalName},
+			</if>
+		    <if test="capitalApprovalStatus != null and capitalApprovalStatus >0">
+		    #{capitalApprovalStatus},
+			</if>
+		    <if test="capitalLoanStatus != null and capitalLoanStatus >0">
+		    #{capitalLoanStatus},
+			</if>
+		    <if test="createrId != null and createrId >0">
+		    #{createrId},
+			</if>
+		   SYSDATE,
+		    <if test="reviewId != null and reviewId >0">
+		    #{reviewId},
+			</if>
+		    <if test="reviewTime != null and reviewTime !=''">
+		    #{reviewTime,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		</trim>
+	</insert>
+	<!-- 根据id删除数据 -->
+	<delete id="deleteById" parameterType="com.xlkfinance.bms.rpc.inloan.BizCapitalSelRecord">
+		<![CDATA[DELETE FROM BIZ_CAPITAL_SEL_RECORD WHERE PID=#{pid}]]>
+	</delete>
+	<!-- 根据id更新数据 -->
+		<update id="update" parameterType="com.xlkfinance.bms.rpc.inloan.BizCapitalSelRecord">
+		UPDATE BIZ_CAPITAL_SEL_RECORD
+		<set>
+		    <if test="pid != null and pid >0">
+		     PID=#{pid},
+			</if>
+		    <if test="projectId != null and projectId >0">
+		     PROJECT_ID=#{projectId},
+			</if>
+		    <if test="capitalName != null and capitalName !=''">
+		     CAPITAL_NAME=#{capitalName},
+			</if>
+		    <if test="capitalApprovalStatus != null and capitalApprovalStatus >0">
+		     CAPITAL_APPROVAL_STATUS=#{capitalApprovalStatus},
+			</if>
+		    <if test="capitalLoanStatus != null and capitalLoanStatus >0">
+		     CAPITAL_LOAN_STATUS=#{capitalLoanStatus},
+			</if>
+		    <if test="createrId != null and createrId >0">
+		     CREATER_ID=#{createrId},
+			</if>
+		    <if test="reviewId != null and reviewId >0">
+		     REVIEW_ID=#{reviewId},
+			</if>
+		    <if test="reviewTime != null and reviewTime !=''">
+		     REVIEW_TIME=#{reviewTime,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		</set>
+		WHERE PID = #{pid}
+	</update>
+	<!-- 根据传入多个id删除数据 -->
+	<delete id="deleteByIds" parameterType="java.util.List">
+		DELETE FROM BIZ_CAPITAL_SEL_RECORD WHERE PID in
+		<foreach collection="list" item="item" index="index" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+	
+	<select id="getAllByProjectId"  resultMap="bizCapitalSelRecordMap" parameterType="java.lang.Integer">
+		SELECT A.PID,
+       A.PROJECT_ID,
+       B.ORG_NAME AS CAPITAL_NAME,
+       A.CAPITAL_APPROVAL_STATUS,
+       A.CAPITAL_LOAN_STATUS,
+       A.CREATER_ID,
+       TO_CHAR(A.CREATE_DATE, 'yyyy-MM-dd hh24:mi:ss') AS CREATE_DATE,
+       A.REVIEW_ID,
+       TO_CHAR(A.REVIEW_TIME, 'yyyy-MM-dd hh24:mi:ss') AS REVIEW_TIME,
+       C.REAL_NAME AS CREATER_NAME,
+       D.REAL_NAME AS REVIEW_NAME
+	  FROM BIZ_CAPITAL_SEL_RECORD A
+	  LEFT JOIN CAPITAL_ORG_INFO B
+	  ON A.CAPITAL_NAME = B.ORG_CODE
+	  LEFT JOIN SYS_USER C
+	  ON A.CREATER_ID = C.PID
+	  LEFT JOIN SYS_USER D
+	  ON A.REVIEW_ID = D.PID
+		WHERE A.PROJECT_ID = #{projectId}
+		ORDER BY A.CREATE_DATE
+	</select>
+</mapper>

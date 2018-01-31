@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.xlkfinance.bms.server.aom.org.mapper.OrgCooperationContractMapper">
+	<resultMap id="orgCooperationContractMap"
+		type="com.qfang.xk.aom.rpc.org.OrgCooperationContract">
+		<id property="pid" column="PID" />
+		<id property="cooperationId" column="COOPERATION_ID" />
+		<id property="contractName" column="CONTRACT_NAME" />
+		<id property="contractNo" column="CONTRACT_NO" />
+		<id property="fileId" column="FILE_ID" />
+		<id property="contractType" column="CONTRACT_TYPE" />
+		<id property="creatorId" column="CREATOR_ID" />
+		<id property="createdDatetime" column="CREATED_DATETIME" />
+		<id property="updateId" column="UPDATE_ID" />
+		<id property="updateDate" column="UPDATE_DATE" />
+		<id property="remark" column="REMARK" />
+		<association property="file" javaType="com.xlkfinance.bms.rpc.system.BizFile">
+			<id property="pid" column="F_PID" />
+			<result property="fileName" column="F_FILE_NAME" />
+			<result property="fileType" column="F_FILE_TYPE" />
+			<result property="fileSize" column="F_FILE_SIZE" />
+			<result property="uploadDttm" column="F_UPLOAD_DTTM" />
+			<result property="uploadUserId" column="F_UPLOAD_USER_ID" />
+			<result property="fileUrl" column="F_FILE_URL" />
+			<result property="status" column="F_STATUS" />
+			<result property="remark" column="F_REMARK" />
+		</association>
+	</resultMap>
+	<sql id="column_list">
+	   C.PID,
+       C.COOPERATION_ID,
+       C.CONTRACT_NAME,
+       C.CONTRACT_NO,
+       C.FILE_ID,
+       C.CONTRACT_TYPE,
+       C.CREATOR_ID,
+       TO_CHAR(C.CREATED_DATETIME, 'yyyy-mm-dd hh24:mi:ss') AS CREATED_DATETIME,
+       C.UPDATE_ID,
+       TO_CHAR(C.UPDATE_DATE, 'yyyy-mm-dd hh24:mi:ss') AS UPDATE_DATE,
+       C.REMARK,
+       F.PID              AS F_PID,
+       F.FILE_NAME        AS F_FILE_NAME,
+       F.FILE_TYPE        AS F_FILE_TYPE,
+       F.FILE_SIZE        AS F_FILE_SIZE,
+       F.UPLOAD_DTTM      AS F_UPLOAD_DTTM,
+       F.UPLOAD_USER_ID   AS F_UPLOAD_USER_ID,
+       F.FILE_URL         AS F_FILE_URL,
+       F.STATUS           AS F_STATUS,
+       F.REMARK           AS F_REMARK
+	</sql>
+	<!-- 查询所有 -->
+	<select id="getAll" resultMap="orgCooperationContractMap"
+		parameterType="com.qfang.xk.aom.rpc.org.OrgCooperationContract">
+		SELECT
+		<include refid="column_list" />
+		FROM ORG_COOPERATION_CONTRACT C LEFT JOIN BIZ_FILE F
+		ON C.FILE_ID=F.PID
+		<where>
+			<trim>
+				<if test="pid != null and pid >0">
+					C.PID=#{pid}
+				</if>
+				<if test="cooperationId != null and cooperationId >0">
+					AND C.COOPERATION_ID=#{cooperationId}
+				</if>
+				<if test="contractName != null and contractName !=''">
+					AND C.CONTRACT_NAME=#{contractName}
+				</if>
+				<if test="contractNo != null and contractNo !=''">
+					AND C.CONTRACT_NO=#{contractNo}
+				</if>
+				<if test="fileId != null and fileId >0">
+					AND C.FILE_ID=#{fileId}
+				</if>
+				<if test="contractType != null and contractType >0">
+					AND C.CONTRACT_TYPE=#{contractType}
+				</if>
+				<if test="creatorId != null and creatorId >0">
+					AND C.CREATOR_ID=#{creatorId}
+				</if>
+				<if test="createdDatetime != null and createdDatetime !=''">
+					AND C.CREATED_DATETIME=#{createdDatetime}
+				</if>
+				<if test="updateId != null and updateId >0">
+					AND C.UPDATE_ID=#{updateId}
+				</if>
+				<if test="updateDate != null and updateDate !=''">
+					AND C.UPDATE_DATE=#{updateDate}
+				</if>
+				<if test="remark != null and remark !=''">
+					AND C.REMARK=#{remark}
+				</if>
+			</trim>
+		</where>
+	</select>
+	<!-- 根据id获取 -->
+	<select id="getById" resultMap="orgCooperationContractMap">
+		SELECT
+		<include refid="column_list" />
+		FROM ORG_COOPERATION_CONTRACT C LEFT JOIN BIZ_FILE F
+		ON C.FILE_ID=F.PID WHERE C.PID=#{pid}
+	</select>
+	<!--根据机构id和类型查询机构合作合同 -->
+	<select id="getByOrgIdAndType" resultMap="orgCooperationContractMap">
+		SELECT
+		<include refid="column_list" />
+	FROM ORG_COOPERATION_CONTRACT C
+	LEFT JOIN BIZ_FILE F
+	ON C.FILE_ID = F.PID
+	LEFT JOIN ORG_COOPERAT_COMPANY_APPLY_INF CCA
+	ON CCA.PID = C.COOPERATION_ID
+	WHERE C.CONTRACT_TYPE=#{contractType} AND CCA.ORG_ID=#{orgId}
+	</select>
+	<!-- 插入一条数据 -->
+	<insert id="insert" parameterType="com.qfang.xk.aom.rpc.org.OrgCooperationContract">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_ORG_COOPERATION_CONTRACT.Nextval as PID from
+			DUAL
+		</selectKey>
+		INSERT INTO ORG_COOPERATION_CONTRACT
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="pid != null and pid >0">
+				PID,
+			</if>
+			<if test="cooperationId != null and cooperationId >0">
+				COOPERATION_ID,
+			</if>
+			<if test="contractName != null and contractName !=''">
+				CONTRACT_NAME,
+			</if>
+			<if test="contractNo != null and contractNo !=''">
+				CONTRACT_NO,
+			</if>
+			<if test="fileId != null and fileId >0">
+				FILE_ID,
+			</if>
+			<if test="contractType != null and contractType >0">
+				CONTRACT_TYPE,
+			</if>
+			<if test="creatorId != null and creatorId >0">
+				CREATOR_ID,
+			</if>
+			<if test="createdDatetime != null and createdDatetime !=''">
+		     	CREATED_DATETIM,
+			</if>
+			<if test="updateId != null and updateId >0">
+				UPDATE_ID,
+			</if>
+			<if test="updateDate != null and updateDate !=''">
+				UPDATE_DATE,
+			</if>
+			<if test="remark != null and remark !=''">
+				REMARK,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="pid != null and pid >0">
+				#{pid},
+			</if>
+			<if test="cooperationId != null and cooperationId >0">
+				#{cooperationId},
+			</if>
+			<if test="contractName != null and contractName !=''">
+				#{contractName},
+			</if>
+			<if test="contractNo != null and contractNo !=''">
+				#{contractNo},
+			</if>
+			<if test="fileId != null and fileId >0">
+				#{fileId},
+			</if>
+			<if test="contractType != null and contractType >0">
+				#{contractType},
+			</if>
+			<if test="creatorId != null and creatorId >0">
+				#{creatorId},
+			</if>
+			<if test="createdDatetime != null and createdDatetime !=''">
+		    	#{createdDatetime,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+			<if test="updateId != null and updateId >0">
+				#{updateId},
+			</if>
+			<if test="updateDate != null and updateDate !=''">
+				#{updateDate,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+			<if test="remark != null and remark !=''">
+				#{remark},
+			</if>
+		</trim>
+	</insert>
+
+	<!-- 根据id更新数据 -->
+	<update id="update" parameterType="com.qfang.xk.aom.rpc.org.OrgCooperationContract">
+		UPDATE ORG_COOPERATION_CONTRACT
+		<set>
+			<if test="cooperationId != null and cooperationId >0">
+				COOPERATION_ID=#{cooperationId},
+			</if>
+			<if test="contractName != null and contractName !=''">
+				CONTRACT_NAME=#{contractName},
+			</if>
+			<if test="contractNo != null and contractNo !=''">
+				CONTRACT_NO=#{contractNo},
+			</if>
+			<if test="fileId != null and fileId >0">
+				FILE_ID=#{fileId},
+			</if>
+			<if test="contractType != null and contractType >0">
+				CONTRACT_TYPE=#{contractType},
+			</if>
+			<if test="updateId != null and updateId >0">
+				UPDATE_ID=#{updateId},
+			</if>
+				UPDATE_DATE=SYSDATE,
+			<if test="remark != null and remark !=''">
+				REMARK=#{remark},
+			</if>
+		</set>
+		WHERE PID = #{pid}
+	</update>
+	<!-- 删除合作合同 -->
+	<update id="delOrgCooperate" parameterType="java.lang.Integer">
+		UPDATE ORG_COOPERATION_CONTRACT SET CONTRACT_NAME = NULL ,CONTRACT_NO = NULL,
+		FILE_ID = NULL, UPDATE_DATE = NULL,REMARK = NULL WHERE PID = #{pid}
+	</update>
+	
+</mapper>

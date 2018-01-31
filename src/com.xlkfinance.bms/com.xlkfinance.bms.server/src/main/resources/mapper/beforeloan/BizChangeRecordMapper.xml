@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xlkfinance.bms.server.beforeloan.mapper.BizChangeRecordMapper">
+	<resultMap id="bizChangeRecordMap" type="com.xlkfinance.bms.rpc.beforeloan.BizChangeRecord">
+		<id property="pid" column="PID" />
+		<id property="relationId" column="RELATION_ID" />
+		<id property="modifyUser" column="MODIFY_USER" />
+		<id property="modifyTime" column="MODIFY_TIME" />
+		<id property="modifyReason" column="MODIFY_REASON" />
+		<id property="oldValue" column="OLD_VALUE" />
+		<id property="newValue" column="NEW_VALUE" />
+		<id property="valueType" column="VALUE_TYPE" />
+		<id property="changeType" column="CHANGE_TYPE" />
+		<id property="operationIp" column="OPERATION_IP" />
+	</resultMap>
+	<sql id="column_list">
+        PID,RELATION_ID,MODIFY_USER,MODIFY_TIME,MODIFY_REASON,OLD_VALUE,NEW_VALUE,VALUE_TYPE,CHANGE_TYPE,OPERATION_IP
+	</sql>
+	<!-- 查询所有 -->
+	<select id="getAll" resultMap="bizChangeRecordMap" parameterType="com.xlkfinance.bms.rpc.beforeloan.BizChangeRecord">
+		SELECT
+		<include refid="column_list" />
+		FROM BIZ_CHANGE_RECORD
+		<where>
+			<trim>
+		      <if test="pid != null and pid >0">
+	          PID=#{pid}
+	          </if>
+		      <if test="relationId != null and relationId >0">
+	          AND RELATION_ID=#{relationId}
+	          </if>
+		      <if test="modifyUser != null and modifyUser >0">
+	          AND MODIFY_USER=#{modifyUser}
+	          </if>
+		      <if test="modifyTime != null and modifyTime !=''">
+	          AND MODIFY_TIME=#{modifyTime}
+	          </if>
+		      <if test="modifyReason != null and modifyReason !=''">
+	          AND MODIFY_REASON=#{modifyReason}
+	          </if>
+		      <if test="oldValue != null and oldValue !=''">
+	          AND OLD_VALUE=#{oldValue}
+	          </if>
+		      <if test="newValue != null and newValue !=''">
+	          AND NEW_VALUE=#{newValue}
+	          </if>
+		      <if test="valueType != null and valueType >0">
+	          AND VALUE_TYPE=#{valueType}
+	          </if>
+		      <if test="changeType != null and changeType >0">
+	          AND CHANGE_TYPE=#{changeType}
+	          </if>
+		      <if test="operationIp != null and operationIp !=''">
+	          AND OPERATION_IP=#{operationIp}
+	          </if>
+			</trim>
+		</where>
+	</select>
+	<!-- 根据id获取 -->
+	<select id="getById" resultMap="bizChangeRecordMap">
+		SELECT <include refid="column_list" /> FROM BIZ_CHANGE_RECORD WHERE PID=#{pid}
+	</select>
+	<!-- 插入一条数据 -->
+	<insert id="insert" parameterType="com.xlkfinance.bms.rpc.beforeloan.BizChangeRecord">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_BIZ_CHANGE_RECORD.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_CHANGE_RECORD
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+				PID,
+			</if>
+		    <if test="relationId != null and relationId >0">
+				RELATION_ID,
+			</if>
+		    <if test="modifyUser != null and modifyUser >0">
+				MODIFY_USER,
+			</if>
+				MODIFY_TIME,
+		    <if test="modifyReason != null and modifyReason !=''">
+				MODIFY_REASON,
+			</if>
+		    <if test="oldValue != null and oldValue !=''">
+				OLD_VALUE,
+			</if>
+		    <if test="newValue != null and newValue !=''">
+				NEW_VALUE,
+			</if>
+		    <if test="valueType != null and valueType >0">
+				VALUE_TYPE,
+			</if>
+		    <if test="changeType != null and changeType >0">
+				CHANGE_TYPE,
+			</if>
+		    <if test="operationIp != null and operationIp !=''">
+				OPERATION_IP,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+		    #{pid},
+			</if>
+		    <if test="relationId != null and relationId >0">
+		    #{relationId},
+			</if>
+		    <if test="modifyUser != null and modifyUser >0">
+		    #{modifyUser},
+			</if>
+		    SYSDATE,
+		    <if test="modifyReason != null and modifyReason !=''">
+		    #{modifyReason},
+			</if>
+		    <if test="oldValue != null and oldValue !=''">
+		    #{oldValue},
+			</if>
+		    <if test="newValue != null and newValue !=''">
+		    #{newValue},
+			</if>
+		    <if test="valueType != null and valueType >0">
+		    #{valueType},
+			</if>
+		    <if test="changeType != null and changeType >0">
+		    #{changeType},
+			</if>
+		    <if test="operationIp != null and operationIp !=''">
+		    #{operationIp},
+			</if>
+		</trim>
+	</insert>
+
+	<!-- 根据id更新数据 -->
+		<update id="update" parameterType="com.xlkfinance.bms.rpc.beforeloan.BizChangeRecord">
+		UPDATE BIZ_CHANGE_RECORD
+		<set>
+		    <if test="pid != null and pid >0">
+		     PID=#{pid},
+			</if>
+		    <if test="relationId != null and relationId >0">
+		     RELATION_ID=#{relationId},
+			</if>
+		    <if test="modifyUser != null and modifyUser >0">
+		     MODIFY_USER=#{modifyUser},
+			</if>
+		    <if test="modifyTime != null and modifyTime !=''">
+		     MODIFY_TIME=#{modifyTime,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		    <if test="modifyReason != null and modifyReason !=''">
+		     MODIFY_REASON=#{modifyReason},
+			</if>
+		    <if test="oldValue != null and oldValue !=''">
+		     OLD_VALUE=#{oldValue},
+			</if>
+		    <if test="newValue != null and newValue !=''">
+		     NEW_VALUE=#{newValue},
+			</if>
+		    <if test="valueType != null and valueType >0">
+		     VALUE_TYPE=#{valueType},
+			</if>
+		    <if test="changeType != null and changeType >0">
+		     CHANGE_TYPE=#{changeType},
+			</if>
+		    <if test="operationIp != null and operationIp !=''">
+		     OPERATION_IP=#{operationIp},
+			</if>
+		</set>
+		WHERE PID = #{pid}
+	</update>
+
+</mapper>

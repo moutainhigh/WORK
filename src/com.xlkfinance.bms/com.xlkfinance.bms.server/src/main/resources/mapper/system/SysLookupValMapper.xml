@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.system.mapper.SysLookupValMapper">
+	<resultMap id="SysLookupValResultMap" type="com.xlkfinance.bms.rpc.system.SysLookupVal">
+		<id column="PID" property="pid" jdbcType="INTEGER" />
+		<result column="LOOKUP_ID" property="lookupId"  />
+		<result column="LOOKUP_VAL" property="lookupVal"  />
+		<result column="LOOKUP_DESC" property="lookupDesc"  />	
+		<result column="STATUS" property="status"/>
+	</resultMap>
+	
+	<select id="getSysLookupValByLookType" resultMap="SysLookupValResultMap" parameterType="java.lang.String">
+		SELECT lv.PID,lv.LOOKUP_ID,LOOKUP_VAL,lv.LOOKUP_DESC 
+		FROM SYS_LOOKUP l,SYS_LOOKUP_VAL lv
+		WHERE lv.status = 1  and l.PID = lv.LOOKUP_ID  
+		AND l.lookup_type = #{lookupType}
+	</select>
+	
+	<select id="getProjectAssDtlByLookType" resultMap="SysLookupValResultMap" parameterType="java.lang.String">
+		SELECT look.pid,lv.lookup_desc,lv.lookup_val,lv.show_index
+		FROM Sys_Lookup look,sys_lookup_val lv
+		WHERE look.pid = lv.lookup_id
+		AND look.lookup_type = #{lookupType}
+		AND lv.lookup_val IS NOT NULL
+		AND lv.status = 1
+		AND look.status = 1
+		ORDER BY lv.show_index
+	</select>
+	
+	<!-- 添加数据字典值 -->
+	<insert id="insert" parameterType="com.xlkfinance.bms.rpc.system.SysLookupVal">
+		<!-- 获取序列号 -->
+		<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+			SELECT SEQ_SYS_LOOKUP_VAL.Nextval as PID from DUAL
+		</selectKey>
+		
+		INSERT INTO SYS_LOOKUP_VAL
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			PID,
+			STATUS,
+			<if test="lookupId != null">
+				LOOKUP_ID,
+			</if>
+			<if test="lookupVal != null">
+				LOOKUP_VAL,
+			</if>
+			<if test="lookupDesc != null">
+				LOOKUP_DESC,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+				#{pid},
+				1,
+			<if test="lookupId != null">
+				#{lookupId},
+			</if>
+			<if test="lookupVal != null">
+				#{lookupVal},
+			</if>
+			<if test="lookupDesc != null">
+				#{lookupDesc},
+			</if>
+		</trim>
+	</insert>
+	
+	<!-- 删除当前数据字典配置项下面的所有数据字典值 -->
+	<delete id="batchDelete" parameterType="java.lang.String">
+		DELETE FROM SYS_LOOKUP_VAL WHERE LOOKUP_ID in 
+		<foreach item="idItem" collection="array" open="(" separator="," close=")">
+			#{idItem}
+		</foreach>
+	</delete>
+	
+	<!-- 删除数据字典值 -->
+	<delete id="deleteLookupVal" parameterType="java.lang.String">
+		DELETE FROM SYS_LOOKUP_VAL WHERE PID in 
+		<foreach item="idItem" collection="array" open="(" separator="," close=")">
+			#{idItem}
+		</foreach>
+	</delete>
+	
+	<!-- 修改数据字典值  -->
+	<update id="updateByPrimaryKey" parameterType="com.xlkfinance.bms.rpc.system.SysLookupVal">
+		UPDATE SYS_LOOKUP_VAL 
+		<trim prefix="set" suffixOverrides=",">
+			<if test="lookupVal != null ">
+				LOOKUP_VAL = #{lookupVal},
+			</if>
+			<if test="lookupDesc != null ">
+				LOOKUP_DESC = #{lookupDesc},
+			</if>
+		</trim>
+		WHERE PID = #{pid}
+	</update>
+	
+	<!-- 取当前数据字典下面的值集合 -->
+	<select id="getSysLookupValByLookupId" resultMap="SysLookupValResultMap" parameterType="Map">
+		SELECT PID,LOOKUP_ID,LOOKUP_VAL,LOOKUP_DESC 
+	  		FROM (SELECT A.*, ROWNUM RN FROM(
+				SELECT 
+					PID,LOOKUP_ID,LOOKUP_VAL,LOOKUP_DESC 
+				FROM Sys_Lookup_Val  
+			WHERE LOOKUP_ID = #{lookupId} ) A)
+		WHERE RN BETWEEN (((#{page}-1) * #{rows})+1) AND (#{page} * #{rows})
+	</select>
+	
+	<!-- 取当前数据字典下面的值集合总数 -->
+	<select id="getSysLookupValByLookupIdTotal" resultType="Integer" parameterType="Integer">
+		SELECT COUNT(1)
+			FROM Sys_Lookup_Val  
+		WHERE LOOKUP_ID = #{lookupId} 
+	</select>
+		<!-- 根据id得到对象 -->
+	<select id="getSysLookupValByName" resultType="java.lang.String" parameterType="java.lang.Integer">
+		SELECT 
+		 LOOKUP_DESC 
+		FROM Sys_Lookup_Val  
+		WHERE pid = #{pid} 
+	</select>
+	<!-- 获取数据字典值 -->
+	<select id="getSysLookupValByPid" resultType="java.lang.String" parameterType="java.lang.Integer">
+		SELECT 
+		LOOKUP_VAL
+		FROM Sys_Lookup_Val  
+		WHERE pid = #{pid} 
+	</select>
+	
+	<!-- 根据客户类型查询资料类型 -->
+	<select id="getDataTypeSysLookup" resultMap="SysLookupValResultMap" parameterType="java.lang.Integer">
+		SELECT LV.PID, LV.LOOKUP_ID, LOOKUP_VAL, LV.LOOKUP_DESC
+ 		 FROM SYS_LOOKUP L, SYS_LOOKUP_VAL LV
+ 			WHERE L.PID = LV.LOOKUP_ID
+   		AND L.LOOKUP_TYPE = 'FILE_PROPERTY'
+   		AND LV.LOOKUP_VAL IN
+       (SELECT TO_CHAR(CA.CUS_TYPE)
+          FROM BIZ_PROJECT BP, CUS_ACCT CA
+         WHERE BP.ACCT_ID = CA.PID
+         AND BP.PID = #{projectId}
+        UNION ALL
+        SELECT LOOKUP_VAL
+          FROM SYS_LOOKUP L, SYS_LOOKUP_VAL LV
+ 			WHERE L.PID = LV.LOOKUP_ID
+   		AND L.LOOKUP_TYPE = 'FILE_PROPERTY'
+        AND LOOKUP_VAL NOT IN ('1', '2')) ORDER BY PID DESC
+	</select>
+	
+	<select id="getPidIdByLookupVal" parameterType="java.util.Map" resultType="java.lang.Integer">
+	SELECT slv.pid
+	  FROM SYS_LOOKUP SL, SYS_LOOKUP_VAL SLV
+	 WHERE SL.LOOKUP_TYPE = #{lookupType,jdbcType=VARCHAR}
+	   AND SLV.LOOKUP_VAL = #{lookupVal,jdbcType=VARCHAR}
+	
+	</select>
+
+	<!-- 根据数据字典类型,和字典值     查询当前字典对象 -->
+	<select id="getSysLookupValByChildType" parameterType="java.util.Map" resultMap="SysLookupValResultMap">
+		SELECT SLV.PID,SLV.LOOKUP_ID,SLV.LOOKUP_VAL,SLV.LOOKUP_DESC 
+			FROM SYS_LOOKUP  SL ,SYS_LOOKUP_VAL  SLV 
+	       	
+	       	WHERE SL.PID  = SLV.LOOKUP_ID
+	        	AND SL.LOOKUP_TYPE = #{lookupType,jdbcType=VARCHAR}
+	            AND SLV.LOOKUP_VAL = #{lookupVal,jdbcType=VARCHAR}
+				AND SLV.STATUS = 1
+			   	AND SL.STATUS = 1
+	</select>
+	
+	<!-- 根据项目类型以及项目ID查询资料类型 -->
+	<select id="getDataTypeByType" resultMap="SysLookupValResultMap" parameterType="java.lang.String">
+		SELECT LV.PID, LV.LOOKUP_ID, LOOKUP_VAL, LV.LOOKUP_DESC
+ 		 FROM SYS_LOOKUP L, SYS_LOOKUP_VAL LV
+ 			WHERE L.PID = LV.LOOKUP_ID
+   			AND L.LOOKUP_TYPE = 'FILE_PROPERTY'
+			AND LV.LOOKUP_VAL IN
+			<foreach item="itemId" collection="array" open="(" separator="," close=")">
+			          #{itemId}
+			</foreach>
+   		 ORDER BY PID DESC
+	</select>
+	
+</mapper>

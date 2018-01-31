@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.beforeloan.mapper.ProjectAssureMapper">
+	<resultMap id="ProjectAssureResultMap" type="com.xlkfinance.bms.rpc.beforeloan.ProjectAssure">
+		<id column="PID" property="pid"/>
+		<result column="PROJECT_ID" property="projectId"/>
+		<result column="ASSURE_TYPE" property="assureType"/>
+		<result column="REF_ID" property="refId"/>
+		<result column="STATUS" property="status"/>
+		<result column="dataObject" property="dataObject"/>
+		<!-- 个人的页面所需展示信息 -->
+		<result column="CHINA_NAME" property="chinaName"/>
+		<result column="sexText" property="sexText"/>
+		<result column="certTypeText" property="certTypeText"/>
+		<result column="TELEPHONE" property="telephone"/>
+		<result column="MOBILE_PHONE" property="mobilePhone"/>
+		<result column="OCCUPATION" property="occupation"/>
+		<result column="WORK_UNIT" property="workUnit"/>
+		<result column="UNIT_PHONE" property="unitPhone"/>
+		<result column="UNIT_ADDR" property="unitAddr"/>
+		<!-- 企业法人的页面所需展示信息 -->
+		<result column="CPY_NAME" property="cpyName"/>
+		<result column="ORG_CODE" property="orgCode"/>
+		<result column="BUS_LIC_CERT" property="busLicCert"/>
+		<result column="comAllNatureText" property="comAllNatureText"/>
+		<result column="comOwnName" property="comOwnName"/>
+		<result column="REG_MONEY" property="regMoney"/>
+		<result column="cusTelephone" property="cusTelephone"/>
+		<result column="FOUND_DATE" property="foundDate"/>
+		<result column="CPY_ABBR_NAME" property="cpyAbbrName"/>
+	</resultMap>
+    
+    <!-- 根据项目ID查询保证信息 -->
+    <select id="getAssureByProjectId" resultMap="ProjectAssureResultMap" parameterType="java.lang.Integer">
+		SELECT A.PID,A.PROJECT_ID,A.ASSURE_TYPE,A.REF_ID,A.STATUS,P.CHINA_NAME dataObject
+  		FROM BIZ_PROJECT_ASSURE A, CUS_PERSON P
+ 		WHERE A.ASSURE_TYPE = 1 AND A.REF_ID = P.PID
+		AND PROJECT_ID = #{projectId} 
+		UNION
+		SELECT A.PID, A.PROJECT_ID, A.ASSURE_TYPE, A.REF_ID, A.STATUS, B.CPY_NAME
+  		FROM BIZ_PROJECT_ASSURE A, CUS_COM_BASE B
+ 		WHERE A.ASSURE_TYPE = 2 AND A.REF_ID = B.ACCT_ID
+		AND PROJECT_ID = #{projectId} 
+  	</select>
+	
+	<!-- 查询个人的保证信息 -->
+	<select id="getProjectAssureByPersonal" resultMap="ProjectAssureResultMap">
+		SELECT A.PID,(SELECT look.lookup_desc FROM Sys_Lookup_Val look WHERE look.pid = p.sex) sexText,A.PROJECT_ID,
+       	P.CHINA_NAME,p.telephone,p.mobile_phone,p.occupation,p.work_unit,p.unit_phone,p.unit_addr,
+      	(SELECT LK.LOOKUP_DESC FROM SYS_LOOKUP_VAL LK,sys_lookup sl WHERE sl.lookup_type = 'RELATION' AND
+      	sl.pid = lk.lookup_id AND LK.LOOKUP_VAL = to_char(P.relation_type)) certTypeText
+      	FROM BIZ_PROJECT_ASSURE A, CUS_PERSON P 
+     	WHERE A.REF_ID = P.PID 
+     	AND A.ASSURE_TYPE = 1
+		AND A.PROJECT_ID IN 
+		<foreach item="item" collection="projectIds" open="(" separator="," close=")">  
+			#{item}  
+		</foreach> 
+     	ORDER BY A.PROJECT_ID ASC
+	</select>
+	
+	<!-- 查询企业法人的保证信息 -->
+	<select id="getProjectAssureByEnterprise" resultMap="ProjectAssureResultMap" >
+		SELECT A.PID,B.CPY_NAME,b.Cpy_Abbr_Name,b.org_code,b.bus_lic_cert,b.reg_money,b.telephone cusTelephone,A.PROJECT_ID,
+      	(SELECT look.lookup_desc FROM Sys_Lookup_Val look WHERE look.pid = b.com_all_nature) comAllNatureText,
+      	(SELECT p.china_name FROM cus_person p  WHERE p.pid = b.com_own_id) comOwnName,b.CPY_ABBR_NAME,B.FOUND_DATE
+      	FROM BIZ_PROJECT_ASSURE A, cus_acct acct, CUS_COM_BASE B
+  		WHERE A.REF_ID = acct.PID
+     	AND acct.pid = b.acct_id 
+     	AND A.ASSURE_TYPE = 2
+		AND A.PROJECT_ID IN 
+		<foreach item="item" collection="projectIds" open="(" separator="," close=")">  
+			#{item}  
+		</foreach> 
+    	ORDER BY A.PROJECT_ID ASC
+	</select>
+	
+	<!-- 添加保证信息 -->
+	<insert id="insert" parameterType="com.xlkfinance.bms.rpc.beforeloan.ProjectAssure">
+		<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+			SELECT SEQ_BIZ_PROJECT_ASSURE.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_PROJECT_ASSURE
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			PID,
+			<if test="projectId != null and projectId != -1 ">
+				PROJECT_ID,
+			</if>
+			<if test="assureType != null and assureType != -1 ">
+				ASSURE_TYPE,
+			</if>
+			<if test="refId != null and refId != -1 ">
+				REF_ID,
+			</if>
+			<if test="status != null and status != -1 ">
+				STATUS,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+				#{pid},
+			<if test="projectId != null and projectId != -1 ">
+				#{projectId},
+			</if>
+			<if test="assureType != null and assureType != -1 ">
+				#{assureType},
+			</if>
+			<if test="refId != null and refId != -1 ">
+				#{refId},
+			</if>
+			<if test="status != null and status != -1 ">
+				#{status},
+			</if>
+		</trim>
+	</insert>
+	
+	<!-- 批量删除保证信息 -->
+	<delete id="deleteProjectAssure" parameterType="java.lang.String">
+        DELETE BIZ_PROJECT_ASSURE 
+        WHERE PID in 
+        <foreach item="idItem" collection="array" open="(" separator="," close=")">
+			#{idItem}
+		</foreach>
+	</delete>
+	
+	<!-- 根据项目ID删除保证信息 -->
+	<delete id="deleteProjectAssureByProjectId" parameterType="java.lang.Integer" >
+		DELETE BIZ_PROJECT_ASSURE 
+		WHERE PROJECT_ID = #{projectId}
+	</delete>
+	
+</mapper>

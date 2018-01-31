@@ -1,0 +1,493 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xlkfinance.bms.server.aom.org.mapper.OrgCooperatCompanyApplyInfMapper">
+	<resultMap id="orgCooperatCompanyApplyInfMap" type="com.qfang.xk.aom.rpc.org.OrgCooperatCompanyApplyInf">
+		<id property="pid" column="PID" />
+		<id property="orgId" column="ORG_ID" />
+		<id property="userId" column="USER_ID" />
+		<id property="startTime" column="START_TIME" />
+		<id property="endTime" column="END_TIME" />
+		<id property="creditLimit" column="CREDIT_LIMIT" />
+		<id property="availableLimit" column="AVAILABLE_LIMIT" />
+		<id property="assureMoney" column="ASSURE_MONEY" />
+		<id property="realAssureMoney" column="REAL_ASSURE_MONEY" />
+		<id property="status" column="STATUS" />
+		<id property="item" column="ITEM" />
+		<id property="creatorId" column="CREATOR_ID" />
+		<id property="createdDate" column="CREATED_DATE" />
+		<id property="updateId" column="UPDATE_ID" />
+		<id property="updateDate" column="UPDATE_DATE" />
+		<id property="remark" column="REMARK" />
+		<id property="applyStatus" column="APPLY_STATUS" />
+		<id property="dataVersion" column="DATA_VERSION" />
+		<id property="isNeedHandle" column="IS_NEED_HANDLE" />
+		<id property="rate" column="RATE" />
+		<id property="singleUpperLimit" column="SINGLE_UPPER_LIMIT" />
+		<id property="actualFeeRate" column="ACTUAL_FEE_RATE" />
+		<id property="fundSizeMoney" column="FUND_SIZE_MONEY" />
+		
+		<id property="assureMoneyProportion" column="ASSURE_MONEY_PROPORTION" />
+		<id property="activateCreditLimit" column="ACTIVATE_CREDIT_LIMIT" />
+		<id property="assureMoneyRemark" column="ASSURE_MONEY_REMARK" />
+		<id property="usedLimit" column="USED_LIMIT" />
+	</resultMap>
+	
+	<resultMap id="orgCooperatCompanyApplyMap" type="com.qfang.xk.aom.rpc.org.OrgCooperatCompanyApply">
+		<id property="pid" column="PID" />
+		<id property="orgId" column="ORG_ID" />
+		<id property="userId" column="USER_ID" />
+		<id property="startTime" column="START_TIME" />
+		<id property="endTime" column="END_TIME" />
+		<id property="creditLimit" column="CREDIT_LIMIT" />
+		<id property="availableLimit" column="AVAILABLE_LIMIT" />
+		<id property="assureMoney" column="ASSURE_MONEY" />
+		<id property="applyStatus" column="APPLY_STATUS" />
+		
+		<id property="orgName" column="ORG_NAME" />
+		<id property="orgCode" column="ORG_CODE" />
+		<id property="hisCooperationNum" column="HIS_COOPERATION_NUM" />
+		<id property="cooperationNum" column="COOPERATION_NUM" />
+		<id property="partnerName" column="PARTNER_NAME" />
+		<id property="contact" column="CONTACT" />
+		<id property="phone" column="PHONE" />
+		<id property="applyDate" column="APPLY_DATE" />
+		<id property="isNeedHandle" column="IS_NEED_HANDLE" />
+		<id property="rate" column="RATE" />
+		<id property="singleUpperLimit" column="SINGLE_UPPER_LIMIT" />
+		<id property="actualFeeRate" column="ACTUAL_FEE_RATE" />
+		<id property="fundSizeMoney" column="FUND_SIZE_MONEY" />
+		<id property="realAssureMoney" column="REAL_ASSURE_MONEY" />
+		<id property="cooperationUpdateStatus" column="COOPERATION_UPDATE_STATUS" />
+	</resultMap>
+	<sql id="column_list">
+        A.PID,A.ORG_ID,A.USER_ID,TO_CHAR(A.START_TIME,'yyyy-MM-dd') AS START_TIME,TO_CHAR(A.END_TIME,'yyyy-MM-dd') AS END_TIME,
+        A.CREDIT_LIMIT,A.AVAILABLE_LIMIT,A.ASSURE_MONEY,A.REAL_ASSURE_MONEY,A.STATUS,A.ITEM,A.CREATOR_ID,A.CREATED_DATE,A.UPDATE_ID,A.UPDATE_DATE,A.REMARK,
+        A.APPLY_STATUS,A.DATA_VERSION,A.IS_NEED_HANDLE,A.SINGLE_UPPER_LIMIT,A.RATE,A.ACTUAL_FEE_RATE,A.FUND_SIZE_MONEY,A.ASSURE_MONEY_PROPORTION
+        ,A.ACTIVATE_CREDIT_LIMIT,A.ASSURE_MONEY_REMARK,B.USED_LIMIT
+	</sql>
+	<!-- 查询所有 -->
+	<select id="getAll" resultMap="orgCooperatCompanyApplyInfMap" parameterType="com.qfang.xk.aom.rpc.org.OrgCooperatCompanyApplyInf">
+		SELECT
+		<include refid="column_list" />
+		FROM ORG_COOPERAT_COMPANY_APPLY_INF A,ORG_USED_LIMIT B
+		<where>
+			<trim>
+			  <if test="1==1">
+	          A.ORG_ID = B.ORG_ID
+	          </if>
+		      <if test="pid != null and pid >0">
+	          AND A.PID=#{pid}
+	          </if>
+		      <if test="orgId != null and orgId >0">
+	          AND A.ORG_ID=#{orgId}
+	          </if>
+		      <if test="userId != null and userId >0">
+	          AND A.USER_ID=#{userId}
+	          </if>
+		      <if test="startTime != null and startTime !=''">
+	          AND A.START_TIME=#{startTime}
+	          </if>
+		      <if test="endTime != null and endTime !=''">
+	          AND A.END_TIME=#{endTime}
+	          </if>
+		      <if test="creditLimit != null and creditLimit >0">
+	          AND A.CREDIT_LIMIT=#{creditLimit}
+	          </if>
+		      <if test="availableLimit != null and availableLimit >0">
+	          AND A.AVAILABLE_LIMIT=#{availableLimit}
+	          </if>
+		      <if test="assureMoney != null and assureMoney >0">
+	          AND A.ASSURE_MONEY=#{assureMoney}
+	          </if>
+		      <if test="realAssureMoney != null and realAssureMoney >0">
+	          AND A.REAL_ASSURE_MONEY=#{assureMoney}
+	          </if>
+		      <if test="status != null and status >0">
+	          AND A.STATUS=#{status}
+	          </if>
+		      <if test="item != null and item !=''">
+	          AND A.ITEM=#{item}
+	          </if>
+		      <if test="creatorId != null and creatorId >0">
+	          AND A.CREATOR_ID=#{creatorId}
+	          </if>
+		      <if test="createdDate != null and createdDate !=''">
+	          AND A.CREATED_DATE=#{createdDate}
+	          </if>
+		      <if test="updateId != null and updateId >0">
+	          AND A.UPDATE_ID=#{updateId}
+	          </if>
+		      <if test="updateDate != null and updateDate !=''">
+	          AND A.UPDATE_DATE=#{updateDate}
+	          </if>
+		      <if test="remark != null and remark !=''">
+	          AND A.REMARK=#{remark}
+	          </if>
+	          <if test="applyStatus != null and applyStatus >0">
+	          AND A.APPLY_STATUS=#{applyStatus}
+	          </if>
+	          <if test="dataVersion != null and dataVersion >0">
+	          AND A.DATA_VERSION=#{dataVersion}
+	          </if>
+	          <if test="isNeedHandle != null and isNeedHandle >0">
+	          AND A.IS_NEED_HANDLE=#{isNeedHandle}
+	          </if>
+			</trim>
+		</where>
+	</select>
+	<!-- 根据id获取 -->
+	<select id="getById" resultMap="orgCooperatCompanyApplyInfMap">
+		SELECT <include refid="column_list" /> FROM ORG_COOPERAT_COMPANY_APPLY_INF A,ORG_USED_LIMIT B WHERE A.ORG_ID = B.ORG_ID AND A.PID=#{pid}
+	</select>
+	<!-- 根据用户id查询 -->
+	<select id="getByUserId" resultMap="orgCooperatCompanyApplyInfMap">
+		SELECT <include refid="column_list" /> FROM ORG_COOPERAT_COMPANY_APPLY_INF A,ORG_USED_LIMIT B WHERE A.ORG_ID = B.ORG_ID AND A.USER_ID=#{userId}
+	</select>
+	<!-- 插入一条数据 -->
+	<insert id="insert" parameterType="com.qfang.xk.aom.rpc.org.OrgCooperatCompanyApplyInf">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_ORG_COOPERAT_COMPANY_APPLY.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO ORG_COOPERAT_COMPANY_APPLY_INF
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+				PID,
+			</if>
+		    <if test="orgId != null and orgId >0">
+				ORG_ID,
+			</if>
+		    <if test="userId != null and userId >0">
+				USER_ID,
+			</if>
+		    <if test="startTime != null and startTime !=''">
+				START_TIME,
+			</if>
+		    <if test="endTime != null and endTime !=''">
+				END_TIME,
+			</if>
+		    <if test="creditLimit != null and creditLimit !=-1">
+				CREDIT_LIMIT,
+			</if>
+		    <if test="availableLimit != null and availableLimit !=-1">
+				AVAILABLE_LIMIT,
+			</if>
+		    <if test="assureMoney != null and assureMoney !=-1">
+				ASSURE_MONEY,
+			</if>
+			<if test="realAssureMoney != null and realAssureMoney >0">
+	          AND REAL_ASSURE_MONEY,
+	        </if>
+		    <if test="status != null and status >0">
+				STATUS,
+			</if>
+		    <if test="item != null and item !=''">
+				ITEM,
+			</if>
+		    <if test="creatorId != null and creatorId >0">
+				CREATOR_ID,
+			</if>
+				CREATED_DATE,
+		    <if test="remark != null and remark !=''">
+				REMARK,
+			</if>
+			<if test="applyStatus != null and applyStatus >0">
+				APPLY_STATUS,
+			</if>
+			<if test="isNeedHandle != null and isNeedHandle >0">
+	          IS_NEED_HANDLE,
+	        </if>
+	        <if test="rate != null and rate != -1">
+	          RATE,
+	        </if>
+	        <if test="singleUpperLimit != null and singleUpperLimit != -1">
+	          SINGLE_UPPER_LIMIT,
+	        </if>
+	        <if test="actualFeeRate != null and actualFeeRate != -1">
+	          ACTUAL_FEE_RATE,
+	        </if>
+	        <if test="fundSizeMoney != null and fundSizeMoney != -1">
+	          FUND_SIZE_MONEY,
+	        </if>
+	        <if test="assureMoneyProportion != null and assureMoneyProportion != -1">
+	          ASSURE_MONEY_PROPORTION,
+	        </if>
+	        <if test="activateCreditLimit != null and activateCreditLimit != -1">
+	          ACTIVATE_CREDIT_LIMIT,
+	        </if>
+	        <if test="assureMoneyRemark != null and assureMoneyRemark != ''">
+	          ASSURE_MONEY_REMARK,
+	        </if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+		    #{pid},
+			</if>
+		    <if test="orgId != null and orgId >0">
+		    #{orgId},
+			</if>
+		    <if test="userId != null and userId >0">
+		    #{userId},
+			</if>
+		    <if test="startTime != null and startTime !=''">
+		    #{startTime,jdbcType= DATE,javaType= java.lang.String},
+			</if>
+		    <if test="endTime != null and endTime !=''">
+		    #{endTime,jdbcType= DATE,javaType= java.lang.String},
+			</if>
+		    <if test="creditLimit != null and creditLimit !=-1">
+		    #{creditLimit},
+			</if>
+		    <if test="availableLimit != null and availableLimit !=-1">
+		    #{availableLimit},
+			</if>
+		    <if test="assureMoney != null and assureMoney !=-1">
+		    #{assureMoney},
+			</if>
+			<if test="realAssureMoney != null and realAssureMoney >0">
+	        #{realAssureMoney},
+	        </if>
+		    <if test="status != null and status >0">
+		    #{status},
+			</if>
+		    <if test="item != null and item !=''">
+		    #{item},
+			</if>
+		    <if test="creatorId != null and creatorId >0">
+		    #{creatorId},
+			</if>
+		    SYSDATE,
+		    <if test="remark != null and remark !=''">
+		    #{remark},
+			</if>
+			<if test="applyStatus != null and applyStatus >0">
+				#{applyStatus},
+			</if>
+			<if test="isNeedHandle != null and isNeedHandle >0">
+	          #{isNeedHandle},
+	        </if>
+	        <if test="rate != null and rate != -1">
+	          #{rate},
+	        </if>
+	        <if test="singleUpperLimit != null and singleUpperLimit != -1">
+	          #{singleUpperLimit},
+	        </if>
+	        <if test="actualFeeRate != null and actualFeeRate != -1">
+	          #{actualFeeRate},
+	        </if>
+	        <if test="fundSizeMoney != null and fundSizeMoney != -1">
+	          #{fundSizeMoney},
+	        </if>
+	        <if test="assureMoneyProportion != null and assureMoneyProportion != -1">
+	          #{assureMoneyProportion},
+	        </if>
+	        <if test="activateCreditLimit != null and activateCreditLimit != -1">
+	          #{activateCreditLimit},
+	        </if>
+	        <if test="assureMoneyRemark != null and assureMoneyRemark != ''">
+	          #{assureMoneyRemark},
+	        </if>
+		</trim>
+	</insert>
+
+	<!-- 根据id更新数据 -->
+		<update id="update" parameterType="com.qfang.xk.aom.rpc.org.OrgCooperatCompanyApplyInf">
+		UPDATE ORG_COOPERAT_COMPANY_APPLY_INF
+		<set>
+		    <if test="startTime != null and startTime !=''">
+		     START_TIME=#{startTime,jdbcType= DATE,javaType= java.lang.String},
+			</if>
+		    <if test="endTime != null and endTime !=''">
+		     END_TIME=#{endTime,jdbcType= DATE,javaType= java.lang.String},
+			</if>
+		    <if test="creditLimit != null and creditLimit != -1">
+		     CREDIT_LIMIT=#{creditLimit},
+			</if>
+		    <if test="availableLimit != null">
+		     AVAILABLE_LIMIT=#{availableLimit},
+			</if>
+		    <if test="assureMoney != null and assureMoney != -1">
+		     ASSURE_MONEY=#{assureMoney},
+			</if>
+			<if test="realAssureMoney != null">
+	         REAL_ASSURE_MONEY=#{realAssureMoney},
+	        </if>
+		    <if test="status != null and status >0">
+		     STATUS=#{status},
+			</if>
+		    <if test="item != null and item !=''">
+		     ITEM=#{item},
+			</if>
+		    <if test="updateId != null and updateId >0">
+		     UPDATE_ID=#{updateId},
+			</if>
+		     UPDATE_DATE=SYSDATE,
+		    <if test="remark != null and remark !=''">
+		     REMARK=#{remark},
+			</if>
+			<if test="applyStatus != null and applyStatus >0">
+			 APPLY_STATUS = #{applyStatus},
+			</if>
+			<if test="isNeedHandle != null and isNeedHandle >0">
+	          IS_NEED_HANDLE=#{isNeedHandle},
+	        </if>
+	        <if test="rate != null and rate != -1">
+	          RATE = #{rate},
+	        </if>
+	        <if test="singleUpperLimit != null and singleUpperLimit != -1">
+	          SINGLE_UPPER_LIMIT = #{singleUpperLimit},
+	        </if>
+	        <if test="actualFeeRate != null and actualFeeRate != -1">
+	          ACTUAL_FEE_RATE = #{actualFeeRate},
+	        </if>
+	        <if test="fundSizeMoney != null and fundSizeMoney != -1">
+	          FUND_SIZE_MONEY = #{fundSizeMoney},
+	        </if>
+	        <if test="assureMoneyProportion != null and assureMoneyProportion != -1">
+	          ASSURE_MONEY_PROPORTION=#{assureMoneyProportion},
+	        </if>
+	        <if test="activateCreditLimit != null">
+	          ACTIVATE_CREDIT_LIMIT=#{activateCreditLimit},
+	        </if>
+	        <if test="assureMoneyRemark != null and assureMoneyRemark != ''">
+	          ASSURE_MONEY_REMARK=#{assureMoneyRemark},
+	        </if>
+			DATA_VERSION = DATA_VERSION + 1
+		</set>
+		WHERE PID = #{pid}
+	</update>
+	
+	<!-- 分页查询申请信息 -->
+	<select id="getOrgCooperateByPage" parameterType="com.qfang.xk.aom.rpc.org.OrgCooperatCompanyApply" resultMap="orgCooperatCompanyApplyMap">
+		<![CDATA[SELECT D.* FROM (SELECT T.*, ROWNUM RN
+	        	FROM (
+			SELECT OCC.PID,
+                       OCC.ORG_ID,
+                       OAC.ORG_NAME,
+                       OAC.CODE AS ORG_CODE,
+                       OUI.REAL_NAME AS PARTNER_NAME,
+                       OCC.REAL_ASSURE_MONEY,
+                       OAC.CONTACT,
+                       OAC.PHONE,
+                       TO_CHAR(OCC.CREATED_DATE, 'yyyy-mm-dd hh24:mi:ss') AS APPLY_DATE,
+                       OCC.APPLY_STATUS,
+                       TO_CHAR(OCC.START_TIME, 'yyyy-MM-dd') AS START_TIME,
+                       TO_CHAR(OCC.END_TIME, 'yyyy-MM-dd') AS END_TIME,
+                       OCC.CREDIT_LIMIT,
+                       OCC.ASSURE_MONEY,
+                       OCC.AVAILABLE_LIMIT,
+                       OCC.RATE,
+                       OCC.SINGLE_UPPER_LIMIT,
+                       OCC.ACTUAL_FEE_RATE,
+                       OCC.FUND_SIZE_MONEY,
+                       DECODE(LAST_COOPERATION_APLLY_STATUS(OCC.ORG_ID),
+                              null,
+                              1,
+                              LAST_COOPERATION_APLLY_STATUS(OCC.ORG_ID)) AS COOPERATION_UPDATE_STATUS
+				FROM  ORG_COOPERAT_COMPANY_APPLY_INF OCC 
+       			LEFT JOIN ORG_ASSETS_COOPERATION_INFO OAC
+       				 ON OCC.ORG_ID = OAC.PID
+       				 LEFT JOIN ORG_PARTNER_INFO OPI
+       				ON OAC.PARTNER_ID = OPI.PID
+       				LEFT JOIN ORG_USER_INFO OUI
+       				ON OUI.PID = OPI.USER_ID
+       				LEFT JOIN ORG_BIZ_ADVISER_ALLOCATION_INF D
+               		ON OCC.ORG_ID= D.SERVICE_OBJ_ID
+       			WHERE OCC.APPLY_STATUS IN (1,2,3,4,5) AND D.PID >0
+				]]>
+			<if test="orgName != null and orgName != ''">
+				AND OAC.ORG_NAME LIKE '%${orgName}%'
+			</if>
+			<if test="orgCode != null and orgCode != ''">
+				AND OAC.CODE LIKE '%${orgCode}%'
+			</if>
+			<if test="contact != null and contact != ''">
+				AND OAC.CONTACT LIKE '%${contact}%'
+			</if>
+			<if test="applyStatus != null and applyStatus>0">
+				AND OCC.APPLY_STATUS =#{applyStatus}
+			</if>
+			<if test="isNeedHandle != null and isNeedHandle >0">
+	          AND IS_NEED_HANDLE=#{isNeedHandle}
+	         </if>
+	         <!-- 数据权限 -->
+			<if test="userIds!=null and userIds.size()>0">
+				AND	D.BIZ_ADVISER_ID IN
+			<foreach item="itemId" collection="userIds" open="(" separator="," close=")">
+			          #{itemId}
+			</foreach>
+			</if>
+			<![CDATA[ORDER BY OCC.CREATED_DATE DESC) T
+			WHERE ROWNUM <=#{page}*#{rows}
+			) D
+		WHERE D.RN > ((#{page}-1)*#{rows})]]>
+	</select>
+	
+	<select id="getOrgCooperateCount" parameterType="com.qfang.xk.aom.rpc.org.OrgCooperatCompanyApply" resultType="Integer">
+		SELECT COUNT(*) FROM (
+			SELECT OCC.PID
+				FROM  ORG_COOPERAT_COMPANY_APPLY_INF OCC 
+       			LEFT JOIN ORG_ASSETS_COOPERATION_INFO OAC
+       				 ON OCC.ORG_ID = OAC.PID
+       				 LEFT JOIN ORG_PARTNER_INFO OPI
+       				ON OAC.PARTNER_ID = OPI.PID
+       				LEFT JOIN ORG_USER_INFO OUI
+       				ON OUI.PID = OPI.USER_ID
+       				LEFT JOIN ORG_BIZ_ADVISER_ALLOCATION_INF D
+               		ON OCC.ORG_ID= D.SERVICE_OBJ_ID
+       			WHERE OCC.APPLY_STATUS IN (1,2,3,4,5) AND D.PID >0
+			<if test="orgName != null and orgName != ''">
+				AND OAC.ORG_NAME LIKE '%${orgName}%'
+			</if>
+			<if test="orgCode != null and orgCode != ''">
+				AND OAC.CODE LIKE '%${orgCode}%'
+			</if>
+			<if test="contact != null and contact != ''">
+				AND OAC.CONTACT LIKE '%${contact}%'
+			</if>
+			<if test="applyStatus != null and applyStatus>0">
+				AND OCC.APPLY_STATUS =#{applyStatus}
+			</if>
+			<!-- 数据权限 -->
+			<if test="userIds!=null and userIds.size()>0">
+				AND	D.BIZ_ADVISER_ID IN
+			<foreach item="itemId" collection="userIds" open="(" separator="," close=")">
+			          #{itemId}
+			</foreach>
+			</if>
+			<if test="isNeedHandle != null and isNeedHandle >0">
+	          AND IS_NEED_HANDLE=#{isNeedHandle}
+	          </if>
+			) DP
+	</select>
+	
+	<update id="updateApplyStatus" parameterType="com.qfang.xk.aom.rpc.org.OrgCooperatCompanyApplyInf">
+		UPDATE ORG_COOPERAT_COMPANY_APPLY_INF
+		<set>
+			UPDATE_DATE=SYSDATE,
+			<if test="applyStatus != null and applyStatus >0">
+			APPLY_STATUS = #{applyStatus},
+			</if>
+			<if test="updateId != null and updateId >0">
+		     UPDATE_ID=#{updateId},
+			</if>
+		</set>
+		WHERE PID = #{pid}
+	</update>
+	
+	<select id="getOrgNameByCid" parameterType="java.lang.Integer" resultType="java.lang.String" >
+		SELECT OAC.ORG_NAME  FROM ORG_COOPERAT_COMPANY_APPLY_INF OCC
+                          LEFT JOIN ORG_ASSETS_COOPERATION_INFO OAC
+                          ON OAC.PID = OCC.ORG_ID
+                          WHERE OCC.PID =#{pid}
+	</select>
+	<!-- 贷前业务来源下拉框选项数据 -->
+	<select id="getOrgAssetsList" resultMap="orgCooperatCompanyApplyMap">
+		SELECT A.PID AS ORG_ID,A.ORG_NAME AS ORG_NAME,B.RATE AS RATE 
+		FROM ORG_ASSETS_COOPERATION_INFO A 
+		LEFT JOIN 
+		ORG_COOPERAT_COMPANY_APPLY_INF B 
+		ON A.PID = B.ORG_ID
+		WHERE A.AUDIT_STATUS =3 ORDER BY A.PID
+	</select>
+</mapper>

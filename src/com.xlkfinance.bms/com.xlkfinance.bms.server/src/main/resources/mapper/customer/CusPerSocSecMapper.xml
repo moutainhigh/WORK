@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.customer.mapper.CusPerSocSecMapper">
+
+ <resultMap id="selectAllResultMap" type="com.xlkfinance.bms.rpc.customer.CusPerSocSec" >
+    <id column="PID" property="pid" jdbcType="INTEGER" />
+    <result column="CUS_PER_ID" property="cusPerBase.pid" jdbcType="INTEGER" />
+    <result column="SAFE_UNIT" property="safeUnit" jdbcType="VARCHAR" />
+    <result column="SAFE_TIME" property="safeTime" jdbcType="DATE" javaType="String" />
+    <result column="MED_MONEY" property="medMoney" jdbcType="DOUBLE" />
+    <result column="SAFE_NUM" property="safeNum" jdbcType="DOUBLE" />
+    <result column="PEN_MONEY" property="penMoney" jdbcType="DOUBLE" />
+    <result column="SUSPEND" property="suspend" jdbcType="INTEGER" />
+    <result column="STATUS" property="status" jdbcType="INTEGER" />
+    
+  	<result column="TOTAL_SAFE_TIME" property="totalSafeTime" jdbcType="INTEGER" />
+  </resultMap>
+						
+<insert id="insert" parameterType="com.xlkfinance.bms.rpc.customer.CusPerSocSec">
+  <selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+		SELECT SEQ_CUS_PER_SOC_SEC.Nextval as PID from DUAL
+	</selectKey>
+    insert into cus_per_soc_sec 
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+    		PID, 
+    	<if test="cusPerBase.pid != null">
+    		CUS_PER_ID, 
+    	</if>
+    	<if test="safeUnit != null and safeUnit !=''">
+    		SAFE_UNIT, 
+    	</if>
+    	<if test="safeTime != null and safeTime !=''">
+    		SAFE_TIME, 
+    	</if>
+    	<if test="medMoney != null and medMoney !=''">
+    		MED_MONEY, 
+    	</if>
+    	<if test="safeNum != null and safeNum !=''">
+    		SAFE_NUM, 
+    	</if>
+    	<if test="penMoney != null and penMoney !=''">
+    		PEN_MONEY, 
+    	</if>
+    	<if test="suspend != null and suspend !=''">
+    		SUSPEND,
+    	</if>
+    	
+    	<if test="totalSafeTime != null and totalSafeTime !=''">
+    		TOTAL_SAFE_TIME,
+    	</if>
+    	
+    		STATUS
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+    		#{pid,jdbcType=INTEGER}, 
+    	<if test="cusPerBase.pid != null">
+    		#{cusPerBase.pid,jdbcType=INTEGER}, 
+    	</if>
+		<if test="safeUnit != null and safeUnit !=''">
+     		#{safeUnit,jdbcType=VARCHAR}, 
+     	</if>
+		<if test="safeTime != null and safeTime !=''">
+     		#{safeTime,jdbcType=DATE,javaType=String},
+     	</if>
+		<if test="medMoney != null and medMoney !=''">
+     		#{medMoney,jdbcType=DOUBLE},
+     	</if>
+		<if test="safeNum != null and safeNum !=''">
+     		#{safeNum,jdbcType=DOUBLE}, 
+     	</if>
+		<if test="penMoney != null and penMoney !=''">
+     		#{penMoney,jdbcType=DOUBLE},
+     	</if>
+		<if test="suspend != null and suspend !=''">
+     		#{suspend,jdbcType=INTEGER},
+     	</if>
+     	
+     	<if test="totalSafeTime != null and totalSafeTime !=''">
+     		#{totalSafeTime,jdbcType=INTEGER},
+     	</if>
+     		#{status,jdbcType=INTEGER}
+     	</trim>
+  </insert>
+  <!-- 更新的方法 -->
+	<update id="updateByPrimaryKey" parameterType="com.xlkfinance.bms.rpc.customer.CusPerSocSec">
+		update cus_per_soc_sec
+		<set>
+		<if test="cusPerBase.pid != null">
+		    CUS_PER_ID = #{cusPerBase.pid,jdbcType=INTEGER},
+		</if>
+		<if test="safeUnit != null">
+     		SAFE_UNIT = #{safeUnit,jdbcType=VARCHAR}, 
+     	</if> 
+     	<if test="safeTime != null">
+     		SAFE_TIME = #{safeTime,jdbcType=DATE,javaType=String},
+     	</if>
+     	<if test="medMoney != null">
+     		MED_MONEY = #{medMoney,jdbcType=DOUBLE},
+     	</if>
+     	<if test="safeNum != null">
+     		SAFE_NUM = #{safeNum,jdbcType=DOUBLE}, 
+     	</if>
+     	<if test="penMoney != null">
+     		PEN_MONEY = #{penMoney,jdbcType=DOUBLE},
+     	</if>
+     	<if test="suspend != null">
+     		SUSPEND = #{suspend,jdbcType=INTEGER},
+     	</if>
+     	
+     	<if test="totalSafeTime != null and totalSafeTime !=''">
+    		TOTAL_SAFE_TIME = #{totalSafeTime,jdbcType=INTEGER},
+    	</if>
+     	
+     	<if test="status != null">
+     		STATUS = #{status,jdbcType=INTEGER},
+     	</if>
+		</set>
+		where pid = #{pid,jdbcType=INTEGER}
+	</update>
+	
+	
+	<select id="selectByPrimaryKey" resultMap="selectAllResultMap" parameterType="java.lang.Integer">
+  		select * from cus_per_soc_sec where CUS_PER_ID=#{pid,jdbcType=INTEGER}
+  	</select>
+</mapper>

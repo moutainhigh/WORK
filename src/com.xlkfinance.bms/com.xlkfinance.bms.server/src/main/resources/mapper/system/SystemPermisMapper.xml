@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.system.mapper.SystemPermisMapper">
+	 
+	<!-- 查询所有角色 -->
+	<select id="getAllPermisForPage" resultType="com.xlkfinance.bms.rpc.system.SysPermission" parameterType="com.xlkfinance.bms.rpc.system.SysPermission">
+		SELECT 
+			pid,permis_code as permisCode,
+			(CASE WHEN permis_type='CDM' THEN '增删修改'
+			      WHEN permis_type='MNU' THEN '菜单权限'
+			      WHEN permis_type='QUY' THEN '数据查询'
+			      END   
+			) as permisType,
+			permis_name as permisName,permis_desc as permisDesc,p.menu_id
+		from sys_permission p where rowid IN
+		  (select rid from 
+		    (select rownum rn,rid FROM
+		      (select rowid rid,pid FROM sys_permission  order by PERMIS_NAME ASC)
+		    where rownum<![CDATA[<=]]>#{page}*#{rows}) 
+		where rn>=((#{page}-1)*#{rows})+1)
+		ORDER BY PERMIS_NAME ASC
+	</select>
+	
+	<!-- 查询所有权限记录数 -->
+	<select id="getAllPermisCount" resultType="java.lang.Integer" parameterType="com.xlkfinance.bms.rpc.system.SysPermission">
+		select count(1) from sys_permission
+	</select>
+	
+	<!-- 模糊查询 -->
+	<select id="searchPermisByLike"  parameterType="com.xlkfinance.bms.rpc.system.SysPermission"  resultType="com.xlkfinance.bms.rpc.system.SysPermission" >
+		SELECT 
+			pid,permis_code as permisCode,
+			(CASE WHEN permis_type='CDM' THEN '增删修改'
+			      WHEN permis_type='MNU' THEN '菜单权限'
+			      WHEN permis_type='QUY' THEN '数据查询'
+			      END   
+			) as permisType,
+			permis_name as permisName,permis_desc as permisDesc,p.menu_id as menuId
+		from sys_permission p where rowid IN
+		  (select rid from 
+		    (select rownum rn,rid FROM
+		      (select rowid rid,pid FROM sys_permission
+		       where 1=1
+		      	<if test="permisName!=null and permisName!=''">  
+		            and permis_name like '%'||#{permisName}||'%'
+		        </if>  
+		        <if test="permisType!=null and permisType!='' ">  
+		            and permis_type like '%'||#{permisType}||'%'
+		        </if>  
+		        <if test="permisCode!=null and permisCode!='' ">  
+		            and permis_code like '%'||#{permisCode}||'%'
+		        </if>  
+		        order by pid desc)
+		    where rownum<![CDATA[<=]]>#{page}*#{rows}) 
+		where rn>=((#{page}-1)*#{rows})+1)
+		
+	</select>
+	
+	<!-- 模糊查询权限记录数 -->
+	<select id="searchPermisByLikeCount" resultType="java.lang.Integer" parameterType="com.xlkfinance.bms.rpc.system.SysPermission">
+		select count(pid) FROM sys_permission
+	     where 1=1
+	     <if test="permisName!=null and permisName!=''">  
+	         and permis_name like '%'||#{permisName}||'%'
+	     </if>  
+	     <if test="permisType!=null and permisType!='' ">  
+	         and permis_type like '%'||#{permisType}||'%'
+	     </if>  
+	     <if test="permisCode!=null and permisCode!='' ">  
+	         and permis_code like '%'||#{permisCode}||'%'
+	     </if>  
+	</select>
+	
+	<!-- 增加权限信息 -->
+	<insert id="addPermission" parameterType="com.xlkfinance.bms.rpc.system.SysPermission">
+		<selectKey resultType="int" keyProperty="pid" order="BEFORE">
+        	SELECT seq_sys_permission.NEXTVAL FROM DUAL
+      	</selectKey>
+		INSERT INTO sys_permission P (
+		    p.pid,
+		    p.permis_type,
+		    p.permis_name,
+		    p.permis_desc,
+		    p.permis_code,
+		    <if test="menuId != null">
+				p.MENU_ID,
+			</if>
+			p.status
+		)VALUES(
+		    #{pid},
+		    #{permisType},
+		    #{permisName},
+		    #{permisDesc},
+		    #{permisCode},
+		    <if test="menuId != null">
+			#{menuId},
+			</if>
+			1
+		)
+	</insert>
+	
+	<!-- 修改权限信息 -->
+	<update id="updatePermisInfo"  parameterType="com.xlkfinance.bms.rpc.system.SysPermission">
+		update sys_permission p set 
+		  permis_type = #{permisType},
+		  p.permis_name=#{permisName},
+		  p.permis_desc=#{permisDesc},
+		  p.permis_code = #{permisCode}
+		where  pid=#{pid}
+	</update>
+	
+	<!-- 修改权限信息 -->
+	<update id="updateSysPermissionByMenuId"  parameterType="com.xlkfinance.bms.rpc.system.SysPermission">
+		update sys_permission p set 
+		  permis_type = #{permisType},
+		  p.permis_name=#{permisName},
+		  p.permis_desc=#{permisDesc},
+		  p.permis_code = #{permisCode}
+		where  p.menu_id=#{menuId}
+	</update>
+	<!-- 删除一个权限并删除 和 角色的关系 -->
+	<delete id="deletePermission" parameterType="com.xlkfinance.bms.rpc.system.SysPermission">
+		delete from sys_permission where  pid=#{pid}
+	</delete>
+	<!-- 删除一菜单权限 -->
+	<delete id="deleteSysPermissionByMenuId" parameterType="com.xlkfinance.bms.rpc.system.SysPermission">
+		delete from sys_permission where  menu_id=#{menuId}
+	</delete>
+	
+	<delete id="deletePermissionOfRoleRalation" parameterType="com.xlkfinance.bms.rpc.system.SysPermission">
+		delete from SYS_ROLE_PERMISSION rp where rp.role_id=#{pid}
+	</delete>
+	
+	<!-- 查询权限下的角色 -->
+	<select id="getRoleOfPermisList" resultType="com.xlkfinance.bms.rpc.system.SysRole" parameterType="java.util.Map">
+		SELECT pid,role_name AS roleName,role_desc AS roleDesc,role_code as roleCode from 
+		    (select rownum rn,rid,pid,role_name,role_desc,role_code FROM
+		      (select rowid rid,pid,role_name,role_desc,role_code FROM  
+		        (SELECT r.pid,r.role_name,r.role_desc,r.role_code
+		        FROM sys_permission p,SYS_ROLE_PERMISSION rp,sys_role r
+		        WHERE rp.permis_id =p.pid
+		        AND r.pid = rp.role_id
+		        AND p.pid = #{pid})  
+		      order by pid desc)
+		    where rownum<![CDATA[<=]]>#{pageNum}*#{pageSize}) 
+	  	where rn>=((#{pageNum}-1)*#{pageSize})+1
+	</select>
+	<select id="getPermisRoleListTotal" resultType="java.lang.Integer" parameterType="com.xlkfinance.bms.rpc.system.SysPermission">
+            SELECT count(1)
+            FROM sys_permission p,SYS_ROLE_PERMISSION rp,sys_role r
+            WHERE rp.permis_id =p.pid
+            AND r.pid = rp.role_id
+            AND p.PID=#{pid}
+	</select>
+	
+	
+	<!-- 查询权限下没有角色 -->
+	<select id="getNotHaveRoleOfPermisList" resultType="com.xlkfinance.bms.rpc.system.SysRole" parameterType="java.util.Map">
+		SELECT 
+		       pid,role_name as roleName,role_desc as roleDesc,role_code as roleCode
+		        from  (SELECT r.pid,r.role_name,r.role_desc,ROWID AS rid   FROM sys_role r
+		              WHERE r.pid NOT IN (
+		              SELECT r.pid
+		               FROM sys_permission p,SYS_ROLE_PERMISSION rp,sys_role r
+		               WHERE rp.permis_id =p.pid
+		               AND   r.pid = rp.role_id
+		               AND  p.PID=#{pid}))  p where rowid IN
+		  (select rid from 
+		    (select rownum rn,rid FROM
+		      (select rowid rid,pid FROM (SELECT r.pid,r.role_name,r.role_desc,ROWID AS rid   FROM sys_role r
+		              WHERE r.pid NOT IN (
+		              SELECT r.pid
+		               FROM sys_permission p,SYS_ROLE_PERMISSION rp,sys_role r
+		               WHERE rp.permis_id =p.pid
+		               AND   r.pid = rp.role_id
+		               AND  p.PID=#{pid}))  order by pid desc)
+		    where rownum<![CDATA[<=]]>#{pageNum}*#{pageSize}) 
+	  	where rn>=((#{pageNum}-1)*#{pageSize})+1)
+	</select>
+	
+	<!-- 删除权限下的角色 -->
+	<delete id="deleteRoleOfPermisByPid" parameterType="java.util.Map">
+		DELETE FROM SYS_ROLE_PERMISSION rp where rp.role_id=#{roleId} and rp.permis_id=#{permisId}
+	</delete>
+	
+	<!-- 增加一条角色权限关系 -->
+	<insert id="addRolePermisRelation" parameterType="java.util.Map">
+		<selectKey resultType="int" keyProperty="pid" order="BEFORE">
+        	SELECT SEQ_SYS_ROLE_PERMISSION.NEXTVAL FROM DUAL
+      	</selectKey>
+		INSERT INTO SYS_ROLE_PERMISSION RP (
+			RP.pid,
+			RP.ROLE_ID,
+			RP.PERMIS_ID,
+			RP.STATUS
+		)VALUES(
+			#{pid},
+			#{roleId},
+			#{permisId},
+			1
+		)
+	</insert>
+	<!-- 根据权限名称   查询权限记录 -->
+	<select id="getPermisByName" parameterType="String" resultType="com.xlkfinance.bms.rpc.system.SysPermission">
+		SELECT SP.PID AS pid,
+	       SP.PERMIS_CODE AS permisCode,
+	       SP.PERMIS_TYPE AS permisType,
+	       SP.PERMIS_NAME AS permisName,
+	       SP.PERMIS_DESC AS permisDesc
+	  	FROM SYS_PERMISSION SP
+		WHERE SP.PERMIS_NAME = #{permisName}
+	</select>
+</mapper>

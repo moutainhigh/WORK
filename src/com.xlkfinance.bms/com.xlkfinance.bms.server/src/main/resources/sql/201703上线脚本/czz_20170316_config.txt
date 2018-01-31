@@ -1,0 +1,61 @@
+==============================================菜单配置信息====================================================================================
+
+/**添加菜单*/
+资金机构管理  添加菜单
+客户征信列表	/cusCreditController/cusCreditIndex.action
+
+
+资金机构管理  添加菜单
+资金银行列表	/partnerBankController/partnerBankIndex.action
+
+
+====================
+添加字典项
+	1、主配置类型---------
+	
+	配置类型：PARTNER_PC_SERVER
+	配置名称：资金合作机构服务器信息
+	描述：用于南粤银行接口客户ip和mac
+	
+	配置值---------
+	数据字典值：PARTNER_PC_SERVER_IP
+	数据字典描述：124.250.70.80
+	
+	数据字典值：PARTNER_PC_SERVER_MAC
+	数据字典描述：44:A8:42:35:A3:75
+	
+	
+web-config.properties   添加南粤银行配置
+	
+#=============================nangyueyinhang config ===========================================
+#nyyh public key
+nyyh.partner.public.key=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC8Ap2acPEH53MwKi+x2An8W+OTcqsjy9umT9wXECaSwrkTkM9sGVAhb4SOytWzRJDElNoVqkzUMfgacBAGwo/M78dKrxDt7cN7nIpNkVEPa9OLaqalHwiRKTOJyt53muU3SYWb8izfANWgKpJwZcOvb+uQ0Z1oEwTFUcS14YGxmQIDAQAB
+#nyyh api url
+nyyh.partner.api.url=http://cgm.nanyuejf.com:8369/leex-api/szrService/doInvoke
+#nyyh file api url
+nyyh.partner.api.file.url=http://cgm.nanyuejf.com:8375/leex-file/upload
+#nyyh useraccount config
+nyyh.partner.org.code=qf
+nyyh.partner.org.user=qf
+nyyh.partner.org.pwd=qf@1234
+nyyh.partner.agency.code=qf_ag001
+ 
+#nyyh sftp config
+nyyh.sftp.server.ip=120.77.174.161
+nyyh.sftp.server.port=22
+nyyh.sftp.server.username=sftp_erp
+nyyh.sftp.server.password=sftp_erp_risk
+#sftp file base dir
+nyyh.sftp.dir.base.path=/data/sftp/sftp_erp/upload/bms/partner
+
+
+
+#===========================添加定时配置文件=====================================================
+/config/job-config.xml
+
+
+spring-mvc.xml 文件添加配置
+	<!-- 定时任务的配置 -->
+	<import resource="classpath:config/job-config.xml" />
+
+

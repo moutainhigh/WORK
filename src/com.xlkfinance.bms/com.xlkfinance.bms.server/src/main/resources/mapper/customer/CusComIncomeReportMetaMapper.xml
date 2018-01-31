@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.customer.mapper.CusComIncomeReportMetaMapper">
+  <resultMap id="CusComIncomeReportMetaMap" type="com.xlkfinance.bms.rpc.customer.CusComIncomeReportMeta">
+        <id property="pid" column="PID"/>
+        <result property="lineNum" column="LINE_NUM" />
+        <result property="itemName" column="ITEM_NAME" />
+        <result property="itemPrefix" column="ITEM_PREFIX" />
+        <result property="isSubtraction" column="IS_SUBTRACTION" />
+        <result property="status" column="STATUS" />
+    </resultMap>
+    
+    <select id="selectAllCusComIncomeReportMeta" resultMap="CusComIncomeReportMetaMap">
+	      SELECT PID,
+		       LINE_NUM,
+		       CONCAT(ITEM_PREFIX, ITEM_NAME) ITEM_NAME,
+		       ITEM_PREFIX,
+		       IS_SUBTRACTION,
+		       STATUS
+		  FROM CUS_COM_INCOME_REPORT_META
+		 WHERE 1 = 1
+			ORDER BY LINE_NUM ASC
+  	</select> 
+  	
+  	<select id="selectCusComIncomeReportMetaByLineNum" resultMap="CusComIncomeReportMetaMap" parameterType="java.lang.Integer">
+	      SELECT CCIRM.PID, CCIRM.LINE_NUM, CCIRM.ITEM_NAME, CCIRM.ITEM_PREFIX, CCIRM.IS_SUBTRACTION, CCIRM.STATUS
+  			FROM CUS_COM_INCOME_REPORT_META CCIRM
+ 			WHERE 1 = 1
+ 			AND
+ 			CCIRM.LINE_NUM =#{lineNum,jdbcType=INTEGER}
+  	</select>
+</mapper>

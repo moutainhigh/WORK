@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.beforeloan.mapper.LoanOutputInfoMapper">
+	<resultMap id="LoadOutputMap" type="com.xlkfinance.bms.rpc.beforeloan.LoanOutputInfo">
+        <id property="pId" column="pId"/>
+        <result property="loanId" column="LOAN_ID" /><!--贷款ID  -->
+        <result property="shouldAmt" column="SHOULD_AMT" /><!--应放款金额   -->
+        <result property="shouldDate" column="SHOULD_DATE" /><!-- 应放日期 -->
+        <result property="difAmt" column="DIF_AMT" /><!-- 差额 --><!--  -->
+        <result property="outputDesc" column="OUTPUT_DESC" /><!-- 放款备注 -->
+        <result property="refId" column="REF_ID" /><!--引用id(放款/收款） -->
+        <result property="ftType" column="FT_TYPE" /><!-- 财务交易类型 -->
+        <result property="tenderType" column="TENDER_TYPE" /><!-- 款项类型 -->
+        <result property="ftAmt" column="FT_AMT" /><!-- 财务交易金额 -->
+        <result property="ftDate" column="FT_DATE" /><!-- 交易日期 -->
+        <result property="ftBankAcctId" column="FT_BANK_ACCT_ID" /><!--交易银行账户id  -->
+        <result property="ftUserId" column="REAL_NAME" /><!--  操作人员id -->
+        <result property="ftUserName" column="USER_NAME" /><!--操作人员id  -->
+    </resultMap>
+    	<resultMap id="LoadOutputImplMap" type="com.xlkfinance.bms.rpc.beforeloan.LoanOutputInfoImpl">
+	<id property="pId" column="pId" />
+	<result property="loanId" column="LOAN_ID" /><!--贷款ID -->
+	<result property="projectType" column="PROJECT_TYPE" /><!--贷款ID -->
+	<result property="creditAmt" column="CREDIT_AMT" /><!--贷款金额 -->
+	<result property="shouldAmt" column="SHOULD_AMT" /><!--应放款金额 -->
+	<result property="difAmt" column="DIF_AMT" /><!--差额 -->
+	<result property="shouldDate" column="SHOULD_DATE" /><!-- 应放日期 -->
+	<result property="repayCycle" column="REPAY_CYCLE" /><!--还款期限 -->
+	<result property="ftDate" column="FT_DATE" /><!--交易日期 -->
+	<result property="repayCycleDate" column="REPAY_CYCLE_DATE" /><!--还款周期日期 -->
+	<result property="outputDesc" column="OUTPUT_DESC" /><!--交易日期 -->
+	<result property="bank" column="BANK" /><!--小贷银行账号 -->
+	<result property="bankNum" column="BANK_NUM" /><!--小贷银行账号 -->
+	<result property="bankUserName" column="BANK_USER_NAME" /><!--小贷开户名 -->
+	<result property="loanCardId" column="LOAN_CARD_ID" /><!--小贷开户名 -->
+	<result property="bankName" column="BANK_NAME" /><!--银行名称 -->
+	<result property="branchName" column="BRANCH_NAME" /><!--网点名称 -->
+	<result property="accArea" column="ACC_AREA" /><!--开户区域 -->
+	<result property="accName" column="ACC_NAME" /><!--户名 -->
+	<result property="bankAccCate" column="BANK_ACC_CATE" /><!--开户类别 -->
+	<result property="accType" column="ACC_TYPE" /><!--账户类型 -->
+	<result property="remark" column="REMARK" /> 
+	<result property="planOutLoanDt" column="PLAN_OUT_LOAN_DT" /> 
+		<result property="planRepayLoanDt" column="PLAN_REPAY_LOAN_DT" /> 
+	
+	
+    </resultMap>
+	 <select id="getLoadOutputList" resultMap="LoadOutputMap" parameterType="java.lang.Integer">
+ SELECT OUTPUT.PID,
+      OUTPUT.LOAN_ID,
+       SHOULD_AMT,
+       OUTPUT.SHOULD_DATE,
+       OUTPUT.DIF_AMT,
+       OUTPUT.OUTPUT_DESC,
+       FT.FT_AMT,
+       FT.FT_DATE,
+       FT.FT_BANK_ACCT_ID,
+ PKG_COMMON.FUN_GET_SYS_USER_NAME(FT.FT_USER_ID)  AS  USER_NAME
+  FROM BIZ_LOAN_OUTPUT OUTPUT, BIZ_LOAN_FT FT,biz_project bp,biz_loan bl
+ WHERE OUTPUT.PID = FT.REF_ID
+   AND BP.PID = BL.PROJECT_ID
+   AND FT.FT_TYPE = 1
+   AND  OUTPUT.LOAN_ID=BL.PID
+    AND FT.STATUS=1
+      AND OUTPUT.STATUS=1
+      AND BP.PID = #{projectId}
+       ORDER BY  OUTPUT.PID 
+      
+	 </select>
+	 <!-- gW财务贷款信息查询 -->
+	 	 <select id="getLoadOutputListImpl" resultMap="LoadOutputImplMap" parameterType="com.xlkfinance.bms.rpc.beforeloan.Project">
+<!--      SELECT PROJEC.ACCT_ID,
+       PROJEC.PROJECT_TYPE,
+       PROJEC.PROJECT_NUMBER,
+       ACCTBANK.BANK_NAME,
+       US.REAL_NAME,
+       ACCTBANK.REMARK,
+       ACCTBANK.ACC_AREA,
+       ACCTBANK.BRANCH_NAME,
+       ACCTBANK.ACC_NAME,
+       ACCTBANK.LOAN_CARD_ID,
+       ACCTBANK.ACC_TYPE,
+       ACCTBANK.CUS_TYPE,
+       ACCTBANK.BANK_ACC_CATE,
+       PROJEC.LOAN_INTEREST_RECORD BANK,
+       bfb.bank_num BANK_NUM,
+    PKG_COMMON.FUN_GET_SHOULDAMT(#{pid,jdbcType=INTEGER})  AS CREDIT_AMT,
+       LOAN.PLAN_OUT_LOAN_DT,
+       LOAN.PLAN_REPAY_LOAN_DT,
+       LOAN.REPAY_CYCLE
+  FROM BIZ_PROJECT PROJEC, CUS_ACCT_BANK ACCTBANK,BIZ_LOAN LOAN,SYS_USER US,BIZ_FINANCE_BANK bfb
+ WHERE
+ PROJEC.Pid=LOAN.PROJECT_ID(+)
+   AND    PROJEC.ACCT_ID = ACCTBANK.ACCT_ID(+)
+ AND ACCTBANK.LOAN_CARD_ID= US.PID (+)
+ AND PROJEC.Pid =
+ #{pid,jdbcType=INTEGER} 
+ AND bfb.pid = PROJEC.LOAN_INTEREST_RECORD -->
+ SELECT PROJEC.ACCT_ID,
+       PROJEC.PROJECT_TYPE,
+       PROJEC.PROJECT_NUMBER,
+       ACCTBANK.BANK_NAME,
+       ACCTBANK.REMARK,
+       ACCTBANK.ACC_AREA,
+       ACCTBANK.BRANCH_NAME,
+       ACCTBANK.ACC_NAME,
+       ACCTBANK.LOAN_CARD_ID,
+       ACCTBANK.ACC_TYPE,
+       ACCTBANK.CUS_TYPE,
+       ACCTBANK.BANK_ACC_CATE,
+       PROJEC.LOAN_INTEREST_RECORD BANK,
+       BFB.BANK_NUM                BANK_NUM,
+      PKG_COMMON.FUN_GET_SHOULDAMT(#{pid,jdbcType=INTEGER} )  AS CREDIT_AMT,
+       LOAN.PLAN_OUT_LOAN_DT,
+       LOAN.PLAN_REPAY_LOAN_DT,
+       LOAN.REPAY_CYCLE
+  FROM BIZ_PROJECT PROJEC
+  LEFT JOIN BIZ_LOAN LOAN
+    ON PROJEC.PID = LOAN.PROJECT_ID
+  LEFT JOIN CUS_ACCT_BANK ACCTBANK
+    ON
+PROJEC.ACCT_ID = ACCTBANK.ACCT_ID
+ LEFT JOIN BIZ_FINANCE_BANK BFB
+    ON BFB.PID = PROJEC.LOAN_INTEREST_RECORD
+ WHERE PROJEC.PID =#{pid,jdbcType=INTEGER} 
+	 </select>
+	 <!--插入放款表 BIZ_LOAN_OUTPUT-->
+	 <insert  id="insertLoadOutputinfo" parameterType="com.xlkfinance.bms.rpc.beforeloan.LoanOutputInfoImplDTO">
+	 <selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pId">
+		SELECT SEQ_BIZ_LOAN_OUTPUT.Nextval as pId from DUAL
+	</selectKey>
+	INSERT INTO BIZ_LOAN_OUTPUT
+	  (PID,
+	   LOAN_ID,
+	   SHOULD_AMT,
+	   SHOULD_DATE,
+	   DIF_AMT,
+	   OUTPUT_DESC,
+	   STATUS,
+	   CREATE_DATE,
+	   CREATE_USER)
+	values (
+	    #{pId,jdbcType=INTEGER},
+	    #{loanId,jdbcType=INTEGER},
+	    #{shouldAmt,jdbcType=INTEGER},
+	    to_date( #{shouldDate},'yyyy-mm-dd'),
+	    #{difAmt,jdbcType=INTEGER},
+	    #{outputDesc,jdbcType=VARCHAR},
+	    1,
+	    #{createDate,jdbcType=DATE,javaType=String},
+	    #{createUser,jdbcType=VARCHAR}
+	    )
+	 </insert>
+	 	 <insert  id="insertLoadFTinfo" parameterType="com.xlkfinance.bms.rpc.beforeloan.LoanOutputInfoImplDTO">
+	 <selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pId">
+		SELECT SEQ_BIZ_LOAN_FT.Nextval as pId from DUAL
+	</selectKey>
+	INSERT INTO BIZ_LOAN_FT
+	  (PID,
+	   REF_ID,
+	   FT_TYPE,
+	   TENDER_TYPE,
+	   FT_AMT,
+	   FT_DATE,
+	   FT_BANK_ACCT_ID,
+	   FT_USER_ID,
+	    STATUS)
+	values (
+	    #{pId,jdbcType=INTEGER},
+	    #{refId,jdbcType=INTEGER},
+	    #{ftType,jdbcType=INTEGER},
+	   2,
+	    #{ftAmt,jdbcType=INTEGER},
+	   to_date(#{ftDate},'yyyy-mm-dd'),
+	    #{ftBankAcctId,jdbcType=INTEGER},
+	     #{ftUserId,jdbcType=INTEGER},
+	     1
+	    )
+	 </insert>
+
+
+<!--  hezhiying -->
+<select id="getLoadOutputinfoList" resultMap="LoadOutputMap" parameterType="com.xlkfinance.bms.rpc.beforeloan.Project">
+    SELECT OUTPUT.pId ,OUTPUT.LOAN_ID,
+       OUTPUT.SHOULD_AMT,
+       OUTPUT.SHOULD_DATE,
+       OUTPUT.DIF_AMT,
+       OUTPUT.OUTPUT_DESC,
+       FT.FT_AMT,
+       FT.FT_DATE,
+       FT.FT_USER_ID,
+       (SELECT US.REAL_NAME FROM SYS_USER US WHERE FT.FT_USER_ID=US.PID) AS USER_NAME
+	  FROM BIZ_LOAN_OUTPUT OUTPUT, BIZ_LOAN_FT FT 
+	 WHERE OUTPUT.PID = FT.REF_ID 
+	   AND FT.FT_TYPE = 1
+	   AND  OUTPUT.LOAN_ID=(SELECT LOAN.Pid FROM  BIZ_LOAN  LOAN  WHERE LOAN.PROJECT_ID=#{pid,jdbcType=INTEGER} ) 
+	   ORDER BY OUTPUT.PID ASC
+</select>
+ 
+<select id="getLoadOutputinfo" resultMap="LoadOutputImplMap" parameterType="com.xlkfinance.bms.rpc.beforeloan.Project">
+     SELECT DISTINCT PROJEC.ACCT_ID,
+       PROJEC.PROJECT_TYPE,
+       PROJEC.PROJECT_NUMBER,
+       ACCTBANK.BANK_NAME,
+       ACCTBANK.BRANCH_NAME,
+       ACCTBANK.ACC_AREA,
+       ACCTBANK.ACC_NAME,
+       ACCTBANK.LOAN_CARD_ID as BANK_NUM,
+       ACCTBANK.ACC_TYPE,
+       ACCTBANK.CUS_TYPE,
+       ACCTBANK.BANK_ACC_CATE,
+       ACCTBANK.REMARK,
+	   LOAN.PID AS LOAN_ID,
+       LOAN.CREDIT_AMT-(SELECT nvl(SUM(FT.FT_AMT),0) FROM BIZ_LOAN_OUTPUT OUTPUT, BIZ_LOAN_FT FT 
+			   WHERE OUTPUT.PID = FT.REF_ID AND FT.FT_TYPE = 1
+			     AND  OUTPUT.LOAN_ID=(SELECT LOAN.Pid FROM  BIZ_LOAN  LOAN  WHERE LOAN.PROJECT_ID=6736) ) as CREDIT_AMT,
+       to_char(LOAN.PLAN_OUT_LOAN_DT,'YYYY-MM-DD') as SHOULD_DATE,
+       to_char(LOAN.PLAN_REPAY_LOAN_DT,'YYYY-MM-DD') as REPAY_CYCLE_DATE,
+       LOAN.REPAY_CYCLE,
+       (SELECT CHARGE_NAME FROM BIZ_FINANCE_BANK FB WHERE PROJEC.LOAN_INTEREST_RECORD=FB.PID) AS BANK_USER_NAME
+  FROM BIZ_PROJECT PROJEC, CUS_ACCT_BANK ACCTBANK,BIZ_LOAN LOAN
+ WHERE
+ PROJEC.Pid=LOAN.PROJECT_ID
+   AND    PROJEC.ACCT_ID = ACCTBANK.ACCT_ID 
+AND PROJEC.Pid =#{pid,jdbcType=INTEGER} 
+ AND ACCTBANK.ACC_USE IN ( SELECT lv.PID FROM SYS_LOOKUP l,SYS_LOOKUP_VAL lv
+      WHERE l.PID = lv.LOOKUP_ID  
+      AND l.lookup_type =#{acctTypeText}  and LOOKUP_VAL='ACCT')
+ 
+	 </select>
+	 
+	 <update  id="updateLoadOutputinfo" parameterType="com.xlkfinance.bms.rpc.beforeloan.LoanOutputInfoImplDTO">
+ 	 UPDATE BIZ_LOAN_OUTPUT SET 
+ 	 	SHOULD_AMT=#{shouldAmt,jdbcType=INTEGER}
+		<if test="shouldDate != null">
+		    ,SHOULD_DATE=to_date( #{shouldDate},'yyyy-mm-dd')
+		</if>
+		<if test="difAmt != null">
+		    ,DIF_AMT=#{difAmt,jdbcType=INTEGER}
+		</if>
+		<if test="outputDesc != null">
+		   ,OUTPUT_DESC=#{outputDesc,jdbcType=VARCHAR}
+		</if>
+		<if test="status != null">
+		    ,STATUS=#{status,jdbcType=INTEGER}
+		</if>
+ 	 	  WHERE PID=#{pId,jdbcType=INTEGER}
+	 </update>
+	<update  id="updateLoadFTinfo" parameterType="com.xlkfinance.bms.rpc.beforeloan.LoanOutputInfoImplDTO">
+	  UPDATE BIZ_LOAN_FT SET  FT_AMT=#{ftAmt,jdbcType=INTEGER}
+		<if test="outputDesc != null">
+		   ,FT_DATE=to_date(#{ftDate},'yyyy-mm-dd')
+		</if>
+		<if test="outputDesc != null">
+		  , FT_BANK_ACCT_ID=#{ftBankAcctId,jdbcType=INTEGER}
+		</if>
+		<if test="outputDesc != null">
+		   ,FT_USER_ID=#{ftUserId,jdbcType=INTEGER}
+		</if>
+	 WHERE REF_ID=#{pId,jdbcType=INTEGER}
+	 </update>
+	 
+	 <!-- 删除  -->
+	<update id="deleteLoadOutputinfo" parameterType="java.lang.Integer">
+        update BIZ_LOAN_OUTPUT set status=0
+        WHERE PID =#{pId} 
+       
+	</update>
+	<update id="deleteLoadFTinfo" parameterType="java.lang.Integer">
+        update BIZ_LOAN_FT set status=0
+        WHERE REF_ID  =#{pId}
+	</update>
+</mapper>

@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.system.mapper.SysLogMapper">
+	<resultMap id="SysLogResultMap" type="com.xlkfinance.bms.rpc.system.SysLog">
+		<id column="PID" property="pid" jdbcType="INTEGER" />
+		<result column="MODULES" property="modules" />
+		<result column="LOG_TYPE" property="logType" />
+		<result column="LOG_DTTM" property="logDateTime" javaType="String" jdbcType="TIMESTAMP"/>
+		<result column="USR_ID" property="userId"  />
+		<result column="LOG_MSG" property="logMsg" />
+		<result column="REAL_NAME" property="realName" />
+		<result column="PROJECT_ID" property="projectId" />
+		<result column="PROJECT_NAME" property="projectName" />
+		<result column="BROWSER" property="browser"/>
+		<result column="IP_ADDRESS" property="ipAddress"/>
+	</resultMap>
+	
+	<sql id="SysLog_Column_List">
+		PID,MODULES,LOG_TYPE,LOG_DTTM,USR_ID,LOG_MSG,BROWSER,IP_ADDRESS
+	</sql>
+
+	<!-- 添加系统日志 -->
+	<insert id="insert" parameterType="com.xlkfinance.bms.rpc.system.SysLog">
+		<!-- 获取序列号 -->
+		<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+			SELECT SEQ_SYS_LOG.Nextval as PID from DUAL
+		</selectKey>
+		
+		INSERT INTO SYS_LOG
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			PID,
+			<if test="modules != null">
+				MODULES,
+			</if>
+			<if test="logType != null">
+				LOG_TYPE,
+			</if>
+			<if test="logDateTime != null">
+				LOG_DTTM,
+			</if>
+			<if test="userId != null">
+				USR_ID,
+			</if>
+			<if test="logMsg != null">
+				LOG_MSG,
+			</if>
+			<if test="projectId != null and projectId >0">
+				PROJECT_ID,
+			</if>
+			<if test="ipAddress != null and ipAddress !=''">
+				IP_ADDRESS,
+			</if>
+			<if test="browser != null and browser !=''">
+				BROWSER
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+				#{pid},
+			<if test="modules != null">
+				#{modules},
+			</if>
+			<if test="logType != null">
+				#{logType},
+			</if>
+			<if test="logDateTime != null">
+				#{logDateTime,jdbcType=TIMESTAMP,javaType=String},
+			</if>
+			<if test="userId != null">
+				#{userId},
+			</if>
+			<if test="logMsg != null">
+				#{logMsg},
+			</if>
+			<if test="projectId != null and projectId>0">
+				#{projectId},
+			</if>
+			<if test="ipAddress != null and ipAddress !=''">
+				#{ipAddress},
+			</if>
+			<if test="browser != null and browser !=''">
+				#{browser},
+			</if>
+		</trim>
+	</insert>
+	
+	<!-- 删除系统日志-->
+	<delete id="batchDelete" parameterType="java.lang.String">
+		DELETE FROM SYS_LOG WHERE PID in 
+		<foreach item="idItem" collection="array" open="(" separator="," close=")">
+			#{idItem}
+		</foreach>
+	</delete>
+
+	<!-- 查询系统日志 根据条件查询 -->
+	<select id="getAllSysLog" resultMap="SysLogResultMap" parameterType="com.xlkfinance.bms.rpc.system.SysLog">
+		<![CDATA[
+	SELECT D.* FROM (SELECT T.*, ROWNUM RN
+	        FROM (SELECT A.PID,A.MODULES,A.LOG_TYPE,A.LOG_DTTM,A.USR_ID,A.LOG_MSG,C.REAL_NAME,A.PROJECT_ID,A.BROWSER,A.IP_ADDRESS,B.PROJECT_NAME
+  FROM SYS_LOG A
+  LEFT JOIN BIZ_PROJECT B
+    ON A.PROJECT_ID = B.PID
+  LEFT JOIN SYS_USER C
+    ON A.USR_ID = C.PID
+	]]>
+	<where>
+		<trim>
+			<if test="logMsg != null and logMsg != '' ">
+				AND A.LOG_MSG like '%${logMsg}%'
+			</if>
+			<if test="logType != null and logType != '' ">
+				AND A.LOG_TYPE like '%${logType}%'
+			</if>
+			<if test="modules != null and modules != '' ">
+				AND A.MODULES like '%${modules}%'
+			</if>
+			<if test="ipAddress != null and ipAddress !=''">
+				AND A.IP_ADDRESS LIKE '%${ipAddress}%'
+			</if>
+			<if test="browser != null and browser !=''">
+				AND A.BROWSER LIKE '%${browser}%'
+			</if>
+			<if test="realName != null and realName != '' ">
+				AND C.REAL_NAME LIKE '%${realName}%'
+			</if>
+			<if test="projectName != null and projectName != '' ">
+				AND B.PROJECT_NAME LIKE '%${projectName}%'
+			</if>
+			<if test="projectId != null and projectId >0 ">
+				AND A.PROJECT_ID = #{projectId}
+			</if>
+		</trim>
+	</where>
+	<![CDATA[
+	ORDER BY A.LOG_DTTM DESC
+	) T
+	WHERE ROWNUM <=#{page}*#{rows}
+	) D
+	WHERE D.RN > ((#{page}-1)*#{rows})
+	]]>
+	</select>
+	
+	<!-- 查询系统日志总记录条数 根据条件查询 -->
+	<select id="getAllSysLogTotal" resultType="Integer" parameterType="com.xlkfinance.bms.rpc.system.SysLog">
+		SELECT 
+			COUNT(A.PID)
+		  FROM SYS_LOG A
+  LEFT JOIN BIZ_PROJECT B
+    ON A.PROJECT_ID = B.PID
+  LEFT JOIN SYS_USER C
+    ON A.USR_ID = C.PID
+		WHERE 1 = 1 
+			<if test="logMsg != null and logMsg != '' ">
+				AND A.LOG_MSG like '%${logMsg}%'
+			</if>
+		<if test="logType != null and logType != '' ">
+				AND A.LOG_TYPE like '%${logType}%'
+			</if>
+			<if test="modules != null and modules != '' ">
+				AND A.MODULES like '%${modules}%'
+			</if>
+			<if test="ipAddress != null and ipAddress !=''">
+				AND A.IP_ADDRESS LIKE '%${ipAddress}%'
+			</if>
+			<if test="browser != null and browser !=''">
+				AND A.BROWSER LIKE '%${browser}%'
+			</if>
+			<if test="realName != null and realName != '' ">
+				AND C.REAL_NAME LIKE '%${realName}%'
+			</if>
+			<if test="projectName != null and projectName != '' ">
+				AND B.PROJECT_NAME LIKE '%${projectName}%'
+			</if>
+			<if test="projectId != null and projectId >0 ">
+				AND A.PROJECT_ID = #{projectId}
+			</if>
+	</select>
+
+</mapper>

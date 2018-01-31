@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.xlkfinance.bms.server.aom.org.mapper.OrgBizAdviserAllocationInfMapper">
+	<resultMap id="orgBizAdviserAllocationInfMap"
+		type="com.qfang.xk.aom.rpc.org.OrgBizAdviserAllocationInf">
+		<id property="pid" column="PID" />
+		<id property="serviceObjId" column="SERVICE_OBJ_ID" />
+		<id property="bizAdviserId" column="BIZ_ADVISER_ID" />
+		<id property="type" column="TYPE" />
+		<id property="remark" column="REMARK" />
+		<id property="createrDate" column="CREATER_DATE" />
+		<id property="createrId" column="CREATER_ID" />
+		<id property="updateId" column="UPDATE_ID" />
+		<id property="updateDate" column="UPDATE_DATE" />
+	</resultMap>
+	<resultMap id="orgBizAdviserAllocationInfPageMap" type="com.qfang.xk.aom.rpc.org.OrgBizAdviserAllocationInfPage">
+		<id property="orgId" column="ORG_ID" />
+		<id property="userId" column="USER_ID" />
+		<id property="orgName" column="ORG_NAME" />
+		<id property="orgCode" column="ORG_CODE" />
+		<id property="contact" column="CONTACT" />
+		<id property="phone" column="PHONE" />
+		<id property="partnerName" column="PARTNER_NAME" />
+		<id property="auditStatus" column="AUDIT_STATUS" />
+		<id property="cooperateStatus" column="COOPERATE_STATUS" />
+		<id property="registerDate" column="REGISTER_DATE" />
+		<id property="bizAdviserId" column="BIZ_ADVISER_ID" />
+		<id property="bizAdviserName" column="BIZ_ADVISER_NAME" />
+		<id property="allocationDate" column="ALLOCATION_DATE" />
+		<id property="allocationRemark" column="ALLOCATION_REMARK" />
+		
+		<id property="email" column="EMAIL" />
+		<id property="status" column="STATUS" />
+		<id property="loginName" column="LOGIN_NAME" />
+	</resultMap>
+	<sql id="column_list">
+		PID,SERVICE_OBJ_ID,BIZ_ADVISER_ID,TYPE,REMARK,CREATER_DATE,CREATER_ID,UPDATE_ID,UPDATE_DATE
+	</sql>
+	<!-- 查询所有 -->
+	<select id="getAll" resultMap="orgBizAdviserAllocationInfMap"
+		parameterType="com.qfang.xk.aom.rpc.org.OrgBizAdviserAllocationInf">
+		SELECT
+		<include refid="column_list" />
+		FROM ORG_BIZ_ADVISER_ALLOCATION_INF
+		<where>
+			<trim>
+				<if test="pid != null and pid >0">
+					PID=#{pid}
+				</if>
+				<if test="serviceObjId != null and serviceObjId >0">
+					AND SERVICE_OBJ_ID=#{serviceObjId}
+				</if>
+				<if test="bizAdviserId != null and bizAdviserId >0">
+					AND BIZ_ADVISER_ID=#{bizAdviserId}
+				</if>
+				<if test="type != null and type >0">
+					AND TYPE=#{type}
+				</if>
+				<if test="remark != null and remark !=''">
+					AND REMARK=#{remark}
+				</if>
+				<if test="createrDate != null and createrDate !=''">
+					AND CREATER_DATE=#{createrDate}
+				</if>
+				<if test="createrId != null and createrId >0">
+					AND CREATER_ID=#{createrId}
+				</if>
+				<if test="updateId != null and updateId >0">
+					AND UPDATE_ID=#{updateId}
+				</if>
+				<if test="updateDate != null and updateDate !=''">
+					AND UPDATE_DATE=#{updateDate}
+				</if>
+			</trim>
+		</where>
+	</select>
+	<!-- 根据id获取 -->
+	<select id="getById" resultMap="orgBizAdviserAllocationInfMap">
+		SELECT
+		<include refid="column_list" />
+		FROM ORG_BIZ_ADVISER_ALLOCATION_INF WHERE PID=#{pid}
+	</select>
+	<!-- 插入一条数据 -->
+	<insert id="insert" parameterType="com.qfang.xk.aom.rpc.org.OrgBizAdviserAllocationInf">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_ORG_ADVISER_ALLOCATION_INF.Nextval as PID from
+			DUAL
+		</selectKey>
+		INSERT INTO ORG_BIZ_ADVISER_ALLOCATION_INF
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="pid != null and pid >0">
+				PID,
+			</if>
+			<if test="serviceObjId != null and serviceObjId >0">
+				SERVICE_OBJ_ID,
+			</if>
+			<if test="bizAdviserId != null and bizAdviserId >0">
+				BIZ_ADVISER_ID,
+			</if>
+			<if test="type != null and type >0">
+				TYPE,
+			</if>
+			<if test="remark != null and remark !=''">
+				REMARK,
+			</if>
+			CREATER_DATE,
+			<if test="createrId != null and createrId >0">
+				CREATER_ID,
+			</if>
+			<if test="updateId != null and updateId >0">
+				UPDATE_ID,
+			</if>
+			UPDATE_DATE
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="pid != null and pid >0">
+				#{pid},
+			</if>
+			<if test="serviceObjId != null and serviceObjId >0">
+				#{serviceObjId},
+			</if>
+			<if test="bizAdviserId != null and bizAdviserId >0">
+				#{bizAdviserId},
+			</if>
+			<if test="type != null and type >0">
+				#{type},
+			</if>
+			<if test="remark != null and remark !=''">
+				#{remark},
+			</if>
+			SYSDATE,
+			<if test="createrId != null and createrId >0">
+				#{createrId},
+			</if>
+			<if test="updateId != null and updateId >0">
+				#{updateId},
+			</if>
+			SYSDATE
+		</trim>
+	</insert>
+	<!-- 根据id删除数据 -->
+	<delete id="deleteById" parameterType="com.qfang.xk.aom.rpc.org.OrgBizAdviserAllocationInf">
+		<![CDATA[DELETE FROM ORG_BIZ_ADVISER_ALLOCATION_INF WHERE PID=#{pid}]]>
+	</delete>
+	<!-- 根据id更新数据 -->
+	<update id="update" parameterType="com.qfang.xk.aom.rpc.org.OrgBizAdviserAllocationInf">
+		UPDATE ORG_BIZ_ADVISER_ALLOCATION_INF
+		<set>
+			<if test="pid != null and pid >0">
+				PID=#{pid},
+			</if>
+			<if test="serviceObjId != null and serviceObjId >0">
+				SERVICE_OBJ_ID=#{serviceObjId},
+			</if>
+			<if test="bizAdviserId != null and bizAdviserId >0">
+				BIZ_ADVISER_ID=#{bizAdviserId},
+			</if>
+			<if test="type != null and type >0">
+				TYPE=#{type},
+			</if>
+			<if test="remark != null and remark !=''">
+				REMARK=#{remark},
+			</if>
+			<if test="updateId != null and updateId >0">
+				UPDATE_ID=#{updateId},
+			</if>
+			UPDATE_DATE=SYSDATE
+		</set>
+		WHERE PID = #{pid}
+	</update>
+	<!-- 根据传入多个id删除数据 -->
+	<delete id="deleteByIds" parameterType="java.util.List">
+		DELETE FROM ORG_BIZ_ADVISER_ALLOCATION_INF WHERE PID in
+		<foreach collection="list" item="item" index="index" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+	<!-- 机构分配列表(分页查询) -->
+	<select id="queryOrgBizAdviserAllocationInfPage" resultMap="orgBizAdviserAllocationInfPageMap"
+		parameterType="com.qfang.xk.aom.rpc.org.OrgBizAdviserAllocationInfPage">
+		<if test="page!=-1">
+			SELECT D.* FROM (SELECT T.*, ROWNUM RN
+			FROM (
+		</if>
+		SELECT B.PID AS USER_ID,
+       A.PID AS ORG_ID,
+       A.ORG_NAME,
+       A.CODE AS ORG_CODE,
+       A.CONTACT,
+       A.PHONE,
+       C.PARTNER_NAME,
+       A.AUDIT_STATUS,
+       A.COOPERATE_STATUS,
+       TO_CHAR(B.CREATE_DATE, 'yyyy-mm-dd') AS REGISTER_DATE,
+       D.BIZ_ADVISER_ID,
+       E.BIZ_ADVISER_NAME,
+       TO_CHAR(D.UPDATE_DATE, 'yyyy-mm-dd') AS ALLOCATION_DATE,
+       D.REMARK AS ALLOCATION_REMARK,
+       B.USER_NAME AS LOGIN_NAME,
+       B.STATUS,
+       A.EMAIL
+  FROM ORG_ASSETS_COOPERATION_INFO A
+  LEFT JOIN ORG_USER_INFO B
+    ON A.PID = B.PID
+  LEFT JOIN (SELECT P.PID, U.REAL_NAME AS PARTNER_NAME
+               FROM ORG_PARTNER_INFO P
+               LEFT JOIN ORG_USER_INFO U
+                 ON P.USER_ID = U.PID) C
+    ON A.PARTNER_ID = C.PID
+  LEFT JOIN ORG_BIZ_ADVISER_ALLOCATION_INF D
+    ON B.PID = D.SERVICE_OBJ_ID
+  LEFT JOIN (SELECT U.REAL_NAME AS BIZ_ADVISER_NAME, U.PID FROM SYS_USER U) E
+    ON E.PID = D.BIZ_ADVISER_ID
+		<where>
+			<trim>
+				<if test="auditStatus != null and auditStatus >0">
+					 AND A.AUDIT_STATUS= #{auditStatus}
+			   </if>
+				<if test="allocationType==1">
+					 AND D.PID >0
+				</if>
+				<if test="allocationType==-1">
+					 AND D.PID IS NULL
+				</if>
+				<if test="orgName != null and orgName !=''">
+					AND A.ORG_NAME LIKE '%${orgName}%'
+				</if>
+				<if test="orgCode != null and orgCode !=''">
+					AND A.CODE LIKE '%${orgCode}%'
+				</if>
+				<if test="partnerName != null and partnerName !=''">
+					AND C.PARTNER_NAME LIKE '%${partnerName}%'
+				</if>
+				<if test="bizAdviserName != null and bizAdviserName !=''">
+					AND E.BIZ_ADVISER_NAME LIKE '%${bizAdviserName}%'
+				</if>
+				<if test="loginName != null and loginName !=''">
+					AND B.USER_NAME LIKE '%${loginName}%'
+				</if>
+				<!-- 数据权限 -->
+				<if test="userIds!=null and userIds.size()>0">
+					AND	D.BIZ_ADVISER_ID IN
+				<foreach item="itemId" collection="userIds" open="(" separator="," close=")">
+				          #{itemId}
+				</foreach>
+				</if>
+			</trim>
+		</where>
+		ORDER BY D.UPDATE_DATE DESC, B.CREATE_DATE DESC
+		<if test="page!=-1">
+	<![CDATA[
+	) T
+	WHERE ROWNUM <=#{page}*#{rows}
+	) D
+	WHERE D.RN > ((#{page}-1)*#{rows})
+	]]>
+		</if>
+	</select>
+	<!--机构分配列表总数 -->
+	<select id="getOrgBizAdviserAllocationInfPageTotal" resultType="Integer"
+		parameterType="com.qfang.xk.aom.rpc.org.OrgBizAdviserAllocationInfPage">
+	<![CDATA[
+	SELECT COUNT(1) FROM
+			(SELECT A.PID
+  FROM ORG_ASSETS_COOPERATION_INFO A
+  LEFT JOIN ORG_USER_INFO B
+    ON A.PID = B.PID
+  LEFT JOIN (SELECT P.PID, U.REAL_NAME AS PARTNER_NAME
+               FROM ORG_PARTNER_INFO P
+               LEFT JOIN ORG_USER_INFO U
+                 ON P.USER_ID = U.PID) C
+    ON A.PARTNER_ID = C.PID
+  LEFT JOIN ORG_BIZ_ADVISER_ALLOCATION_INF D
+    ON B.PID = D.SERVICE_OBJ_ID
+  LEFT JOIN (SELECT U.REAL_NAME AS BIZ_ADVISER_NAME, U.PID FROM SYS_USER U) E
+    ON E.PID = D.BIZ_ADVISER_ID
+	]]>
+		<where>
+			<trim>
+			   <if test="auditStatus != null and auditStatus >0">
+					 AND A.AUDIT_STATUS= #{auditStatus}
+			   </if>
+			   <if test="allocationType ==1">
+					 AND D.PID >0
+				</if>
+				<if test="allocationType ==-1">
+					 AND D.PID IS NULL
+				</if>
+				<if test="orgName != null and orgName !=''">
+					AND A.ORG_NAME LIKE '%${orgName}%'
+				</if>
+				<if test="orgCode != null and orgCode !=''">
+					AND A.CODE LIKE '%${orgCode}%'
+				</if>
+				<if test="partnerName != null and partnerName !=''">
+					AND C.PARTNER_NAME LIKE '%${partnerName}%'
+				</if>
+				<if test="bizAdviserName != null and bizAdviserName !=''">
+					AND E.BIZ_ADVISER_NAME LIKE '%${bizAdviserName}%'
+				</if>
+				<if test="loginName != null and loginName !=''">
+					AND B.USER_NAME LIKE '%${loginName}%'
+				</if>
+				<!-- 数据权限 -->
+				<if test="userIds!=null and userIds.size()>0">
+					AND	D.BIZ_ADVISER_ID IN
+				<foreach item="itemId" collection="userIds" open="(" separator="," close=")">
+				          #{itemId}
+				</foreach>
+				</if>
+			</trim>
+		</where>
+		) T
+	</select>
+</mapper>

@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.system.mapper.SysBankMapper">
+	<resultMap id="SysBankResultMap" type="com.xlkfinance.bms.rpc.system.SysBankInfo">
+		<id column="PID" property="pid"/>
+		<result column="PARENT_ID" property="parentId"/>
+		<result column="BANK_NAME" property="bankName"/>
+		<result column="TYPE" property="type"/>
+		<result column="BANK_SHORTHAND" property="bankShortHand"/>
+		<result column="STATUS" property="status"/>
+	</resultMap>
+	
+	<resultMap id="BaseResultMap" type="com.xlkfinance.bms.rpc.system.SysBankInfoDto">
+		<id column="PID" property="pid"/>
+		<result column="BANK_NAME" property="bankName"/>
+	</resultMap>
+	
+	<!-- 添加银行信息 -->
+	<insert id="addSysBankInfo" parameterType="com.xlkfinance.bms.rpc.system.SysBankInfo">
+		<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+			SELECT SEQ_SYS_BANK_INFO.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO SYS_BANK_INFO
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			PID,
+			<if test="parentId != null and parentId !=-1">
+				PARENT_ID,
+			</if>
+			<if test="bankName != null and bankName!=''">
+				BANK_NAME,
+			</if>
+			<if test="type != null and type !=-1">
+				TYPE,
+			</if>
+			<if test="bankShortHand != null and bankShortHand !=''">
+				BANK_SHORTHAND,
+			</if>
+			STATUS
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{pid},
+			<if test="parentId != null and parentId !=-1">
+				#{parentId},
+			</if>
+			<if test="bankName != null and bankName!=''">
+				#{bankName},
+			</if>
+			<if test="type != null and type !=-1">
+				#{type},
+			</if>
+			<if test="bankShortHand != null and bankShortHand !=''">
+				#{bankShortHand},
+			</if>
+			1
+		</trim>
+	</insert>
+	
+	<!-- 修改银行信息 -->
+	<update id="updateByPrimaryKey" parameterType="com.xlkfinance.bms.rpc.system.SysBankInfo">
+		UPDATE SYS_BANK_INFO
+		<trim prefix="set" suffixOverrides=",">
+			<if test="bankName != null and bankName!=''">
+				BANK_NAME = #{bankName},
+			</if>
+			<if test="type != null and type >0">
+				TYPE = #{type},
+			</if>
+			<if test="bankShortHand != null and bankShortHand !=''">
+				BANK_SHORTHAND = #{bankShortHand},
+			</if>
+			<if test="status != null and status >0">
+				STATUS = #{status},
+			</if>
+		</trim>
+		WHERE PID = #{pid}
+	</update>
+	<!-- 分页查询 -->
+	<select id="querySysBankInfos" resultMap="SysBankResultMap" parameterType="com.xlkfinance.bms.rpc.system.SysBankInfo">
+		SELECT D.* FROM (SELECT T.*, ROWNUM RN
+	        FROM (
+	        	SELECT *
+	        	 FROM SYS_BANK_INFO WHERE STATUS=1 
+	        
+	        <if test="parentId != null and parentId !=-1">
+				AND PARENT_ID = #{parentId}
+			</if>
+			<if test="type != null and type >0">
+				AND TYPE = #{type}
+			</if>
+			<if test="bankName != null and bankName!=''">
+				AND BANK_NAME like '%${bankName}%'
+			</if>
+			<if test="bankShortHand != null and bankShortHand!=''">
+				AND BANK_SHORTHAND like '%${bankShortHand}%'
+			</if>
+	        <![CDATA[ORDER BY PID asc) T
+		WHERE ROWNUM <=#{page}*#{rows}
+		) D
+	WHERE D.RN > ((#{page}-1)*#{rows})]]>
+	</select>
+	<!-- 分页查询 -->
+	<select id="getSysBankCount" parameterType="com.xlkfinance.bms.rpc.system.SysBankInfo" resultType="Integer">
+		SELECT count(*) FROM SYS_BANK_INFO WHERE STATUS=1 
+			<if test="parentId != null and parentId !=-1">
+				AND PARENT_ID = #{parentId}
+			</if>
+			<if test="type != null and type >0">
+				AND TYPE = #{type}
+			</if>
+			<if test="bankName != null and bankName!=''">
+				AND BANK_NAME like '%${bankName}%'
+			</if>
+			<if test="bankShortHand != null and bankShortHand!=''">
+				AND BANK_SHORTHAND like '%${bankShortHand}%'
+			</if>
+	</select>
+	
+	<select id="querySysBankInfo" resultMap="SysBankResultMap" parameterType="java.lang.Integer">
+		SELECT * FROM SYS_BANK_INFO WHERE PID = #{pid} 
+	</select>
+	<!-- 不分页查询 -->
+	<select id="queryAllSysBankInfo" resultMap="BaseResultMap" parameterType="com.xlkfinance.bms.rpc.system.SysBankInfo">
+		SELECT PID,BANK_NAME FROM SYS_BANK_INFO WHERE STATUS = 1 
+			<if test="parentId != null and parentId!=-1">
+				AND PARENT_ID = #{parentId}
+			</if>
+			<if test="type != null and type >0">
+				AND TYPE = #{type}
+			</if>
+			<if test="bankName != null and bankName!=''">
+				AND BANK_NAME like '%${bankName}%'
+			</if>
+			<if test="bankShortHand != null and bankShortHand!=''">
+				AND BANK_SHORTHAND like '%${bankShortHand}%'
+			</if> 
+	</select>
+	
+	<!--批量删除-->
+	<delete id="batchDelete" parameterType="java.lang.String">
+		UPDATE SYS_BANK_INFO SET STATUS = 2
+		WHERE PID IN
+		<foreach item="idItem" collection="array" open="(" separator="," close=")">
+			#{idItem}
+		</foreach>
+	</delete>
+</mapper>

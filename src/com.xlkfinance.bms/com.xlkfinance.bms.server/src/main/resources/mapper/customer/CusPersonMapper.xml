@@ -1,0 +1,949 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.customer.mapper.CusPersonMapper">
+ <resultMap id="selectAllResultMap" type="com.xlkfinance.bms.rpc.customer.CusPerson" >
+    <id column="PID" property="pid" jdbcType="INTEGER" />
+    <result column="ACCT_ID" property="cusAcct.pid" jdbcType="INTEGER" />
+    <result column="RELATION_TYPE" property="relationType" jdbcType="INTEGER" />
+    <result column="CHINA_NAME" property="chinaName" jdbcType="VARCHAR" />
+    <result column="ENG_NAME" property="engName" jdbcType="VARCHAR" />
+    <result column="SEX" property="sex" jdbcType="INTEGER" />
+    <result column="BIRTH_DATE" property="birthDate" jdbcType="DATE" javaType="String" />
+    <result column="NATION" property="nation" jdbcType="VARCHAR" />
+    <result column="MAIL" property="mail" jdbcType="VARCHAR" />
+    <result column="QQ" property="qq" jdbcType="VARCHAR" />
+    <result column="WECHAT" property="wechat" jdbcType="VARCHAR" />
+    <result column="GRADU_SCHOOL" property="graduSchool" jdbcType="VARCHAR" />
+    <result column="GRADU_DT" property="graduDt" jdbcType="DATE" javaType="String" />
+    <result column="EDUCATION" property="education" jdbcType="INTEGER" />
+    <result column="DEGREE" property="degree" jdbcType="INTEGER" />
+    <result column="POL_FACE" property="polFace" jdbcType="INTEGER" />
+    <result column="WORK_UNIT" property="workUnit" jdbcType="VARCHAR" />
+    <result column="UNIT_NATURE" property="unitNature" jdbcType="INTEGER" />
+    <result column="REG_CAPITAL" property="regCapital" jdbcType="DOUBLE" />
+    <result column="MAIN_BUS" property="mainBus" jdbcType="VARCHAR" />
+    <result column="UNIT_PHONE" property="unitPhone" jdbcType="VARCHAR" />
+    <result column="FAX" property="fax" jdbcType="VARCHAR" />
+    <result column="OCCUPATION" property="occupation" jdbcType="VARCHAR" />
+    <result column="WORK_SERVICE" property="workService" jdbcType="VARCHAR" />
+    <result column="JOB" property="job" jdbcType="VARCHAR" />
+    <result column="BOARD_MEMBER" property="boardMember" jdbcType="INTEGER" />
+    <result column="OCC_NAME" property="occName" jdbcType="INTEGER" />
+    <result column="SERVANT" property="servant" jdbcType="INTEGER" />
+    <result column="DEPTMENT" property="deptment" jdbcType="VARCHAR" />
+    <result column="PAY_SOC_SEC" property="paySocSec" jdbcType="INTEGER" />
+    <result column="MONTH_INCOME" property="monthIncome" jdbcType="DOUBLE" />
+    <result column="TRADE" property="trade" jdbcType="INTEGER" />
+    <result column="ENTRY_TIME" property="entryTime" jdbcType="DATE" javaType="String" />
+    <result column="PAY_WAY" property="payWay" jdbcType="INTEGER" />
+    <result column="MONTH_PAY_DAY" property="monthPayDay" jdbcType="INTEGER" />
+    <result column="STAFF_NUM" property="staffNum" jdbcType="INTEGER" />
+    <result column="UNIT_ADDR" property="unitAddr" jdbcType="VARCHAR" />
+    <result column="UNIT_CODE" property="unitCode" jdbcType="VARCHAR" />
+    <result column="CERT_TYPE" property="certType" jdbcType="INTEGER" />
+    <result column="CERT_NUMBER" property="certNumber" jdbcType="VARCHAR" />
+    <result column="CERT_URL" property="certUrl" jdbcType="VARCHAR" />
+    <result column="KNOW_LOAN" property="knowLoan" jdbcType="INTEGER" />
+    <result column="STATUS" property="status" jdbcType="INTEGER" />
+    <result column="mobile_phone" property="mobilePhone" jdbcType="VARCHAR" />
+    <result column="telephone" property="telephone" jdbcType="VARCHAR" />
+    <result column="MARR_STATUS" property="marrStatus" jdbcType="INTEGER" />
+    <result column="LIVE_DATE" property="liveDate" javaType="INTEGER"/>
+    <result column="SOC_SEC_NUMBER" property="socSecNumber" jdbcType="VARCHAR" />
+    <result column="OTHER_PHONE" property="otherPhone" jdbcType="VARCHAR" />
+    <result column="FAMILY_PHONE" property="familyPhone" jdbcType="VARCHAR" />
+    <result column="CENSUS_ADDR" property="censusAddr" jdbcType="VARCHAR" />
+    <result column="CENSUS_CODE" property="censusCode" jdbcType="VARCHAR" />
+    <result column="COMM_ADDR" property="commAddr" jdbcType="VARCHAR" />
+    <result column="COMM_CODE" property="commCode" jdbcType="VARCHAR" />
+    <result column="LIVE_ADDR" property="liveAddr" jdbcType="VARCHAR" />
+    <result column="LIVE_CODE" property="liveCode" jdbcType="VARCHAR" />
+    <result column="COMMUNITY_NAME" property="communityName" jdbcType="VARCHAR" />
+    
+	<result column="AGE" property="age" jdbcType="INTEGER" />
+	
+    <result column="relationTypeText" property="relationTypeText" />
+    <result column="realName" property="realName" />
+    <result column="certTypeText" property="certTypeText" />
+    <result column="sexText" property="sexText" />
+    <result column="PROPORTION_PROPERTY" property="proportionProperty" />
+    
+    <result column="LIVE_PROVINCE_CODE" property="liveProvinceCode" />
+    <result column="LIVE_CITY_CODE" property="liveCityCode" />
+    <result column="LIVE_DISTRICT_CODE" property="liveDistrictCode" />
+    <result column="CERT_ADDR" property="certAddr" />
+  </resultMap>
+  
+   <resultMap id="BaseResultMap" type="com.xlkfinance.bms.rpc.common.GridViewDTO" >
+   		<id column="PID" property="pid"  />
+    	<result column="china_name" property="value1"  />
+    	<result column="sex" property="value2" />
+    	<result column="CERT_TYPE" property="value10" />
+    	<result column="CERT_NUMBER" property="value11" />
+    	<result column="BOARD_MEMBER" property="value3"  />
+    	<result column="MOBILE_PHONE" property="value4"  />
+    	<result column="TELEPHONE" property="value5"  />
+    	<result column="WORK_SERVICE" property="value6"  />
+    	<result column="work_unit" property="value7"  />
+    	<result column="unit_addr" property="value8"  />
+    	<result column="unit_phone" property="value9"  />
+    	<result column="RELATION" property="value12"  />
+    	<result column="ENG_NAME" property="value13"  />
+    	<result column="PROPORTION_PROPERTY" property="value14"  />
+   </resultMap>
+   
+<insert id="insert" parameterType="com.xlkfinance.bms.rpc.customer.CusPerson">
+  	<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+		SELECT SEQ_CUS_PERSON.Nextval as PID from DUAL
+	</selectKey>
+	
+    insert into cus_person 
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+    	PID, 
+    	<if test="cusAcct.pid != null and cusAcct.pid !=0">
+    	ACCT_ID, 
+    	</if>
+    	<if test="chinaName != null and chinaName !=''">
+    	CHINA_NAME, 
+    	</if>
+    	<if test="engName != null and engName !=''">
+    	ENG_NAME, 
+    	</if>
+    	<if test="sex != null and sex !=''">
+    	SEX, 
+    	</if>
+    	<if test="relation != null and relation !=''">
+    	RELATION, 
+    	</if>
+    	<if test="birthDate != null and birthDate !=''">
+    	BIRTH_DATE, 
+    	</if>
+    	<if test="nation != null and nation !=''">
+    	NATION, 
+    	</if>
+    	<if test="mail != null and mail !=''">
+    	MAIL, 
+    	</if>
+    	<if test="qq != null and qq !=''">
+    	QQ, 
+    	</if>
+    	<if test="wechat != null and wechat !=''">
+    	WECHAT, 
+    	</if>
+    	<if test="graduSchool != null and graduSchool !=''">
+    	GRADU_SCHOOL, 
+    	</if>
+    	<if test="graduDt != null and graduDt !=''">
+    	GRADU_DT, 
+    	</if>
+    	<if test="education != null and education !=''">
+    	EDUCATION, 
+    	</if>
+    	<if test="degree != null and degree !=''">
+    	DEGREE, 
+    	</if>
+    	<if test="polFace != null and polFace !=''">
+    	POL_FACE, 
+    	</if>
+    	<if test="workUnit != null and workUnit !=''">
+    	WORK_UNIT, 
+    	</if>
+    	<if test="unitNature != null and unitNature !=''">
+    	UNIT_NATURE, 
+    	</if>
+    	<if test="regCapital != null and regCapital !=''">
+    	REG_CAPITAL, 
+    	</if>
+    	<if test="mainBus != null and mainBus !=''">
+    	MAIN_BUS, 
+    	</if>
+    	<if test="unitPhone != null and unitPhone !=''">
+    	UNIT_PHONE, 
+    	</if>
+    	<if test="fax != null and fax !=''">
+    	FAX, 
+    	</if>
+    	<if test="mobilePhone != null and mobilePhone !=''">
+    	mobile_phone, 
+    	</if>
+    	<if test="telephone != null and telephone !=''">
+    	telephone, 
+    	</if>
+    	<if test="occupation != null and occupation !=''">
+    	OCCUPATION, 
+    	</if>
+    	<if test="knowLoan != null and knowLoan !=0">
+      	KNOW_LOAN,
+      	</if>
+    	<if test="workService != null and workService !=''">
+    	WORK_SERVICE, 
+    	</if>
+    	<if test="job != null and job !=''">
+    	job, 
+    	</if>
+    	<if test="boardMember != null and boardMember !=''">
+    	BOARD_MEMBER, 
+    	</if>
+    	<if test="occName != null and occName !=''">
+    	OCC_NAME, 
+    	</if>
+    	<if test="servant != null and servant !=''">
+    	SERVANT, 
+    	</if>
+    	<if test="deptment != null and deptment !=''">
+    	DEPTMENT, 
+    	</if>
+    	<if test="paySocSec != null and paySocSec !=''">
+    	PAY_SOC_SEC, 
+    	</if>
+    	<if test="monthIncome != null and monthIncome !=''">
+    	MONTH_INCOME, 
+    	</if>
+    	<if test="trade != null and trade !=''">
+    	TRADE, 
+    	</if>
+    	<if test="entryTime != null and entryTime !=''">
+    	ENTRY_TIME, 
+    	</if>
+    	<if test="payWay != null and payWay !=''">
+    	PAY_WAY, 
+    	</if>
+    	<if test="monthPayDay != null and monthPayDay !=''">
+    	MONTH_PAY_DAY, 
+    	</if>
+    	<if test="staffNum != null and staffNum !=''">
+    	STAFF_NUM, 
+    	</if>
+    	<if test="unitAddr != null and unitAddr !=''">
+    	UNIT_ADDR, 
+    	</if>
+    	<if test="unitCode != null and unitCode !=''">
+    	UNIT_CODE, 
+    	</if>
+    	<if test="certType != null and certType !=''">
+    	CERT_TYPE, 
+    	</if>
+    	<if test="certNumber != null and certNumber !=''">
+    	CERT_NUMBER, 
+    	</if>
+    	<if test="certUrl != null and certUrl !=''">
+    	CERT_URL,
+    	</if>
+    	<if test="isComOwn != null and isComOwn !=''">
+    	ISCOMOWN,
+    	</if>
+    	<if test="relationType != null and relationType !=''">
+    	RELATION_TYPE, 
+    	</if>
+    	<if test="marrStatus !=null">
+	   MARR_STATUS,
+	   </if>
+	   <if test="liveDate !=null">
+	   LIVE_DATE,
+	   </if>
+	   <if test="socSecNumber !=null and socSecNumber!=''">
+	   SOC_SEC_NUMBER,
+	   </if>
+	   <if test="otherPhone !=null and otherPhone!=''">
+	   OTHER_PHONE,
+	   </if>
+	   <if test="familyPhone !=null and familyPhone!=''">
+	   FAMILY_PHONE,
+	   </if>
+	   <if test="censusAddr !=null and censusAddr!=''">
+	   CENSUS_ADDR,
+	   </if>
+	   <if test="censusCode !=null and censusCode!=''">
+	   CENSUS_CODE,
+	   </if>
+	   <if test="commAddr !=null and commAddr!=''">
+	   COMM_ADDR,
+	   </if>
+	   <if test="commCode !=null and commCode!=''">
+	   COMM_CODE,
+	   </if>
+	   <if test="liveAddr !=null and liveAddr!=''">
+	   LIVE_ADDR,
+	   </if>
+	   <if test="liveCode !=null and liveCode!=''">
+	   LIVE_CODE,
+	   </if>
+	   <if test="communityName !=null and communityName !=''">
+	   COMMUNITY_NAME,
+	   </if>
+	   <if test="age !=null and age !=0">
+	   AGE,
+	   </if>
+	   <if test="proportionProperty !=null">
+	   PROPORTION_PROPERTY,
+	   </if>
+       	<if test="liveProvinceCode !=null and liveProvinceCode !=''">
+   			LIVE_PROVINCE_CODE ,
+		</if>
+     	 <if test="liveCityCode !=null and liveCityCode !=''">
+   			LIVE_CITY_CODE ,
+   	 	</if>
+     	 <if test="liveDistrictCode !=null and liveDistrictCode !=''">
+   			LIVE_DISTRICT_CODE ,
+   	 	</if>
+     	 <if test="certAddr !=null and certAddr !=''">
+   			CERT_ADDR ,
+   	 	</if>
+    	STATUS
+   	</trim>
+     <trim prefix="values (" suffix=")" suffixOverrides=",">
+    		#{pid,jdbcType=INTEGER}, 
+    	<if test="cusAcct.pid != null and cusAcct.pid !=0">
+    		#{cusAcct.pid,jdbcType=INTEGER},
+    	</if> 
+    	<if test="chinaName != null and chinaName !=''">
+     		#{chinaName,jdbcType=VARCHAR}, 
+     	</if>
+     	<if test="engName != null and engName !=''">
+     		#{engName,jdbcType=VARCHAR},
+     	</if>
+     	<if test="sex != null and sex !=''">
+     		#{sex,jdbcType=INTEGER},
+     	</if>
+     	<if test="relation != null and relation !=''">
+      		#{relation,jdbcType=INTEGER},
+      	</if>
+     	<if test="birthDate != null and birthDate !=''">
+      		#{birthDate,jdbcType=DATE,javaType=String}, 
+      	</if>
+     	<if test="nation != null and nation !=''">
+      		#{nation,jdbcType=VARCHAR},
+      	</if>
+     	<if test="mail != null and mail !=''">
+      		#{mail,jdbcType=VARCHAR},
+      	</if>
+     	<if test="qq != null and qq !=''">
+      		#{qq,jdbcType=VARCHAR}, 
+      	</if>
+     	<if test="wechat != null and wechat !=''">
+      		#{wechat,jdbcType=VARCHAR},
+      	</if>
+     	<if test="graduSchool != null and graduSchool !=''">
+      		#{graduSchool,jdbcType=VARCHAR},
+      	</if>
+     	<if test="graduDt != null and graduDt !=''">
+      		#{graduDt,jdbcType=DATE,javaType=String},
+      	</if>
+     	<if test="education != null and education !=''">
+      		#{education,jdbcType=INTEGER},
+      	</if>
+     	<if test="degree != null and degree !=''">
+      		#{degree,jdbcType=INTEGER},
+      	</if>
+     	<if test="polFace != null and polFace !=''">
+      		#{polFace,jdbcType=INTEGER},
+      	</if>
+     	<if test="workUnit != null and workUnit !=''">
+      		#{workUnit,jdbcType=VARCHAR},
+      	</if>
+     	<if test="unitNature != null and unitNature !=''">
+      		#{unitNature,jdbcType=INTEGER},
+      	</if>
+     	<if test="regCapital != null and regCapital !=''">
+      		#{regCapital,jdbcType=DOUBLE},
+      	</if>
+     	<if test="mainBus != null and mainBus !=''">
+      		#{mainBus,jdbcType=VARCHAR},
+      	</if>
+     	<if test="unitPhone != null and unitPhone !=''">
+      		#{unitPhone,jdbcType=VARCHAR},
+      	</if>
+     	<if test="fax != null and fax !=''">
+      		#{fax,jdbcType=VARCHAR},
+      	</if>
+      	<if test="mobilePhone != null and mobilePhone !=''">
+      		#{mobilePhone,jdbcType=VARCHAR},
+      	</if>
+     	<if test="telephone != null and telephone !=''">
+      		#{telephone,jdbcType=VARCHAR},
+      	</if>
+     	<if test="occupation != null and occupation !=''">
+      		#{occupation,jdbcType=VARCHAR},
+      	</if>
+      	<if test="knowLoan != null and knowLoan !=0">
+      		#{knowLoan,jdbcType=INTEGER},
+      	</if>
+      	<if test="workService != null and workService !=''">
+      		#{workService,jdbcType=VARCHAR},
+      	</if>
+     	<if test="job != null and job !=''">
+      		#{job,jdbcType=VARCHAR},
+      	</if>
+     	<if test="boardMember != null and boardMember !=''">
+      		#{boardMember,jdbcType=INTEGER},
+      	</if>
+     	<if test="occName != null and occName !=''">
+      		#{occName,jdbcType=INTEGER},
+      	</if>
+     	<if test="servant != null and servant !=''">
+      		#{servant,jdbcType=INTEGER},
+      	</if>
+     	<if test="deptment != null and deptment !=''">
+      		#{deptment,jdbcType=VARCHAR},
+      	</if>
+     	<if test="paySocSec != null and paySocSec !=''">
+      		#{paySocSec,jdbcType=INTEGER},
+      	</if>
+     	<if test="monthIncome != null and monthIncome !=''">
+      		#{monthIncome,jdbcType=DOUBLE},
+      	</if>
+     	<if test="trade != null and trade !=''">
+      		#{trade,jdbcType=INTEGER},
+      	</if>
+     	<if test="entryTime != null and entryTime !=''">
+      		#{entryTime,jdbcType=DATE,javaType=String},
+      	</if>
+     	<if test="payWay != null and payWay !=''">
+      		#{payWay,jdbcType=INTEGER},
+      	</if>
+     	<if test="monthPayDay != null and monthPayDay !=''">
+      		#{monthPayDay,jdbcType=INTEGER},
+      	</if>
+     	<if test="staffNum != null and staffNum !=''">
+      		#{staffNum,jdbcType=INTEGER},
+      	</if>
+     	<if test="unitAddr != null and unitAddr !=''">
+      		#{unitAddr,jdbcType=VARCHAR},
+      	</if>
+     	<if test="unitCode != null and unitCode !=''">
+      		#{unitCode,jdbcType=VARCHAR},
+      	</if>
+     	<if test="certType != null and certType !=''">
+      		#{certType,jdbcType=INTEGER},
+      	</if>
+     	<if test="certNumber != null and certNumber !=''">
+      		#{certNumber,jdbcType=VARCHAR},
+      	</if>
+     	<if test="certUrl != null and certUrl !=''">
+      		#{certUrl,jdbcType=VARCHAR},
+      	</if>
+      	<if test="isComOwn != null and isComOwn !=''">
+      		#{isComOwn,jdbcType=INTEGER},
+      	</if>
+    	<if test="relationType != null and relationType !=''">
+    		#{relationType,jdbcType=INTEGER},
+    	</if>
+    	 <if test="marrStatus !=null">
+	   #{marrStatus,jdbcType=INTEGER},
+	   </if>
+	   <if test="liveDate !=null ">
+	   #{liveDate,jdbcType=INTEGER},
+	   </if>
+	   <if test="socSecNumber !=null and socSecNumber!=''">
+	   #{socSecNumber,jdbcType=VARCHAR},
+	   </if>
+	   <if test="otherPhone !=null and otherPhone!=''">
+	   #{otherPhone,jdbcType=VARCHAR},
+	   </if>
+	   <if test="familyPhone !=null and familyPhone!=''">
+	   #{familyPhone,jdbcType=VARCHAR},
+	   </if>
+	   <if test="censusAddr !=null and censusAddr!=''">
+	   #{censusAddr,jdbcType=VARCHAR},
+	   </if>
+	   <if test="censusCode !=null and censusCode!=''">
+	   #{censusCode,jdbcType=VARCHAR},
+	   </if>
+	   <if test="commAddr !=null and commAddr!=''">
+	   #{commAddr,jdbcType=VARCHAR},
+	   </if>
+	   <if test="commCode !=null and commCode!=''">
+	   #{commCode,jdbcType=VARCHAR},
+	   </if>
+	   <if test="liveAddr !=null and liveAddr!=''">
+	   #{liveAddr,jdbcType=VARCHAR},
+	   </if>
+	   <if test="liveCode !=null and liveCode!=''">
+	   #{liveCode,jdbcType=VARCHAR},
+	   </if>
+	   <if test="communityName !=null and communityName !=''">
+	    #{communityName,jdbcType=VARCHAR},
+	   </if>
+	   
+	   <if test="age !=null and age !=0">
+	    #{age,jdbcType=INTEGER},
+	   </if>
+	    <if test="proportionProperty !=null">
+	   	#{proportionProperty},
+	   </if>
+      	 <if test="liveProvinceCode !=null and liveProvinceCode !=''">
+	   		#{liveProvinceCode},
+	   	 </if>
+      	 <if test="liveCityCode !=null and liveCityCode !=''">
+	   		#{liveCityCode},
+	   	 </if>
+      	 <if test="liveDistrictCode !=null and liveDistrictCode !=''">
+	   		#{liveDistrictCode},
+	   	 </if>
+      	 <if test="certAddr !=null and certAddr !=''">
+	   		#{certAddr},
+	   	 </if>
+       1
+    </trim>
+  </insert>
+   <!-- 更新的方法 -->
+	<update id="updateByPrimaryKey" parameterType="com.xlkfinance.bms.rpc.customer.CusPerson">
+		update cus_person
+		<set>
+		<if test="cusAcct.pid != null">
+		    ACCT_ID = #{cusAcct.pid,jdbcType=INTEGER},
+		</if>
+    	<if test="chinaName != null">
+     		CHINA_NAME = #{chinaName,jdbcType=VARCHAR}, 
+     	</if>
+     	<if test="engName != null">
+     		ENG_NAME = #{engName,jdbcType=VARCHAR},
+     	</if>
+     	<if test="sex != null">
+     		SEX = #{sex,jdbcType=INTEGER},
+     	</if>
+     	<if test="birthDate != null">
+      		BIRTH_DATE = #{birthDate,jdbcType=DATE,javaType=String}, 
+      	</if>
+      	<if test="nation != null">
+      		NATION = #{nation,jdbcType=VARCHAR},
+      	</if>
+      	<if test="mail != null">
+      		MAIL = #{mail,jdbcType=VARCHAR},
+      	</if>
+      	<if test="qq != null">
+      		QQ = #{qq,jdbcType=VARCHAR}, 
+      	</if>
+      	<if test="wechat != null">
+      		WECHAT = #{wechat,jdbcType=VARCHAR},
+      	</if>
+      	<if test="graduSchool != null">
+      		GRADU_SCHOOL = #{graduSchool,jdbcType=VARCHAR},
+      	</if>
+      	<if test="graduDt != null">
+      		GRADU_DT = #{graduDt,jdbcType=DATE,javaType=String},
+      	</if>
+      	<if test="education != null">
+      		EDUCATION = #{education,jdbcType=INTEGER},
+      	</if>
+      	<if test="degree != null">
+      		DEGREE = #{degree,jdbcType=INTEGER},
+      	</if>
+      	<if test="polFace != null">
+      		POL_FACE = #{polFace,jdbcType=INTEGER},
+      	</if>
+      	<if test="workUnit != null">
+      		WORK_UNIT = #{workUnit,jdbcType=VARCHAR},
+      	</if>
+      	<if test="unitNature != null">
+      		UNIT_NATURE = #{unitNature,jdbcType=INTEGER},
+      	</if>
+      	<if test="regCapital != null">
+      		REG_CAPITAL  = #{regCapital,jdbcType=DOUBLE},
+      	</if>
+      	<if test="mainBus != null">
+      		MAIN_BUS = #{mainBus,jdbcType=VARCHAR},
+      	</if>
+      	<if test="unitPhone != null">
+      		UNIT_PHONE = #{unitPhone,jdbcType=VARCHAR},
+      	</if>
+      	<if test="fax != null">
+      		FAX = #{fax,jdbcType=VARCHAR},
+      	</if>
+      	<if test="mobilePhone != null">
+    		mobile_phone= #{mobilePhone,jdbcType=VARCHAR}, 
+    	</if>
+    	<if test="telephone != null">
+    		telephone= #{telephone,jdbcType=VARCHAR}, 
+    	</if>
+      	<if test="occupation != null">
+      		OCCUPATION = #{occupation,jdbcType=VARCHAR},
+      	</if>
+      	<if test="knowLoan != null and knowLoan !=0">
+      		KNOW_LOAN = #{knowLoan,jdbcType=INTEGER},
+      	</if>
+      	<if test="workService != null">
+      		WORK_SERVICE = #{workService,jdbcType=VARCHAR},
+      	</if>
+      	<if test="job != null and job !=''">
+      		JOB = #{job,jdbcType=VARCHAR},
+      	</if>
+     	<if test="boardMember != null and boardMember !=''">
+      		BOARD_MEMBER = #{boardMember,jdbcType=INTEGER},
+      	</if>
+      	<if test="relation != null and relation !=''">
+      		RELATION = #{relation,jdbcType=INTEGER},
+      	</if>
+      	<if test="occName != null">
+      		OCC_NAME = #{occName,jdbcType=INTEGER},
+      	</if>
+      	<if test="servant != null">
+      		SERVANT = #{servant,jdbcType=INTEGER},
+      	</if>
+      	<if test="deptment != null">
+      		DEPTMENT = #{deptment,jdbcType=VARCHAR},
+      	</if>
+      	<if test="paySocSec != null">
+      		PAY_SOC_SEC = #{paySocSec,jdbcType=INTEGER},
+      	</if>
+      	<if test="monthIncome != null">
+      		MONTH_INCOME = #{monthIncome,jdbcType=DOUBLE},
+      	</if>
+      	<if test="trade != null">
+      		TRADE = #{trade,jdbcType=INTEGER},
+      	</if>
+      	<if test="entryTime != null">
+      		ENTRY_TIME = #{entryTime,jdbcType=DATE,javaType=String},
+      	</if>
+      	<if test="payWay != null">
+      		PAY_WAY = #{payWay,jdbcType=INTEGER},
+      	</if>
+      	<if test="monthPayDay != null">
+      		MONTH_PAY_DAY = #{monthPayDay,jdbcType=INTEGER},
+      	</if>
+      	<if test="staffNum != null">
+      		STAFF_NUM = #{staffNum,jdbcType=INTEGER},
+      	</if>
+      	<if test="unitAddr != null">
+      		UNIT_ADDR = #{unitAddr,jdbcType=VARCHAR},
+      	</if>
+      	<if test="unitCode != null">
+      		UNIT_CODE = #{unitCode,jdbcType=VARCHAR},
+      	</if>
+      	<if test="certType != null">
+      		CERT_TYPE = #{certType,jdbcType=INTEGER},
+      	</if>
+      	<if test="certNumber != null">
+      		CERT_NUMBER = #{certNumber,jdbcType=VARCHAR},
+      	</if>
+      	<if test="certUrl != null">
+      		CERT_URL = #{certUrl,jdbcType=VARCHAR},
+      	</if>
+      	<if test="status != null">
+      		STATUS = #{status,jdbcType=INTEGER},
+      	</if>
+      	<if test="relationType != null and relationType !=''">
+    	RELATION_TYPE = #{relationType,jdbcType=INTEGER},
+    	</if>
+       <if test="marrStatus != null">
+      		MARR_STATUS = #{marrStatus,jdbcType=INTEGER},
+      	</if>
+      	<if test="liveDate != null">
+      		LIVE_DATE = #{liveDate,jdbcType=INTEGER},
+      	</if>
+      	<if test="socSecNumber != null">
+      		SOC_SEC_NUMBER = #{socSecNumber,jdbcType=VARCHAR},
+      	</if>
+      	<if test="otherPhone != null">
+      		OTHER_PHONE = #{otherPhone,jdbcType=VARCHAR},
+      	</if>
+      	<if test="familyPhone != null">
+      		FAMILY_PHONE = #{familyPhone,jdbcType=VARCHAR},
+      	</if>
+      	<if test="censusAddr != null">
+      		CENSUS_ADDR = #{censusAddr,jdbcType=VARCHAR},
+      	</if>
+      	<if test="censusCode != null">
+      		CENSUS_CODE = #{censusCode,jdbcType=VARCHAR},
+      	</if>
+      	<if test="commAddr != null">
+      		COMM_ADDR = #{commAddr,jdbcType=VARCHAR},
+      	</if>
+      	<if test="commCode != null">
+      		COMM_CODE = #{commCode,jdbcType=VARCHAR},
+      	</if>
+      	<if test="liveAddr != null">
+      		LIVE_ADDR = #{liveAddr,jdbcType=VARCHAR},
+      	</if>
+      	<if test="liveCode != null">
+      		LIVE_CODE = #{liveCode,jdbcType=VARCHAR},
+      	</if>
+      	<if test="communityName != null">
+      		COMMUNITY_NAME = #{communityName,jdbcType=VARCHAR},
+      	</if>
+      <if test="isComOwn != null and isComOwn !=''">
+      		ISCOMOWN = #{isComOwn,jdbcType=INTEGER},
+      	</if>
+      	
+      	<if test="age != null and age !=0">
+      		AGE = #{age,jdbcType=INTEGER},
+      	</if>
+      	 <if test="proportionProperty !=null">
+	   		PROPORTION_PROPERTY = #{proportionProperty},
+	   	 </if>
+      	 <if test="liveProvinceCode !=null and liveProvinceCode !=''">
+	   		LIVE_PROVINCE_CODE = #{liveProvinceCode},
+	   	 </if>
+      	 <if test="liveCityCode !=null and liveCityCode !=''">
+	   		LIVE_CITY_CODE = #{liveCityCode},
+	   	 </if>
+      	 <if test="liveDistrictCode !=null and liveDistrictCode !=''">
+	   		LIVE_DISTRICT_CODE = #{liveDistrictCode},
+	   	 </if>
+      	 <if test="certAddr !=null and certAddr !=''">
+	   		CERT_ADDR = #{certAddr},
+	   	 </if>
+		</set>
+		where pid = #{pid,jdbcType=INTEGER}
+	</update>
+	
+	
+	<select id="selectByPrimaryKey" resultMap="selectAllResultMap" parameterType="java.lang.Integer">
+  		select * from cus_person where pid=#{pid,jdbcType=INTEGER}
+  	</select>
+  	
+  	<select id="selectMainByPerId" resultMap="selectAllResultMap" parameterType="java.lang.Integer">
+  		select * from cus_person where acct_id=#{acctId,jdbcType=INTEGER} and RELATION_TYPE=1
+  	</select>
+  	
+  	<select id="checkCusExist" resultMap="selectAllResultMap" parameterType="java.util.Map">
+  		select cp.* from cus_person cp,cus_acct ca where cp.acct_id=ca.pid and cp.CERT_NUMBER=#{certNumber} and ca.STATUS=#{status} and cp.RELATION_TYPE=#{relationType} and ca.org_id=#{orgId,jdbcType=INTEGER}
+  	</select>
+  	
+  	<select id="selectFamilyByPerId" resultMap="selectAllResultMap" parameterType="java.lang.Integer">
+  		select * from cus_person where acct_id=#{acctId,jdbcType=INTEGER} and RELATION_TYPE=2
+  	</select>
+  	<!-- 不分页查询关系人信息 -->
+  	<select id="getRelationCusPerson" resultMap="selectAllResultMap" parameterType="com.xlkfinance.bms.rpc.customer.CusPerson">
+  		  SELECT  CP.PID,         
+				CP.CHINA_NAME,         
+				CP.ENG_NAME,             
+				(SELECT LK.LOOKUP_VAL                
+				FROM SYS_LOOKUP_VAL LK               
+				WHERE LK.PID = CP.SEX) sexText,               
+				(SELECT SLV.LOOKUP_DESC FROM SYS_LOOKUP_VAL SLV WHERE CP.CERT_TYPE=SLV.PID) AS certTypeText,
+				CP.CERT_NUMBER,               
+				CP.UNIT_PHONE,               
+				CP.telephone,               
+				CP.mobile_phone,               
+				CP.WORK_SERVICE,               
+				CP.PROPORTION_PROPERTY,
+				CP.SEX,
+				CP.RELATION_TYPE,
+				CP.STATUS,
+				CP.CERT_TYPE,
+				CP.KNOW_LOAN,
+				(SELECT LV.LOOKUP_DESC 
+				   FROM SYS_LOOKUP SL, SYS_LOOKUP_VAL LV             
+				   WHERE SL.LOOKUP_TYPE = 'RELATION'               
+				   AND LV.LOOKUP_ID = SL.PID 
+				   AND LV.LOOKUP_VAL = TO_CHAR(CP.RELATION_TYPE)) relationTypeText,
+				   CASE CP.BOARD_MEMBER WHEN 1 THEN '是' 
+				       WHEN 2 THEN '否' END BOARD_MEMBER 
+				FROM CUS_PERSON CP WHERE 1 = 1 AND CP.STATUS =1      
+				AND CP.acct_id = #{cusAcct.pid,jdbcType=INTEGER}
+		   <choose>
+		   		<when test="relationType>4">
+		   			AND CP.RELATION_TYPE <![CDATA[>=]]> #{relationType,jdbcType=INTEGER}
+		   		</when>
+		   		<otherwise>
+		   			AND CP.RELATION_TYPE = #{relationType,jdbcType=INTEGER}
+		   		</otherwise>
+		   </choose>
+		  
+  	</select>
+  	<select id="getCusPersonByAcctIdAndStatus" resultMap="BaseResultMap" parameterType="com.xlkfinance.bms.rpc.customer.CusPerson">
+  		  select * from(
+  		  	SELECT rownum rn,
+		  		  CP.PID,
+		  		  CP.CHINA_NAME,
+		  		  CP.ENG_NAME,
+			         (SELECT LK.LOOKUP_VAL
+			            FROM SYS_LOOKUP_VAL LK
+			           WHERE LK.PID = CP.SEX) SEX,
+			           (SELECT SLV.LOOKUP_DESC FROM SYS_LOOKUP_VAL SLV WHERE CP.CERT_TYPE=SLV.PID) AS CERT_TYPE,
+			           CP.CERT_NUMBER,
+			           CP.UNIT_PHONE,
+			           CP.TELEPHONE,
+			           CP.MOBILE_PHONE,
+			           CP.WORK_SERVICE,
+			           CP.PROPORTION_PROPERTY,
+			           (SELECT LV.LOOKUP_DESC
+				          FROM SYS_LOOKUP SL, SYS_LOOKUP_VAL LV
+				         WHERE SL.LOOKUP_TYPE = 'RELATION'
+				           AND LV.LOOKUP_ID = SL.PID
+				           AND LV.LOOKUP_VAL = TO_CHAR(CP.RELATION_TYPE)) RELATION, 
+			         CASE CP.BOARD_MEMBER
+		                   WHEN 1 THEN
+		                    '是'
+		                   WHEN 2 THEN
+		                    '否'
+		                 END BOARD_MEMBER
+          FROM CUS_PERSON CP
+         WHERE 1 = 1
+		   AND CP.STATUS =1
+		   AND CP.acct_id = #{cusAcct.pid,jdbcType=INTEGER}
+		   <choose>
+		   		<when test="relationType>4">
+		   			AND CP.RELATION_TYPE <![CDATA[>=]]> #{relationType,jdbcType=INTEGER}
+		   		</when>
+		   		<otherwise>
+		   			AND CP.RELATION_TYPE = #{relationType,jdbcType=INTEGER}
+		   		</otherwise>
+		   </choose>
+		   AND rownum<![CDATA[<=]]>#{page}*#{rows})zA
+         WHERE rn>=((#{page}-1)*#{rows})+1
+  	</select>
+  	<select id="getTotalCusPersons" parameterType="com.xlkfinance.bms.rpc.customer.CusPerson" resultType="java.lang.Integer">
+  	    SELECT COUNT(PID) FROM (
+  	      SELECT 
+  		  CP.PID,
+  		  CP.CHINA_NAME,
+	         (SELECT LK.LOOKUP_VAL
+	            FROM SYS_LOOKUP_VAL LK
+	           WHERE LK.PID = CP.SEX) SEX,
+	           CP.CERT_TYPE,
+	           CP.CERT_NUMBER,
+	           CP.UNIT_PHONE,
+	           CP.TELEPHONE,
+	           CP.MOBILE_PHONE,
+	           CP.WORK_SERVICE, 
+	           CP.MOBILE_PHONE, 
+	           (SELECT LV.LOOKUP_DESC
+				          FROM SYS_LOOKUP SL, SYS_LOOKUP_VAL LV
+				         WHERE SL.LOOKUP_TYPE = 'RELATION'
+				           AND LV.LOOKUP_ID = SL.PID
+				           AND LV.LOOKUP_VAL = TO_CHAR(CP.RELATION_TYPE)) RELATION,  
+	         CASE CP.BOARD_MEMBER
+                   WHEN 1 THEN
+                    '是'
+                   WHEN 2 THEN
+                    '否'
+                 END BOARD_MEMBER
+          FROM CUS_PERSON CP
+         WHERE 1 = 1
+		   AND CP.STATUS =1
+		   AND CP.acct_id = #{cusAcct.pid,jdbcType=INTEGER}
+		   <choose>
+		   		<when test="relationType>4">
+		   			AND CP.RELATION_TYPE <![CDATA[>=]]> #{relationType,jdbcType=INTEGER}
+		   		</when>
+		   		<otherwise>
+		   			AND CP.RELATION_TYPE = #{relationType,jdbcType=INTEGER}
+		   		</otherwise>
+		   </choose>)
+  	</select>
+  	<update id="deleteCusPerson" parameterType="java.util.List">
+	  	update 
+	  		cus_person 
+  		set 
+  			status=0 
+		where pid in 
+		<foreach item="itemId" collection="list" open="(" separator="," close=")">
+		          #{itemId}
+		</foreach>
+	</update>
+	
+	<!-- 查询所有人员所需列 -->
+	<sql id="queryColumnList">
+		p.pid,p.china_name,(SELECT LK.LOOKUP_DESC FROM SYS_LOOKUP_VAL LK  WHERE LK.PID = P.SEX) sexText,p.sex,
+       	(SELECT LK.LOOKUP_DESC FROM SYS_LOOKUP_VAL LK  WHERE LK.PID = P.CERT_TYPE) certTypeText,p.CERT_NUMBER,
+       	p.work_unit,p.relation_type,(SELECT LK.LOOKUP_DESC FROM SYS_LOOKUP_VAL LK,sys_lookup sl  
+       	WHERE sl.lookup_type = 'RELATION' AND  sl.pid = lk.lookup_id AND LK.LOOKUP_VAL = to_char(P.relation_type)) relationTypeText ,
+       	(SELECT u.real_name FROM sys_user u WHERE u.pid =(SELECT a.pm_user_id FROM cus_acct a WHERE a.pid = p.acct_id)) realName
+	</sql>
+	
+	<!-- 查询所有人员条件 -->
+	<sql id="queryCondition">
+		FROM cus_person p
+		WHERE p.status = 1 
+		AND p.relation_type > 0
+		AND p.relation_type != 4 
+    	AND p.acct_id NOT IN(SELECT distinct abr.ACCT_ID FROM CUS_ACCT_BLACKLIST_REFUSE abr WHERE abr.status = 1)
+   		<if test="chinaName != null and chinaName !='' ">
+	   		AND P.CHINA_NAME LIKE '%${chinaName}%'
+	   	</if>
+	   	<if test="sex != null and sex != -1 and sex != 0 ">
+	   		AND P.SEX =#{sex}
+	   	</if>
+	   	<if test="certType != null and certType != -1 and certType != 0 ">
+	   		AND P.CERT_TYPE=#{certType}
+	   	</if>
+	   	<if test="certNumber != null and certNumber !='' ">
+	   		AND P.CERT_NUMBER  like '%${certNumber}%'
+	   	</if>
+	</sql>
+	
+	<!-- 获取所有人员信息 -->
+	<select id="getAllCusPerson" resultMap="selectAllResultMap" parameterType="com.xlkfinance.bms.rpc.customer.CusPerson">
+		SELECT * FROM (
+		SELECT rownum rnum ,aa.* FROM (  
+		SELECT  rownum rid, 
+		<include refid="queryColumnList" /> 
+		<include refid="queryCondition" /> 
+		ORDER BY p.relation_type,P.CHINA_NAME ) aa
+		) bb 
+		where 1=1 
+		<if test="page != null and page !=0 and rows!=null and rows!=0">
+			and rnum<![CDATA[<=]]>#{page}*#{rows}
+			and rnum>=((#{page}-1)*#{rows})+1
+		</if>
+       	
+	</select>
+	
+	<!-- 获取条件查询的总数 -->
+	<select id="getAllCusPersonCount" parameterType="com.xlkfinance.bms.rpc.customer.CusPerson" resultType="java.lang.Integer">
+		SELECT count(*)
+		<include refid="queryCondition" /> 
+	</select>
+	<!-- 根据证件号码查询客户信息 -->
+	<select id="getCusPersonByNumber" resultMap="selectAllResultMap" parameterType="com.xlkfinance.bms.rpc.customer.CusPerson">
+		SELECT CPP.*
+                   FROM CUS_PERSON CPP
+                   LEFT JOIN CUS_ACCT A
+                   ON CPP.ACCT_ID = A.PID AND A.STATUS = 1
+                  WHERE CPP.RELATION_TYPE = 1 
+                  AND CPP.CERT_NUMBER = #{certNumber}
+                  AND A.CUS_SOURCE = #{cusSource} 
+                  AND A.ORG_ID = #{orgId} 
+	</select>
+	
+	<select id="getCusPersonByMarr"  parameterType="com.xlkfinance.bms.rpc.customer.CusPerson" resultMap="selectAllResultMap">
+		SELECT * FROM CUS_PERSON WHERE ACCT_ID = #{cusAcct.pid,jdbcType=INTEGER} AND  RELATION_TYPE = 2
+	
+	</select>
+	
+	
+ 	<!-- 更新客户信息-供资金机构使用 -->
+	<update id="updateFromPartnerById" parameterType="com.xlkfinance.bms.rpc.customer.CusPerson">
+		update cus_person
+		<set>
+      	<if test="education != null and  education != 0">
+      		EDUCATION = #{education,jdbcType=INTEGER},
+      	</if>
+      	<if test="workUnit != null">
+      		WORK_UNIT = #{workUnit,jdbcType=VARCHAR},
+      	</if>
+      	<if test="unitNature != null and  unitNature != 0">
+      		UNIT_NATURE = #{unitNature,jdbcType=INTEGER},
+      	</if>
+      	<if test="occupation != null">
+      		OCCUPATION = #{occupation,jdbcType=VARCHAR},
+      	</if>
+      	<if test="workService != null">
+      		WORK_SERVICE = #{workService,jdbcType=VARCHAR},
+      	</if>
+      	<if test="occName != null and  occName != 0">
+      		OCC_NAME = #{occName,jdbcType=INTEGER},
+      	</if>
+      	<if test="monthIncome != null">
+      		MONTH_INCOME = #{monthIncome,jdbcType=DOUBLE},
+      	</if>
+      	<if test="trade != null and  occName != 0">
+      		TRADE = #{trade,jdbcType=INTEGER},
+      	</if>
+      	<if test="liveCode != null">
+      		LIVE_CODE = #{liveCode,jdbcType=VARCHAR},
+      	</if>
+      	 <if test="certAddr !=null and certAddr !=''">
+	   		CERT_ADDR = #{certAddr},
+	   	 </if>
+      	<if test="entryTime != null and entryTime !=''">
+      		ENTRY_TIME = #{entryTime,jdbcType=DATE,javaType=String},
+      	</if>
+		</set>
+		where pid = #{pid,jdbcType=INTEGER}
+	</update>
+	
+	
+</mapper>

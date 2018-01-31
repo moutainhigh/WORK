@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.mortgage.mapper.ProjectAssHandleMapper">
+	<resultMap id="projectAssHandleResultMap" type="com.xlkfinance.bms.rpc.mortgage.ProjectAssHandle">
+		<id column="PID" property="pid" jdbcType="INTEGER"/>
+		<result column="BASE_ID" property="baseId"  />
+		<result column="HANDLE_USER_ID" property="handleUserId"  />
+		<result column="handleUserName" property="handleUserName"  />
+		<result column="HANDLE_DTTM" property="handleDttm" />
+		<result column="HANDLE_REMARK" property="handleRemark" />
+		<result column="STATUS" property="status" />
+	</resultMap>
+	
+	
+	
+</mapper>

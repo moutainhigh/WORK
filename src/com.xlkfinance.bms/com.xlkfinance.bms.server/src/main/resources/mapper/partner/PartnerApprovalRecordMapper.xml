@@ -1,0 +1,150 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.partner.mapper.PartnerApprovalRecordMapper">
+<resultMap type="com.xlkfinance.bms.rpc.partner.PartnerApprovalRecord" id="partnerRecordMapper">
+  		<id property="pid" column="PID"/>
+  		<id property="partnerId" column="PARTNER_ID"/>
+  		<id property="loanId" column="LOAN_ID"/>
+  		<id property="approvalStatus" column="APPROVAL_STATUS"/>
+  		<id property="approvalComment" column="APPROVAL_COMMENT"/>
+  		<id property="approvalTime" column="APPROVAL_TIME" jdbcType="TIMESTAMP" javaType="String"/>
+  		<id property="projectName" column="project_Name"/>
+  		<id property="projectNumber" column="project_Number"/>
+  		<id property="submitApprovalTime" column="SUBMIT_APPROVAL_TIME" jdbcType="TIMESTAMP" javaType="String"/>
+  		<id property="reApplyReason" column="RE_APPLY_REASON"/>
+  		<id property="approveMoney" column="APPROVE_MONEY"/>
+  		<id property="notifyType" column="NOTIFY_TYPE"/>
+  		
+</resultMap>
+
+<select id="findAllPartnerApprovalRecord" resultMap="partnerRecordMapper" parameterType="java.lang.Integer">
+	SELECT RE.*,PRO.PROJECT_NAME,PRO.PROJECT_NUMBER 
+	FROM BIZ_PARTNER_APPROVAL_RECORD RE
+	LEFT JOIN BIZ_PROJECT_PARTNER PAR 
+	ON RE.PARTNER_ID = PAR.PID 
+	LEFT JOIN BIZ_PROJECT PRO
+	ON PAR.PROJECT_ID = PRO.PID
+	where re.partner_id=#{partnerId,jdbcType=INTEGER}
+</select>
+
+<!-- 新增产品 -->
+<insert id="addPartnerApprovalRecord" parameterType="com.xlkfinance.bms.rpc.partner.PartnerApprovalRecord">
+	<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+		SELECT SEQ_BIZ_APPROVAL_RECORD.Nextval as PID from DUAL
+	</selectKey>
+	INSERT INTO BIZ_PARTNER_APPROVAL_RECORD
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+        PID, 
+    	<if test="partnerId != null and partnerId >0"> 
+    	PARTNER_ID, 
+    	</if>
+    	<if test="loanId != null and loanId!=''">
+    	LOAN_ID, 
+    	</if>
+    	<if test="approvalStatus != null and approvalStatus>0">
+    	APPROVAL_STATUS, 
+    	</if>
+    	<if test="approvalComment != null and approvalComment!=''">
+    	APPROVAL_COMMENT, 
+    	</if>
+    	<if test="approvalTime != null and approvalTime!=''">
+    	APPROVAL_TIME, 
+    	</if>
+    	
+    	<if test="submitApprovalTime != null and submitApprovalTime!=''">
+    	SUBMIT_APPROVAL_TIME, 
+    	</if>
+    	<if test="reApplyReason != null and reApplyReason !=''">
+    		RE_APPLY_REASON , 
+    	</if>
+  		<if test="approveMoney != null and approveMoney > 0">
+    		APPROVE_MONEY, 
+    	</if>
+    	<if test="isNotify != null and isNotify > 0">
+    		IS_NOTIFY, 
+    	</if>
+    	<if test="notifyType != null and notifyType > 0">
+    		NOTIFY_TYPE, 
+    	</if>
+    	
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+    		#{pid,jdbcType=INTEGER}, 
+    	<if test="partnerId != null and partnerId >0"> 
+    		#{partnerId}, 
+    	</if>
+    	<if test="loanId != null and loanId!=''">
+    		#{loanId}, 
+    	</if>
+    	<if test="approvalStatus != null and approvalStatus>0">
+    		#{approvalStatus}, 
+    	</if>
+    	<if test="approvalComment != null and approvalComment!=''">
+    		#{approvalComment}, 
+    	</if>
+    	<if test="approvalTime != null and approvalTime!=''">
+    		#{approvalTime,javaType=String, jdbcType=TIMESTAMP}, 
+    	</if>
+    	
+    	<if test="submitApprovalTime != null and submitApprovalTime!=''">
+    		#{submitApprovalTime,javaType=String, jdbcType=TIMESTAMP}, 
+    	</if>
+    	<if test="reApplyReason != null and reApplyReason !=''">
+    		#{reApplyReason}, 
+    	</if>
+  		<if test="approveMoney != null and approveMoney > 0">
+    		#{approveMoney}, 
+    	</if>
+    	<if test="isNotify != null and isNotify > 0">
+    		#{isNotify}, 
+    	</if>
+    	<if test="notifyType != null and notifyType > 0">
+    		#{notifyType}, 
+    	</if>
+    </trim>
+</insert>
+
+
+<!-- 更新机构审核记录 -->
+<update id="updatePartnerApprovalRecord" parameterType="com.xlkfinance.bms.rpc.partner.PartnerApprovalRecord">
+	UPDATE BIZ_PARTNER_APPROVAL_RECORD
+	<set>
+    	<if test="approvalStatus != null and approvalStatus !=''">
+    		APPROVAL_STATUS = #{approvalStatus}, 
+    	</if>
+    	<if test="approvalComment != null and approvalComment !=''">
+    		APPROVAL_COMMENT = #{approvalComment}, 
+    	</if>
+    	<if test="approvalTime != null and approvalTime !=''">
+    		APPROVAL_TIME = #{approvalTime,javaType=String, jdbcType=TIMESTAMP}, 
+    	</if>
+    	<if test="submitApprovalTime != null and submitApprovalTime !=''">
+    		SUBMIT_APPROVAL_TIME =#{submitApprovalTime,javaType=String, jdbcType=TIMESTAMP}, 
+    	</if>
+    	<if test="reApplyReason != null and reApplyReason !=''">
+    		RE_APPLY_REASON = #{reApplyReason},
+    	</if>
+  		<if test="approveMoney != null and approveMoney > 0">
+    		APPROVE_MONEY = #{approveMoney}, 
+    	</if>
+    	<if test="isNotify != null and isNotify > 0">
+    		IS_NOTIFY = #{isNotify}, 
+    	</if>
+    	<if test="notifyType != null and notifyType > 0">
+    		NOTIFY_TYPE = #{notifyType}, 
+    	</if>
+	</set>
+	where LOAN_ID =#{loanId}
+ 		<if test="pid != null and pid > 0">
+    		 and PID =#{pid}
+    	</if>
+		<if test="partnerId != null and partnerId > 0">
+    		 and PARTNER_ID =#{partnerId}
+    	</if>
+		<if test="queryIsNotify != null and queryIsNotify > 0">
+    		 and IS_Notify =#{queryIsNotify}
+    	</if>  
+</update>
+
+
+
+</mapper>

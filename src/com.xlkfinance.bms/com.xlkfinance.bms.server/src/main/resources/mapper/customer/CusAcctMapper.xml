@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.customer.mapper.CusAcctMapper">
+
+  <resultMap id="BaseResultMap" type="com.xlkfinance.bms.rpc.customer.CusAcct" >
+    <id column="Pid" property="pid" jdbcType="INTEGER" />
+    <result column="CUS_TYPE" property="cusType" jdbcType="INTEGER" />
+    <result column="pm_User_id" property="pmUserId" jdbcType="INTEGER" />
+    <result column="STATUS" property="status" jdbcType="INTEGER" />
+  </resultMap>
+  
+  	<!-- 客户信息Map -->
+  	<resultMap id="CusAcctResultMap" type="com.xlkfinance.bms.rpc.customer.CusAcct" >
+  		<result column="ACCT_ID" property="pid" />
+  		<result column="ACCT_TYPE" property="cusType" />
+  		<result column="ACCT_NAME" property="acctName" />
+  		<result column="ECO_TRADE" property="ecoTrade" />
+  		<result column="STATUS" property="status" />
+  		<result column="acctTypeText" property="acctTypeText" />
+  	</resultMap>
+  
+  <!-- 查询客户类型 -->
+  <select id="selectCusTypeByAcctId" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+	  	SELECT cus_type FROM cus_acct WHERE pid=#{acctId,jdbcType=INTEGER}
+     </select> 
+  
+<insert id="insert" parameterType="com.xlkfinance.bms.rpc.customer.CusAcct">
+    <selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+		SELECT SEQ_CUS_ACCT.Nextval as PID from DUAL
+	</selectKey>
+    insert into cus_acct (
+	    PID, 
+	    CUS_TYPE, 
+	    CUS_STATUS,
+	    pm_User_id,
+	    STATUS,
+	    CUS_SOURCE,
+	    ORG_ID
+	    )
+    values (
+	    #{pid,jdbcType=INTEGER},
+	    #{cusType,jdbcType=INTEGER},
+	    #{cusStatus,jdbcType=INTEGER},
+	    #{pmUserId,jdbcType=INTEGER},
+	    #{status,jdbcType=INTEGER},
+	    #{cusSource,jdbcType=INTEGER},
+	    #{orgId,jdbcType=INTEGER})
+  </insert>
+  <!-- 更新的方法 -->
+  	<update id="updateByPrimaryKey" parameterType="com.xlkfinance.bms.rpc.customer.CusAcct">
+  	  update cus_acct 
+  	  <set> 
+	  <if test="cusType != null">
+			CUS_TYPE = #{cusType,jdbcType=INTEGER},
+	  </if>
+<!-- 	  <if test="cusStatus != null"> -->
+<!-- 			CUS_STATUS = #{cusStatus,jdbcType=INTEGER}, -->
+<!-- 	  </if> -->
+	  <if test="status != null">
+			STATUS = #{status,jdbcType=INTEGER},
+	  </if>
+	  <if test="pmUserId != null">
+	  	   PM_USER_ID = #{pmUserId,jdbcType=INTEGER},
+	  </if>
+	    </set>
+		where pid = #{pid,jdbcType=INTEGER}
+  	</update>
+  	
+  	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+  		select * from cus_acct where pid=#{pid,jdbcType=INTEGER}
+  	</select>
+  	
+  	<update id="deleteCusAcct" parameterType="java.util.List">
+	  	update 
+	  		cus_ACCT 
+  		set 
+  			status=0 
+		where pid in 
+		<foreach item="itemId" collection="list" open="(" separator="," close=")">
+		          #{itemId}
+		</foreach>
+	</update>
+	
+	<!-- 修改客户状态 -->
+	<update id="updateCusStatus" parameterType="com.xlkfinance.bms.rpc.customer.CusAcct">
+		update 
+			cus_acct
+		set
+			cus_status = #{cusStatus,jdbcType=INTEGER}
+		where 
+			pid = #{pid,jdbcType=INTEGER}
+	</update>
+	
+	<!-- 修改客户状态（ 项目结清，项目否决） -->
+	<update id="updateCusStatusByProSettle" parameterType="java.lang.Integer">
+		UPDATE CUS_ACCT
+		   SET CUS_STATUS =
+		       (CASE
+		           WHEN CUS_STATUS = 4 THEN
+		            1
+		           WHEN CUS_STATUS > 4 THEN
+		            CUS_STATUS-4
+		           ELSE
+		            CUS_STATUS
+		         END)
+		 WHERE PID = (SELECT BP.ACCT_ID FROM BIZ_PROJECT BP WHERE BP.PID =#{projectId,jdbcType=INTEGER}) 
+	</update>
+	
+	<!-- 批量加入黑名单、拒贷 -->
+	<update id="updateBatchCusStatus" parameterType="java.util.List">
+		begin
+		<foreach collection="list" item="item" index="index" open="" close="" separator=";">
+		UPDATE CUS_ACCT
+		   SET CUS_STATUS =
+		       (SELECT CASE C2.CUS_STATUS
+		                 WHEN 1 THEN
+		                  	#{item.cusStatus,jdbcType=INTEGER}
+		                 ELSE
+		                  	(C2.CUS_STATUS + #{item.cusStatus,jdbcType=INTEGER})
+		               END CUS_STATUS
+		          FROM CUS_ACCT C2
+		         WHERE C2.PID = #{item.pid,jdbcType=INTEGER})
+		 WHERE PID = #{item.pid,jdbcType=INTEGER}
+		</foreach>
+        ;end;
+	</update>
+	
+	<!-- 批量撤销黑名单、拒贷 -->
+	<update id="updateBackBatchCusStatus" parameterType="java.util.List">
+		begin
+		<foreach collection="list" item="item" index="index" open="" close="" separator=";">
+		UPDATE CUS_ACCT
+		   SET CUS_STATUS =
+		       (SELECT CASE C2.CUS_STATUS
+		                 WHEN 2 THEN
+		                  	1
+		                 WHEN 3 THEN
+		                  	1
+		                 ELSE
+		                  	(C2.CUS_STATUS - #{item.cusStatus,jdbcType=INTEGER})
+		               END CUS_STATUS
+		          FROM CUS_ACCT C2
+		         WHERE C2.PID = #{item.pid,jdbcType=INTEGER})
+		 WHERE PID = #{item.pid,jdbcType=INTEGER}
+		</foreach>
+        ;end;
+	</update>
+	
+	
+	<select id="getAcctNameById" resultType="java.lang.String" parameterType="java.lang.Integer">
+		SELECT acct_name FROM cus_acct_v WHERE acct_id=#{pid,jdbcType=INTEGER}
+	</select>
+	<select id="selectPmUserIdByComId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+		SELECT CA.PM_USER_ID FROM CUS_ACCT CA WHERE CA.PID=#{acctId,jdbcType=INTEGER}
+	</select>
+	<select id="getAcctById" resultMap="CusAcctResultMap" parameterType="java.lang.Integer">
+		SELECT T.PID, T.CUS_TYPE AS ACCT_TYPE, T.PM_USER_ID, T.CUS_STATUS, T.STATUS
+		FROM CUS_ACCT T WHERE T.PID=#{id,jdbcType=INTEGER}
+	</select>
+	
+	<!-- 查询所有有效的客户信息 -->
+	<select id="getAllAcct" resultMap="CusAcctResultMap" parameterType="com.xlkfinance.bms.rpc.customer.CusAcct">
+		SELECT * FROM (
+		SELECT rownum rnum ,aa.* FROM (  
+		SELECT  rownum rid, v.ACCT_ID,v.ACCT_NAME,v.ACCT_TYPE,v.ECO_TRADE,v.STATUS,
+		(SELECT look.lookup_desc FROM Sys_Lookup_Val look WHERE look.pid = v.ACCT_TYPE) acctTypeText
+       	FROM CUS_ACCT_V v
+       	WHERE v.STATUS = 1
+       	AND v.ACCT_ID NOT IN(SELECT distinct abr.ACCT_ID FROM CUS_ACCT_BLACKLIST_REFUSE abr WHERE abr.status = 1)
+       	<if test="ecoTrade != null and ecoTrade != -1 ">
+       		AND v.ECO_TRADE = #{ecoTrade}
+       	</if>
+       	<!-- 数据权限 -->
+		<if test="userIds!=null and userIds.size()>0">
+			and v.PM_USER_ID in
+		<foreach item="itemId" collection="userIds" open="(" separator="," close=")">
+		          #{itemId}
+		</foreach>
+		</if>
+      	<if test="acctName != null and acctName != '' ">
+      		AND v.ACCT_NAME like '%${acctName}%' 
+      	</if>
+       	<if test="cusType != null and cusType != -1 ">
+       		AND v.ACCT_TYPE = #{cusType}
+       	</if>
+       	ORDER BY V.ACCT_NAME DESC ) aa
+		) bb 
+		where 1=1 
+		<if test="page != null and page !=0 and rows!=null and rows!=0">
+			and rnum<![CDATA[<=]]>#{page}*#{rows}
+			and rnum>=((#{page}-1)*#{rows})+1
+		</if>
+	</select>
+	
+	<!-- 查询所有有效的客户总数 -->
+	<select id="getAllAcctCount" resultType="java.lang.Integer" parameterType="com.xlkfinance.bms.rpc.customer.CusAcct">
+		SELECT count(*)
+		FROM CUS_ACCT_V v
+       	WHERE v.STATUS = 1
+       	<if test="ecoTrade != null and ecoTrade != -1 ">
+       		AND v.ECO_TRADE = #{ecoTrade}v 
+       	</if>
+      	<if test="acctName != null and acctName != '' ">
+      		AND v.ACCT_NAME like '%${acctName}%' 
+      	</if>
+       	<if test="cusType != null and cusType != -1 ">
+       		AND v.ACCT_TYPE = #{cusType}
+       	</if>
+	</select>
+<!-- 	修改客户状态为黑名单 -->
+  <update id="updateCusStatuss" parameterType="java.lang.Integer">
+   	 update cus_acct ca set ca.cus_status='2' where ca.pid= #{acctPid}
+  </update>
+</mapper>

@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xlkfinance.bms.server.project.mapper.BizPaymentInfoMapper">
+	<resultMap id="bizPaymentInfoMap" type="com.xlkfinance.bms.rpc.project.BizPaymentInfo">
+		<id property="pid" column="PID" />
+		<id property="projectId" column="PROJECT_ID" />
+		<id property="loanPlanId" column="LOAN_PLAN_ID" />
+		<id property="actualPrincipal" column="ACTUAL_PRINCIPAL" />
+		<id property="actualInterest" column="ACTUAL_INTEREST" />
+		<id property="actualTotal" column="ACTUAL_TOTAL" />
+		<id property="actualPrincipalTime" column="ACTUAL_PRINCIPAL_TIME" />
+		<id property="createDate" column="CREATE_DATE" />
+		<id property="createrId" column="CREATER_ID" />
+		<id property="updateId" column="UPDATE_ID" />
+		<id property="updateDate" column="UPDATE_DATE" />
+	</resultMap>
+	<sql id="column_list">
+        PID,PROJECT_ID,LOAN_PLAN_ID,ACTUAL_PRINCIPAL,ACTUAL_INTEREST,ACTUAL_TOTAL,ACTUAL_PRINCIPAL_TIME,CREATE_DATE,CREATER_ID,UPDATE_ID,UPDATE_DATE
+	</sql>
+	<!-- 查询所有 -->
+	<select id="getAll" resultMap="bizPaymentInfoMap" parameterType="com.xlkfinance.bms.rpc.project.BizPaymentInfo">
+		SELECT
+		<include refid="column_list" />
+		FROM BIZ_PAYMENT_INFO
+		<where>
+			<trim>
+		      <if test="pid != null and pid >0">
+	          PID=#{pid}
+	          </if>
+		      <if test="projectId != null and projectId >0">
+	          AND PROJECT_ID=#{projectId}
+	          </if>
+		      <if test="loanPlanId != null and loanPlanId >0">
+	          AND LOAN_PLAN_ID=#{loanPlanId}
+	          </if>
+		      <if test="actualPrincipal != null and actualPrincipal >0">
+	          AND ACTUAL_PRINCIPAL=#{actualPrincipal}
+	          </if>
+		      <if test="actualInterest != null and actualInterest >0">
+	          AND ACTUAL_INTEREST=#{actualInterest}
+	          </if>
+		      <if test="actualTotal != null and actualTotal >0">
+	          AND ACTUAL_TOTAL=#{actualTotal}
+	          </if>
+		      <if test="actualPrincipalTime != null and actualPrincipalTime !=''">
+	          AND ACTUAL_PRINCIPAL_TIME=#{actualPrincipalTime}
+	          </if>
+		      <if test="createDate != null and createDate !=''">
+	          AND CREATE_DATE=#{createDate}
+	          </if>
+		      <if test="createrId != null and createrId >0">
+	          AND CREATER_ID=#{createrId}
+	          </if>
+		      <if test="updateId != null and updateId >0">
+	          AND UPDATE_ID=#{updateId}
+	          </if>
+		      <if test="updateDate != null and updateDate !=''">
+	          AND UPDATE_DATE=#{updateDate}
+	          </if>
+			</trim>
+		</where>
+	</select>
+	<!-- 根据id获取 -->
+	<select id="getById" resultMap="bizPaymentInfoMap">
+		SELECT <include refid="column_list" /> FROM BIZ_PAYMENT_INFO WHERE PID=#{pid}
+	</select>
+	<!-- 插入一条数据 -->
+	<insert id="insert" parameterType="com.xlkfinance.bms.rpc.project.BizPaymentInfo">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_BIZ_PAYMENT_INFO.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_PAYMENT_INFO
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+				PID,
+			</if>
+		    <if test="projectId != null and projectId >0">
+				PROJECT_ID,
+			</if>
+		    <if test="loanPlanId != null and loanPlanId >0">
+				LOAN_PLAN_ID,
+			</if>
+		    <if test="actualPrincipal != null and actualPrincipal >0">
+				ACTUAL_PRINCIPAL,
+			</if>
+		    <if test="actualInterest != null and actualInterest >0">
+				ACTUAL_INTEREST,
+			</if>
+		    <if test="actualTotal != null and actualTotal >0">
+				ACTUAL_TOTAL,
+			</if>
+		    <if test="actualPrincipalTime != null and actualPrincipalTime !=''">
+				ACTUAL_PRINCIPAL_TIME,
+			</if>
+		    <if test="createDate != null and createDate !=''">
+				CREATE_DATE,
+			</if>
+		    <if test="createrId != null and createrId >0">
+				CREATER_ID,
+			</if>
+		    <if test="updateId != null and updateId >0">
+				UPDATE_ID,
+			</if>
+		    <if test="updateDate != null and updateDate !=''">
+				UPDATE_DATE,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+		    #{pid},
+			</if>
+		    <if test="projectId != null and projectId >0">
+		    #{projectId},
+			</if>
+		    <if test="loanPlanId != null and loanPlanId >0">
+		    #{loanPlanId},
+			</if>
+		    <if test="actualPrincipal != null and actualPrincipal >0">
+		    #{actualPrincipal},
+			</if>
+		    <if test="actualInterest != null and actualInterest >0">
+		    #{actualInterest},
+			</if>
+		    <if test="actualTotal != null and actualTotal >0">
+		    #{actualTotal},
+			</if>
+		    <if test="actualPrincipalTime != null and actualPrincipalTime !=''">
+		    #{actualPrincipalTime,jdbcType= DATE,javaType= java.lang.String},
+			</if>
+		    <if test="createDate != null and createDate !=''">
+		    #{createDate,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		    <if test="createrId != null and createrId >0">
+		    #{createrId},
+			</if>
+		    <if test="updateId != null and updateId >0">
+		    #{updateId},
+			</if>
+		    <if test="updateDate != null and updateDate !=''">
+		    #{updateDate,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		</trim>
+	</insert>
+	<!-- 根据id删除数据 -->
+	<delete id="deleteById" parameterType="com.xlkfinance.bms.rpc.project.BizPaymentInfo">
+		<![CDATA[DELETE FROM BIZ_PAYMENT_INFO WHERE PID=#{pid}]]>
+	</delete>
+	<!-- 根据id更新数据 -->
+		<update id="update" parameterType="com.xlkfinance.bms.rpc.project.BizPaymentInfo">
+		UPDATE BIZ_PAYMENT_INFO
+		<set>
+		    <if test="pid != null and pid >0">
+		     PID=#{pid},
+			</if>
+		    <if test="projectId != null and projectId >0">
+		     PROJECT_ID=#{projectId},
+			</if>
+		    <if test="loanPlanId != null and loanPlanId >0">
+		     LOAN_PLAN_ID=#{loanPlanId},
+			</if>
+		    <if test="actualPrincipal != null and actualPrincipal >0">
+		     ACTUAL_PRINCIPAL=#{actualPrincipal},
+			</if>
+		    <if test="actualInterest != null and actualInterest >0">
+		     ACTUAL_INTEREST=#{actualInterest},
+			</if>
+		    <if test="actualTotal != null and actualTotal >0">
+		     ACTUAL_TOTAL=#{actualTotal},
+			</if>
+		    <if test="actualPrincipalTime != null and actualPrincipalTime !=''">
+		     ACTUAL_PRINCIPAL_TIME=#{actualPrincipalTime,jdbcType= DATE,javaType= java.lang.String},
+			</if>
+		    <if test="createDate != null and createDate !=''">
+		     CREATE_DATE=#{createDate,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		    <if test="createrId != null and createrId >0">
+		     CREATER_ID=#{createrId},
+			</if>
+		    <if test="updateId != null and updateId >0">
+		     UPDATE_ID=#{updateId},
+			</if>
+		    <if test="updateDate != null and updateDate !=''">
+		     UPDATE_DATE=#{updateDate,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		</set>
+		WHERE PID = #{pid}
+	</update>
+	<!-- 根据传入多个id删除数据 -->
+	<delete id="deleteByIds" parameterType="java.util.List">
+		DELETE FROM BIZ_PAYMENT_INFO WHERE PID in
+		<foreach collection="list" item="item" index="index" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+	
+	<update id="updatePayments" parameterType="java.util.List">
+	BEGIN
+	 <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+		UPDATE BIZ_PAYMENT_INFO
+		<set>
+		    <if test="item.actualPrincipal != null and item.actualPrincipal >0">
+		     ACTUAL_PRINCIPAL=#{item.actualPrincipal},
+			</if>
+		    <if test="item.actualInterest != null and item.actualInterest >0">
+		     ACTUAL_INTEREST=#{item.actualInterest},
+			</if>
+		    <if test="item.actualTotal != null and item.actualTotal >0">
+		     ACTUAL_TOTAL=#{item.actualTotal},
+			</if>
+		    <if test="item.actualPrincipalTime != null and item.actualPrincipalTime !=''">
+		     ACTUAL_PRINCIPAL_TIME=#{item.actualPrincipalTime,jdbcType= DATE,javaType= java.lang.String},
+			</if>
+		    <if test="item.updateId != null and item.updateId >0">
+		     UPDATE_ID=#{item.updateId},
+			</if>
+		     UPDATE_DATE=SYSDATE,
+		</set>
+		WHERE PID = #{item.pid}
+	 </foreach>
+	 ;END;
+	</update>
+	
+	<insert id="insertPayments" parameterType="java.util.List">
+	INSERT INTO BIZ_PAYMENT_INFO(
+		 PID,
+       PROJECT_ID,
+       LOAN_PLAN_ID,
+       ACTUAL_PRINCIPAL,
+       ACTUAL_INTEREST,
+       ACTUAL_TOTAL,
+       ACTUAL_PRINCIPAL_TIME,
+       CREATE_DATE,
+       CREATER_ID)
+	select SEQ_BIZ_PAYMENT_INFO.Nextval,A.* from(
+        <foreach collection="list" item="item" index="index"
+            separator="UNION">
+            SELECT
+            #{item.projectId,jdbcType=INTEGER},
+            #{item.loanPlanId,jdbcType=INTEGER},
+		    #{item.actualPrincipal},
+		    #{item.actualInterest},
+		    #{item.actualTotal},
+		    #{item.actualPrincipalTime,jdbcType= DATE,javaType= java.lang.String},
+	     	SYSDATE,
+	     	#{item.createrId,jdbcType=INTEGER}
+            from dual 
+             </foreach>
+        ) A
+</insert>
+	
+</mapper>

@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xlkfinance.bms.server.inloan.mapper.CheckLitigationHisMapper">
+	<resultMap id="checkLitigationHisMap" type="com.xlkfinance.bms.rpc.inloan.CheckLitigationDTO">
+		<id property="pid" column="PID" />
+		<id property="projectId" column="PROJECT_ID" />
+		<id property="checkStatus" column="CHECK_STATUS" />
+		<id property="approvalStatus" column="APPROVAL_STATUS" />
+		<id property="checkDate" column="CHECK_DATE" />
+		<id property="checkWay" column="CHECK_WAY" />
+		<id property="remark" column="REMARK" />
+		<id property="attachmentId" column="ATTACHMENT_ID" />
+		<id property="createrDate" column="CREATER_DATE" />
+		<id property="createrId" column="CREATER_ID" />
+		<id property="createrName" column="CREATER_NAME" />
+		<id property="updateId" column="UPDATE_ID" />
+		<id property="updateDate" column="UPDATE_DATE" />
+	</resultMap>
+	<sql id="column_list">
+        PID,PROJECT_ID,CHECK_STATUS,APPROVAL_STATUS,CHECK_DATE,CHECK_WAY,REMARK,ATTACHMENT_ID,CREATER_DATE,CREATER_ID,UPDATE_ID,UPDATE_DATE
+	</sql>
+	<!-- 查询所有 -->
+	<select id="getAll" resultMap="checkLitigationHisMap" parameterType="com.xlkfinance.bms.rpc.inloan.CheckLitigationDTO">
+		SELECT
+		<include refid="column_list" />
+		FROM BIZ_CHECK_LITIGATION_HIS
+		<where>
+			<trim>
+		      <if test="pid != null and pid >0">
+	          PID=#{pid}
+	          </if>
+		      <if test="projectId != null and projectId >0">
+	          AND PROJECT_ID=#{projectId}
+	          </if>
+		      <if test="checkStatus != null and checkStatus >0">
+	          AND CHECK_STATUS=#{checkStatus}
+	          </if>
+		      <if test="approvalStatus != null and approvalStatus >0">
+	          AND APPROVAL_STATUS=#{approvalStatus}
+	          </if>
+		      <if test="checkDate != null and checkDate !=''">
+	          AND CHECK_DATE=#{checkDate,jdbcType=DATE,javaType=String}
+	          </if>
+		      <if test="checkWay != null and checkWay >0">
+	          AND CHECK_WAY=#{checkWay}
+	          </if>
+		      <if test="remark != null and remark !=''">
+	          AND REMARK=#{remark}
+	          </if>
+		      <if test="attachmentId != null and attachmentId >0">
+	          AND ATTACHMENT_ID=#{attachmentId}
+	          </if>
+		      <if test="createrDate != null and createrDate !=''">
+	          AND CREATER_DATE=#{createrDate}
+	          </if>
+		      <if test="createrId != null and createrId >0">
+	          AND CREATER_ID=#{createrId}
+	          </if>
+		      <if test="updateId != null and updateId >0">
+	          AND UPDATE_ID=#{updateId}
+	          </if>
+		      <if test="updateDate != null and updateDate !=''">
+	          AND UPDATE_DATE=#{updateDate}
+	          </if>
+			</trim>
+		</where>
+	</select>
+	<!-- 根据id获取 -->
+	<select id="getById" resultMap="checkLitigationHisMap">
+		SELECT <include refid="column_list" /> FROM BIZ_CHECK_LITIGATION_HIS WHERE PID=#{pid}
+	</select>
+	<!-- 插入一条数据 -->
+	<insert id="insert" parameterType="com.xlkfinance.bms.rpc.inloan.CheckLitigationDTO">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_CHECK_LITIGATION_HIS.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_CHECK_LITIGATION_HIS
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+				PID,
+			</if>
+		    <if test="projectId != null and projectId >0">
+				PROJECT_ID,
+			</if>
+		    <if test="checkStatus != null and checkStatus >0">
+				CHECK_STATUS,
+			</if>
+		    <if test="approvalStatus != null and approvalStatus >0">
+				APPROVAL_STATUS,
+			</if>
+		    <if test="checkDate != null and checkDate !=''">
+				CHECK_DATE,
+			</if>
+		    <if test="checkWay != null and checkWay >0">
+				CHECK_WAY,
+			</if>
+		    <if test="remark != null and remark !=''">
+				REMARK,
+			</if>
+		    <if test="attachmentId != null and attachmentId >0">
+				ATTACHMENT_ID,
+			</if>
+				CREATER_DATE,
+		    <if test="createrId != null and createrId >0">
+				CREATER_ID,
+			</if>
+		    <if test="updateId != null and updateId >0">
+				UPDATE_ID,
+			</if>
+				UPDATE_DATE
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+		    #{pid},
+			</if>
+		    <if test="projectId != null and projectId >0">
+		    #{projectId},
+			</if>
+		    <if test="checkStatus != null and checkStatus >0">
+		    #{checkStatus},
+			</if>
+		    <if test="approvalStatus != null and approvalStatus >0">
+		    #{approvalStatus},
+			</if>
+		    <if test="checkDate != null and checkDate !=''">
+		    #{checkDate,jdbcType=TIMESTAMP},
+			</if>
+		    <if test="checkWay != null and checkWay >0">
+		    #{checkWay},
+			</if>
+		    <if test="remark != null and remark !=''">
+		    #{remark},
+			</if>
+		    <if test="attachmentId != null and attachmentId >0">
+		    #{attachmentId},
+			</if>
+		    SYSDATE,
+		    <if test="createrId != null and createrId >0">
+		    #{createrId},
+			</if>
+		    <if test="updateId != null and updateId >0">
+		    #{updateId},
+			</if>
+		    SYSDATE
+		</trim>
+	</insert>
+	<!-- 根据id删除数据 -->
+	<delete id="deleteById" parameterType="com.xlkfinance.bms.rpc.inloan.CheckLitigationDTO">
+		<![CDATA[DELETE FROM BIZ_CHECK_LITIGATION_HIS WHERE PID=#{pid}]]>
+	</delete>
+	<!-- 根据id更新数据 -->
+		<update id="update" parameterType="com.xlkfinance.bms.rpc.inloan.CheckLitigationDTO">
+		UPDATE BIZ_CHECK_LITIGATION_HIS
+		<set>
+		    <if test="pid != null and pid >0">
+		     PID=#{pid},
+			</if>
+		    <if test="projectId != null and projectId >0">
+		     PROJECT_ID=#{projectId},
+			</if>
+		    <if test="checkStatus != null and checkStatus >0">
+		     CHECK_STATUS=#{checkStatus},
+			</if>
+		    <if test="approvalStatus != null and approvalStatus >0">
+		     APPROVAL_STATUS=#{approvalStatus},
+			</if>
+		    <if test="checkDate != null and checkDate !=''">
+		     CHECK_DATE=#{checkDate,jdbcType= DATE,javaType= java.lang.String},
+			</if>
+		    <if test="checkWay != null and checkWay >0">
+		     CHECK_WAY=#{checkWay},
+			</if>
+		    <if test="remark != null and remark !=''">
+		     REMARK=#{remark},
+			</if>
+		    <if test="attachmentId != null and attachmentId >0">
+		     ATTACHMENT_ID=#{attachmentId},
+			</if>
+		    <if test="updateId != null and updateId >0">
+		     UPDATE_ID=#{updateId},
+			</if>
+		     UPDATE_DATE=SYSDATE
+		</set>
+		WHERE PID = #{pid}
+	</update>
+	<!-- 根据传入多个id删除数据 -->
+	<delete id="deleteByIds" parameterType="java.util.List">
+		DELETE FROM BIZ_CHECK_LITIGATION_HIS WHERE PID in
+		<foreach collection="list" item="item" index="index" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+	<!-- 查诉讼历史列表(分页查询) -->
+	<select id="queryCheckLitigationHisIndex" resultMap="checkLitigationHisMap"
+		parameterType="com.xlkfinance.bms.rpc.inloan.CheckLitigationDTO">
+		<if test="page!=-1">
+			SELECT D.* FROM (SELECT T.*, ROWNUM RN
+			FROM (
+		</if>
+		    SELECT A.PID,
+			       A.PROJECT_ID,
+			       A.CHECK_STATUS,
+			       A.APPROVAL_STATUS,
+			       TO_CHAR(A.CHECK_DATE,'yyyy-mm-dd HH24') as CHECK_DATE,
+			       A.CHECK_WAY,
+			       A.REMARK,
+			       A.ATTACHMENT_ID,
+			       A.CREATER_DATE,
+			       CREATER_ID,
+			       (SELECT U.REAL_NAME FROM SYS_USER U WHERE U.PID = A.CREATER_ID) AS CREATER_NAME,
+			       A.UPDATE_ID,
+			       A.UPDATE_DATE
+			  FROM BIZ_CHECK_LITIGATION_HIS A
+		<where>
+			<trim>
+				<if test="projectId != null and projectId >0">
+					AND A.PROJECT_ID=#{projectId}
+				</if>
+			</trim>
+		</where>
+		ORDER BY A.CREATER_DATE DESC
+		<if test="page!=-1">
+	<![CDATA[
+	) T
+	WHERE ROWNUM <=#{page}*#{rows}
+	) D
+	WHERE D.RN > ((#{page}-1)*#{rows})
+	]]>
+		</if>
+	</select>
+	<!--查诉讼历史列表总数 -->
+	<select id="getCheckLitigationHisIndexTotal" resultType="Integer"
+		parameterType="com.xlkfinance.bms.rpc.inloan.CheckLitigationDTO">
+	<![CDATA[
+	SELECT COUNT(1) FROM
+			(SELECT A.PID
+		  FROM BIZ_CHECK_LITIGATION_HIS A
+	]]>
+		<where>
+			<trim>
+				<if test="projectId != null and projectId >0">
+					AND A.PROJECT_ID=#{projectId}
+				</if>
+			</trim>
+		</where>
+		) T
+	</select>
+	
+	<!-- 查诉讼历史列表(分页查询,根据查诉讼时间降序) -->
+	<select id="queryCheckLitigationHisIndex1" resultMap="checkLitigationHisMap"
+		parameterType="com.xlkfinance.bms.rpc.inloan.CheckLitigationDTO">
+		<if test="page!=-1">
+			SELECT D.* FROM (SELECT T.*, ROWNUM RN
+			FROM (
+		</if>
+		    SELECT A.PID,
+			       A.PROJECT_ID,
+			       A.CHECK_STATUS,
+			       A.APPROVAL_STATUS,
+			       TO_CHAR(A.CHECK_DATE,'yyyy-mm-dd HH24') as CHECK_DATE,
+			       A.CHECK_WAY,
+			       A.REMARK,
+			       A.ATTACHMENT_ID,
+			       A.CREATER_DATE,
+			       CREATER_ID,
+			       (SELECT U.REAL_NAME FROM SYS_USER U WHERE U.PID = A.CREATER_ID) AS CREATER_NAME,
+			       A.UPDATE_ID,
+			       A.UPDATE_DATE
+			  FROM BIZ_CHECK_LITIGATION_HIS A
+		<where>
+			<trim>
+				<if test="projectId != null and projectId >0">
+					AND A.PROJECT_ID=#{projectId}
+				</if>
+			</trim>
+		</where>
+		ORDER BY A.CHECK_DATE DESC,A.CREATER_DATE DESC
+		<if test="page!=-1">
+	<![CDATA[
+	) T
+	WHERE ROWNUM <=#{page}*#{rows}
+	) D
+	WHERE D.RN > ((#{page}-1)*#{rows})
+	]]>
+		</if>
+	</select>
+</mapper>

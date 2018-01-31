@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.customer.mapper.CusEstInfoMapper">
+
+<resultMap id="BaseResultMap" type="com.xlkfinance.bms.rpc.common.GridViewDTO">
+    <id property="pid" column="pid" />
+    <result property="value1" column="acct_id" />
+    <result property="value2" column="acct_NAME" />
+    <result property="value3" column="CUS_TYPE" />
+    <result property="value4" column="MODEL_NAME" />
+    <result property="value5" column="SCORE" />
+    <result property="value6" column="est_lv" />
+    <result property="value7" column="est_mean" />
+    <result property="value8" column="REAL_NAME" />
+    <result property="value9" column="EST_DATE" jdbcType="DATE" javaType="String"/>
+</resultMap>
+
+<resultMap id="selectAllResultMap" type="com.xlkfinance.bms.rpc.customer.CusEstInfo">
+    <id property="pid" column="pid" jdbcType="INTEGER"/>
+    <result property="cusEstTemplate.pid" column="template_id" jdbcType="INTEGER"/>
+    <result property="cusAcct.pid" column="acct_id" jdbcType="INTEGER"/>
+    <result property="cusType" column="CUS_TYPE" jdbcType="INTEGER"/>
+    <result property="estPerson" column="est_person" jdbcType="INTEGER"/>
+    <result property="score" column="score" jdbcType="DOUBLE"/>
+    <result property="estDate" column="EST_DATE" jdbcType="DATE" javaType="String"/>
+    <result property="status" column="status" jdbcType="INTEGER"/>
+    <collection property="cusEstValues" javaType="java.util.List" resultMap="selectValueResultMap"/>
+</resultMap>
+
+<resultMap id="selectValueResultMap" type="com.xlkfinance.bms.rpc.customer.CusEstValue">
+    <id property="pid" column="val_id" jdbcType="INTEGER"/>
+    <result property="cusEstInfo.pid" column="est_id" jdbcType="INTEGER"/>
+    <result property="cusEstOption.pid" column="opt_id" jdbcType="INTEGER"/>
+</resultMap>
+
+<select id="selectByPrimaryKey" resultMap="selectAllResultMap" parameterType="java.lang.Integer">
+  		SELECT CEI.*, 
+       CEV.PID VAL_ID,
+       CEV.EST_ID EST_ID,
+       CEV.EST_OPTION_ID OPT_ID
+  FROM CUS_EST_INFO CEI, CUS_EST_VALUE CEV
+ WHERE CEV.EST_ID = CEI.PID
+   AND cei.pid=#{pid,jdbcType=INTEGER}
+  </select>
+
+<insert id="insert" parameterType="com.xlkfinance.bms.rpc.customer.CusEstInfo">
+   <selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+		SELECT SEQ_CUS_EST_INFO.Nextval as PID from DUAL
+	</selectKey>
+    insert into cus_est_info (
+    	PID, 
+    	TEMPLATE_ID,
+    	ACCT_ID, 
+    	CUS_TYPE, 
+    	EST_PERSON, 
+    	SCORE,
+    	EST_DATE,
+    	STATUS)
+    values (
+    	#{pid,jdbcType=INTEGER}, 
+    	#{cusEstTemplate.pid,jdbcType=INTEGER}, 
+    	#{cusAcct.pid,jdbcType=INTEGER}, 
+     	#{cusType,jdbcType=INTEGER},
+      	#{estPerson,jdbcType=INTEGER}, 
+      	#{score,jdbcType=DOUBLE},
+      	#{estDate,jdbcType=DATE,javaType=String},
+      	#{status,jdbcType=INTEGER})
+  </insert>
+  <!-- 更新的方法 -->
+	<update id="updateByPrimaryKey" parameterType="com.xlkfinance.bms.rpc.customer.CusEstInfo">
+		update cus_est_info
+		<set>
+		<if test="cusAcct.pid != null">
+		     ACCT_ID = #{cusAcct.pid,jdbcType=INTEGER},
+		</if>
+		<if test="cusEstTemplate.pid != null">
+		     TEMPLATE_ID = #{cusEstTemplate.pid,jdbcType=INTEGER},
+		</if>
+		<if test="cusType != null">
+     		CUS_TYPE = #{cusType,jdbcType=INTEGER},
+     	</if>
+     	<if test="estPerson != null">
+      		EST_PERSON = #{estPerson,jdbcType=INTEGER}, 
+      	</if>
+      	<if test="score != null">
+      		score = #{score,jdbcType=DOUBLE},
+      	</if>
+      	<if test="estDate != null">
+      		EST_DATE = #{estDate,jdbcType=DATE,javaType=String},
+      	</if>
+      	<if test="status != null">
+      		STATUS = #{status,jdbcType=INTEGER},
+      	</if>
+		</set>
+		where pid = #{pid,jdbcType=INTEGER}
+	</update>
+	
+	<select id="getcusEstInfos" resultMap="BaseResultMap" parameterType="com.xlkfinance.bms.rpc.customer.CusEstInfoDTO">
+		select * from (
+		  SELECT rownum rn,
+				CEI.PID,
+		       CA.PID ACCT_ID,
+		       VE.ACCT_NAME,
+		       CASE CA.CUS_TYPE
+		         WHEN 1 THEN
+		          '个人'
+		         WHEN 2 THEN
+		          '企业'
+		       END CUS_TYPE,
+		       CET.MODEL_NAME,
+		       CEI.SCORE,
+		       (SELECT SU.REAL_NAME FROM SYS_USER SU WHERE CEI.EST_PERSON = SU.PID) REAL_NAME,
+		       CEI.EST_DATE
+		  FROM CUS_EST_INFO     CEI,
+		       CUS_ACCT         CA,
+		       CUS_ACCT_EST_V   VE,
+		       CUS_EST_TEMPLATE CET
+		 WHERE 1 = 1
+		   AND CEI.ACCT_ID = CA.PID
+		   AND CA.PID = VE.ACCT_ID
+		   AND CEI.TEMPLATE_ID = CET.PID
+		   AND CEI.STATUS=1
+		   <!-- 数据权限 -->
+		<if test="userIds!=null and userIds.size()>0">
+			AND CA.PM_USER_ID in
+		<foreach item="itemId" collection="userIds" open="(" separator="," close=")">
+		          #{itemId}
+		</foreach>
+		</if>
+		   <if test="cusName != null and cusName !=''">
+		   AND VE.ACCT_NAME LIKE '%${cusName}%'
+		   </if>
+		    <if test="cusType != null and cusType !=0">
+		   AND CA.CUS_TYPE = #{cusType,jdbcType=INTEGER}
+		   </if>
+		    <if test="estPerson != null and estPerson !=0">
+		   AND CEI.EST_PERSON = #{estPerson,jdbcType=INTEGER}
+		   </if>
+		   <if test="templateId != null and templateId !=0">
+		   AND CEI.TEMPLATE_ID = #{templateId,jdbcType=INTEGER}
+		   </if>
+		    <if test="estLv != null and estLv !=''">
+		   AND CEI.SCORE BETWEEN #{estStartScore,jdbcType=INTEGER} AND #{estEndScore,jdbcType=INTEGER}
+		   </if>
+		   <if test="startScore != -1">
+		   AND CEI.SCORE <![CDATA[>= ]]> #{startScore,jdbcType=INTEGER}
+		   </if>
+		   <if test="endScore != -1">
+		   AND CEI.SCORE <![CDATA[<= ]]> #{endScore,jdbcType=INTEGER}
+		   </if>
+		   <if test="cusId !=null and cusId!=0">
+		   AND CEI.ACCT_ID=#{cusId,jdbcType=INTEGER}
+		   </if>
+		   AND rownum<![CDATA[<=]]>#{page}*#{rows})zA
+      		WHERE rn>=((#{page}-1)*#{rows})+1
+	</select>
+<!-- 	资信评估模板查询分页 -->
+	<select id="getTotalEst" parameterType="com.xlkfinance.bms.rpc.customer.CusEstInfoDTO" resultType="java.lang.Integer">
+		SELECT COUNT(PID) FROM (
+			SELECT CEI.PID,
+			       CA.PID ACCT_ID,
+			       VE.ACCT_NAME,
+			       CASE CA.CUS_TYPE
+			         WHEN 1 THEN
+			          '个人'
+			         WHEN 2 THEN
+			          '企业'
+			       END CUS_TYPE,
+			       CET.MODEL_NAME,
+			       CEI.SCORE,
+			       (SELECT SU.REAL_NAME FROM SYS_USER SU WHERE CEI.EST_PERSON = SU.PID) REAL_NAME,
+			       CEI.EST_DATE
+		  FROM CUS_EST_INFO     CEI,
+		       CUS_ACCT         CA,
+		       CUS_ACCT_EST_V   VE,
+		       CUS_EST_TEMPLATE CET
+		 WHERE 1 = 1
+		   AND CEI.ACCT_ID = CA.PID
+		   AND CA.PID = VE.ACCT_ID
+		   AND CEI.TEMPLATE_ID = CET.PID
+		   AND CEI.STATUS=1
+		   <if test="cusName != null and cusName !=''">
+		   AND VE.ACCT_NAME LIKE '%${cusName}%'
+		   </if>
+		    <if test="cusType != null and cusType !=0">
+		   AND CA.CUS_TYPE = #{cusType,jdbcType=INTEGER}
+		   </if>
+		    <if test="estPerson != null and estPerson !=0">
+		   AND CEI.EST_PERSON = #{estPerson,jdbcType=INTEGER}
+		   </if>
+		   <if test="templateId != null and templateId !=0">
+		   AND CEI.TEMPLATE_ID = #{templateId,jdbcType=INTEGER}
+		   </if>
+		    <if test="estLv != null and estLv !=''">
+		   AND CEI.SCORE BETWEEN #{estStartScore,jdbcType=INTEGER} AND #{estEndScore,jdbcType=INTEGER}
+		   </if>
+		   <if test="startScore != -1">
+		   AND CEI.SCORE <![CDATA[>= ]]> #{startScore,jdbcType=INTEGER}
+		   </if>
+		   <if test="endScore != -1">
+		   AND CEI.SCORE <![CDATA[<= ]]> #{endScore,jdbcType=INTEGER}
+		   </if>
+		   <if test="cusId !=null and cusId!=0">
+		   AND CEI.ACCT_ID=#{cusId,jdbcType=INTEGER}
+		   </if>)
+	</select>
+	<update id="deleteEstInfos" parameterType="java.util.List">
+	  	update 
+	  		CUS_EST_INFO 
+  		set 
+  			status=0 
+		where pid in 
+		<foreach item="itemId" collection="list" open="(" separator="," close=")">
+		          #{itemId}
+		</foreach>
+	</update>
+</mapper>

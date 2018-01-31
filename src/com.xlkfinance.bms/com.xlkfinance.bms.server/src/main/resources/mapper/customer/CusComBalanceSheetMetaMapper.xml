@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.customer.mapper.CusComBalanceSheetMetaMapper">
+  <resultMap id="CusComBalanceSheetMetaMap" type="com.xlkfinance.bms.rpc.customer.CusComBalanceSheetMeta">
+        <id property="pid" column="PID"/>
+        <result property="accountsCode" column="ACCOUNTS_CODE" />
+        <result property="accountsName" column="ACCOUNTS_NAME" />
+        <result property="lineNum" column="LINE_NUM" />
+        <result property="isSubtraction" column="IS_SUBTRACTION" />
+        <result property="isInput" column="IS_INPUT" />
+        <result property="isCacl" column="IS_CACL" />
+        <result property="status" column="STATUS" />
+    </resultMap>
+    
+    <select id="selectAllCusComBalanceSheetMeta" resultMap="CusComBalanceSheetMetaMap">
+	      SELECT PID,
+		       ACCOUNTS_CODE,
+		       ACCOUNTS_NAME,
+		       LINE_NUM,
+		       IS_SUBTRACTION,
+		       IS_INPUT,
+		       IS_CACL,
+		       SHOW_POSITION,
+		       STATUS
+		  FROM CUS_COM_BALANCE_SHEET_META
+ 		  WHERE 1 = 1
+  	</select> 
+  	
+  	<select id="selectLeftCusComBalanceSheetMeta" resultMap="CusComBalanceSheetMetaMap">
+		SELECT PID,
+		       ACCOUNTS_CODE,
+		       ACCOUNTS_NAME,
+		       LINE_NUM,
+		       IS_SUBTRACTION,
+		       IS_INPUT,
+		       IS_CACL,
+		       SHOW_POSITION,
+		       STATUS
+		  FROM CUS_COM_BALANCE_SHEET_META
+		 WHERE 1 = 1
+		   AND SHOW_POSITION = 'left'
+		 ORDER BY ACCOUNTS_CODE ASC
+
+  	</select> 
+  	
+  	<select id="selectRightCusComBalanceSheetMeta" resultMap="CusComBalanceSheetMetaMap">
+	      SELECT PID,
+		       ACCOUNTS_CODE,
+		       ACCOUNTS_NAME,
+		       LINE_NUM,
+		       IS_SUBTRACTION,
+		       IS_INPUT,
+		       IS_CACL,
+		       SHOW_POSITION,
+		       STATUS
+		  FROM CUS_COM_BALANCE_SHEET_META
+ 		  WHERE 1 = 1
+ 		  	AND SHOW_POSITION='right'
+  	</select> 
+  	
+</mapper>

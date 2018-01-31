@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.customer.mapper.CashFlowReportMapper">
+  <resultMap id="CashFlowReportMap" type="com.xlkfinance.bms.rpc.customer.CashFlowReport">
+        <id property="pid" column="PID"/>
+        <result property="reportId" column="REPORT_ID" />
+        <result property="cashFlowItemId" column="INCOME_ITEM_ID" />
+        <result property="thisMonthVal" column="THIS_MONTH_VAL" />
+        <result property="thisYearVal" column="THIS_YEAR_VAL" />
+        <result property="status" column="STATUS" />
+        <result property="isMain" column="IS_MAIN" />
+    </resultMap>
+    
+    <resultMap id="CashFlowReportEditDTOMap" type="com.xlkfinance.bms.rpc.customer.CashFlowReportEditDTO">
+        <id property="cfPid" column="PID"/>
+        <result property="reportId" column="REPORT_ID" />
+        <result property="lineNum" column="LINE_NUM" />
+        <result property="itemName" column="LINK_ITEM_NAME" />
+        <result property="thisMonthVal" column="THIS_MONTH_VAL" />
+        <result property="thisYearVal" column="THIS_YEAR_VAL" />
+    </resultMap>
+    
+    
+<insert id="addCusComCashFlowReport" parameterType="com.xlkfinance.bms.rpc.customer.CashFlowReport">
+   <selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+		SELECT SEQ_CUS_COM_CASH_FLOW.Nextval as PID from DUAL
+	</selectKey>
+    INSERT INTO CUS_COM_CASH_FLOW(
+    	PID, 
+    	REPORT_ID, 
+    	CASH_FLOW_ITEM_ID, 
+    	THIS_MONTH_VAL, 
+    	THIS_YEAR_VAL,
+    	IS_MAIN,
+    	STATUS)
+    values (
+    	#{pid,jdbcType=INTEGER}, 
+     	#{reportId,jdbcType=INTEGER},
+     	#{cashFlowItemId,jdbcType=INTEGER},
+     	#{thisMonthVal,jdbcType=DECIMAL},
+     	#{thisYearVal,jdbcType=DECIMAL}, 
+     	#{isMain,jdbcType=INTEGER},
+     	#{status,jdbcType=INTEGER})
+  </insert>
+  
+  <update id="updateCusComCashFlowReport" parameterType="com.xlkfinance.bms.rpc.customer.CashFlowReport">
+    UPDATE CUS_COM_CASH_FLOW
+    SET
+     	THIS_MONTH_VAL = #{thisMonthVal,jdbcType=DECIMAL},
+     	THIS_YEAR_VAL = #{thisYearVal,jdbcType=DECIMAL}
+    WHERE 
+    	PID = #{pid,jdbcType=INTEGER}
+  </update>
+  
+  <delete id="deleteCusComCashFlowReportByReportID" parameterType="java.lang.Integer">  
+        DELETE FROM CUS_COM_CASH_FLOW WHERE REPORT_ID = #{reportId,jdbcType=INTEGER}
+  </delete> 
+  
+   <delete id = "deleteCusComCashFlowReportByReportIDUseBatch" parameterType = "java.util.List">  
+      <![CDATA[  
+         DELETE FROM CUS_COM_CASH_FLOW WHERE REPORT_ID IN
+      ]]>  
+      <foreach collection="list" item = "model" open="(" separator="," close=")">#{model.pid}</foreach>  
+  </delete> 
+  
+  <select id="selectCashFlowReportByReportId" resultMap="CashFlowReportMap" parameterType="java.lang.Integer">
+		 SELECT T1.PID,
+            T1.REPORT_ID,
+            T1.CASH_FLOW_ITEM_ID,
+            T1.THIS_MONTH_VAL,
+            T1.THIS_YEAR_VAL,
+            T1.STATUS
+       FROM CUS_COM_CASH_FLOW T1
+       JOIN CUS_COM_CASH_FLOW_META T2
+         ON T1.CASH_FLOW_ITEM_ID = T2.PID
+      WHERE 1 = 1
+        AND T2.IS_MAIN = 0
+        AND REPORT_ID = #{reportId,jdbcType=INTEGER}
+      ORDER BY LINE_NUM ASC
+  </select> 
+  	
+  <select id="selectCashFlowReportSupplementByReportId" resultMap="CashFlowReportMap" parameterType="java.lang.Integer">
+	SELECT T1.PID,
+            T1.REPORT_ID,
+            T1.CASH_FLOW_ITEM_ID,
+            T1.THIS_MONTH_VAL,
+            T1.THIS_YEAR_VAL,
+            T1.STATUS
+       FROM CUS_COM_CASH_FLOW T1
+       JOIN CUS_COM_CASH_FLOW_META T2
+         ON T1.CASH_FLOW_ITEM_ID = T2.PID
+      WHERE 1 = 1
+        AND T2.IS_MAIN = 1
+        AND REPORT_ID = #{reportId,jdbcType=INTEGER}
+      ORDER BY LINE_NUM ASC
+  </select> 
+  
+  <select id="initCashFlowReportByReportId" resultMap="CashFlowReportEditDTOMap" parameterType="java.lang.Integer">
+	SELECT T1.PID,
+            T2.LINE_NUM,
+           -- T2.ITEM_PREFIX || ' ' || T2.ITEM_NAME,
+            CONCAT(T2.ITEM_PREFIX,T2.ITEM_NAME) LINK_ITEM_NAME,
+            T1.THIS_MONTH_VAL,
+            T1.THIS_YEAR_VAL
+       FROM CUS_COM_CASH_FLOW T1
+       JOIN CUS_COM_CASH_FLOW_META T2
+         ON T1.CASH_FLOW_ITEM_ID = T2.PID
+      WHERE 1 = 1
+        AND T2.IS_MAIN = 0
+        AND REPORT_ID = #{reportId,jdbcType=INTEGER}
+      ORDER BY LINE_NUM ASC
+  </select> 
+  
+   <select id="initCashFlowReportSupplementByReportId" resultMap="CashFlowReportEditDTOMap" parameterType="java.lang.Integer">
+	SELECT T1.PID,
+            T2.LINE_NUM,
+           -- T2.ITEM_PREFIX || ' ' || T2.ITEM_NAME,
+            CONCAT(T2.ITEM_PREFIX,T2.ITEM_NAME) LINK_ITEM_NAME,
+            T1.THIS_MONTH_VAL,
+            T1.THIS_YEAR_VAL
+       FROM CUS_COM_CASH_FLOW T1
+       JOIN CUS_COM_CASH_FLOW_META T2
+         ON T1.CASH_FLOW_ITEM_ID = T2.PID
+      WHERE 1 = 1
+        AND T2.IS_MAIN = 1
+        AND REPORT_ID = #{reportId,jdbcType=INTEGER}
+      ORDER BY LINE_NUM ASC
+  </select> 
+  
+</mapper>
+
+

@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <title></title>
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+    <!-- 基础文件 -->
+    <link rel="stylesheet" href="http://res.xinlikang.com/base/reset.css" />
+    <script src="http://res.xinlikang.com/l/seajs/sea.js"></script>
+    <script src="http://res.xinlikang.com/base/config.js"></script>
+
+	<!-- 项目样式文件 -->
+    <link rel="stylesheet" href="http://res.xinlikang.com/p/xlk/css/log_reg.css" />
+</head>
+
+<body>
+<div class="g_o">
+	<div class="content">
+			<div class="g_cf hd">
+				<h3 class="g_fl title"><strong>会员登录</strong></h3>
+				<div class="g_fr crumbs"><a href="">首页</a>&gt;会员登录</div>
+			</div>
+
+		<div class="login">
+			<form action="" class="form_bd">
+				<ul>
+                    <li class="g_cf">
+                        <div class="key"><span class="star">*</span>登录名称：</div>
+                        <div class="value">
+                            <input name="username" type="text" class="txt" maxlength="40">
+                        </div>
+                    </li>
+                    <li class="g_cf">
+                        <div class="key"><span class="star">*</span>登录密码：</div>
+                        <div class="value">
+                            <input name="password" type="password" id="password" class="txt" maxlength="16"> <a href="">忘记密码？</a>
+                        </div>
+                    </li>
+                    <li class="g_cf">
+                        <div class="key"><span class="star">*</span>验证码：</div>
+                        <div class="value">
+                            <input name="verifycode" type="text" class="txt g_fl w150">
+                        </div>
+                    </li>
+                    <li class="g_cf">
+                        <div class="key"></div>
+                        <div class="value"><input name="" type="submit" class="btn" value="登录"></div>
+                    </li>
+                </ul>
+			</form>
+		</div>
+	</div>
+</div>
+	<!-- 项目js文件 -->
+    <script>seajs.use('http://res.xinlikang.com/p/xlk/js/log_reg.js');</script>
+</body>
+
+</html>

@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.system.mapper.SysAdvPicInfoMapper">
+	<resultMap id="SysAdvResultMap" type="com.xlkfinance.bms.rpc.system.SysAdvPicInfo">
+		<id column="PID" property="pid"/>
+		<result column="TITLE" property="title"/>
+		<result column="CONTENT" property="content"/>
+		<result column="URL" property="url"/>
+		<result column="ORG_ID" property="orgId"/>
+		<result column="CREATE_ID" property="createId"/>
+		<result column="CREATE_DATE" property="createDate"/>
+		<result column="STATUS" property="status"/>
+		<result column="REMARK" property="remark"/>
+		<result column="PICTURE_URL" property="pictureUrl"/>
+		<result column="ORDER_INDEX" property="orderIndex"/>
+	</resultMap>
+	
+	<sql id="SysAdvPic_Column_List">
+		PID,TITLE,CONTENT,URL,ORG_ID,CREATE_ID,to_char(CREATE_DATE,'yyyy-MM-dd HH24:MI:SS') CREATE_DATE,STATUS,REMARK,PICTURE_URL,ORDER_INDEX
+	</sql>
+	
+	<!-- 添加一条广告信息 -->
+	<insert id="addSysAdvPicInfo" parameterType="com.xlkfinance.bms.rpc.system.SysAdvPicInfo">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_SYS_ADV_PIC_INFO.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO SYS_ADV_PIC_INFO
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			PID,
+			<if test="title != null and title !=''">
+				TITLE,
+			</if>
+			<if test="content != null and content!=''">
+				CONTENT,
+			</if>
+			<if test="url != null and url !=''">
+				URL,
+			</if>
+			<if test="pictureUrl != null and pictureUrl !=''">
+				PICTURE_URL,
+			</if>
+			<if test="remark != null and remark !=''">
+				REMARK,
+			</if>
+			<if test="createId != null and createId >0">
+				CREATE_ID,
+			</if>
+			<if test="orgId != null and orgId >0">
+				ORG_ID,
+			</if>
+			<if test="orderIndex != null and orderIndex >0">
+				ORDER_INDEX,
+			</if>
+			CREATE_DATE,status
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{pid},
+			<if test="title != null and title !=''">
+				#{title},
+			</if>
+			<if test="content != null and content !=''">
+				#{content},
+			</if>
+			<if test="url != null and url !=''">
+				#{url},
+			</if>
+			<if test="pictureUrl != null and pictureUrl !=''">
+				#{pictureUrl},
+			</if>
+			<if test="remark != null and remark !=''">
+				#{remark},
+			</if>
+			<if test="createId != null and createId >0">
+				#{createId},
+			</if>
+			<if test="orgId != null and orgId >0">
+				#{orgId},
+			</if>
+			<if test="orderIndex != null and orderIndex >0">
+				#{orderIndex},
+			</if>
+			SYSDATE,1
+		</trim>
+	</insert>
+	
+	<!-- 修改广告信息 -->
+	<update id="updateByPrimaryKey" parameterType="com.xlkfinance.bms.rpc.system.SysAdvPicInfo">
+		UPDATE SYS_ADV_PIC_INFO
+		<trim prefix="set" suffixOverrides=",">
+			<if test="title != null and title !=''">
+				TITLE = #{title},
+			</if>
+			<if test="content != null">
+				CONTENT = #{content},
+			</if>
+			<if test="url != null">
+				URL = #{url},
+			</if>
+			<if test="pictureUrl != null and pictureUrl !=''">
+				PICTURE_URL = #{pictureUrl},
+			</if>
+			<if test="remark != null">
+				REMARK = #{remark},
+			</if>
+			<if test="status != null and status >0">
+				STATUS = #{status},
+			</if>
+			<if test="orderIndex != null and orderIndex >0">
+				ORDER_INDEX = #{orderIndex},
+			</if>
+			<if test="orgId != null and orgId >0">
+				ORG_ID = #{orgId},
+			</if>
+		</trim>
+		WHERE PID = #{pid}
+	</update>
+	
+	<select id="querySysAdvPics" resultMap="SysAdvResultMap" parameterType="com.xlkfinance.bms.rpc.system.SysAdvPicInfo">
+		SELECT D.* FROM (SELECT T.*, ROWNUM RN
+	        FROM (
+	        	SELECT 
+	        	<include refid="SysAdvPic_Column_List" /> 
+	        	 FROM SYS_ADV_PIC_INFO WHERE 1=1 
+	        
+	        <if test="createId != null and createId >0">
+				AND CREATE_ID = #{createId},
+			</if>
+			<if test="orgId != null and orgId >0">
+				AND ORG_ID = #{orgId},
+			</if>
+			<if test="status != null and status >0">
+				AND STATUS = #{status}
+			</if>
+			<if test="title != null and title != ''">
+				AND TITLE LIKE '%${title}%' 
+			</if>
+	        <![CDATA[ORDER BY ORDER_INDEX asc) T
+		WHERE ROWNUM <=#{page}*#{rows}
+		) D
+	WHERE D.RN > ((#{page}-1)*#{rows})]]>
+	</select>
+	
+	<select id="getCountAdv" parameterType="com.xlkfinance.bms.rpc.system.SysAdvPicInfo" resultType="Integer">
+		SELECT count(*) FROM SYS_ADV_PIC_INFO WHERE 1=1 
+		<if test="createId != null and createId >0">
+				AND CREATE_ID = #{createId},
+			</if>
+			<if test="orgId != null and orgId >0">
+				AND ORG_ID = #{orgId},
+			</if>
+			<if test="status != null and status >0">
+				AND STATUS = #{status}
+			</if>
+			<if test="title != null and title != ''">
+				AND TITLE LIKE '%${title}%' 
+			</if>
+	</select>
+	
+	<select id="querySysAdvPicByPid" resultMap="SysAdvResultMap" parameterType="java.lang.Integer">
+		SELECT 
+		<include refid="SysAdvPic_Column_List" />  
+		FROM SYS_ADV_PIC_INFO WHERE PID = #{pid} 
+	</select>
+</mapper>

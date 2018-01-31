@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.contract.mapper.ContractParameterMapper">
+	
+	
+	<!-- 插入合同参数表数据 -->
+	<insert id="addContractParameters" parameterType="java.util.List">
+	insert into biz_contract_parameter (
+    	PID, 
+		contract_Id,
+    	PARAMETER_ID, 
+		PARAMETER_VAL, 
+		PARAMETER_DESC,
+		MATCH_FLAG,
+		MATCH_NAME,
+		SHOW_INDEX,
+    	STATUS) 
+	select Seq_biz_contract_parameter.Nextval,A.* from(
+        <foreach collection="list" item="item" index="index"
+            separator="UNION">
+            SELECT
+				#{item.contractId,jdbcType=INTEGER},
+		    	#{item.parameterId,jdbcType=INTEGER}, 
+				#{item.parameterVal,jdbcType=VARCHAR}, 
+				#{item.parameterDesc,jdbcType=VARCHAR},
+				(SELECT MATCH_FLAG FROM BIZ_CONTRACT_TEMPLATE_PARM WHERE PID =#{item.parameterId,jdbcType=INTEGER}),
+				(SELECT MATCH_NAME FROM BIZ_CONTRACT_TEMPLATE_PARM WHERE PID =#{item.parameterId,jdbcType=INTEGER}),
+				(SELECT SHOW_INDEX FROM BIZ_CONTRACT_TEMPLATE_PARM WHERE PID =#{item.parameterId,jdbcType=INTEGER}),
+				1
+            from dual 
+        </foreach>
+    	) A
+	</insert>
+	
+	<!-- 编辑合同参数值 -->
+	<update id="updateContractParameters" parameterType="java.util.List">
+		begin
+		<foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            UPDATE BIZ_CONTRACT_PARAMETER 
+               SET PARAMETER_VAL = #{item.parameterVal,jdbcType=VARCHAR}
+			 WHERE  CONTRACT_ID = #{item.contractId,jdbcType=INTEGER}
+			   AND  MATCH_FLAG = #{item.matchFlag,jdbcType=VARCHAR}
+       </foreach>
+        ;end;
+	</update>
+	
+	<!-- 编辑合同参数值 -->
+	<update id="updateContractParameterStatus" parameterType="java.lang.Integer">
+            UPDATE BIZ_CONTRACT_PARAMETER 
+               SET status = 0
+			 WHERE  CONTRACT_ID = #{contractId,jdbcType=INTEGER}
+	</update>
+	
+</mapper>

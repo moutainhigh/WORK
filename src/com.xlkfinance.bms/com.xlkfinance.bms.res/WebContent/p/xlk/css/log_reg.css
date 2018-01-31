@@ -1,0 +1,35 @@
+@import url('common/common.css');
+
+/*登录注册*/
+.log_reg{position:relative;padding:150px 50px 20px 80px;}
+.log_reg .logo{position:absolute;top:50px;left:5px;}
+.login,.forgot_password{width:480px;}
+.register{width:480px;margin-top:-50px;}
+.login h3,.register h3,.forgot_password h3{font-size:18px;font-weight:400;margin:0 0 15px;}
+.login .txt,.register .txt,.forgot_password .txt{width:320px;height:30px;line-height:30px;padding:4px;padding-left:3px;vertical-align:middle;border:solid 1px #dedede;}
+.login .txt2,.register .txt2{width:150px;}
+/*.login .txt.error,.register .txt.error{border-color:orange;}*/
+.field{position:relative;display:inline-block;zoom:1;padding:0 0 30px;}
+.register .field{padding:0 0 24px;}
+.field .ph_label{position:absolute;top:11px;padding:0 0 0 8px;color:#aaa;opacity:1;transition:all .2s ease-out;-webkit-transition:all .2s ease-in;-moz-transition:all .2s ease-out;}
+.login .field .ph_label{font-size:14px;top:9px;}
+.ph_focus .ph_label{color:#ddd;}
+.ph_focus .txt{border-color:#69c;}
+.ph_hide .ph_label{opacity:0;visibility:hidden;}
+.field label.error{position:absolute;left:-2px;bottom:10px;width:320px;color:red;padding-left:20px;background:url(img/icons.png) -5px 0 no-repeat;}
+.register .field label.error{bottom:3px;}
+div.submit .btn{width:155px;height:38px;border:0;display:inline-block;overflow:hidden;vertical-align:middle;line-height:36px;font-size:16px;font-weight:700;color:#FFF;background:#1966b9;border-radius:3px;cursor:pointer;zoom:1;margin:0 8px 0 0;}
+div.submit .btn:hover{background:#0e58a7;}
+.m_copyright{margin:20px auto 30px;}
+.err_msg{margin:10px 0 0 -3px;padding-left:20px;background:url(img/icons.png) -5px 0 no-repeat;color:#f00;}
+#captchaImage{cursor:pointer;}
+.clause-field{width:400px;}
+.custEmail-field{*z-index:10;}
+.suffix{position:absolute;display:none;width:327px;border:solid 1px #dedede;border-top:none;background:#fff;left:0;top:40px;*top:41px;z-index:20;}
+.suffix li{height:28px;padding:0 5px;line-height:28px;border-bottom:dotted 1px #eee;cursor:pointer;width:312px;overflow:hidden;}
+.suffix li:hover{background:#eee;}
+.psw_strength{position:absolute;right:0;top:41px;*top:42px;color:#999;}
+.psw_strength span{background:#ccc;color:#fff;margin-left:1px;padding:0 5px;}
+.pweak .weak{background:red;}
+.pmiddle .middle,.pmiddle .weak{background:orange;}
+.pstrength .strength,.pstrength .middle,.pstrength .weak{background:green;}

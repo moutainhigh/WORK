@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.beforeloan.mapper.ProjectGuaranteeMapper">
+			<resultMap id="projectGuaranteeMapper" type="com.xlkfinance.bms.rpc.beforeloan.ProjectGuarantee">
+			<result property="pid" column="PID" />
+			<result property="projectId" column="PROJECT_ID" />
+			<result property="guaranteeMoney" column="GUARANTEE_MONEY" />
+			<result property="guaranteeFee" column="GUARANTEE_FEE" />
+			<result property="poundage" column="POUNDAGE" />
+			<result property="chargesType" column="CHARGES_TYPE" />
+			<result property="loanMoney" column="LOAN_MONEY" />
+			<result property="deptMoney" column="DEPT_MONEY" />
+			<result property="chargesSubsidized" column="CHARGERS_SUBSIDIZED" />
+			<result property="receMoney" column="RECE_MONEY" />
+			<result property="payBank" column="PAY_BANK" /> 
+			<result property="feeRate" column="FEE_RATE" /> 
+			<result property="turnoverMoney" column="TURNOVER_MONEY" /> 
+			<result property="foreclosureMoney" column="FORECLOSURE_MONEY" />
+			<result property="chargeType" column="CHARGE_TYPE" />
+			
+			<result property="loanTerm" column="LOAN_TERM" />
+			<result property="repaymentType" column="REPAYMENT_TYPE" />
+			<result property="mortgageRate" column="MORTGAGE_RATE" />
+			<result property="loanUsage" column="LOAN_USAGE" />
+			<result property="paymentSource" column="PAYMENT_SOURCE" />
+			<result property="monthMaidRate" column="MONTH_MAID_RATE" />
+			<result property="overdueRate" column="OVERDUE_RATE" />
+			<result property="prepaymentRate" column="PREPAYMENT_RATE" /> 
+			<result property="createDate" column="CREATE_DATE" /> 
+			<result property="createrId" column="CREATER_ID" /> 
+			<result property="updateDate" column="UPDATE_DATE" />
+			<result property="updateId" column="UPDATE_ID" />
+			<!-- 消费贷新增字段 -->
+			<result property="rentRetrialPrice" column="RENT_RETRIAL_PRICE" /> 
+			<result property="contractPrice" column="CONTRACT_PRICE" /> 
+			<result property="debtRadio" column="DEBT_RADIO" /> 
+			<result property="leaseTerm" column="LEASE_TERM" /> 
+			<result property="monthlyReturnMoney" column="MONTHLY_RETURN_MONEY" /> 
+			<result property="loanRadio" column="LOAN_RADIO" /> 
+			<result property="estimateMonthlyIncome" column="ESTIMATE_MONTHLY_INCOME" /> 
+		</resultMap>
+	<sql id="Guarantee_Column_List">
+	   PID pid,
+       PROJECT_ID projectId,
+       GUARANTEE_MONEY guaranteeMoney,
+       GUARANTEE_FEE guaranteeFee,
+       POUNDAGE poundage,
+       CHARGES_TYPE chargesType,
+       LOAN_MONEY loanMoney,
+       DEPT_MONEY deptMoney,
+       CHARGERS_SUBSIDIZED chargesSubsidized,
+       RECE_MONEY receMoney,
+       PAY_BANK payBank,
+       FEE_RATE feeRate,
+       TURNOVER_MONEY turnoverMoney,
+       FORECLOSURE_MONEY foreclosureMoney,
+       CHARGE_TYPE chargeType,
+       LOAN_TERM  loanTerm,
+  	   REPAYMENT_TYPE repaymentType,
+       MORTGAGE_RATE mortgageRate,
+       LOAN_USAGE  loanUsage,
+       PAYMENT_SOURCE paymentSource,
+       MONTH_MAID_RATE monthMaidRate,
+       OVERDUE_RATE overdueRate,
+       PREPAYMENT_RATE prepaymentRate,
+       CREATE_DATE createDate,
+       CREATER_ID  createrId,
+       UPDATE_ID  updateId,
+       UPDATE_DATE  updateDate,
+       RENT_RETRIAL_PRICE  rentRetrialPrice,
+       CONTRACT_PRICE  contractPrice,
+       DEBT_RADIO  debtRadio,
+       LEASE_TERM  leaseTerm,
+       MONTHLY_RETURN_MONEY  monthlyReturnMoney,
+       LOAN_RADIO  loanRadio,   
+       ESTIMATE_MONTHLY_INCOME estimateMonthlyIncome
+    </sql>
+    
+    <!-- 查询项目担保信息PID -->
+	<select id="getSeqBizProjectGuarantee" resultType="java.lang.Integer">
+		SELECT SEQ_BIZ_PROJECT_GUARANTEE.Nextval as PID from DUAL
+	</select>
+    
+	<!-- 根据项目ID查询项目担保信息 -->
+	<select id="getGuaranteeByProjectId"  resultType="com.xlkfinance.bms.rpc.beforeloan.ProjectGuarantee" parameterType="java.lang.Integer">
+		SELECT 
+		<include refid="Guarantee_Column_List" /> 
+		FROM BIZ_PROJECT_GUARANTEE WHERE PROJECT_ID = #{projectId}
+	</select>
+	
+	<!-- 新增项目担保信息 -->
+	<insert id="insertGuarantee" parameterType="com.xlkfinance.bms.rpc.beforeloan.ProjectGuarantee">
+		INSERT INTO BIZ_PROJECT_GUARANTEE
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			PID,
+			<if test="projectId != null and projectId >0 ">
+				PROJECT_ID,
+			</if>
+			<if test="guaranteeMoney != null and guaranteeMoney !=-1 ">
+				GUARANTEE_MONEY,
+			</if>
+			<if test="guaranteeFee != null and guaranteeFee!=-1 ">
+				GUARANTEE_FEE,
+			</if>
+			<if test="poundage != null and poundage!=-1">
+				POUNDAGE,
+			</if>
+			<if test="chargesType != null and chargesType>0">
+				CHARGES_TYPE,
+			</if>
+			<if test="loanMoney != null and loanMoney>0">
+				LOAN_MONEY,
+			</if>
+			<if test="deptMoney != null and deptMoney!=-1">
+				DEPT_MONEY,
+			</if>
+			<if test="chargesSubsidized != null and chargesSubsidized!= -1">
+				CHARGERS_SUBSIDIZED,
+			</if>
+			<if test="receMoney != null and receMoney!=-1">
+				RECE_MONEY,
+			</if>
+			<if test="payBank != null and payBank != ''  ">
+				PAY_BANK,
+			</if>
+			<if test="feeRate != null and feeRate != -1">
+				FEE_RATE,
+			</if>
+			<if test="turnoverMoney != null and turnoverMoney != -1">
+				TURNOVER_MONEY,
+			</if>
+			<if test="foreclosureMoney != null and foreclosureMoney != -1">
+				FORECLOSURE_MONEY,
+			</if>
+			<if test="chargeType != null and chargeType != -1">
+				CHARGE_TYPE,
+			</if>
+			<if test="loanTerm != null and loanTerm > 0">
+				LOAN_TERM,
+			</if>
+			<if test="repaymentType != null and repaymentType != -1">
+				REPAYMENT_TYPE,
+			</if>
+			<if test="loanUsage != null and loanUsage > 0">
+				LOAN_USAGE,
+			</if>
+			<if test="mortgageRate != null and mortgageRate > 0">
+				MORTGAGE_RATE,
+			</if>
+			<if test="paymentSource != null and paymentSource != -1">
+				PAYMENT_SOURCE,
+			</if>
+			<if test="monthMaidRate != null and monthMaidRate > 0">
+				MONTH_MAID_RATE,
+			</if>
+			<if test="overdueRate != null and overdueRate > 0">
+				OVERDUE_RATE,
+			</if>
+			<if test="prepaymentRate != null and prepaymentRate > 0">
+				PREPAYMENT_RATE,
+			</if>
+			
+			<if test="rentRetrialPrice != null and rentRetrialPrice > 0">
+				RENT_RETRIAL_PRICE,
+			</if>
+			<if test="contractPrice != null and contractPrice > 0">
+				CONTRACT_PRICE,
+			</if>
+			<if test="debtRadio != null and debtRadio > 0">
+				DEBT_RADIO,
+			</if>
+			<if test="leaseTerm != null and leaseTerm > 0">
+				LEASE_TERM,
+			</if>
+			<if test="monthlyReturnMoney != null and monthlyReturnMoney > 0">
+				MONTHLY_RETURN_MONEY,
+			</if>
+			<if test="loanRadio != null and loanRadio > 0">
+				LOAN_RADIO,
+			</if>
+			<if test="estimateMonthlyIncome != null and estimateMonthlyIncome > 0">
+				ESTIMATE_MONTHLY_INCOME,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+				#{pid},
+			<if test="projectId != null and projectId>0 ">
+				#{projectId},
+			</if>
+			<if test="guaranteeMoney != null and guaranteeMoney!=-1 ">
+				#{guaranteeMoney},
+			</if>
+			<if test="guaranteeFee != null and guaranteeFee!=-1 ">
+				#{guaranteeFee},
+			</if>
+			<if test="poundage != null and poundage!=-1">
+				#{poundage},
+			</if>
+			<if test="chargesType != null and chargesType>0">
+				#{chargesType},
+			</if>
+			<if test="loanMoney != null and loanMoney>0">
+				#{loanMoney},
+			</if>
+			<if test="deptMoney != null and deptMoney!=-1">
+				#{deptMoney},
+			</if>
+			<if test="chargesSubsidized != null and chargesSubsidized!= -1">
+				#{chargesSubsidized},
+			</if>
+			<if test="receMoney != null and receMoney!=-1">
+				#{receMoney},
+			</if>
+			<if test="payBank != null and payBank != ''  ">
+				#{payBank},
+			</if>
+			<if test="feeRate != null and feeRate != -1">
+				#{feeRate},
+			</if>
+			<if test="turnoverMoney != null and turnoverMoney != -1">
+				#{turnoverMoney},
+			</if>
+			<if test="foreclosureMoney != null and foreclosureMoney != -1">
+				#{foreclosureMoney},
+			</if>
+			<if test="chargeType != null and chargeType != -1">
+				#{chargeType},
+			</if>
+			<if test="loanTerm != null and loanTerm > 0">
+				#{loanTerm},
+			</if>
+			<if test="repaymentType != null and repaymentType != -1">
+				#{repaymentType},
+			</if>
+			<if test="loanUsage != null and loanUsage > 0">
+				#{loanUsage},
+			</if>
+			<if test="mortgageRate != null and mortgageRate > 0">
+				#{mortgageRate},
+			</if>
+			<if test="paymentSource != null and paymentSource != -1">
+				#{paymentSource},
+			</if>
+			<if test="monthMaidRate != null and monthMaidRate > 0">
+				#{monthMaidRate},
+			</if>
+			<if test="overdueRate != null and overdueRate > 0">
+				#{overdueRate},
+			</if>
+			<if test="prepaymentRate != null and prepaymentRate > 0">
+				#{prepaymentRate},
+			</if>
+			
+			<if test="rentRetrialPrice != null and rentRetrialPrice > 0">
+				#{rentRetrialPrice},
+			</if>
+			<if test="contractPrice != null and contractPrice > 0">
+				#{contractPrice},
+			</if>
+			<if test="debtRadio != null and debtRadio > 0">
+				#{debtRadio},
+			</if>
+			<if test="leaseTerm != null and leaseTerm > 0">
+				#{leaseTerm},
+			</if>
+			<if test="monthlyReturnMoney != null and monthlyReturnMoney > 0">
+				#{monthlyReturnMoney},
+			</if>
+			<if test="loanRadio != null and loanRadio > 0">
+				#{loanRadio},
+			</if>
+			<if test="estimateMonthlyIncome != null and estimateMonthlyIncome > 0">
+				#{estimateMonthlyIncome},
+			</if>
+		</trim>
+	</insert>
+	
+	<!-- 修改项目担保信息 -->
+	<update id="updateByPrimaryKey" parameterType="com.xlkfinance.bms.rpc.beforeloan.ProjectGuarantee">
+		UPDATE BIZ_PROJECT_GUARANTEE
+		<trim prefix="set" suffixOverrides=",">
+			<if test="guaranteeMoney != null and guaranteeMoney !=-1 ">
+				GUARANTEE_MONEY = #{guaranteeMoney},
+			</if>
+			<if test="guaranteeFee != null and guaranteeFee!= -1 ">
+				GUARANTEE_FEE = #{guaranteeFee},
+			</if>
+			<if test="poundage != null and poundage!=-1">
+				POUNDAGE = #{poundage},
+			</if>
+			<if test="chargesType != null and chargesType>0">
+				CHARGES_TYPE = #{chargesType},
+			</if>
+			<if test="loanMoney != null and loanMoney>0">
+				LOAN_MONEY = #{loanMoney},
+			</if>
+			<if test="deptMoney != null and deptMoney!=-1">
+				DEPT_MONEY = #{deptMoney},
+			</if>
+			<if test="chargesSubsidized != null and chargesSubsidized != -1">
+				CHARGERS_SUBSIDIZED = #{chargesSubsidized},
+			</if>
+			<if test="receMoney != null and receMoney!=-1">
+				RECE_MONEY = #{receMoney},
+			</if>
+			<if test="payBank != null and payBank != ''  ">
+				PAY_BANK = #{payBank},
+			</if>
+			<if test="feeRate != null and feeRate != -1">
+				FEE_RATE = #{feeRate},
+			</if>
+			<if test="turnoverMoney != null and turnoverMoney != -1">
+				TURNOVER_MONEY = #{turnoverMoney},
+			</if>
+			<if test="foreclosureMoney != null and foreclosureMoney != -1">
+				FORECLOSURE_MONEY = #{foreclosureMoney},
+			</if>
+			<if test="chargeType != null and chargeType != -1">
+				CHARGE_TYPE = #{chargeType},
+			</if>
+			<if test="loanTerm != null and loanTerm > 0">
+				LOAN_TERM = #{loanTerm},
+			</if>
+			<if test="repaymentType != null and repaymentType != -1">
+				REPAYMENT_TYPE = #{repaymentType},
+			</if>
+			<if test="loanUsage != null and loanUsage > 0">
+				LOAN_USAGE = #{loanUsage},
+			</if>
+			<if test="mortgageRate != null and mortgageRate > 0">
+				MORTGAGE_RATE = #{mortgageRate},
+			</if>
+			<if test="paymentSource != null and paymentSource != -1">
+				PAYMENT_SOURCE = #{paymentSource},
+			</if>
+			<if test="monthMaidRate != null and monthMaidRate > 0">
+				MONTH_MAID_RATE = #{monthMaidRate},
+			</if>
+			<if test="overdueRate != null and overdueRate > 0">
+				OVERDUE_RATE = #{overdueRate},
+			</if>
+			<if test="prepaymentRate != null and prepaymentRate > 0">
+				PREPAYMENT_RATE = #{prepaymentRate},
+			</if>
+			
+			<if test="rentRetrialPrice != null and rentRetrialPrice > 0">
+				RENT_RETRIAL_PRICE= #{rentRetrialPrice},
+			</if>
+			<if test="contractPrice != null and contractPrice > 0">
+				CONTRACT_PRICE= #{contractPrice},
+			</if>
+			<if test="debtRadio != null and debtRadio > 0">
+				DEBT_RADIO= #{debtRadio},
+			</if>
+			<if test="leaseTerm != null and leaseTerm > 0">
+				LEASE_TERM= #{leaseTerm},
+			</if>
+			<if test="monthlyReturnMoney != null and monthlyReturnMoney > 0">
+				MONTHLY_RETURN_MONEY= #{monthlyReturnMoney},
+			</if>
+			<if test="loanRadio != null and loanRadio > 0">
+				LOAN_RADIO= #{loanRadio},
+			</if>
+			<if test="estimateMonthlyIncome != null and estimateMonthlyIncome > 0">
+				ESTIMATE_MONTHLY_INCOME = #{estimateMonthlyIncome},
+			</if>
+		</trim>
+		WHERE PID = #{pid}
+	</update>
+</mapper>

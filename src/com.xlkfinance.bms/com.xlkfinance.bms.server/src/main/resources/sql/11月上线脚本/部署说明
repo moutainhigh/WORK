@@ -1,0 +1,36 @@
+梁衍君
+1.添加字典APP_CATEGORY（app类型）
+2.分配赎楼驳回按钮
+3.备份BIZ_DYNAMIC表数据
+4.修改aom的上传目录
+5.配置app版本菜单
+6.确认aom和bms的thrift连接的端口为19090
+7.添加字典WT_LOAN_SOURCES_OF_FUNDS（万通收费来源）
+8.bms security-config.xml 增加/mobileApi/checkAppVersion.action= anon  过滤代码
+
+陈渚贞
+1、BMS-SERVER，mybatis-config.xml  文件以下参数修改为true
+	<setting name="aggressiveLazyLoading" value="true" />   
+2、BMS-WEB，  web-config.properties 添加查档配置如下
+	#---------------------------------------------check doc 
+	#check doc time limit (hour)
+	check.doc.time.limit=2
+	#checkDoc url  （根据线上查档PC机系统）
+	api.check.doc.url=http://172.16.63.239:8080/trade-util/houseInfo/query.json
+	
+	#==============================debug-info（如果配置，必须为false,可不配置）
+	#partnerpartner.api.debug  > test 
+	is.partner.api.debug=false
+	
+	dubbo-consumer-config.xml 添加，配置线上地址
+ 	spring-mvc.xml 添加	
+    <!-- dubbo的配置 -->
+	<import resource="classpath:config/dubbo-consumer-config.xml" />
+	security-config.xml 增加/mobileApi/getQfang*= anon  过滤代码
+	
+	
+3、查档系统使用MYSQL数据库，trade-util 发布系统工程
+4、执行   房产查档日记表-czz.sql，资金机构修改脚本-czz.sql  脚本
+
+鲍刚
+1、修改server层transaction-config.xml配置文件，修复AOM端server层事务无法生效的BUG

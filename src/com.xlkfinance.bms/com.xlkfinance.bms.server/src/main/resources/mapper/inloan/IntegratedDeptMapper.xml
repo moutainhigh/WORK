@@ -1,0 +1,1159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.inloan.mapper.IntegratedDeptMapper">
+	<!-- 收件 -->
+	<resultMap type="collectFileDTO" id="collectFileMap">
+		<id property="pid" column="PID" />
+		<id property="projectId" column="PROJECT_ID" />
+		<id property="createrDate" column="CREATER_DATE" />
+		<id property="createrId" column="CREATER_ID" />
+		<id property="updateId" column="UPDATE_ID" />
+		<id property="updateDate" column="UPDATE_DATE" />
+		<id property="status" column="STATUS" />
+		<id property="code" column="FCODE" />
+		<id property="name" column="FNAME" />
+		<id property="remark" column="REMARK" />
+		<id property="collectDate" column="COLLECT_DATE" />
+		<id property="buyerSellerType" column="BUYER_SELLER_TYPE" />
+		<id property="buyerSellerName" column="BUYER_SELLER_NAME" />
+		<id property="refundDate" column="REFUND_DATE" />
+		<id property="refundStatus" column="REFUND_STATUS" />
+	</resultMap>
+	<!-- 要件打印 -->
+	<resultMap type="collectFilePrintInfo" id="collectFilePrintMap">
+		<id property="projectId" column="PROJECT_ID" />
+		<id property="projectName" column="PROJECT_NAME" />
+		<id property="deptName" column="DEPT_NAME" />
+		<id property="pmName" column="PM_NAME" />
+		<id property="buyerName" column="BUYER_NAME" />
+		<id property="sellerName" column="SELLER_NAME" />
+		<id property="houseName" column="HOUSE_NAME" />
+		<id property="loanMoney" column="LOAN_MONEY" />
+		<id property="realLoanMoney" column="REAL_LOAN_MONEY" />
+		<id property="foreclosureMoney" column="FORECLOSURE_MONEY" />
+		<id property="refundTailMoney" column="REFUND_TAIL_MONEY" />
+	</resultMap>
+	<!-- 要件查档 -->
+	<resultMap type="checkDocumentDTO" id="checkDocumentMap">
+		<id property="pid" column="PID" />
+		<id property="projectId" column="PROJECT_ID" />
+		<id property="createrDate" column="CREATER_DATE" />
+		<id property="createrId" column="CREATER_ID" />
+		<id property="updateId" column="UPDATE_ID" />
+		<id property="updateName" column="UPDATE_NAME" />
+		<id property="updateDate" column="UPDATE_DATE" />
+		<id property="checkStatus" column="CHECK_STATUS" />
+		<id property="approvalStatus" column="APPROVAL_STATUS" />
+		<id property="checkDate" column="CHECK_DATE" />
+		<id property="remark" column="REMARK" />
+		<id property="attachmentId" column="ATTACHMENT_ID" />
+		<id property="reCheckStatus" column="RE_CHECK_STATUS" />
+		<id property="reCheckRemark" column="RE_CHECK_REMARK" />
+		<id property="reCheckDate" column="RE_CHECK_DATE" />
+		<id property="reCheckUserId" column="RE_CHECK_USER_ID" />
+		<id property="reCheckUserName" column="RE_CHECK_USER_NAME" />
+	</resultMap>
+	<!-- 查诉讼 -->
+	<resultMap type="checkLitigationDTO" id="checkLitigationMap">
+		<id property="pid" column="PID" />
+		<id property="projectId" column="PROJECT_ID" />
+		<id property="createrDate" column="CREATER_DATE" />
+		<id property="createrId" column="CREATER_ID" />
+		<id property="updateId" column="UPDATE_ID" />
+		<id property="updateDate" column="UPDATE_DATE" />
+		<id property="checkStatus" column="CHECK_STATUS" />
+		<id property="approvalStatus" column="APPROVAL_STATUS" />
+		<id property="checkDate" column="CHECK_DATE" />
+		<id property="remark" column="REMARK" />
+		<id property="attachmentId" column="ATTACHMENT_ID" />
+	</resultMap>
+	<!-- 执行岗备注 -->
+	<resultMap type="performJobRemark" id="performJobRemarkMap">
+		<id property="pid" column="PID" />
+		<id property="projectId" column="PROJECT_ID" />
+		<id property="status" column="STATUS" />
+		<id property="remark" column="REMARK" />
+		<id property="remarkDate" column="REMARK_DATE" />
+		<id property="status" column="STATUS" />
+		<id property="updateDate" column="UPDATE_DATE" />
+		<id property="updateId" column="UPDATE_ID" />
+	</resultMap>
+	<!-- 要件查档首页列表 -->
+	<resultMap type="checkDocumentIndexDTO" id="checkDocumentIndexMap">
+		<id property="checkDocumentId" column="CHECK_DOCUMENT_ID" />
+		<id property="projectId" column="PROJECT_ID" />
+		<id property="pmUserName" column="PM_USER_NAME" />
+  		<id property="pmUserId" column="PM_USER_ID"/>
+		<id property="createrDate" column="CREATER_DATE" />
+		<id property="createrId" column="CREATER_ID" />
+		<id property="updateId" column="UPDATE_ID" />
+		<id property="updateDate" column="UPDATE_DATE" />
+		<id property="checkStatus" column="CHECK_STATUS" />
+		<id property="checkStatusStr" column="CHECK_STATUS_STR" />
+		<id property="approvalStatus" column="APPROVAL_STATUS" />
+		<id property="checkDate" column="CHECK_DATE" />
+		<id property="remark" column="REMARK" />
+		<id property="attachmentId" column="ATTACHMENT_ID" />
+		<id property="projectNumber" column="PROJECT_NUMBER" />
+		<id property="projectName" column="PROJECT_NAME" />
+		<id property="recFeeStatus" column="REC_FEE_STATUS" />
+		<id property="collectFileDate" column="COLLECT_FILE_DATE" />
+		<id property="collectFileRemark" column="COLLECT_FILE_REMARK" />
+		<id property="collectFileStatus" column="COLLECT_FILE_STATUS" />
+		<id property="checkLitigationId" column="CHECK_LITIGATION_ID" />
+		<id property="checkLitigationStatus" column="CHECK_LITIGATION_STATUS" />
+		<id property="checkLitigationApprovalStatus" column="LITIGATION_APPROVAL_STATUS" />
+		<id property="projectForeclosureStatus" column="FORECLOSURE_STATUS" />
+		<id property="performJobRemarkDate" column="PERFORM_JOB_REMARK_DATE" />
+		<id property="performJobRemark" column="PERFORM_JOB_REMARK" />
+		<id property="performJobRemarkStatus" column="PERFORM_JOB_REMARK_STATUS" />
+		<id property="reCheckStatus" column="RE_CHECK_STATUS" />
+		<id property="reCheckRemark" column="RE_CHECK_REMARK" />
+		<id property="refundFileStatus" column="REFUND_FILE_STATUS" />
+		<id property="houseName" column="HOUSE_NAME"/>
+  		<id property="buyerName" column="BUYER_NAME"/>
+  		<id property="sellerName" column="SELLER_NAME"/>
+  		<id property="isChechan" column="IS_CHECHAN"/>
+  		<id property="housePropertyCard" column="HOUSE_PROPERTY_CARD"/>
+  		<id property="loanMoney" column="LOAN_MONEY"/>
+  		<id property="loanDays" column="LOAN_DAYS"/>
+  		<id property="productName" column="PRODUCT_NAME"/>
+	</resultMap>
+	<!-- 添加收件 -->
+	<insert id="addCollectFile" parameterType="collectFileDTO">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_COLLECT_FILES.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_COLLECT_FILES
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			PID,
+			<if test="projectId != null and projectId >0">
+				PROJECT_ID,
+			</if>
+			<if test="status != null and status >0">
+				STATUS,
+			</if>
+			<if test="name!= null and name !=''">
+				FNAME,
+			</if>
+			<if test="code != null and code !=''">
+				FCODE,
+			</if>
+			<if test="remark != null and remark !=''">
+				REMARK,
+			</if>
+			<if test="createrId != null and createrId >0">
+				CREATER_ID,
+			</if>
+			<if test="updateId != null and updateId >0">
+				UPDATE_ID,
+			</if>
+			<if test="collectDate != null and collectDate !=''">
+				COLLECT_DATE,
+			</if>
+			<if test="buyerSellerType != null and buyerSellerType >0">
+				BUYER_SELLER_TYPE,
+			</if>
+			<if test="buyerSellerName != null and buyerSellerName !=''">
+				BUYER_SELLER_NAME,
+			</if>
+			CREATER_DATE,
+			UPDATE_DATE
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{pid},
+			<if test="projectId != null and projectId >0">
+				#{projectId},
+			</if>
+			<if test="status != null and status >0">
+				#{status},
+			</if>
+			<if test="name!= null and name !=''">
+				#{name},
+			</if>
+			<if test="code != null and code !=''">
+				#{code},
+			</if>
+			<if test="remark != null and remark !=''">
+				#{remark},
+			</if>
+			<if test="createrId != null and createrId >0">
+				#{createrId},
+			</if>
+			<if test="updateId != null and updateId >0">
+				#{updateId},
+			</if>
+			<if test="collectDate != null and collectDate !=''">
+				#{collectDate,jdbcType=DATE,javaType=String},
+			</if>
+			<if test="buyerSellerType != null and buyerSellerType >0">
+				#{buyerSellerType},
+			</if>
+			<if test="buyerSellerName != null and buyerSellerName !=''">
+				#{buyerSellerName},
+			</if>
+			SYSDATE,
+			SYSDATE
+
+		</trim>
+	</insert>
+	<!-- 根据ID更新收件 -->
+	<update id="updateCollectFile" parameterType="collectfileDTO">
+		UPDATE BIZ_COLLECT_FILES
+		<set>
+			<if test="status != null">
+				STATUS=#{status},
+			</if>
+			<if test="name!= null and name !=''">
+				FNAME=#{name},
+			</if>
+			<if test="code != null and code !=''">
+				FCODE=#{code},
+			</if>
+			<if test="remark != null">
+				REMARK=#{remark},
+			</if>
+			<if test="createrId != null and createrId >0">
+				CREATER_ID=#{createrId},
+			</if>
+			<if test="updateId != null and updateId >0">
+				UPDATE_ID=#{updateId},
+			</if>
+			<if test="collectDate != null and collectDate !=''">
+				COLLECT_DATE=#{collectDate,jdbcType=DATE,javaType=String},
+			</if>
+			<if test="buyerSellerType != null and buyerSellerType >0">
+				BUYER_SELLER_TYPE=#{buyerSellerType},
+			</if>
+			<if test="buyerSellerName != null and buyerSellerName !=''">
+				BUYER_SELLER_NAME=#{buyerSellerName},
+			</if>
+			<if test="refundDate != null and refundDate !=''">
+				REFUND_DATE=#{refundDate,jdbcType=DATE,javaType=String},
+			</if>
+			<if test="refundStatus != null and refundStatus >0">
+				REFUND_STATUS=#{refundStatus},
+			</if>
+			UPDATE_DATE=SYSDATE
+		</set>
+		where pid = #{pid}
+	</update>
+	<!-- 根据projectId更新收件备注 -->
+	<update id="updateRemarkByProjectId" parameterType="collectfileDTO">
+		UPDATE BIZ_COLLECT_FILES SET REMARK=#{remark}
+		where PROJECT_ID = #{projectId}
+	</update>
+	<!-- 根据projectId更新收件日期 -->
+	<update id="updateCollectDateByProjectId" parameterType="collectfileDTO">
+		UPDATE BIZ_COLLECT_FILES SET COLLECT_DATE=#{collectDate,jdbcType=DATE,javaType=String}
+		where PROJECT_ID = #{projectId}
+	</update>
+	<!-- 收件列表(分页查询) -->
+	<select id="queryCollectFile" resultMap="collectFileMap"
+		parameterType="collectFileDTO">
+		<if test="page!=-1">
+			SELECT D.* FROM (SELECT T.*, ROWNUM RN
+			FROM (
+		</if>
+		SELECT * FROM BIZ_COLLECT_FILES
+		<where>
+			<trim>
+				<if test="buyerSellerType != null and buyerSellerType >0">
+					AND BUYER_SELLER_TYPE=#{buyerSellerType}
+				</if>
+				<if test="buyerSellerName != null and buyerSellerName !=''">
+					AND BUYER_SELLER_NAME=#{buyerSellerName}
+				</if>
+				<if test="pid != null and pid >0">
+					AND PID=#{pid}
+				</if>
+				<if test="projectId != null and projectId >0">
+					AND PROJECT_ID=#{projectId}
+				</if>
+				<if test="status != null and status >0">
+					AND STATUS=#{status}
+				</if>
+				<if test="refundStatus != null and refundStatus >0">
+					AND REFUND_STATUS=#{refundStatus}
+				</if>
+				<if test="code != null and code !=''">
+					AND FCODE=#{code}
+				</if>
+				<if test="remark != null and remark !=''">
+					AND REMARK=#{remark}
+				</if>
+				<if test="createrId != null and createrId >0">
+					AND CREATER_ID=#{createrId}
+				</if>
+				<if test="updateId != null and updateId >0">
+					AND UPDATE_ID=#{updateId}
+				</if>
+			</trim>
+		</where>
+		<if test="page!=-1">
+	<![CDATA[
+	) T
+	WHERE ROWNUM <=#{page}*#{rows}
+	) D
+	WHERE D.RN > ((#{page}-1)*#{rows})
+	]]>
+		</if>
+	</select>
+	<!--收件总数 -->
+	<select id="getCollectFileTotal" resultType="Integer"
+		parameterType="collectfileDTO">
+	<![CDATA[
+	SELECT COUNT(1) FROM
+			(SELECT * FROM BIZ_COLLECT_FILES
+	]]>
+		<where>
+			<trim>
+				<if test="buyerSellerType != null and buyerSellerType >0">
+					AND BUYER_SELLER_TYPE=#{buyerSellerType}
+				</if>
+				<if test="buyerSellerName != null and buyerSellerName !=''">
+					AND BUYER_SELLER_NAME=#{buyerSellerName}
+				</if>
+				<if test="pid != null and pid >0">
+					AND PID=#{pid}
+				</if>
+				<if test="projectId != null and projectId >0">
+					AND PROJECT_ID=#{projectId}
+				</if>
+				<if test="status != null and status >0">
+					AND STATUS=#{status}
+				</if>
+				<if test="refundStatus != null and refundStatus >0">
+					AND REFUND_STATUS=#{refundStatus}
+				</if>
+				<if test="code != null and code !=''">
+					AND FCODE=#{code}
+				</if>
+				<if test="remark != null and remark !=''">
+					AND REMARK=#{remark}
+				</if>
+				<if test="createrId != null and createrId >0">
+					AND CREATER_ID=#{createrId}
+				</if>
+				<if test="updateId != null and updateId >0">
+					AND UPDATE_ID=#{updateId}
+				</if>
+			</trim>
+		</where>
+		) T
+	</select>
+	<!-- 根据ID获取收件 -->
+	<select id="getCollectFileById" resultMap="collectFileMap"
+		parameterType="int">
+		SELECT * FROM BIZ_COLLECT_FILES
+		WHERE PID=#{pid}
+	</select>
+	<!-- 收件列表(分页查询) -->
+	<select id="getCollectFilePrintInfo" resultMap="collectFilePrintMap"
+		parameterType="collectFilePrintInfo">
+		SELECT A.PID AS PROJECT_ID,
+		A.PROJECT_NAME,
+       (SELECT U.REAL_NAME FROM SYS_USER U WHERE U.PID = A.PM_USER_ID) AS PM_NAME,
+       (SELECT ORG.NAME
+          FROM SYS_USER U
+         INNER JOIN SYS_ORG_INFO ORG
+            ON U.ORG_ID = ORG.ID
+         WHERE U.PID = A.PM_USER_ID) AS DEPT_NAME,
+       EH.HOUSE_NAME,
+       C.LOAN_MONEY,
+       (SELECT SUM(AFH.REC_MONEY)
+          FROM BIZ_LOAN_APPLY_FINANCE_HANDLE AFH
+         WHERE AFH.REC_PRO IN (3, 4, 5, 6)
+           AND AFH.FINANCE_HANDLE_ID = D.PID) AS REAL_LOAN_MONEY,
+       (SELECT SUM(HB.PRINCIPAL)
+          FROM BIZ_LOAN_HOUSE_BALANCE HB
+         WHERE HB.HANDLE_ID = E.PID) AS FORECLOSURE_MONEY,
+       (SELECT RF.RETURN_FEE
+          FROM BIZ_LOAN_REFUND_FEE RF
+         WHERE RF.TYPE = 3
+           AND RF.PROJECT_ID = A.PID) AS REFUND_TAIL_MONEY
+  FROM BIZ_PROJECT A
+  LEFT JOIN V_HOUSE_NAME EH ON EH.PROJECT_ID = A.PID
+  LEFT JOIN BIZ_PROJECT_PROPERTY B
+    ON A.PID = B.PROJECT_ID
+  LEFT JOIN BIZ_PROJECT_GUARANTEE C
+    ON A.PID = C.PROJECT_ID
+  LEFT JOIN BIZ_LOAN_FINANCE_HANDLE D
+    ON A.PID = D.PROJECT_ID
+  LEFT JOIN BIZ_LOAN_HANDLE_INFO E
+    ON A.PID = E.PROJECT_ID
+    WHERE A.PID=#{projectId}
+	</select>
+	<!-- 添加查档 -->
+	<insert id="addCheckDocument" parameterType="collectFileDTO">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_CHECK_DOCUMENT.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_CHECK_DOCUMENT
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			PID,
+			<if test="projectId != null and projectId >0">
+				PROJECT_ID,
+			</if>
+			<if test="checkStatus != null and checkStatus >0">
+				CHECK_STATUS,
+			</if>
+			<if test="approvalStatus != null and approvalStatus >0">
+				APPROVAL_STATUS,
+			</if>
+			<if test="checkDate != null and checkDate !=''">
+				CHECK_DATE,
+			</if>
+			<if test="remark != null and remark !=''">
+				REMARK,
+			</if>
+			<if test="attachmentId != null and attachmentId >0">
+				ATTACHMENT_ID,
+			</if>
+			<if test="createrId != null and createrId >0">
+				CREATER_ID,
+			</if>
+			<if test="updateId != null and updateId >0">
+				UPDATE_ID,
+			</if>
+			<if test="reCheckStatus != null and reCheckStatus >0">
+				RE_CHECK_STATUS,
+			</if>
+			<if test="reCheckRemark != null and reCheckRemark !=''">
+				RE_CHECK_REMARK,
+			</if>
+			CREATER_DATE,
+			UPDATE_DATE
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{pid},
+			<if test="projectId != null and projectId >0">
+				#{projectId},
+			</if>
+			<if test="checkStatus != null and checkStatus >0">
+				#{checkStatus},
+			</if>
+			<if test="approvalStatus != null and approvalStatus >0">
+				#{approvalStatus},
+			</if>
+			<if test="checkDate != null and checkDate !=''">
+				#{checkDate,jdbcType=DATE,javaType=String},
+			</if>
+			<if test="remark != null and remark !=''">
+				#{remark},
+			</if>
+			<if test="attachmentId != null and attachmentId >0">
+				#{attachmentId},
+			</if>
+			<if test="createrId != null and createrId >0">
+				#{createrId},
+			</if>
+			<if test="updateId != null and updateId >0">
+				#{updateId},
+			</if>
+			<if test="reCheckStatus != null and reCheckStatus >0">
+				#{reCheckStatus},
+			</if>
+			<if test="reCheckRemark != null and reCheckRemark !=''">
+				#{reCheckRemark},
+			</if>
+			SYSDATE,
+			SYSDATE
+		</trim>
+	</insert>
+	<!-- 根据ID更新收件 -->
+	<update id="updateCheckDocument" parameterType="checkDocumentDTO">
+		UPDATE BIZ_CHECK_DOCUMENT
+		<set>
+			<if test="checkStatus != null and checkStatus >0">
+				CHECK_STATUS=#{checkStatus},
+			</if>
+			<if test="approvalStatus != null and approvalStatus >0">
+				APPROVAL_STATUS=#{approvalStatus},
+			</if>
+			<if test="checkDate != null and checkDate !=''">
+				CHECK_DATE=#{checkDate,jdbcType=DATE,javaType=String},
+			</if>
+			<if test="remark != null">
+				REMARK=decode(#{remark},null,'',#{remark}),
+			</if>
+			<if test="attachmentId != null and attachmentId >0">
+				ATTACHMENT_ID=#{attachmentId},
+			</if>
+			<if test="createrId != null and createrId >0">
+				CREATER_ID=#{createrId},
+			</if>
+			<if test="updateId != null and updateId >0">
+				UPDATE_ID=#{updateId},
+			</if>
+			<if test="reCheckStatus != null and reCheckStatus >0">
+				RE_CHECK_STATUS=#{reCheckStatus},
+			</if>
+			<if test="reCheckRemark != null and reCheckRemark !=''">
+				RE_CHECK_REMARK=decode(#{reCheckRemark},null,'',#{reCheckRemark}),
+			</if>
+			<if test="reCheckDate != null and reCheckDate !=''">
+				RE_CHECK_DATE=#{reCheckDate,jdbcType=TIMESTAMP,javaType=String},
+			</if>
+			<if test="reCheckUserId != null and reCheckUserId !=''">
+				RE_CHECK_USER_ID=#{reCheckUserId},
+			</if>
+			<if test="updateDate != null and updateDate !=''">
+				UPDATE_DATE=#{updateDate,jdbcType=TIMESTAMP,javaType=String},
+			</if>
+		</set>
+		where pid = #{pid}
+	</update>
+	<sql id="CheckDocument_Column_List">  
+	    PID,
+       PROJECT_ID,
+       CHECK_STATUS,
+       APPROVAL_STATUS,
+       TO_CHAR(CHECK_DATE, 'YYYY-MM-DD') AS CHECK_DATE,
+       REMARK,
+       ATTACHMENT_ID,
+       TO_CHAR(CREATER_DATE, 'YYYY-MM-DD HH24:MI:SS') AS CREATER_DATE,
+       CREATER_ID,
+       UPDATE_ID,
+       TO_CHAR(UPDATE_DATE, 'YYYY-MM-DD HH24:MI:SS') AS UPDATE_DATE,
+       RE_CHECK_STATUS,
+       RE_CHECK_REMARK,
+       TO_CHAR(RE_CHECK_DATE, 'YYYY-MM-DD HH24:MI:SS') AS RE_CHECK_DATE,
+       RE_CHECK_USER_ID,
+       (SELECT U.REAL_NAME FROM SYS_USER U WHERE U.PID = A.UPDATE_ID) AS UPDATE_NAME,
+       (SELECT U.REAL_NAME FROM SYS_USER U WHERE U.PID = A.RE_CHECK_USER_ID) AS RE_CHECK_USER_NAME
+   </sql>
+	<!-- 查档列表(分页查询) -->
+	<select id="queryCheckDocument" resultMap="checkDocumentMap"
+		parameterType="checkDocumentDTO">
+		<if test="page!=-1">
+			SELECT D.* FROM (SELECT T.*, ROWNUM RN
+			FROM (
+		</if>
+		SELECT <include refid="CheckDocument_Column_List" /> 
+		 FROM BIZ_CHECK_DOCUMENT A
+		<where>
+			<trim>
+				<if test="pid != null and pid >0">
+					AND PID=#{pid}
+				</if>
+				<if test="projectId != null and projectId >0">
+					AND PROJECT_ID=#{projectId}
+				</if>
+				<if test="reCheckStatus != null and reCheckStatus >0">
+				    AND RE_CHECK_STATUS=#{reCheckStatus},
+			    </if>
+				<if test="checkStatus != null and checkStatus >0">
+					AND CHECK_STATUS=#{checkStatus}
+				</if>
+				<if test="approvalStatus != null and approvalStatus >0">
+					AND APPROVAL_STATUS=#{approvalStatus}
+				</if>
+				<if test="attachmentId != null and attachmentId >0">
+					AND ATTACHMENT_ID=#{attachmentId}
+				</if>
+				<if test="createrId != null and createrId >0">
+					AND CREATER_ID=#{createrId}
+				</if>
+				<if test="updateId != null and updateId >0">
+					AND UPDATE_ID=#{updateId}
+				</if>
+			</trim>
+		</where>
+		<if test="page!=-1">
+	<![CDATA[
+	) T
+	WHERE ROWNUM <=#{page}*#{rows}
+	) D
+	WHERE D.RN > ((#{page}-1)*#{rows})
+	]]>
+		</if>
+	</select>
+	<!--查档总数 -->
+	<select id="getCheckDocumentTotal" resultType="Integer"
+		parameterType="checkDocumentDTO">
+	<![CDATA[
+	SELECT COUNT(1) FROM
+			(SELECT * FROM BIZ_CHECK_DOCUMENT
+	]]>
+		<where>
+			<trim>
+				<if test="pid != null and pid >0">
+					AND PID=#{pid}
+				</if>
+				<if test="projectId != null and projectId >0">
+					AND PROJECT_ID=#{projectId}
+				</if>
+				<if test="reCheckStatus != null and reCheckStatus >0">
+				    AND RE_CHECK_STATUS=#{reCheckStatus},
+			    </if>
+				<if test="checkStatus != null and checkStatus >0">
+					AND CHECK_STATUS=#{checkStatus}
+				</if>
+				<if test="approvalStatus != null and approvalStatus >0">
+					AND APPROVAL_STATUS=#{approvalStatus}
+				</if>
+				<if test="attachmentId != null and attachmentId >0">
+					AND ATTACHMENT_ID=#{attachmentId}
+				</if>
+				<if test="createrId != null and createrId >0">
+					AND CREATER_ID=#{createrId}
+				</if>
+				<if test="updateId != null and updateId >0">
+					AND UPDATE_ID=#{updateId}
+				</if>
+			</trim>
+		</where>
+		) T
+	</select>
+	<!-- 根据ID获取查档 -->
+	<select id="getCheckDocumentById" resultMap="checkDocumentMap"
+		parameterType="int">
+		SELECT <include refid="CheckDocument_Column_List" /> 
+        FROM BIZ_CHECK_DOCUMENT A
+		WHERE PID=#{pid}
+	</select>
+	<!-- 查档首页列表(分页查询) -->
+	<select id="queryCheckDocumentIndex" resultMap="checkDocumentIndexMap"
+		parameterType="checkDocumentIndexDTO">
+		<if test="page!=-1">
+			SELECT D.* FROM (SELECT T.*, ROWNUM RN
+			FROM (
+		</if>
+SELECT A.PID AS PROJECT_ID,
+       A.PROJECT_NAME,
+       BP.PRODUCT_NAME,
+       A.PROJECT_NUMBER,
+       A.COLLECT_FILE_STATUS,
+       A.REFUND_FILE_STATUS,
+       A.IS_CHECHAN,
+       A.PM_USER_ID,
+       J.LOAN_MONEY AS LOAN_MONEY,
+       B.PID AS CHECK_DOCUMENT_ID,
+       (CASE WHEN K.CHECK_STATUS_STR IS NULL THEN '未查档' ELSE K.CHECK_STATUS_STR END) AS CHECK_STATUS_STR,
+       C.STATUS AS REC_FEE_STATUS,
+       TO_CHAR(B.CREATER_DATE, 'yyyy-MM-dd') AS CREATER_DATE,
+       B.APPROVAL_STATUS,
+       B.RE_CHECK_STATUS,
+       B.RE_CHECK_REMARK,
+       H.COLLECT_FILE_DATE,
+       (SELECT CF.REMARK
+          FROM BIZ_COLLECT_FILES CF
+         WHERE CF.PROJECT_ID = A.PID
+           AND ROWNUM = 1) AS COLLECT_FILE_REMARK,
+       D.PID AS CHECK_LITIGATION_ID,
+       D.CHECK_STATUS AS CHECK_LITIGATION_STATUS,
+       D.APPROVAL_STATUS AS LITIGATION_APPROVAL_STATUS,
+       A.FORECLOSURE_STATUS,
+       E.REMARK AS PERFORM_JOB_REMARK,
+       E.STATUS AS PERFORM_JOB_REMARK_STATUS,
+       E.REMARK_DATE AS PERFORM_JOB_REMARK_DATE,
+       V.HOUSE_NAME,
+       F.BUYER_NAME,
+       F.SELLER_NAME,
+       V.HOUSE_PROPERTY_CARD,
+       G.LOAN_DAYS,
+       CC.REAL_NAME AS PM_USER_NAME
+  FROM BIZ_PROJECT A
+ INNER JOIN BIZ_CHECK_DOCUMENT B
+    ON A.PID = B.PROJECT_ID
+ INNER JOIN BIZ_LOAN_FINANCE_HANDLE C
+    ON A.PID = C.PROJECT_ID
+ INNER JOIN BIZ_CHECK_LITIGATION D
+    ON D.PROJECT_ID = A.PID
+ INNER JOIN BIZ_LOAN_PERFORM_JOB_REMARK E
+    ON A.PID = E.PROJECT_ID
+ LEFT JOIN BIZ_PROJECT_PROPERTY F
+    ON F.PROJECT_ID=A.PID
+ LEFT JOIN BIZ_PROJECT_FORECLOSURE G
+    ON G.PROJECT_ID=A.PID
+LEFT JOIN BIZ_PRODUCT BP ON BP.PID = A.PRODUCT_ID
+LEFT JOIN SYS_USER CC ON CC.PID = A.PM_USER_ID
+ LEFT JOIN BIZ_LOAN_REPAYMENT  R 
+      ON R.PROJECT_ID = A.PID
+ LEFT JOIN BIZ_PROJECT_GUARANTEE  J 
+      ON J.PROJECT_ID = A.PID
+ LEFT JOIN ((SELECT TO_CHAR(WM_CONCAT(AA.CHECK_STATUS)) AS CHECK_STATUS_STR,PROJECT_ID  FROM 
+    (
+    SELECT 
+           ROW_NUMBER() OVER (PARTITION BY PE.PROJECT_ID,PE.PID ORDER BY CDH.CREATER_DATE DESC) RN,
+           PE.PROJECT_ID,LK.LOOKUP_DESC AS CHECK_STATUS
+      FROM BIZ_PROJECT_ESTATE PE
+      LEFT JOIN BIZ_CHECK_DOCUMENT_HIS CDH
+      ON PE.PID = CDH.HOUSE_ID
+      LEFT JOIN (SELECT LOOKUP_VAL,lv.LOOKUP_DESC 
+					FROM SYS_LOOKUP L,SYS_LOOKUP_VAL LV
+					WHERE LV.STATUS = 1  AND L.PID = LV.LOOKUP_ID  
+					AND L.LOOKUP_TYPE = 'CHECK_DOCUMENT_STATUS') LK
+      ON LK.LOOKUP_VAL=CDH.CHECK_STATUS
+      WHERE PE.STATUS=1
+     ) AA 
+     WHERE AA.RN = 1  GROUP BY AA.PROJECT_ID)) K
+     ON  K.PROJECT_ID=A.PID
+ LEFT JOIN (SELECT CF.PROJECT_ID,
+                   TO_CHAR(MAX(CF.COLLECT_DATE), 'yyyy-MM-dd') AS COLLECT_FILE_DATE
+         FROM BIZ_COLLECT_FILES CF
+         GROUP BY CF.PROJECT_ID) H
+     ON H.PROJECT_ID=A.PID
+      LEFT JOIN V_HOUSE_NAME V
+ 	ON V.PROJECT_ID = A.PID
+		<where>
+			<trim>
+				<if test="1==1">
+					AND A.IS_NEED_HANDLE =1 AND (A.IS_CLOSED=2 OR (A.IS_CLOSED=1 AND A.IS_CHECHAN=1 AND A.COLLECT_FILE_STATUS=2)) AND (A.IS_CHECHAN=0 OR (A.IS_CHECHAN=1 AND A.COLLECT_FILE_STATUS=2))
+				</if>
+				<if test="userIds!=null and userIds.size()>0">
+					AND A.PM_USER_ID IN
+					<foreach item="itemId" collection="userIds" open="("
+						separator="," close=")">
+						#{itemId}
+					</foreach>
+				</if>
+				<!-- 过滤掉万通 -->
+				<if test="projectSource !=null and projectSource == -1 ">
+					AND A.PROJECT_SOURCE !=  1 
+				</if>
+				<if test="projectName !=null and projectName !=''">
+					AND A.PROJECT_NAME LIKE '%${projectName}%'
+				</if>
+				<if test="pmUserName !=null and pmUserName !=''">
+					AND CC.REAL_NAME LIKE '%${pmUserName}%'
+				</if>
+				<if test="projectNumber !=null and projectNumber !=''">
+					AND A.PROJECT_NUMBER LIKE '%${projectNumber}%'
+				</if>
+				<if test="houseName !=null and houseName !=''">
+			       AND V.HOUSE_NAME LIKE '%${houseName}%'
+			    </if>
+			    <if test="buyerName !=null and buyerName !=''">
+				   AND F.BUYER_NAME LIKE '%${buyerName}%'
+			    </if>
+			    <if test="sellerName !=null and sellerName !=''">
+				   AND F.SELLER_NAME LIKE '%${sellerName}%'
+			    </if>
+				<if test="reCheckStatus != null and reCheckStatus >0">
+				    AND B.RE_CHECK_STATUS=#{reCheckStatus}
+			    </if>
+				<if test="recFeeStatus != null and recFeeStatus >0">
+					AND C.STATUS=#{recFeeStatus}
+				</if>
+				<if test="projectForeclosureStatus != null and projectForeclosureStatus >0">
+					AND A.FORECLOSURE_STATUS=#{projectForeclosureStatus}
+				</if>
+				<if test="collectFileStatus != null and collectFileStatus >0">
+					AND A.COLLECT_FILE_STATUS=#{collectFileStatus}
+				</if>
+				<if test="refundFileStatus != null and refundFileStatus >0">
+					AND A.REFUND_FILE_STATUS=#{collectFileStatus}
+				</if>
+				<if test="performJobRemarkStatus != null and performJobRemarkStatus >0">
+					AND E.STATUS=#{performJobRemarkStatus}
+				</if>
+				<if test="checkLitigationStatus != null and checkLitigationStatus >0">
+					AND D.CHECK_STATUS=#{checkLitigationStatus}
+				</if>
+				<if test="checkLitigationApprovalStatus != null and checkLitigationApprovalStatus >0">
+					AND D.APPROVAL_STATUS=#{checkLitigationApprovalStatus}
+				</if>
+				<if test="checkStatus != null and checkStatus >0">
+					AND B.CHECK_STATUS=#{checkStatus}
+				</if>
+				<if test="productId != null and productId >0">
+				    AND A.PRODUCT_ID=#{productId}
+			    </if>
+				<if test="approvalStatus != null and approvalStatus >0">
+					AND B.APPROVAL_STATUS=#{approvalStatus}
+				</if>
+				<if test="recFeeStatus != null and recFeeStatus >0">
+					AND C.STATUS=#{recFeeStatus}
+				</if>
+				<if test="checkDocumentId != null and checkDocumentId >0">
+					AND B.PID=#{checkDocumentId}
+				</if>
+				<if test="projectId != null and projectId >0">
+					AND A.PROJECT_ID=#{projectId}
+				</if>
+				<if test="loanRepaymentStatus != null and loanRepaymentStatus == 1">
+					AND ( R.STATUS IS NULL  OR R.STATUS = #{loanRepaymentStatus} )
+				</if>
+			</trim>
+		</where>
+		ORDER BY A.REQUEST_DTTM DESC
+		<if test="page!=-1">
+	<![CDATA[
+	) T
+	WHERE ROWNUM <=#{page}*#{rows}
+	) D
+	WHERE D.RN > ((#{page}-1)*#{rows})
+	]]>
+		</if>
+	</select>
+	
+	
+	<!--查档首页列表总数 -->
+	<select id="getCheckDocumentIndexTotal" resultType="Integer"
+		parameterType="checkDocumentIndexDTO">
+	<![CDATA[
+	SELECT COUNT(1) FROM
+			(SELECT A.PID 
+  FROM BIZ_PROJECT A
+ INNER JOIN BIZ_CHECK_DOCUMENT B
+    ON A.PID = B.PROJECT_ID
+ INNER JOIN BIZ_LOAN_FINANCE_HANDLE C
+    ON A.PID = C.PROJECT_ID
+ INNER JOIN BIZ_CHECK_LITIGATION D
+    ON D.PROJECT_ID = A.PID
+ INNER JOIN BIZ_LOAN_PERFORM_JOB_REMARK E
+    ON A.PID = E.PROJECT_ID
+ LEFT JOIN BIZ_PROJECT_PROPERTY F
+    ON F.PROJECT_ID=A.PID
+ LEFT JOIN BIZ_PROJECT_FORECLOSURE G
+    ON G.PROJECT_ID=A.PID
+ LEFT JOIN SYS_USER CC 
+ 	ON CC.PID = A.PM_USER_ID
+ LEFT JOIN V_HOUSE_NAME V
+ 	ON V.PROJECT_ID = A.PID
+ LEFT JOIN BIZ_PRODUCT BP ON BP.PID = A.PRODUCT_ID
+	]]>
+		<where>
+			<trim>
+			    <if test="1==1">
+					AND A.IS_NEED_HANDLE =1 AND A.IS_CLOSED=2 AND (A.IS_CHECHAN=0 OR (A.IS_CHECHAN=1 AND A.COLLECT_FILE_STATUS=2))
+				</if>
+				<if test="userIds!=null and userIds.size()>0">
+					AND A.PM_USER_ID IN
+					<foreach item="itemId" collection="userIds" open="("
+						separator="," close=")">
+						#{itemId}
+					</foreach>
+				</if>
+				<if test="projectName !=null and projectName !=''">
+					AND A.PROJECT_NAME LIKE '%${projectName}%'
+				</if>
+				<if test="projectNumber !=null and projectNumber !=''">
+					AND A.PROJECT_NUMBER LIKE '%${projectNumber}%'
+				</if>
+				<if test="pmUserName !=null and pmUserName !=''">
+					AND CC.REAL_NAME LIKE '%${pmUserName}%'
+				</if>
+				<if test="houseName !=null and houseName !=''">
+			       AND V.HOUSE_NAME LIKE '%${houseName}%'
+			    </if>
+			    <if test="buyerName !=null and buyerName !=''">
+				   AND F.BUYER_NAME LIKE '%${buyerName}%'
+			    </if>
+			    <if test="sellerName !=null and sellerName !=''">
+				   AND F.SELLER_NAME LIKE '%${sellerName}%'
+			    </if>
+				<if test="reCheckStatus != null and reCheckStatus >0">
+				    AND B.RE_CHECK_STATUS=#{reCheckStatus}
+			    </if>
+			    <if test="productId != null and productId >0">
+				    AND A.PRODUCT_ID=#{productId}
+			    </if>
+				<if test="recFeeStatus != null and recFeeStatus >0">
+					AND C.STATUS=#{recFeeStatus}
+				</if>
+				<if test="projectForeclosureStatus != null and projectForeclosureStatus >0">
+					AND A.FORECLOSURE_STATUS=#{projectForeclosureStatus}
+				</if>
+				<if test="collectFileStatus != null and collectFileStatus >0">
+					AND A.COLLECT_FILE_STATUS=#{collectFileStatus}
+				</if>
+			    <if test="refundFileStatus != null and refundFileStatus >0">
+					AND A.REFUND_FILE_STATUS=#{collectFileStatus}
+				</if>
+				<if test="performJobRemarkStatus != null and performJobRemarkStatus >0">
+					AND E.STATUS=#{performJobRemarkStatus}
+				</if>
+				<if test="checkLitigationStatus != null and checkLitigationStatus >0">
+					AND D.CHECK_STATUS=#{checkLitigationStatus}
+				</if>
+				<if test="checkLitigationApprovalStatus != null and checkLitigationApprovalStatus >0">
+					AND D.APPROVAL_STATUS=#{checkLitigationApprovalStatus}
+				</if>
+				<if test="checkStatus != null and checkStatus >0">
+					AND B.CHECK_STATUS=#{checkStatus}
+				</if>
+				<if test="approvalStatus != null and approvalStatus >0">
+					AND B.APPROVAL_STATUS=#{approvalStatus}
+				</if>
+				<if test="recFeeStatus != null and recFeeStatus >0">
+					AND C.STATUS=#{recFeeStatus}
+				</if>
+				<if test="checkDocumentId != null and checkDocumentId >0">
+					AND B.PID=#{checkDocumentId}
+				</if>
+				<if test="projectId != null and projectId >0">
+					AND A.PROJECT_ID=#{projectId}
+				</if>
+			</trim>
+		</where>
+		) T
+	</select>
+	<!-- 添加查诉讼 -->
+	<insert id="addCheckLitigation" parameterType="checkLitigationDTO">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_CHECK_LITIGATION.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_CHECK_LITIGATION
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			PID,
+			<if test="projectId != null and projectId >0">
+				PROJECT_ID,
+			</if>
+			<if test="checkStatus != null and checkStatus >0">
+				CHECK_STATUS,
+			</if>
+			<if test="approvalStatus != null and approvalStatus >0">
+				APPROVAL_STATUS,
+			</if>
+			<if test="checkDate != null and checkDate !=''">
+				CHECK_DATE,
+			</if>
+			<if test="remark != null and remark !=''">
+				REMARK,
+			</if>
+			<if test="attachmentId != null and attachmentId >0">
+				ATTACHMENT_ID,
+			</if>
+			<if test="createrId != null and createrId >0">
+				CREATER_ID,
+			</if>
+			<if test="updateId != null and updateId >0">
+				UPDATE_ID,
+			</if>
+			CREATER_DATE,
+			UPDATE_DATE
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{pid},
+			<if test="projectId != null and projectId >0">
+				#{projectId},
+			</if>
+			<if test="checkStatus != null and checkStatus >0">
+				#{checkStatus},
+			</if>
+			<if test="approvalStatus != null and approvalStatus >0">
+				#{approvalStatus},
+			</if>
+			<if test="checkDate != null and checkDate !=''">
+				#{checkDate,jdbcType=DATE,javaType=String},
+			</if>
+			<if test="remark != null and remark !=''">
+				#{remark},
+			</if>
+			<if test="attachmentId != null and attachmentId >0">
+				#{attachmentId},
+			</if>
+			<if test="createrId != null and createrId >0">
+				#{createrId},
+			</if>
+			<if test="updateId != null and updateId >0">
+				#{updateId},
+			</if>
+			SYSDATE,
+			SYSDATE
+		</trim>
+	</insert>
+	<!-- 根据ID更新查诉讼 -->
+	<update id="updateCheckLitigation" parameterType="checkLitigationDTO">
+		UPDATE BIZ_CHECK_LITIGATION
+		<set>
+			<if test="checkStatus != null and checkStatus >0">
+				CHECK_STATUS=#{checkStatus},
+			</if>
+			<if test="approvalStatus != null and approvalStatus >0">
+				APPROVAL_STATUS=#{approvalStatus},
+			</if>
+			<if test="checkDate != null and checkDate !=''">
+				CHECK_DATE=#{checkDate,jdbcType=DATE,javaType=String},
+			</if>
+			<if test="remark != null">
+				REMARK=decode(#{remark},null,'',#{remark}),
+			</if>
+			<if test="attachmentId != null and attachmentId >0">
+				ATTACHMENT_ID=#{attachmentId},
+			</if>
+			<if test="createrId != null and createrId >0">
+				CREATER_ID=#{createrId},
+			</if>
+			<if test="updateId != null and updateId >0">
+				UPDATE_ID=#{updateId},
+			</if>
+			UPDATE_DATE=SYSDATE
+		</set>
+		where pid = #{pid}
+	</update>
+	<!-- 查诉讼列表(分页查询) -->
+	<select id="queryCheckLitigation" resultMap="checkLitigationMap"
+		parameterType="checkLitigationDTO">
+		<if test="page!=-1">
+			SELECT D.* FROM (SELECT T.*, ROWNUM RN
+			FROM (
+		</if>
+		SELECT * FROM BIZ_CHECK_LITIGATION
+		<where>
+			<trim>
+				<if test="pid != null and pid >0">
+					AND PID=#{pid}
+				</if>
+				<if test="projectId != null and projectId >0">
+					AND PROJECT_ID=#{projectId}
+				</if>
+				<if test="checkStatus != null and checkStatus >0">
+					AND CHECK_STATUS=#{checkStatus}
+				</if>
+				<if test="approvalStatus != null and approvalStatus >0">
+					AND APPROVAL_STATUS=#{approvalStatus}
+				</if>
+				<if test="attachmentId != null and attachmentId >0">
+					AND ATTACHMENT_ID=#{attachmentId}
+				</if>
+				<if test="createrId != null and createrId >0">
+					AND CREATER_ID=#{createrId}
+				</if>
+				<if test="updateId != null and updateId >0">
+					AND UPDATE_ID=#{updateId}
+				</if>
+			</trim>
+		</where>
+		<if test="page!=-1">
+	<![CDATA[
+	) T
+	WHERE ROWNUM <=#{page}*#{rows}
+	) D
+	WHERE D.RN > ((#{page}-1)*#{rows})
+	]]>
+		</if>
+	</select>
+	<!--查诉讼总数 -->
+	<select id="getCheckLitigationTotal" resultType="Integer"
+		parameterType="checkLitigationDTO">
+	<![CDATA[
+	SELECT COUNT(1) FROM
+			(SELECT * FROM BIZ_CHECK_LITIGATION
+	]]>
+		<where>
+			<trim>
+				<if test="pid != null and pid >0">
+					AND PID=#{pid}
+				</if>
+				<if test="projectId != null and projectId >0">
+					AND PROJECT_ID=#{projectId}
+				</if>
+				<if test="checkStatus != null and checkStatus >0">
+					AND CHECK_STATUS=#{checkStatus}
+				</if>
+				<if test="approvalStatus != null and approvalStatus >0">
+					AND APPROVAL_STATUS=#{approvalStatus}
+				</if>
+				<if test="attachmentId != null and attachmentId >0">
+					AND ATTACHMENT_ID=#{attachmentId}
+				</if>
+				<if test="createrId != null and createrId >0">
+					AND CREATER_ID=#{createrId}
+				</if>
+				<if test="updateId != null and updateId >0">
+					AND UPDATE_ID=#{updateId}
+				</if>
+			</trim>
+		</where>
+		) T
+	</select>
+	<!-- 根据ID获取查诉讼 -->
+	<select id="getCheckLitigationById" resultMap="checkLitigationMap"
+		parameterType="int">
+		SELECT PID, PROJECT_ID, CHECK_STATUS, APPROVAL_STATUS, TO_CHAR(CHECK_DATE, 'yyyy-MM-dd') AS CHECK_DATE, REMARK, ATTACHMENT_ID, CREATER_DATE, CREATER_ID, UPDATE_ID, UPDATE_DATE 
+		FROM BIZ_CHECK_LITIGATION
+		WHERE PID=#{pid}
+	</select>
+	
+	<select id="queryCollectFileByPids" parameterType="java.lang.String" resultMap="collectFileMap">
+		SELECT * FROM BIZ_COLLECT_FILES
+		<where>
+			<trim>
+				PID in
+					 <foreach item="idItem" collection="array" open="(" separator="," close=")">
+						#{idItem}
+					</foreach>
+			</trim>
+		</where>
+	</select>
+		<!-- 根据项目ID查询执行岗备注 -->
+	<select id="getPerformJobRemark" resultMap="performJobRemarkMap"
+		parameterType="int">
+		SELECT * FROM BIZ_LOAN_PERFORM_JOB_REMARK
+		WHERE PROJECT_ID=#{projectId}
+	</select>
+	<!-- 添加收件 -->
+	<insert id="addPerformJobRemark" parameterType="performJobRemark">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_PERFORM_JOB_REMARK.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_LOAN_PERFORM_JOB_REMARK
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			PID,
+			<if test="projectId != null and projectId >0">
+				PROJECT_ID,
+			</if>
+            <if test="status == 1 or status == 2">
+				STATUS,
+			</if>
+			<if test="remarkDate != null and remarkDate !=''">
+				REMARK_DATE,
+			</if>
+			<if test="remark != null">
+				REMARK,
+			</if>
+			<if test="updateId != null and updateId >0">
+				UPDATE_ID,
+			</if>
+			UPDATE_DATE
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{pid},
+			<if test="projectId != null and projectId >0">
+				#{projectId},
+			</if>
+            <if test="status == 1 or status == 2">
+				#{status},
+			</if>
+			<if test="remarkDate != null and remarkDate !=''">
+				#{remarkDate,jdbcType=DATE,javaType=String},
+			</if>
+			<if test="remark != null">
+				decode(#{remark},null,'',#{remark}),
+			</if>
+			<if test="updateId != null and updateId >0">
+				#{updateId},
+			</if>
+			SYSDATE
+
+		</trim>
+	</insert>
+	<!-- 根据项目ID更新执行岗备注 -->
+	<update id="updatePerformJobRemark" parameterType="performJobRemark">
+		UPDATE BIZ_LOAN_PERFORM_JOB_REMARK
+		<set>
+			<if test="status == 1 or status == 2">
+				STATUS=#{status},
+			</if>
+			<if test="remarkDate != null and remarkDate !=''">
+				REMARK_DATE=#{remarkDate,jdbcType=DATE,javaType=String},
+			</if>
+			<if test="remark != null">
+				REMARK=decode(#{remark},null,'',#{remark}),
+			</if>
+			<if test="updateId != null and updateId >0">
+				UPDATE_ID=#{updateId},
+			</if>
+			UPDATE_DATE=SYSDATE
+		</set>
+		where pid = #{pid}
+	</update>
+</mapper>

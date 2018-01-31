@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.system.mapper.SysConfigMapper">
+	<resultMap id="SysConfigResultMap" type="com.xlkfinance.bms.rpc.system.SysConfig">
+		<id column="PID" property="pid" jdbcType="INTEGER" />
+		<result column="CONFIT_NAME" property="configName" jdbcType="VARCHAR" />
+		<result column="CONFIT_VALUE" property="configVal" jdbcType="VARCHAR" />
+		<result column="STATUS" property="status" jdbcType="INTEGER" />
+		<result column="DESCRIPTION" property="description" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<sql id="SysConfig_Column_List">
+		PID,CONFIT_NAME,CONFIT_VALUE,STATUS,DESCRIPTION
+	</sql>
+
+	<!-- 添加系统配置 -->
+	<insert id="insert" parameterType="com.xlkfinance.bms.rpc.system.SysConfig">
+		<!-- 获取序列号 -->
+		<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+			SELECT SEQ_SYS_CONFIG.Nextval as PID from DUAL
+		</selectKey>
+		
+		INSERT INTO SYS_CONFIG
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			PID,
+			<if test="configName != null">
+				CONFIT_NAME,
+			</if>
+			<if test="configVal != null">
+				CONFIT_VALUE,
+			</if>
+			<if test="status != null">
+				STATUS,
+			</if>
+			<if test="description != null">
+				DESCRIPTION,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+				#{pid},
+			<if test="configName != null">
+				#{configName},
+			</if>
+			<if test="configVal != null">
+				#{configVal},
+			</if>
+			<if test="status != null">
+				1,
+			</if>
+			<if test="description != null">
+				#{description},
+			</if>
+		</trim>
+	</insert>
+	
+	<!-- 删除系统配置 -->
+	<delete id="batchDelete" parameterType="java.lang.String">
+		DELETE FROM SYS_CONFIG WHERE PID in 
+		<foreach item="idItem" collection="array" open="(" separator="," close=")">
+			#{idItem}
+		</foreach>
+	</delete>
+	
+	<!-- 修改系统配置 -->
+	<update id="updateByPrimaryKey" parameterType="com.xlkfinance.bms.rpc.system.SysConfig">
+		UPDATE SYS_CONFIG
+		<trim prefix="set" suffixOverrides=",">
+			<if test="configName != null">
+				CONFIT_NAME = #{configName},
+			</if>
+			<if test="configVal != null">
+				CONFIT_VALUE = #{configVal},
+			</if>
+			<if test="description != null">
+				DESCRIPTION = #{description},
+			</if>
+		</trim>
+		WHERE PID = #{pid}
+	</update>
+
+   <!-- 根据系统参数名称获取参数值 -->
+    <select id="getSysConfigValueByName" parameterType="java.lang.String" resultType="java.lang.String">
+       SELECT p.confit_value FROM SYS_CONFIG p WHERE p.confit_name= #{name}
+    </select>
+
+	<!-- 查询系统配置对象根据条件查询 -->
+	<select id="getAllSysConfig" resultMap="SysConfigResultMap" parameterType="com.xlkfinance.bms.rpc.system.SysConfig">
+		SELECT * FROM (
+			SELECT A.*, ROWNUM RN FROM
+				(SELECT 
+				<include refid="SysConfig_Column_List" /> 
+				FROM SYS_CONFIG 
+				WHERE 1 = 1 
+				AND STATUS = 1
+				<if test="configName != null and configName != '' ">
+					AND CONFIT_NAME like '%${configName}%'
+				</if>) A)
+		WHERE RN BETWEEN (((#{page}-1) * #{rows})+1) AND (#{page} * #{rows})
+	</select>
+	
+	<!-- 查询系统配置对象根据条件查询总记录条数 -->
+	<select id="getAllSysConfigTotal" resultType="Integer" parameterType="Integer">
+		SELECT 
+			COUNT(1)
+		FROM SYS_CONFIG 
+		WHERE 1 = 1 
+			AND STATUS = 1
+		<if test="configName != null and configName != '' ">
+			AND CONFIT_NAME like '%${configName}%'
+		</if>
+	</select>
+	
+	<!-- 查询系统配置集合根据系统配置名称-->
+	<select id="getSysConfigByConfigName" resultMap="SysConfigResultMap" parameterType="java.lang.String">
+		SELECT 
+		<include refid="SysConfig_Column_List" /> 
+		FROM SYS_CONFIG 
+		WHERE CONFIT_NAME IN 
+		<foreach item="idItem" collection="array" open="(" separator="," close=")">
+			#{idItem}
+		</foreach>
+	</select>
+	
+	<!-- 查询系统配置对象根据系统配置名称 -->
+	<select id="getByConfigName" resultType="com.xlkfinance.bms.rpc.system.SysConfig" parameterType="java.lang.String">
+		SELECT 
+			PID as pid , 
+			CONFIT_NAME as configName , 
+			CONFIT_VALUE as configVal ,
+			STATUS as status, 
+			DESCRIPTION as description
+		FROM SYS_CONFIG 
+		WHERE CONFIT_NAME = #{configName}
+	</select>
+	
+	<!-- 查询系统配置对象根据系统配置名称 -->
+	<select id="getListByListSysConfig" resultMap="SysConfigResultMap" parameterType="java.util.List">
+		SELECT 
+		<include refid="SysConfig_Column_List" /> 
+		FROM SYS_CONFIG 
+		WHERE CONFIT_NAME in
+		<foreach item="item" collection="list" open="(" separator="," close=")">
+			#{item.configName}
+		</foreach>
+	</select>
+
+</mapper>

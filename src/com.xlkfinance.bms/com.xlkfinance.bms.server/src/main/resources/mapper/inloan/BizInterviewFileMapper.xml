@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xlkfinance.bms.server.inloan.mapper.BizInterviewFileMapper">
+	<resultMap id="bizInterviewFileMap" type="com.xlkfinance.bms.rpc.inloan.BizInterviewFile">
+		<id property="pid" column="PID" />
+		<id property="interviewId" column="INTERVIEW_ID" />
+		<id property="uploadCode" column="UPLOAD_CODE" />
+		<id property="fileId" column="FILE_ID" />
+		<id property="status" column="STATUS" />
+		<id property="fileUrl" column="FILE_URL" />
+		<id property="fileName" column="FILE_NAME" />
+	</resultMap>
+	<sql id="column_list">
+        PID,INTERVIEW_ID,UPLOAD_CODE,FILE_ID,STATUS
+	</sql>
+	<!-- 查询所有 -->
+	<select id="getAll" resultMap="bizInterviewFileMap" parameterType="com.xlkfinance.bms.rpc.inloan.BizInterviewFile">
+		SELECT
+		<include refid="column_list" />
+		FROM BIZ_INTERVIEW_FILE
+		<where>
+			<trim>
+		      <if test="pid != null and pid >0">
+	          PID=#{pid}
+	          </if>
+		      <if test="interviewId != null and interviewId >0">
+	          AND INTERVIEW_ID=#{interviewId}
+	          </if>
+		      <if test="uploadCode != null and uploadCode !=''">
+	          AND UPLOAD_CODE=#{uploadCode}
+	          </if>
+		      <if test="fileId != null and fileId >0">
+	          AND FILE_ID=#{fileId}
+	          </if>
+		      <if test="status != null and status >0">
+	          AND STATUS=#{status}
+	          </if>
+			</trim>
+		</where>
+	</select>
+	<!-- 根据id获取 -->
+	<select id="getById" resultMap="bizInterviewFileMap">
+		SELECT <include refid="column_list" /> FROM BIZ_INTERVIEW_FILE WHERE PID=#{pid}
+	</select>
+	<!-- 根据面签ID获取面签影像文件 -->
+	<select id="getByInteviewId" resultMap="bizInterviewFileMap">
+		SELECT
+			 A.PID,A.INTERVIEW_ID,A.UPLOAD_CODE,A.FILE_ID,A.STATUS,
+			 B.FILE_URL AS FILE_URL,B.FILE_NAME AS FILE_NAME
+		FROM 
+		BIZ_INTERVIEW_FILE A LEFT JOIN BIZ_FILE B ON A.FILE_ID =B.PID 
+		WHERE INTERVIEW_ID=#{interviewId} AND ROWNUM = 1
+		ORDER BY pid desc
+	</select>
+	<!-- 插入一条数据 -->
+	<insert id="insert" parameterType="com.xlkfinance.bms.rpc.inloan.BizInterviewFile">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_BIZ_INTERVIEW_FILE.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_INTERVIEW_FILE
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+				PID,
+			</if>
+		    <if test="interviewId != null and interviewId >0">
+				INTERVIEW_ID,
+			</if>
+		    <if test="uploadCode != null and uploadCode !=''">
+				UPLOAD_CODE,
+			</if>
+		    <if test="fileId != null and fileId >0">
+				FILE_ID,
+			</if>
+		    <if test="status != null and status >0">
+				STATUS,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+		    #{pid},
+			</if>
+		    <if test="interviewId != null and interviewId >0">
+		    #{interviewId},
+			</if>
+		    <if test="uploadCode != null and uploadCode !=''">
+		    #{uploadCode},
+			</if>
+		    <if test="fileId != null and fileId >0">
+		    #{fileId},
+			</if>
+		    <if test="status != null and status >0">
+		    #{status},
+			</if>
+		</trim>
+	</insert>
+	<!-- 根据id删除数据 -->
+	<delete id="deleteById" parameterType="com.xlkfinance.bms.rpc.inloan.BizInterviewFile">
+		<![CDATA[DELETE FROM BIZ_INTERVIEW_FILE WHERE PID=#{pid}]]>
+	</delete>
+	<!-- 根据id更新数据 -->
+		<update id="update" parameterType="com.xlkfinance.bms.rpc.inloan.BizInterviewFile">
+		UPDATE BIZ_INTERVIEW_FILE
+		<set>
+		    <if test="pid != null and pid >0">
+		     PID=#{pid},
+			</if>
+		    <if test="interviewId != null and interviewId >0">
+		     INTERVIEW_ID=#{interviewId},
+			</if>
+		    <if test="uploadCode != null and uploadCode !=''">
+		     UPLOAD_CODE=#{uploadCode},
+			</if>
+		    <if test="fileId != null and fileId >0">
+		     FILE_ID=#{fileId},
+			</if>
+		    <if test="status != null and status >0">
+		     STATUS=#{status},
+			</if>
+		</set>
+		WHERE PID = #{pid}
+	</update>
+	<!-- 根据传入多个id删除数据 -->
+	<delete id="deleteByIds" parameterType="java.util.List">
+		DELETE FROM BIZ_INTERVIEW_FILE WHERE PID in
+		<foreach collection="list" item="item" index="index" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+</mapper>

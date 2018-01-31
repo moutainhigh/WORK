@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xlkfinance.bms.server.aom.system.mapper.OrgUserFileMapper">
+	<resultMap id="orgUserFileMap" type="com.qfang.xk.aom.rpc.system.OrgUserFile">
+		<id property="pid" column="PID" />
+		<id property="userId" column="USER_ID" />
+		<id property="fileId" column="FILE_ID" />
+		<id property="status" column="STATUS" />
+		<association property="file" javaType="com.xlkfinance.bms.rpc.system.BizFile">
+			<id property="pid" column="F_PID" />
+			<result property="fileName" column="F_FILE_NAME" />
+			<result property="fileType" column="F_FILE_TYPE" />
+			<result property="fileSize" column="F_FILE_SIZE" />
+			<result property="uploadDttm" column="F_UPLOAD_DTTM" />
+			<result property="uploadUserId" column="F_UPLOAD_USER_ID" />
+			<result property="fileUrl" column="F_FILE_URL" />
+			<result property="status" column="F_STATUS" />
+			<result property="remark" column="F_REMARK" />
+		</association>
+	</resultMap>
+	<resultMap id="fileMap" type="com.xlkfinance.bms.rpc.system.BizFile">
+		<id property="pid" column="PID" />
+		<result property="fileName" column="FILE_NAME" />
+		<result property="fileType" column="FILE_TYPE" />
+		<result property="fileSize" column="FILE_SIZE" />
+		<result property="uploadDttm" column="UPLOAD_DTTM" />
+		<result property="uploadUserId" column="UPLOAD_USER_ID" />
+		<result property="fileUrl" column="FILE_URL" />
+		<result property="status" column="STATUS" />
+		<result property="remark" column="REMARK" />
+	</resultMap>
+	<sql id="column_list">
+       UF.PID,UF.USER_ID,UF.FILE_ID,UF.STATUS,
+       F.PID              AS F_PID,
+       F.FILE_NAME        AS F_FILE_NAME,
+       F.FILE_TYPE        AS F_FILE_TYPE,
+       F.FILE_SIZE        AS F_FILE_SIZE,
+       TO_CHAR(F.UPLOAD_DTTM,'yyyy-mm-dd hh24:mi:ss') AS F_UPLOAD_DTTM,
+       F.UPLOAD_USER_ID   AS F_UPLOAD_USER_ID,
+       F.FILE_URL         AS F_FILE_URL,
+       F.STATUS           AS F_STATUS,
+       F.REMARK           AS F_REMARK
+	</sql>
+	<!-- 查询所有 -->
+	<select id="getAll" resultMap="orgUserFileMap" parameterType="com.qfang.xk.aom.rpc.system.OrgUserFile">
+		SELECT
+		<include refid="column_list" />
+		FROM ORG_USER_FILE UF LEFT JOIN BIZ_FILE F
+		ON UF.FILE_ID=F.PID
+		<where>
+			<trim>
+		      <if test="pid != null and pid >0">
+	          PID=#{pid}
+	          </if>
+		      <if test="userId != null and userId >0">
+	          AND USER_ID=#{userId}
+	          </if>
+		      <if test="fileId != null and fileId >0">
+	          AND FILE_ID=#{fileId}
+	          </if>
+		      <if test="status != null and status >0">
+	          AND STATUS=#{status}
+	          </if>
+			</trim>
+		</where>
+	</select>
+	<!-- 根据用户id查询有效的文件 -->
+	<select id="getByUserId" resultMap="orgUserFileMap" parameterType="int">
+		SELECT
+		<include refid="column_list" />
+		FROM ORG_USER_FILE UF LEFT JOIN BIZ_FILE F
+		ON UF.FILE_ID=F.PID 
+		WHERE UF.STATUS=1 AND UF.USER_ID=#{userId}
+		ORDER BY F.UPLOAD_DTTM DESC
+	</select>
+	<!-- 根据id获取 -->
+	<select id="getById" resultMap="orgUserFileMap">
+		SELECT <include refid="column_list" /> 
+		FROM ORG_USER_FILE UF LEFT JOIN BIZ_FILE F
+		ON UF.FILE_ID=F.PID 
+		WHERE UF.PID=#{pid}
+	</select>
+	<!-- 插入一条数据 -->
+	<insert id="insert" parameterType="com.qfang.xk.aom.rpc.system.OrgUserFile">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_ORG_USER_FILE.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO ORG_USER_FILE
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+				PID,
+			</if>
+		    <if test="userId != null and userId >0">
+				USER_ID,
+			</if>
+		    <if test="fileId != null and fileId >0">
+				FILE_ID,
+			</if>
+		    <if test="status != null and status >0">
+				STATUS,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+		    #{pid},
+			</if>
+		    <if test="userId != null and userId >0">
+		    #{userId},
+			</if>
+		    <if test="fileId != null and fileId >0">
+		    #{fileId},
+			</if>
+		    <if test="status != null and status >0">
+		    #{status},
+			</if>
+		</trim>
+	</insert>
+	<!-- 根据id删除数据 -->
+	<delete id="deleteById" parameterType="com.qfang.xk.aom.rpc.system.OrgUserFile">
+		<![CDATA[DELETE FROM ORG_USER_FILE WHERE PID=#{pid}]]>
+	</delete>
+	<!-- 根据id更新数据 -->
+		<update id="update" parameterType="com.qfang.xk.aom.rpc.system.OrgUserFile">
+		UPDATE ORG_USER_FILE
+		<set>
+		    <if test="pid != null and pid >0">
+		     PID=#{pid},
+			</if>
+		    <if test="userId != null and userId >0">
+		     USER_ID=#{userId},
+			</if>
+		    <if test="fileId != null and fileId >0">
+		     FILE_ID=#{fileId},
+			</if>
+		    <if test="status != null and status >0">
+		     STATUS=#{status},
+			</if>
+		</set>
+		WHERE PID = #{pid}
+	</update>
+	<!-- 根据传入多个id删除数据 -->
+	<delete id="deleteByIds" parameterType="java.util.List">
+		DELETE FROM ORG_USER_FILE WHERE PID in
+		<foreach collection="list" item="item" index="index" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+	<!-- 机构用户资料列表(分页查询) -->
+	<select id="queryOrgUserFilePage" resultMap="fileMap"
+		parameterType="com.qfang.xk.aom.rpc.system.OrgUserFile">
+		<if test="page!=-1">
+			SELECT D.* FROM (SELECT T.*, ROWNUM RN
+			FROM (
+		</if>
+		SELECT F.*
+		FROM ORG_USER_FILE UF LEFT JOIN BIZ_FILE F
+		ON UF.FILE_ID=F.PID 
+		<where>
+			<trim>
+			  <if test="file!=null and file.fileName != null and file.fileName !=''">
+			    AND F.FILE_NAME LIKE '%${file.fileName}%'
+			  </if>
+			  <if test="1==1">
+			   AND UF.STATUS=1 AND UF.USER_ID=#{userId}
+			  </if>
+			</trim>
+		</where>
+		ORDER BY F.UPLOAD_DTTM DESC
+		<if test="page!=-1">
+	<![CDATA[
+	) T
+	WHERE ROWNUM <=#{page}*#{rows}
+	) D
+	WHERE D.RN > ((#{page}-1)*#{rows})
+	]]>
+		</if>
+	</select>
+	<!--机构用户资料列表总数 -->
+	<select id="getOrgUserFileTotal" resultType="Integer"
+		parameterType="com.qfang.xk.aom.rpc.system.OrgUserFile">
+	<![CDATA[
+	SELECT COUNT(1) FROM
+			(SELECT F.PID
+        FROM ORG_USER_FILE UF LEFT JOIN BIZ_FILE F
+		ON UF.FILE_ID=F.PID 
+	]]>
+		<where>
+			<trim>
+			  <if test="file!=null and file.fileName != null and file.fileName !=''">
+			    AND F.FILE_NAME LIKE '%${file.fileName}%'
+			  </if>
+			  <if test="1==1">
+			   AND UF.STATUS=1 AND UF.USER_ID=#{userId}
+			  </if>
+			</trim>
+		</where>
+		) T
+	</select>
+</mapper>

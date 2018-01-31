@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.customer.mapper.CusAcctBankMapper">
+  <resultMap id="CusAcctBankMap" type="com.xlkfinance.bms.rpc.common.GridViewDTO">
+        <id property="pid" column="pid"/>
+        <result property="pid" column="pid" />
+        <result property="value1" column="BANK_NAME" />
+        <result property="value2" column="BRANCH_NAME" />
+        <result property="value3" column="ACC_AREA" />
+        <result property="value4" column="ACC_NAME" />
+        <result property="value5" column="BANK_ACC_CATE" />
+        <result property="value6" column="ACC_TYPE" />
+        <result property="value7" column="LOAN_CARD_ID" />
+        <result property="value8" column="ACC_USE"/>
+        <result property="value9" column="USEEXPLAIN"/>
+        <result property="value10" column="REMARK"/>
+        <result property="value11" column="accCate"/>
+        <result property="value12" column="accType"/>
+        <result property="value13" column="accUse"/>
+    </resultMap>
+    
+    <resultMap id="CusAcctBankMaps" type="com.xlkfinance.bms.rpc.customer.CusAcctBank">
+        <id property="pid" column="pid"/>
+        <result property="pid" column="pid" />
+        <result property="bankName" column="BANK_NAME" />
+        <result property="branchName" column="BRANCH_NAME" />
+        <result property="accArea" column="ACC_AREA" />
+        <result property="accName" column="ACC_NAME" />
+        <result property="bankAccCate" column="BANK_ACC_CATE" />
+        <result property="accType" column="ACC_TYPE" />
+        <result property="loanCardId" column="LOAN_CARD_ID" />
+        <result property="accUse" column="ACC_USE"/>
+        <result property="useexplain" column="USEEXPLAIN"/>
+        <result property="cusType" column="cus_type"/>
+        <result property="remark" column="REMARK"/>
+    </resultMap> 
+    
+    <select id="getCusAcctBanks" resultMap="CusAcctBankMap" parameterType="com.xlkfinance.bms.rpc.customer.CusAcctBank">
+	      select * from( 
+	       SELECT  rownum rn,
+	       		   CAB.PID,
+		           CAB.BANK_NAME,
+		           CAB.BRANCH_NAME,
+		           CAB.ACC_AREA,
+		           CAB.ACC_NAME,
+		          (SELECT SLV.LOOKUP_VAL FROM SYS_LOOKUP_VAL SLV WHERE SLV.PID=CAB.BANK_ACC_CATE) BANK_ACC_CATE,
+		          (SELECT SLV.LOOKUP_VAL FROM SYS_LOOKUP_VAL SLV WHERE SLV.PID=CAB.ACC_TYPE) ACC_TYPE,
+		          (SELECT SLV.LOOKUP_DESC FROM SYS_LOOKUP_VAL SLV WHERE SLV.PID=CAB.ACC_USE) ACC_USE,
+		          CAB.BANK_ACC_CATE as accCate,CAB.ACC_TYPE accType,CAB.ACC_USE accUse,
+		          CAB.USEEXPLAIN,          
+		           CAB.LOAN_CARD_ID,
+		           CAB.REMARK
+      FROM CUS_ACCT_BANK CAB
+     WHERE 1 = 1
+     AND CAB.STATUS = 1
+     AND CAB.acct_id =#{cusAcct.pid,jdbcType=INTEGER}
+     AND CAB.cus_type =#{cusType,jdbcType=INTEGER}
+     AND rownum<![CDATA[<=]]>#{page}*#{rows})
+     WHERE rn>=((#{page}-1)*#{rows})+1
+  	</select> 
+  	<select id="getTotal" parameterType="com.xlkfinance.bms.rpc.customer.CusAcctBank" resultType="java.lang.Integer">
+  	   SELECT COUNT(PID) FROM (
+  	   	  SELECT CAB.PID,
+	           CAB.BANK_NAME,
+	           CAB.BRANCH_NAME,
+	           CAB.ACC_AREA,
+	           CAB.ACC_NAME,
+	          (SELECT SLV.LOOKUP_VAL FROM SYS_LOOKUP_VAL SLV WHERE SLV.PID=CAB.BANK_ACC_CATE) BANK_ACC_CATE,
+	          (SELECT SLV.LOOKUP_VAL FROM SYS_LOOKUP_VAL SLV WHERE SLV.PID=CAB.ACC_TYPE) ACC_TYPE,
+	          (SELECT SLV.LOOKUP_VAL FROM SYS_LOOKUP_VAL SLV WHERE SLV.PID=CAB.ACC_USE) ACC_USE,
+	          CAB.USEEXPLAIN,          
+	           CAB.LOAN_CARD_ID,
+	           CAB.REMARK
+      FROM CUS_ACCT_BANK CAB
+     WHERE 1 = 1
+     AND CAB.STATUS = 1
+     AND CAB.acct_id =#{cusAcct.pid,jdbcType=INTEGER}
+     AND CAB.cus_type =#{cusType,jdbcType=INTEGER}
+  	   )
+  	</select>
+  	
+<!--   	编辑时候的查出来的数据 -->
+  	<select id="selectCusAcctBankById" resultMap="CusAcctBankMaps" parameterType="java.lang.Integer">
+	      	 SELECT CAB.PID,
+                   CAB.BANK_NAME,
+		           CAB.BRANCH_NAME,
+		           CAB.ACC_AREA,
+		           --LK3.LOOKUP_VAL ACC_AREA,
+		           CAB.ACC_NAME,
+		           CAB.BANK_ACC_CATE,
+		           --LK2.LOOKUP_VAL  BANK_ACC_CATE,
+		           CAB.ACC_TYPE,
+		           --LK1.LOOKUP_VAL ACC_TYPE,
+		           CAB.LOAN_CARD_ID,
+		           CAB.ACC_USE,
+		           --LK4.LOOKUP_VAL ACC_USE,
+		           CAB.USEEXPLAIN,
+		           CAB.REMARK
+      	  FROM CUS_ACCT_BANK CAB
+       WHERE 1 = 1
+       AND cab.pid = #{pid,jdbcType=INTEGER}
+  	</select> 
+<insert id="insert" parameterType="com.xlkfinance.bms.rpc.customer.CusAcctBank">
+	<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+		SELECT SEQ_CUS_ACCT_BANK.Nextval as PID from DUAL
+	</selectKey>
+    insert into cus_acct_bank (
+	    PID, 
+	    <if test="cusAcct.pid !=null">
+	    ACCT_ID, 
+	    </if>
+	    <if test="bankName !=null and bankName !=''">
+	    BANK_NAME, 
+	    </if>
+	    <if test="branchName !=null and branchName !=''">
+	    BRANCH_NAME, 
+	    </if>
+	    <if test="accArea !=null and accArea !=''">
+	    ACC_AREA, 
+	    </if>
+	    <if test="accName !=null and accName !=''">
+	    ACC_NAME, 
+	    </if>
+	    <if test="loanCardId !=null and loanCardId !=''">
+	    LOAN_CARD_ID,
+	    </if>
+	    <if test="accType !=null">
+	    ACC_TYPE, 
+	    </if>
+	    <if test="bankAccCate !=null">
+	    BANK_ACC_CATE, 
+	    </if>
+	    <if test="accUse !=null">
+	    ACC_USE, 
+	    </if>
+	    <if test="useexplain !=null and useexplain !=''">
+	    USEEXPLAIN, 
+	    </if>
+	    <if test="remark !=null and remark !=''">
+	    REMARK, 
+	    </if>
+	    <if test="cusType !=null">
+	    cus_type,
+	    </if>
+	    STATUS)
+    values (
+    	#{pid,jdbcType=INTEGER}, 
+    	<if test="cusAcct.pid !=null">
+    		#{cusAcct.pid,jdbcType=INTEGER}, 
+    	</if>
+    	<if test="bankName !=null and bankName !=''">
+     		#{bankName,jdbcType=VARCHAR},
+     	</if>
+     	<if test="branchName !=null and branchName !=''">
+     		#{branchName,jdbcType=VARCHAR},
+     	</if>
+     	<if test="accArea !=null and accArea !=''">
+     		#{accArea,jdbcType=VARCHAR},
+     	</if>
+     	<if test="accName !=null and accName !=''">
+    		#{accName,jdbcType=VARCHAR}, 
+    	</if>
+    	<if test="loanCardId !=null and loanCardId !=''">
+    		#{loanCardId,jdbcType=VARCHAR},
+    	</if>
+    	<if test="accType !=null">
+     		#{accType,jdbcType=INTEGER}, 
+     	</if>
+     	<if test="bankAccCate !=null">
+     		#{bankAccCate,jdbcType=INTEGER},
+     	</if>
+     	<if test="accUse !=null">
+     		#{accUse,jdbcType=INTEGER}, 
+     	</if>
+     	<if test="useexplain !=null and useexplain !=''">
+    		#{useexplain,jdbcType=VARCHAR},
+    	</if>
+    	<if test="remark !=null and remark !=''">
+    		#{remark,jdbcType=VARCHAR},
+    	</if>
+    	<if test="cusType !=null">
+    		#{cusType,jdbcType=INTEGER},
+    	</if>
+    		#{status,jdbcType=INTEGER}) 
+  </insert>
+  
+  <!-- 4.更新的方法 -->
+	<update id="updateByPrimaryKey" parameterType="com.xlkfinance.bms.rpc.customer.CusAcctBank">
+		update cus_acct_bank
+		<set>
+		<if test="cusAcct.pid != null">
+			ACCT_ID =#{cusAcct.pid,jdbcType=INTEGER},
+		</if>
+		<if test="bankName != null">
+			BANK_NAME = #{bankName,jdbcType=VARCHAR},
+		</if>
+		<if test="branchName != null">
+     		BRANCH_NAME = #{branchName,jdbcType=VARCHAR},
+     	</if>
+		<if test="accArea != null">
+     		ACC_AREA = #{accArea,jdbcType=VARCHAR},
+     	</if>
+		<if test="accName != null">
+    		ACC_NAME = #{accName,jdbcType=VARCHAR},
+    	</if>
+		<if test="loanCardId != null"> 
+    		LOAN_CARD_ID = #{loanCardId,jdbcType=VARCHAR},
+    	</if>
+		<if test="accType != null">
+     		ACC_TYPE = #{accType,jdbcType=INTEGER}, 
+     	</if>
+		<if test="bankAccCate != null">
+     		BANK_ACC_CATE=#{bankAccCate,jdbcType=INTEGER},
+     	</if>
+		<if test="accUse != null">
+     		ACC_USE=#{accUse,jdbcType=INTEGER}, 
+     	</if>
+		<if test="useexplain != null">
+    		USEEXPLAIN=#{useexplain,jdbcType=VARCHAR},
+    	</if>
+		<if test="cusType != null">
+    		cus_type=#{cusType,jdbcType=INTEGER},
+    	</if>
+		<if test="remark != null">
+    		remark=#{remark,jdbcType=VARCHAR},
+    	</if>
+		<if test="status != null">
+    		status=#{status,jdbcType=INTEGER},
+    	</if>
+		</set>
+		where pid = #{pid,jdbcType=INTEGER}
+	</update>
+<!-- 	删除 -->
+	<update id="deleteCusAcctBank" parameterType="java.util.List">
+		update cus_acct_bank
+		set
+		status=0
+		where pid in 
+		<foreach item="itemId" collection="list" open="(" separator="," close=")">
+		          #{itemId}
+		</foreach>
+	</update>
+<!-- 	编辑保存 -->
+	<update id="updateCusAcctBankById" parameterType="com.xlkfinance.bms.rpc.customer.CusAcctBank">
+		update cus_acct_bank
+		<set>
+		<if test="bankName != null">
+			BANK_NAME = #{bankName,jdbcType=VARCHAR},
+		</if>
+		<if test="branchName != null">
+     		BRANCH_NAME = #{branchName,jdbcType=VARCHAR},
+     	</if>
+		<if test="accArea != null">
+     		ACC_AREA = #{accArea,jdbcType=VARCHAR},
+     	</if>
+		<if test="accName != null">
+    		ACC_NAME = #{accName,jdbcType=VARCHAR},
+    	</if>
+		<if test="loanCardId != null"> 
+    		LOAN_CARD_ID = #{loanCardId,jdbcType=VARCHAR},
+    	</if>
+		<if test="accType != null">
+     		ACC_TYPE = #{accType,jdbcType=INTEGER}, 
+     	</if>
+		<if test="bankAccCate != null">
+     		BANK_ACC_CATE=#{bankAccCate,jdbcType=INTEGER},
+     	</if>
+		<if test="accUse != null">
+     		ACC_USE=#{accUse,jdbcType=INTEGER}, 
+     	</if>
+		<if test="useexplain != null">
+    		USEEXPLAIN=#{useexplain,jdbcType=VARCHAR},
+    	</if>
+    	<if test="cusType != null">
+    		cus_type=#{cusType,jdbcType=INTEGER},
+    	</if>
+		<if test="remark != null">
+    		remark=#{remark,jdbcType=VARCHAR},
+    	</if>
+		</set>
+		    where pid = #{pid,jdbcType=INTEGER}
+	</update>
+	<!-- add by yql -->
+	<resultMap id="CusAcctBankResultMap" type="com.xlkfinance.bms.rpc.customer.CusAcctBankView">
+        <id property="pid" column="pid"/>
+        <result property="pid" column="pid" />
+        <result property="bankName" column="BANK_NAME" />
+        <result property="branchName" column="BRANCH_NAME" />
+        <result property="accArea" column="ACC_AREA" />
+        <result property="accName" column="ACC_NAME" />
+        <result property="bankAccCate" column="BANK_ACC_CATE" />
+        <result property="accType" column="ACC_TYPE" />
+        <result property="loanCardId" column="LOAN_CARD_ID" />
+        <result property="accUse" column="ACC_USE"/>
+        <result property="remark" column="REMARK"/>
+    </resultMap>
+	<select id="getCusBankByAcctId" resultMap="CusAcctBankResultMap" parameterType="com.xlkfinance.bms.rpc.customer.CusAcctBank">
+	       SELECT 
+	       		   CAB.PID,
+		           CAB.BANK_NAME,
+		           CAB.BRANCH_NAME,
+		           CAB.ACC_AREA,
+		           CAB.ACC_NAME,
+		          (SELECT SLV.LOOKUP_VAL FROM SYS_LOOKUP_VAL SLV WHERE SLV.PID=CAB.BANK_ACC_CATE) BANK_ACC_CATE,
+		          (SELECT SLV.LOOKUP_VAL FROM SYS_LOOKUP_VAL SLV WHERE SLV.PID=CAB.ACC_TYPE) ACC_TYPE,
+		          (SELECT SLV.LOOKUP_DESC FROM SYS_LOOKUP_VAL SLV WHERE SLV.PID=CAB.ACC_USE) ACC_USE,
+		          CAB.USEEXPLAIN,          
+		           CAB.LOAN_CARD_ID,
+		           CAB.REMARK
+      FROM CUS_ACCT_BANK CAB
+     WHERE CAB.STATUS = 1
+     AND CAB.acct_id =#{cusAcct.pid,jdbcType=INTEGER}
+     AND CAB.acc_use =#{accUse,jdbcType=INTEGER}
+    
+    
+  	</select> 
+  	<!-- add by yql end-->
+</mapper>

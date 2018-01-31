@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.xlkfinance.bms.server.afterloan.mapper.AfterLoanDivertMapper">
+	<resultMap id="LoanDivertinfomaps"
+		type="com.xlkfinance.bms.rpc.afterloan.LoanDivertinfo">
+		<result property="pId" column="PID" />
+		<result property="projectName" column="PROJECT_NAME" />
+		<result property="projectNumber" column="PROJECT_NUMBER" />
+		<result property="loanId" column="LOAN_ID" />
+		<result property="divertId" column="DIVERT_ID" />
+		<result property="projectId" column="PROJECT_ID" />
+		<result property="divertAmt" column="DIVERT_AMT" />
+		<result property="divertFine" column="DIVERT_FINE" />
+		<result property="divertFineEndDt" column="DIVERT_FINE_END_DT" />
+		<result property="regulatoryUserId" column="REGULATORY_USER_ID" />
+		<result property="remark" column="REMARK" />
+		<result property="reviewStatus" column="REVIEW_STATUS" />
+		<result property="status" column="STATUS" />
+		<result property="divertFinePayDt" column="DIVERT_FINE_PAY_DT" />
+		<result property="divertFinePayAmt" column="DIVERT_FINE_PAY_AMT" />
+		<result property="planBeginDt" column="PLAN_BEGIN_DT" />
+		<result property="divertFineBeginDt" column="DIVERT_FINE_BEGIN_DT" />
+		<result property="planOutLoanDt" column="PLAN_OUT_LOAN_DT" />
+		
+	</resultMap>
+	<resultMap id="regCgapplyFileMaps"
+		type="com.xlkfinance.bms.rpc.repayment.RegAdvapplyFileview">
+		<result property="pId" column="PID" />
+		<result property="divertPid" column="DIVERT_PID" />
+		<result property="filePath" column="FILE_URL" />
+		<result property="fileType" column="FILE_TYPE" />
+		<result property="fileName" column="FILE_NAME" />
+		<result property="fileSize" column="FILE_SIZE" />
+		<result property="uploadDttm" column="UPLOAD_DTTM" />
+		<result property="fileFunType" column="FILE_FUN_TYPE" />
+		<result property="fileDesc" column="FILE_DESC" />
+	</resultMap>
+	<select id="queryDivertinfobyprojectId" resultMap="LoanDivertinfomaps"
+		parameterType="java.lang.Integer">
+			SELECT to_char(BL.PLAN_OUT_LOAN_DT,'yyyy-mm-dd')  AS PLAN_OUT_LOAN_DT,
+			       SYSDATE              AS DIVERT_FINE_PAY_DT,
+			       BL.MIS_FINE_INTEREST AS DIVERT_FINE
+			  FROM BIZ_LOAN BL
+			 WHERE BL.PROJECT_ID =#{projectId}		
+	</select>
+
+	<select id="queryLoanDivertbyDivertId" resultMap="LoanDivertinfomaps"
+		parameterType="java.lang.Integer">
+		SELECT PID,
+		       DIVERT_AMT,
+		       DIVERT_FINE,
+		       DIVERT_FINE_END_DT,
+		       PROJECT_ID,
+		       REGULATORY_USER_ID,
+		       PLAN_BEGIN_DT,
+		       REMARK,
+		       REVIEW_STATUS,
+		       STATUS,
+		       DIVERT_FINE_PAY_DT,
+		       DIVERT_FINE_PAY_AMT
+		  FROM BIZ_PROJECT_DIVERT
+		 WHERE PID = #{divertId}	
+	</select>
+	<insert id="insertLoanDivertService" parameterType="com.xlkfinance.bms.rpc.afterloan.LoanDivertinfo">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pId">
+			SELECT SEQ_BIZ_PROJECT_DIVERT.Nextval as pId from DUAL
+		</selectKey>
+		INSERT INTO BIZ_PROJECT_DIVERT
+		( PID ,
+		DIVERT_AMT ,
+		DIVERT_FINE ,
+		DIVERT_FINE_END_DT ,
+		PROJECT_ID ,
+		REGULATORY_USER_ID ,
+		PLAN_BEGIN_DT,
+		REMARK,
+		REVIEW_STATUS,
+		STATUS ,
+		DIVERT_FINE_PAY_DT,
+		DIVERT_FINE_PAY_AMT,
+		REQUEST_DTTM,
+      REQUEST_STATUS
+		)
+		values (
+		#{pId,jdbcType=INTEGER},
+		#{divertAmt,jdbcType=INTEGER},
+		#{divertFine,jdbcType=INTEGER},
+		to_DATE(#{divertFineEndDt},'yyyy-mm-dd'),
+		#{projectId,jdbcType=INTEGER},
+		#{regulatoryUserId,jdbcType=INTEGER},
+		sysdate,
+		#{remark,jdbcType=INTEGER},
+		1,
+		1,
+		to_DATE(#{divertFinePayDt},'yyyy-mm-dd'),
+		#{divertFinePayAmt,jdbcType=INTEGER},
+		sysdate,
+		1
+		)
+	</insert>
+	<update id="updateLoanDivertinfo" parameterType="com.xlkfinance.bms.rpc.afterloan.LoanDivertinfo">
+		UPDATE BIZ_PROJECT_DIVERT 
+		<trim prefix="set" suffixOverrides=",">
+				<if test="divertAmt != null and divertAmt != '' ">
+			    DIVERT_AMT = #{divertAmt},
+		    </if>
+		    	<if test="divertFine != null and divertFine != '' ">
+			    DIVERT_FINE = #{divertFine},
+		    </if>
+		    <if test="divertFineEndDt != null and divertFineEndDt != '' ">
+			    DIVERT_FINE_END_DT =to_DATE(#{divertFineEndDt},'yyyy-mm-dd'),
+		    </if>
+		    <if test="planBeginDt != null and planBeginDt != '' ">
+			    PLAN_BEGIN_DT = #{planBeginDt},
+		    </if>
+		    <if test="remark != null and remark != '' ">
+			    REMARK = #{remark},
+		    </if>
+		    <if test="reviewStatus != null and reviewStatus != '' ">
+			    REVIEW_STATUS = #{reviewStatus},
+		    </if>
+		    <if test="divertFinePayDt != null and divertFinePayDt != '' ">
+			    DIVERT_FINE_PAY_DT = to_DATE(#{divertFinePayDt},'yyyy-mm-dd'),
+		    </if>
+		    
+		    <if test="divertFinePayAmt != null and divertFinePayAmt != '' ">
+			    DIVERT_FINE_PAY_AMT = #{divertFinePayAmt},
+		    </if>
+		</trim>
+		WHERE PID =#{divertId}	
+	</update>  
+		<insert id="insertDvertfileInfo"
+		parameterType="com.xlkfinance.bms.rpc.repayment.UploadinstAdvapplyBaseDTO">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pId">
+			SELECT SEQ_BIZ_FILE.Nextval as PID from DUAL
+		</selectKey>
+		insert into BIZ_FILE (
+		PID,
+		FILE_NAME,
+		FILE_TYPE,
+		FILE_SIZE,
+		UPLOAD_USER_ID,
+		FILE_URL,
+		UPLOAD_DTTM,
+		STATUS)
+		values (
+		#{pId,jdbcType=INTEGER},
+		#{fileName,jdbcType=VARCHAR},
+		#{fileType,jdbcType=VARCHAR},
+		#{fileSize,jdbcType=INTEGER},
+		#{uploadUserid,jdbcType=INTEGER},
+		#{filePath,jdbcType=VARCHAR},
+		sysdate,
+		1
+		)
+	</insert>
+		<insert id="insertLoanDvertfileInfo"
+		parameterType="com.xlkfinance.bms.rpc.repayment.UploadinstAdvapplyBaseDTO">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pId">
+			SELECT SEQ_BIZ_PROJECT_DIVERT_FILE.Nextval as PID from
+			DUAL
+		</selectKey>
+		insert into BIZ_PROJECT_DIVERT_FILE(
+		PID,
+		DIVERT_ID,
+		FILE_ID,
+		STATUS,
+		FILE_TYPE,
+		FILE_DESC
+		)
+		values (
+		#{pId,jdbcType=INTEGER},
+		#{divertId,jdbcType=INTEGER},
+		#{fileId,jdbcType=INTEGER},
+		1,
+		#{fileKinds,jdbcType=VARCHAR},
+		#{fileDesc,jdbcType=VARCHAR}
+		)
+	</insert>
+	
+	<update id="updateEmbezzleFile" parameterType="com.xlkfinance.bms.rpc.repayment.UploadinstAdvapplyBaseDTO">
+		UPDATE BIZ_PROJECT_DIVERT_FILE SET FILE_DESC = #{fileDesc} WHERE PID = #{pId} 
+	</update>
+	
+	<select id="queryRegDivertapplyFile" resultMap="regCgapplyFileMaps"
+		parameterType="java.lang.Integer">
+		SELECT BF.FILE_NAME,
+		BPFF.FILE_TYPE as FILE_FUN_TYPE,
+		BF.UPLOAD_DTTM,
+		BF.PID,
+		BF.FILE_TYPE as FILE_TYPE,
+		BPFF.FILE_DESC,
+		BPFF.PID AS DIVERT_PID,
+		BF.FILE_SIZE,
+		BF.FILE_URL
+		FROM BIZ_PROJECT_DIVERT_FILE BPFF, BIZ_FILE BF
+		WHERE BPFF.FILE_ID = BF.PID(+)
+		AND BPFF.DIVERT_ID =#{divertId}
+		AND
+		BF.STATUS=1
+	</select>
+			<select id="queryProjectDivertbyDivertId" resultMap="LoanDivertinfomaps"
+		parameterType="java.lang.Integer">
+		    SELECT BP.PROJECT_NAME,
+             BP.PID            AS PROJECT_ID,
+             BP.PROJECT_NUMBER,
+             BL.PID            AS LOAN_ID
+        FROM BIZ_PROJECT BP
+        LEFT JOIN BIZ_LOAN BL
+          ON BP.PID = BL.PROJECT_ID
+       WHERE BP.PID = (SELECT BPD.PROJECT_ID
+                         FROM BIZ_PROJECT_DIVERT BPD
+                        WHERE BPD.PID = #{divertId})
+	</select>
+	<!-- 删除 -->
+		<update id="delectDivertbyId" parameterType="java.lang.Integer">
+		UPDATE BIZ_PROJECT_DIVERT 
+	SET STATUS=0
+		WHERE PID =#{divertId}	
+	</update> 
+		<update id="changeReqstDivert" parameterType="com.xlkfinance.bms.rpc.afterloan.LoanDivertinfo">
+		UPDATE BIZ_PROJECT_DIVERT
+	     SET REQUEST_STATUS =#{requestStatus}
+	     	<if test="requestStatus==4">
+			,	complete_dttm =sysdate
+			</if> 
+		WHERE PID = #{divertId}
+	</update>
+	
+</mapper>

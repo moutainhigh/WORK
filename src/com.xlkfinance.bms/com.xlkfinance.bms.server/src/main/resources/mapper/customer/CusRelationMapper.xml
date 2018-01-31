@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xlkfinance.bms.server.customer.mapper.CusRelationMapper">
+	<resultMap id="cusRelationMap" type="com.xlkfinance.bms.rpc.customer.CusRelation">
+		<id property="pid" column="PID" />
+		<id property="acctId" column="ACCT_ID" />
+		<id property="orgId" column="ORG_ID" />
+		<id property="orgType" column="ORG_TYPE" />
+		<id property="pmUserId" column="PM_USER_ID" />
+	</resultMap>
+	<sql id="column_list">
+        PID,ACCT_ID,ORG_ID,ORG_TYPE,PM_USER_ID
+	</sql>
+	<!-- 查询所有 -->
+	<select id="getAll" resultMap="cusRelationMap" parameterType="com.xlkfinance.bms.rpc.customer.CusRelation">
+		SELECT
+		<include refid="column_list" />
+		FROM CUS_RELATION
+		<where>
+			<trim>
+		      <if test="pid != null and pid >0">
+	          PID=#{pid}
+	          </if>
+		      <if test="acctId != null and acctId >0">
+	          AND ACCT_ID=#{acctId}
+	          </if>
+		      <if test="orgId != null and orgId >0">
+	          AND ORG_ID=#{orgId}
+	          </if>
+		      <if test="orgType != null and orgType >0">
+	          AND ORG_TYPE=#{orgType}
+	          </if>
+		      <if test="pmUserId != null and pmUserId >0">
+	          AND PM_USER_ID=#{pmUserId}
+	          </if>
+			</trim>
+		</where>
+	</select>
+	
+	<!-- 插入一条数据 -->
+	<insert id="insert" parameterType="com.xlkfinance.bms.rpc.customer.CusRelation">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_CUS_RELATION.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO CUS_RELATION
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+				PID,
+			</if>
+		    <if test="acctId != null and acctId >0">
+				ACCT_ID,
+			</if>
+		    <if test="orgId != null and orgId >0">
+				ORG_ID,
+			</if>
+		    <if test="orgType != null and orgType >0">
+				ORG_TYPE,
+			</if>
+		    <if test="pmUserId != null and pmUserId >0">
+				PM_USER_ID,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+		    #{pid},
+			</if>
+		    <if test="acctId != null and acctId >0">
+		    #{acctId},
+			</if>
+		    <if test="orgId != null and orgId >0">
+		    #{orgId},
+			</if>
+		    <if test="orgType != null and orgType >0">
+		    #{orgType},
+			</if>
+		    <if test="pmUserId != null and pmUserId >0">
+		    #{pmUserId},
+			</if>
+		</trim>
+	</insert>
+
+</mapper>

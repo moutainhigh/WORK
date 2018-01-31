@@ -1,0 +1,446 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xlkfinance.bms.server.aom.org.mapper.OrgCooperationUpdateApplyMapper">
+	<resultMap id="orgCooperationUpdateApplyMap" type="com.qfang.xk.aom.rpc.org.OrgCooperationUpdateApply">
+		<id property="pid" column="PID" />
+		<id property="orgId" column="ORG_ID" />
+		<id property="creditLimit" column="CREDIT_LIMIT" />
+		<id property="oldCreditLimit" column="OLD_CREDIT_LIMIT" />
+		<id property="activateCreditLimit" column="ACTIVATE_CREDIT_LIMIT" />
+		<id property="oldActivateCreditLimit" column="OLD_ACTIVATE_CREDIT_LIMIT" />
+		<id property="planRate" column="PLAN_RATE" />
+		<id property="oldPlanRate" column="OLD_PLAN_RATE" />
+		<id property="fundSizeMoney" column="FUND_SIZE_MONEY" />
+		<id property="oldFundSizeMoney" column="OLD_FUND_SIZE_MONEY" />
+		<id property="assureMoneyProportion" column="ASSURE_MONEY_PROPORTION" />
+		<id property="oldAssureMoneyProportion" column="OLD_ASSURE_MONEY_PROPORTION" />
+		<id property="assureMoney" column="ASSURE_MONEY" />
+		<id property="oldAssureMoney" column="OLD_ASSURE_MONEY" />
+		<id property="actualFeeRate" column="ACTUAL_FEE_RATE" />
+		<id property="oldActualFeeRate" column="OLD_ACTUAL_FEE_RATE" />
+		<id property="singleUpperLimit" column="SINGLE_UPPER_LIMIT" />
+		<id property="oldSingleUpperLimit" column="OLD_SINGLE_UPPER_LIMIT" />
+		<id property="assureMoneyRemark" column="ASSURE_MONEY_REMARK" />
+		<id property="oldAssureMoneyRemark" column="OLD_ASSURE_MONEY_REMARK" />
+		<id property="applyStatus" column="APPLY_STATUS" />
+		<id property="remark" column="REMARK" />
+		<id property="createrDate" column="CREATER_DATE" />
+		<id property="createrId" column="CREATER_ID" />
+		<id property="updateId" column="UPDATE_ID" />
+		<id property="updateDate" column="UPDATE_DATE" />
+		<id property="createrName" column="CREATER_NAME" />
+	</resultMap>
+	<sql id="column_list">
+        PID,ORG_ID,CREDIT_LIMIT,OLD_CREDIT_LIMIT,ACTIVATE_CREDIT_LIMIT,OLD_ACTIVATE_CREDIT_LIMIT,PLAN_RATE,OLD_PLAN_RATE,FUND_SIZE_MONEY,OLD_FUND_SIZE_MONEY,ASSURE_MONEY_PROPORTION,OLD_ASSURE_MONEY_PROPORTION,ASSURE_MONEY,OLD_ASSURE_MONEY,ACTUAL_FEE_RATE,OLD_ACTUAL_FEE_RATE,SINGLE_UPPER_LIMIT,OLD_SINGLE_UPPER_LIMIT,ASSURE_MONEY_REMARK,OLD_ASSURE_MONEY_REMARK,APPLY_STATUS,REMARK,CREATER_DATE,CREATER_ID,UPDATE_ID,UPDATE_DATE
+	</sql>
+	<!-- 查询所有 -->
+	<select id="getAll" resultMap="orgCooperationUpdateApplyMap" parameterType="com.qfang.xk.aom.rpc.org.OrgCooperationUpdateApply">
+		SELECT
+		<include refid="column_list" />
+		FROM ORG_COOPERATION_UPDATE_APPLY
+		<where>
+			<trim>
+		      <if test="pid != null and pid >0">
+	          PID=#{pid}
+	          </if>
+		      <if test="orgId != null and orgId >0">
+	          AND ORG_ID=#{orgId}
+	          </if>
+		      <if test="creditLimit != null and creditLimit >0">
+	          AND CREDIT_LIMIT=#{creditLimit}
+	          </if>
+		      <if test="oldCreditLimit != null and oldCreditLimit >0">
+	          AND OLD_CREDIT_LIMIT=#{oldCreditLimit}
+	          </if>
+		      <if test="activateCreditLimit != null and activateCreditLimit >0">
+	          AND ACTIVATE_CREDIT_LIMIT=#{activateCreditLimit}
+	          </if>
+		      <if test="oldActivateCreditLimit != null and oldActivateCreditLimit >0">
+	          AND OLD_ACTIVATE_CREDIT_LIMIT=#{oldActivateCreditLimit}
+	          </if>
+		      <if test="planRate != null and planRate >0">
+	          AND PLAN_RATE=#{planRate}
+	          </if>
+		      <if test="oldPlanRate != null and oldPlanRate >0">
+	          AND OLD_PLAN_RATE=#{oldPlanRate}
+	          </if>
+		      <if test="fundSizeMoney != null and fundSizeMoney >0">
+	          AND FUND_SIZE_MONEY=#{fundSizeMoney}
+	          </if>
+		      <if test="oldFundSizeMoney != null and oldFundSizeMoney >0">
+	          AND OLD_FUND_SIZE_MONEY=#{oldFundSizeMoney}
+	          </if>
+		      <if test="assureMoneyProportion != null and assureMoneyProportion >0">
+	          AND ASSURE_MONEY_PROPORTION=#{assureMoneyProportion}
+	          </if>
+		      <if test="oldAssureMoneyProportion != null and oldAssureMoneyProportion >0">
+	          AND OLD_ASSURE_MONEY_PROPORTION=#{oldAssureMoneyProportion}
+	          </if>
+		      <if test="assureMoney != null and assureMoney >0">
+	          AND ASSURE_MONEY=#{assureMoney}
+	          </if>
+		      <if test="oldAssureMoney != null and oldAssureMoney >0">
+	          AND OLD_ASSURE_MONEY=#{oldAssureMoney}
+	          </if>
+		      <if test="actualFeeRate != null and actualFeeRate >0">
+	          AND ACTUAL_FEE_RATE=#{actualFeeRate}
+	          </if>
+		      <if test="oldActualFeeRate != null and oldActualFeeRate >0">
+	          AND OLD_ACTUAL_FEE_RATE=#{oldActualFeeRate}
+	          </if>
+		      <if test="singleUpperLimit != null and singleUpperLimit >0">
+	          AND SINGLE_UPPER_LIMIT=#{singleUpperLimit}
+	          </if>
+		      <if test="oldSingleUpperLimit != null and oldSingleUpperLimit >0">
+	          AND OLD_SINGLE_UPPER_LIMIT=#{oldSingleUpperLimit}
+	          </if>
+		      <if test="assureMoneyRemark != null and assureMoneyRemark !=''">
+	          AND ASSURE_MONEY_REMARK=#{assureMoneyRemark}
+	          </if>
+		      <if test="oldAssureMoneyRemark != null and oldAssureMoneyRemark !=''">
+	          AND OLD_ASSURE_MONEY_REMARK=#{oldAssureMoneyRemark}
+	          </if>
+		      <if test="applyStatus != null and applyStatus >0">
+	          AND APPLY_STATUS=#{applyStatus}
+	          </if>
+		      <if test="remark != null and remark !=''">
+	          AND REMARK=#{remark}
+	          </if>
+		      <if test="createrDate != null and createrDate !=''">
+	          AND CREATER_DATE=#{createrDate}
+	          </if>
+		      <if test="createrId != null and createrId >0">
+	          AND CREATER_ID=#{createrId}
+	          </if>
+		      <if test="updateId != null and updateId >0">
+	          AND UPDATE_ID=#{updateId}
+	          </if>
+		      <if test="updateDate != null and updateDate !=''">
+	          AND UPDATE_DATE=#{updateDate}
+	          </if>
+			</trim>
+		</where>
+	</select>
+	<!-- 根据id获取 -->
+	<select id="getById" resultMap="orgCooperationUpdateApplyMap">
+		SELECT <include refid="column_list" /> FROM ORG_COOPERATION_UPDATE_APPLY WHERE PID=#{pid}
+	</select>
+	<!-- 插入一条数据 -->
+	<insert id="insert" parameterType="com.qfang.xk.aom.rpc.org.OrgCooperationUpdateApply">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_COOPERATION_UPDATE_APPLY.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO ORG_COOPERATION_UPDATE_APPLY
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+				PID,
+			</if>
+		    <if test="orgId != null and orgId >0">
+				ORG_ID,
+			</if>
+		    <if test="creditLimit != null and creditLimit >0">
+				CREDIT_LIMIT,
+			</if>
+		    <if test="oldCreditLimit != null and oldCreditLimit >0">
+				OLD_CREDIT_LIMIT,
+			</if>
+		    <if test="activateCreditLimit != null and activateCreditLimit >0">
+				ACTIVATE_CREDIT_LIMIT,
+			</if>
+		    <if test="oldActivateCreditLimit != null and oldActivateCreditLimit >0">
+				OLD_ACTIVATE_CREDIT_LIMIT,
+			</if>
+		    <if test="planRate != null and planRate >0">
+				PLAN_RATE,
+			</if>
+		    <if test="oldPlanRate != null and oldPlanRate >0">
+				OLD_PLAN_RATE,
+			</if>
+		    <if test="fundSizeMoney != null and fundSizeMoney >0">
+				FUND_SIZE_MONEY,
+			</if>
+		    <if test="oldFundSizeMoney != null and oldFundSizeMoney >0">
+				OLD_FUND_SIZE_MONEY,
+			</if>
+		    <if test="assureMoneyProportion != null and assureMoneyProportion >0">
+				ASSURE_MONEY_PROPORTION,
+			</if>
+		    <if test="oldAssureMoneyProportion != null and oldAssureMoneyProportion >0">
+				OLD_ASSURE_MONEY_PROPORTION,
+			</if>
+		    <if test="assureMoney != null and assureMoney >0">
+				ASSURE_MONEY,
+			</if>
+		    <if test="oldAssureMoney != null and oldAssureMoney >0">
+				OLD_ASSURE_MONEY,
+			</if>
+		    <if test="actualFeeRate != null and actualFeeRate >0">
+				ACTUAL_FEE_RATE,
+			</if>
+		    <if test="oldActualFeeRate != null and oldActualFeeRate >0">
+				OLD_ACTUAL_FEE_RATE,
+			</if>
+		    <if test="singleUpperLimit != null and singleUpperLimit >0">
+				SINGLE_UPPER_LIMIT,
+			</if>
+		    <if test="oldSingleUpperLimit != null and oldSingleUpperLimit >0">
+				OLD_SINGLE_UPPER_LIMIT,
+			</if>
+		    <if test="assureMoneyRemark != null and assureMoneyRemark !=''">
+				ASSURE_MONEY_REMARK,
+			</if>
+		    <if test="oldAssureMoneyRemark != null and oldAssureMoneyRemark !=''">
+				OLD_ASSURE_MONEY_REMARK,
+			</if>
+		    <if test="applyStatus != null and applyStatus >0">
+				APPLY_STATUS,
+			</if>
+		    <if test="remark != null and remark !=''">
+				REMARK,
+			</if>
+				CREATER_DATE,
+		    <if test="createrId != null and createrId >0">
+				CREATER_ID,
+			</if>
+		    <if test="updateId != null and updateId >0">
+				UPDATE_ID,
+			</if>
+				UPDATE_DATE
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+		    #{pid},
+			</if>
+		    <if test="orgId != null and orgId >0">
+		    #{orgId},
+			</if>
+		    <if test="creditLimit != null and creditLimit >0">
+		    #{creditLimit},
+			</if>
+		    <if test="oldCreditLimit != null and oldCreditLimit >0">
+		    #{oldCreditLimit},
+			</if>
+		    <if test="activateCreditLimit != null and activateCreditLimit >0">
+		    #{activateCreditLimit},
+			</if>
+		    <if test="oldActivateCreditLimit != null and oldActivateCreditLimit >0">
+		    #{oldActivateCreditLimit},
+			</if>
+		    <if test="planRate != null and planRate >0">
+		    #{planRate},
+			</if>
+		    <if test="oldPlanRate != null and oldPlanRate >0">
+		    #{oldPlanRate},
+			</if>
+		    <if test="fundSizeMoney != null and fundSizeMoney >0">
+		    #{fundSizeMoney},
+			</if>
+		    <if test="oldFundSizeMoney != null and oldFundSizeMoney >0">
+		    #{oldFundSizeMoney},
+			</if>
+		    <if test="assureMoneyProportion != null and assureMoneyProportion >0">
+		    #{assureMoneyProportion},
+			</if>
+		    <if test="oldAssureMoneyProportion != null and oldAssureMoneyProportion >0">
+		    #{oldAssureMoneyProportion},
+			</if>
+		    <if test="assureMoney != null and assureMoney >0">
+		    #{assureMoney},
+			</if>
+		    <if test="oldAssureMoney != null and oldAssureMoney >0">
+		    #{oldAssureMoney},
+			</if>
+		    <if test="actualFeeRate != null and actualFeeRate >0">
+		    #{actualFeeRate},
+			</if>
+		    <if test="oldActualFeeRate != null and oldActualFeeRate >0">
+		    #{oldActualFeeRate},
+			</if>
+		    <if test="singleUpperLimit != null and singleUpperLimit >0">
+		    #{singleUpperLimit},
+			</if>
+		    <if test="oldSingleUpperLimit != null and oldSingleUpperLimit >0">
+		    #{oldSingleUpperLimit},
+			</if>
+		    <if test="assureMoneyRemark != null and assureMoneyRemark !=''">
+		    #{assureMoneyRemark},
+			</if>
+		    <if test="oldAssureMoneyRemark != null and oldAssureMoneyRemark !=''">
+		    #{oldAssureMoneyRemark},
+			</if>
+		    <if test="applyStatus != null and applyStatus >0">
+		    #{applyStatus},
+			</if>
+		    <if test="remark != null and remark !=''">
+		    #{remark},
+			</if>
+		    SYSDATE,
+		    <if test="createrId != null and createrId >0">
+		    #{createrId},
+			</if>
+		    <if test="updateId != null and updateId >0">
+		    #{updateId},
+			</if>
+		    SYSDATE
+		</trim>
+	</insert>
+	<!-- 根据id删除数据 -->
+	<delete id="deleteById" parameterType="com.qfang.xk.aom.rpc.org.OrgCooperationUpdateApply">
+		<![CDATA[DELETE FROM ORG_COOPERATION_UPDATE_APPLY WHERE PID=#{pid}]]>
+	</delete>
+	<!-- 根据id更新数据 -->
+		<update id="update" parameterType="com.qfang.xk.aom.rpc.org.OrgCooperationUpdateApply">
+		UPDATE ORG_COOPERATION_UPDATE_APPLY
+		<set>
+		    <if test="pid != null and pid >0">
+		     PID=#{pid},
+			</if>
+		    <if test="orgId != null and orgId >0">
+		     ORG_ID=#{orgId},
+			</if>
+		    <if test="creditLimit != null and creditLimit >0">
+		     CREDIT_LIMIT=#{creditLimit},
+			</if>
+		    <if test="oldCreditLimit != null and oldCreditLimit >0">
+		     OLD_CREDIT_LIMIT=#{oldCreditLimit},
+			</if>
+		    <if test="activateCreditLimit != null and activateCreditLimit >0">
+		     ACTIVATE_CREDIT_LIMIT=#{activateCreditLimit},
+			</if>
+		    <if test="oldActivateCreditLimit != null and oldActivateCreditLimit >0">
+		     OLD_ACTIVATE_CREDIT_LIMIT=#{oldActivateCreditLimit},
+			</if>
+		    <if test="planRate != null and planRate >0">
+		     PLAN_RATE=#{planRate},
+			</if>
+		    <if test="oldPlanRate != null and oldPlanRate >0">
+		     OLD_PLAN_RATE=#{oldPlanRate},
+			</if>
+		    <if test="fundSizeMoney != null and fundSizeMoney >0">
+		     FUND_SIZE_MONEY=#{fundSizeMoney},
+			</if>
+		    <if test="oldFundSizeMoney != null and oldFundSizeMoney >0">
+		     OLD_FUND_SIZE_MONEY=#{oldFundSizeMoney},
+			</if>
+		    <if test="assureMoneyProportion != null and assureMoneyProportion >0">
+		     ASSURE_MONEY_PROPORTION=#{assureMoneyProportion},
+			</if>
+		    <if test="oldAssureMoneyProportion != null and oldAssureMoneyProportion >0">
+		     OLD_ASSURE_MONEY_PROPORTION=#{oldAssureMoneyProportion},
+			</if>
+		    <if test="assureMoney != null and assureMoney >0">
+		     ASSURE_MONEY=#{assureMoney},
+			</if>
+		    <if test="oldAssureMoney != null and oldAssureMoney >0">
+		     OLD_ASSURE_MONEY=#{oldAssureMoney},
+			</if>
+		    <if test="actualFeeRate != null and actualFeeRate >0">
+		     ACTUAL_FEE_RATE=#{actualFeeRate},
+			</if>
+		    <if test="oldActualFeeRate != null and oldActualFeeRate >0">
+		     OLD_ACTUAL_FEE_RATE=#{oldActualFeeRate},
+			</if>
+		    <if test="singleUpperLimit != null and singleUpperLimit >0">
+		     SINGLE_UPPER_LIMIT=#{singleUpperLimit},
+			</if>
+		    <if test="oldSingleUpperLimit != null and oldSingleUpperLimit >0">
+		     OLD_SINGLE_UPPER_LIMIT=#{oldSingleUpperLimit},
+			</if>
+		    <if test="assureMoneyRemark != null and assureMoneyRemark !=''">
+		     ASSURE_MONEY_REMARK=#{assureMoneyRemark},
+			</if>
+		     OLD_ASSURE_MONEY_REMARK=#{oldAssureMoneyRemark,javaType=String,jdbcType=VARCHAR},
+		    <if test="applyStatus != null and applyStatus >0">
+		     APPLY_STATUS=#{applyStatus},
+			</if>
+		     REMARK=#{remark,javaType=String,jdbcType=VARCHAR},
+		    <if test="updateId != null and updateId >0">
+		     UPDATE_ID=#{updateId},
+			</if>
+		     UPDATE_DATE=SYSDATE
+		</set>
+		WHERE PID = #{pid}
+	</update>
+	<!-- 根据传入多个id删除数据 -->
+	<delete id="deleteByIds" parameterType="java.util.List">
+		DELETE FROM ORG_COOPERATION_UPDATE_APPLY WHERE PID in
+		<foreach collection="list" item="item" index="index" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+	<!-- 历史列表(分页查询) -->
+	<select id="queryApplyHisIndex" resultMap="orgCooperationUpdateApplyMap"
+		parameterType="com.qfang.xk.aom.rpc.org.OrgCooperationUpdateApply">
+		<if test="page!=-1">
+			SELECT D.* FROM (SELECT T.*, ROWNUM RN
+			FROM (
+		</if>
+		    SELECT PID,ORG_ID,CREDIT_LIMIT,OLD_CREDIT_LIMIT,ACTIVATE_CREDIT_LIMIT,OLD_ACTIVATE_CREDIT_LIMIT,PLAN_RATE,OLD_PLAN_RATE,FUND_SIZE_MONEY,OLD_FUND_SIZE_MONEY,ASSURE_MONEY_PROPORTION,OLD_ASSURE_MONEY_PROPORTION,ASSURE_MONEY,OLD_ASSURE_MONEY,ACTUAL_FEE_RATE,OLD_ACTUAL_FEE_RATE,SINGLE_UPPER_LIMIT,OLD_SINGLE_UPPER_LIMIT,ASSURE_MONEY_REMARK,OLD_ASSURE_MONEY_REMARK,APPLY_STATUS,REMARK,CREATER_DATE,CREATER_ID,UPDATE_ID,UPDATE_DATE,
+			       (SELECT U.REAL_NAME FROM sys_user u where u.pid=A.CREATER_ID) AS CREATER_NAME
+			  FROM ORG_COOPERATION_UPDATE_APPLY A
+		<where>
+			<trim>
+				<if test="orgId != null and orgId >0">
+					AND A.ORG_ID=#{orgId}
+				</if>
+			</trim>
+		</where>
+		ORDER BY A.CREATER_DATE DESC
+		<if test="page!=-1">
+	<![CDATA[
+	) T
+	WHERE ROWNUM <=#{page}*#{rows}
+	) D
+	WHERE D.RN > ((#{page}-1)*#{rows})
+	]]>
+		</if>
+	</select>
+	<!--历史列表总数 -->
+	<select id="getApplyHisIndexTotal" resultType="Integer"
+		parameterType="com.qfang.xk.aom.rpc.org.OrgCooperationUpdateApply">
+	<![CDATA[
+	SELECT COUNT(1) FROM
+			(SELECT A.PID
+		  FROM ORG_COOPERATION_UPDATE_APPLY A
+	]]>
+		<where>
+			<trim>
+				<if test="orgId != null and orgId >0">
+					AND A.ORG_ID=#{orgId}
+				</if>
+			</trim>
+		</where>
+		) T
+	</select>
+	<!-- 根据id获取 -->
+	<select id="getLastByOrgId" resultMap="orgCooperationUpdateApplyMap" parameterType="java.util.Map">
+		SELECT *
+  FROM (SELECT <include refid="column_list" />
+          FROM ORG_COOPERATION_UPDATE_APPLY A
+          WHERE A.ORG_ID=#{orgId}
+         ORDER BY A.CREATER_DATE DESC)
+ WHERE ROWNUM = 1
+	</select>
+	<!-- 根据机构id和申请状态集合查询 -->
+	<select id="getByOrgIdAndApplyStatus" resultMap="orgCooperationUpdateApplyMap" parameterType="java.util.Map">
+		SELECT
+		<include refid="column_list" />
+		FROM ORG_COOPERATION_UPDATE_APPLY A
+		<where>
+			<trim>
+			  <if test="applyStatusList!=null and applyStatusList.size()>0">
+				AND A.APPLY_STATUS IN
+				<foreach item="itemId" collection="applyStatusList" open="("
+					separator="," close=")">
+					#{itemId}
+				</foreach>
+			  </if>
+		      <if test="orgId != null and orgId >0">
+	          AND ORG_ID=#{orgId}
+	          </if>
+			</trim>
+		</where>
+	</select>
+</mapper>

@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xlkfinance.bms.server.partner.mapper.BizPartnerCustomerBankMapper">
+	<resultMap id="bizPartnerCustomerBankMap" type="com.xlkfinance.bms.rpc.partner.BizPartnerCustomerBank">
+		<id property="pid" column="PID" />
+		<id property="partnerNo" column="PARTNER_NO" />
+		<id property="acctId" column="ACCT_ID" />
+		<id property="customerIdCard" column="CUSTOMER_ID_CARD" />
+		<id property="customerName" column="CUSTOMER_NAME" />
+		<id property="mobileNo" column="MOBILE_NO" />
+		<id property="bankCard" column="BANK_CARD" />
+		<id property="bankMobileNo" column="BANK_MOBILE_NO" />
+		<id property="ip" column="IP" />
+		<id property="mac" column="MAC" />
+		<id property="status" column="STATUS" />
+		<id property="operator" column="OPERATOR" />
+		<id property="createTime" column="CREATE_TIME" />
+		<id property="updateTime" column="UPDATE_TIME" />
+	</resultMap>
+	<sql id="column_list">
+        PID,PARTNER_NO,ACCT_ID,CUSTOMER_ID_CARD,CUSTOMER_NAME,MOBILE_NO,BANK_CARD,BANK_MOBILE_NO,IP,MAC,STATUS,OPERATOR,CREATE_TIME,UPDATE_TIME
+	</sql>
+	<!-- 查询所有 -->
+	<select id="getAll" resultMap="bizPartnerCustomerBankMap" parameterType="com.xlkfinance.bms.rpc.partner.BizPartnerCustomerBank">
+		SELECT
+		<include refid="column_list" />
+		FROM BIZ_PARTNER_CUSTOMER_BANK
+		<where>
+			<trim>
+		      <if test="pid != null and pid >0">
+	          PID=#{pid}
+	          </if>
+		      <if test="partnerNo != null and partnerNo !=''">
+	          AND PARTNER_NO=#{partnerNo}
+	          </if>
+		      <if test="acctId != null and acctId >0">
+	          AND ACCT_ID=#{acctId}
+	          </if>
+		      <if test="customerIdCard != null and customerIdCard !=''">
+	          AND CUSTOMER_ID_CARD=#{customerIdCard}
+	          </if>
+		      <if test="customerName != null and customerName !=''">
+	          AND CUSTOMER_NAME=#{customerName}
+	          </if>
+		      <if test="mobileNo != null and mobileNo !=''">
+	          AND MOBILE_NO=#{mobileNo}
+	          </if>
+		      <if test="bankCard != null and bankCard !=''">
+	          AND BANK_CARD=#{bankCard}
+	          </if>
+		      <if test="bankMobileNo != null and bankMobileNo !=''">
+	          AND BANK_MOBILE_NO=#{bankMobileNo}
+	          </if>
+		      <if test="ip != null and ip !=''">
+	          AND IP=#{ip}
+	          </if>
+		      <if test="mac != null and mac !=''">
+	          AND MAC=#{mac}
+	          </if>
+		      <if test="status != null and status >0">
+	          AND STATUS=#{status}
+	          </if>
+		      <if test="operator != null and operator >0">
+	          AND OPERATOR=#{operator}
+	          </if>
+		      <if test="createTime != null and createTime !=''">
+	          AND CREATE_TIME=#{createTime}
+	          </if>
+		      <if test="updateTime != null and updateTime !=''">
+	          AND UPDATE_TIME=#{updateTime}
+	          </if>
+			</trim>
+		</where>
+	</select>
+	<!-- 根据id获取 -->
+	<select id="getById" resultMap="bizPartnerCustomerBankMap">
+		SELECT <include refid="column_list" /> FROM BIZ_PARTNER_CUSTOMER_BANK WHERE PID=#{pid}
+	</select>
+	<!-- 插入一条数据 -->
+	<insert id="insert" parameterType="com.xlkfinance.bms.rpc.partner.BizPartnerCustomerBank">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_BIZ_PARTNER_CUSTOMER_BANK.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_PARTNER_CUSTOMER_BANK
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+				PID,
+			</if>
+		    <if test="partnerNo != null and partnerNo !=''">
+				PARTNER_NO,
+			</if>
+		    <if test="acctId != null and acctId >0">
+				ACCT_ID,
+			</if>
+		    <if test="customerIdCard != null and customerIdCard !=''">
+				CUSTOMER_ID_CARD,
+			</if>
+		    <if test="customerName != null and customerName !=''">
+				CUSTOMER_NAME,
+			</if>
+		    <if test="mobileNo != null and mobileNo !=''">
+				MOBILE_NO,
+			</if>
+		    <if test="bankCard != null and bankCard !=''">
+				BANK_CARD,
+			</if>
+		    <if test="bankMobileNo != null and bankMobileNo !=''">
+				BANK_MOBILE_NO,
+			</if>
+		    <if test="ip != null and ip !=''">
+				IP,
+			</if>
+		    <if test="mac != null and mac !=''">
+				MAC,
+			</if>
+		    <if test="status != null and status >0">
+				STATUS,
+			</if>
+		    <if test="operator != null and operator >0">
+				OPERATOR,
+			</if>
+		    <if test="createTime != null and createTime !=''">
+				CREATE_TIME,
+			</if>
+		    <if test="updateTime != null and updateTime !=''">
+				UPDATE_TIME,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+		    #{pid},
+			</if>
+		    <if test="partnerNo != null and partnerNo !=''">
+		    #{partnerNo},
+			</if>
+		    <if test="acctId != null and acctId >0">
+		    #{acctId},
+			</if>
+		    <if test="customerIdCard != null and customerIdCard !=''">
+		    #{customerIdCard},
+			</if>
+		    <if test="customerName != null and customerName !=''">
+		    #{customerName},
+			</if>
+		    <if test="mobileNo != null and mobileNo !=''">
+		    #{mobileNo},
+			</if>
+		    <if test="bankCard != null and bankCard !=''">
+		    #{bankCard},
+			</if>
+		    <if test="bankMobileNo != null and bankMobileNo !=''">
+		    #{bankMobileNo},
+			</if>
+		    <if test="ip != null and ip !=''">
+		    #{ip},
+			</if>
+		    <if test="mac != null and mac !=''">
+		    #{mac},
+			</if>
+		    <if test="status != null and status >0">
+		    #{status},
+			</if>
+		    <if test="operator != null and operator >0">
+		    #{operator},
+			</if>
+		    <if test="createTime != null and createTime !=''">
+		    #{createTime,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		    <if test="updateTime != null and updateTime !=''">
+		    #{updateTime,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		</trim>
+	</insert>
+	<!-- 根据id删除数据 -->
+	<delete id="deleteById" parameterType="com.xlkfinance.bms.rpc.partner.BizPartnerCustomerBank">
+		<![CDATA[DELETE FROM BIZ_PARTNER_CUSTOMER_BANK WHERE PID=#{pid}]]>
+	</delete>
+	<!-- 根据id更新数据 -->
+		<update id="update" parameterType="com.xlkfinance.bms.rpc.partner.BizPartnerCustomerBank">
+		UPDATE BIZ_PARTNER_CUSTOMER_BANK
+		<set>
+		    <if test="pid != null and pid >0">
+		     PID=#{pid},
+			</if>
+		    <if test="partnerNo != null and partnerNo !=''">
+		     PARTNER_NO=#{partnerNo},
+			</if>
+		    <if test="acctId != null and acctId >0">
+		     ACCT_ID=#{acctId},
+			</if>
+		    <if test="customerIdCard != null and customerIdCard !=''">
+		     CUSTOMER_ID_CARD=#{customerIdCard},
+			</if>
+		    <if test="customerName != null and customerName !=''">
+		     CUSTOMER_NAME=#{customerName},
+			</if>
+		    <if test="mobileNo != null and mobileNo !=''">
+		     MOBILE_NO=#{mobileNo},
+			</if>
+		    <if test="bankCard != null and bankCard !=''">
+		     BANK_CARD=#{bankCard},
+			</if>
+		    <if test="bankMobileNo != null and bankMobileNo !=''">
+		     BANK_MOBILE_NO=#{bankMobileNo},
+			</if>
+		    <if test="ip != null and ip !=''">
+		     IP=#{ip},
+			</if>
+		    <if test="mac != null and mac !=''">
+		     MAC=#{mac},
+			</if>
+		    <if test="status != null and status >0">
+		     STATUS=#{status},
+			</if>
+		    <if test="operator != null and operator >0">
+		     OPERATOR=#{operator},
+			</if>
+		    <if test="createTime != null and createTime !=''">
+		     CREATE_TIME=#{createTime,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		    <if test="updateTime != null and updateTime !=''">
+		     UPDATE_TIME=#{updateTime,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		</set>
+		WHERE PID = #{pid}
+	</update>
+	<!-- 根据传入多个id删除数据 -->
+	<delete id="deleteByIds" parameterType="java.util.List">
+		DELETE FROM BIZ_PARTNER_CUSTOMER_BANK WHERE PID in
+		<foreach collection="list" item="item" index="index" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+	
+	
+	<!-- 查询列表(可分页) -->
+	<select id="selectList" resultMap="bizPartnerCustomerBankMap" parameterType="com.xlkfinance.bms.rpc.partner.BizPartnerCustomerBank">
+		<if test="page!=-1">
+			SELECT D.* FROM (SELECT T.*, ROWNUM RN FROM (
+		</if>
+				SELECT  PCB.PID,PCB.PARTNER_NO,PCB.ACCT_ID,PCB.CUSTOMER_ID_CARD,
+					PCB.CUSTOMER_NAME,PCB.MOBILE_NO,PCB.BANK_CARD,PCB.BANK_MOBILE_NO,
+					PCB.IP,PCB.MAC,PCB.STATUS,PCB.CREATE_TIME,PCB.UPDATE_TIME
+					
+				FROM BIZ_PARTNER_CUSTOMER_BANK PCB
+					 
+				<where>
+					<trim>
+				      <if test="pid != null and pid >0">
+			          	AND PID=#{pid}
+			          </if>
+				      <if test="partnerNo != null and partnerNo !=''">
+			         	AND PCB.PARTNER_NO=#{partnerNo}
+			          </if>
+				      <if test="acctId != null and acctId >0">
+			          	AND PCB.ACCT_ID=#{acctId}
+			          </if>
+				      <if test="customerIdCard != null and customerIdCard !=''">
+			          	AND PCB.CUSTOMER_ID_CARD  like '%${customerIdCard}%'
+			          </if>
+				      <if test="customerName != null and customerName !=''">
+			          	AND PCB.CUSTOMER_NAME like '%${customerName}%'
+			          </if>
+				      <if test="mobileNo != null and mobileNo !=''">
+			          	AND PCB.MOBILE_NO like '%${mobileNo}%'
+			          </if>
+				      <if test="bankCard != null and bankCard !=''">
+			          	AND PCB.BANK_CARD  like '%${bankCard}%'
+			          </if>
+				      <if test="bankMobileNo != null and bankMobileNo !=''">
+			          	AND PCB.BANK_MOBILE_NO like '%${bankMobileNo}%'
+			          </if>
+				      <if test="ip != null and ip !=''">
+			          	AND PCB.IP=#{ip}
+			          </if>
+				      <if test="mac != null and mac !=''">
+			          	AND PCB.MAC=#{mac}
+			          </if>
+				      <if test="status != null and status >0">
+			         	 AND PCB.STATUS=#{status}
+			          </if>
+				      <if test="operator != null and operator >0">
+			          	AND PCB.OPERATOR=#{operator}
+			          </if>
+					  <if test="beginCreateTime != null and beginCreateTime !=''">
+						 AND PCB.CREATE_TIME <![CDATA[>= ]]> #{beginCreateTime,jdbcType=TIMESTAMP,javaType=String}
+				      </if>
+					  <if test="endCreateTime != null and endCreateTime !=''">
+						 AND PCB.CREATE_TIME <![CDATA[<= ]]> #{endCreateTime,jdbcType=TIMESTAMP,javaType=String}
+					  </if>
+					</trim>
+				</where>
+					
+		<if test="page!=-1">
+			<![CDATA[
+			ORDER BY PCB.CREATE_TIME DESC
+			) T
+			WHERE ROWNUM <=#{page}*#{rows}
+			) D
+			WHERE D.RN > ((#{page}-1)*#{rows})
+			]]>
+		</if>
+	</select>
+	
+	<!-- 查询总数 -->
+	<select id="selectTotal" resultType="Integer" parameterType="com.xlkfinance.bms.rpc.partner.BizPartnerCustomerBank">
+		SELECT COUNT(1) FROM BIZ_PARTNER_CUSTOMER_BANK PCB
+		<where>
+			<trim>
+		      <if test="pid != null and pid >0">
+	          	AND PCB.PID=#{pid}
+	          </if>
+		      <if test="partnerNo != null and partnerNo !=''">
+	         	AND PCB.PARTNER_NO=#{partnerNo}
+	          </if>
+		      <if test="acctId != null and acctId >0">
+	          	AND PCB.ACCT_ID=#{acctId}
+	          </if>
+		      <if test="customerIdCard != null and customerIdCard !=''">
+	          	AND PCB.CUSTOMER_ID_CARD  like '%${customerIdCard}%'
+	          </if>
+		      <if test="customerName != null and customerName !=''">
+	          	AND PCB.CUSTOMER_NAME like '%${customerName}%'
+	          </if>
+		      <if test="mobileNo != null and mobileNo !=''">
+	          	AND PCB.MOBILE_NO like '%${mobileNo}%'
+	          </if>
+		      <if test="bankCard != null and bankCard !=''">
+	          	AND PCB.BANK_CARD  like '%${bankCard}%'
+	          </if>
+		      <if test="bankMobileNo != null and bankMobileNo !=''">
+	          	AND PCB.BANK_MOBILE_NO like '%${bankMobileNo}%'
+	          </if>
+		      <if test="ip != null and ip !=''">
+	          	AND PCB.IP=#{ip}
+	          </if>
+		      <if test="mac != null and mac !=''">
+	          	AND PCB.MAC=#{mac}
+	          </if>
+		      <if test="status != null and status >0">
+	         	 AND PCB.STATUS=#{status}
+	          </if>
+		      <if test="operator != null and operator >0">
+	          	AND PCB.OPERATOR=#{operator}
+	          </if>
+			  <if test="beginCreateTime != null and beginCreateTime !=''">
+				 AND PCB.CREATE_TIME <![CDATA[>= ]]> #{beginCreateTime,jdbcType=TIMESTAMP,javaType=String}
+		      </if>
+			  <if test="endCreateTime != null and endCreateTime !=''">
+				 AND PCB.CREATE_TIME <![CDATA[<= ]]> #{endCreateTime,jdbcType=TIMESTAMP,javaType=String}
+			  </if>
+			</trim>
+		</where>
+	</select>
+	
+	
+</mapper>

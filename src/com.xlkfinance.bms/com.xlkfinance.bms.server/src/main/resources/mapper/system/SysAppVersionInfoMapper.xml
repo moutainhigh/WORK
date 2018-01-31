@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xlkfinance.bms.server.system.mapper.SysAppVersionInfoMapper">
+	<resultMap id="sysAppVersionInfoMap" type="com.xlkfinance.bms.rpc.system.SysAppVersionInfo">
+		<id property="pid" column="PID" />
+		<id property="appName" column="APP_NAME" />
+		<id property="appDescription" column="APP_DESCRIPTION" />
+		<id property="appVersion" column="APP_VERSION" />
+		<id property="status" column="STATUS" />
+		<id property="fileId" column="FILE_ID" />
+		<id property="systemPlatform" column="SYSTEM_PLATFORM" />
+		<id property="downloanCount" column="DOWNLOAN_COUNT" />
+		<id property="coercivenessUpgradesStatus" column="COERCIVENESS_UPGRADES_STATUS" />
+		<id property="appCategory" column="APP_CATEGORY" />
+		<id property="createrDate" column="CREATER_DATE" />
+		<id property="createrId" column="CREATER_ID" />
+		<id property="updateId" column="UPDATE_ID" />
+		<id property="updateDate" column="UPDATE_DATE" />
+		<association property="file" javaType="com.xlkfinance.bms.rpc.system.BizFile">
+			<id property="pid" column="F_PID" />
+			<result property="fileName" column="F_FILE_NAME" />
+			<result property="fileType" column="F_FILE_TYPE" />
+			<result property="fileSize" column="F_FILE_SIZE" />
+			<result property="uploadDttm" column="F_UPLOAD_DTTM" />
+			<result property="uploadUserId" column="F_UPLOAD_USER_ID" />
+			<result property="fileUrl" column="F_FILE_URL" />
+			<result property="status" column="F_STATUS" />
+			<result property="remark" column="F_REMARK" />
+		</association>
+	</resultMap>
+	<sql id="column_list">
+        SA.PID,SA.APP_NAME,SA.APP_DESCRIPTION,SA.APP_VERSION,SA.STATUS,SA.FILE_ID,
+        SA.SYSTEM_PLATFORM,SA.DOWNLOAN_COUNT,SA.COERCIVENESS_UPGRADES_STATUS,SA.APP_CATEGORY,
+        SA.CREATER_DATE,SA.CREATER_ID,SA.UPDATE_ID,SA.UPDATE_DATE,
+         F.PID              AS F_PID,
+       F.FILE_NAME        AS F_FILE_NAME,
+       F.FILE_TYPE        AS F_FILE_TYPE,
+       F.FILE_SIZE        AS F_FILE_SIZE,
+       TO_CHAR(F.UPLOAD_DTTM,'yyyy-mm-dd hh24:mi:ss') AS F_UPLOAD_DTTM,
+       F.UPLOAD_USER_ID   AS F_UPLOAD_USER_ID,
+       F.FILE_URL         AS F_FILE_URL,
+       F.STATUS           AS F_STATUS,
+       F.REMARK           AS F_REMARK
+	</sql>
+	<!-- 查询所有 -->
+	<select id="getAll" resultMap="sysAppVersionInfoMap" parameterType="com.xlkfinance.bms.rpc.system.SysAppVersionInfo">
+		SELECT
+		<include refid="column_list" />
+		FROM SYS_APP_VERSION_INFO SA LEFT JOIN BIZ_FILE F
+		ON SA.FILE_ID=F.PID
+		<where>
+			<trim>
+		      <if test="pid != null and pid >0">
+	          PID=#{pid}
+	          </if>
+		      <if test="appName != null and appName !=''">
+	          AND APP_NAME=#{appName}
+	          </if>
+		      <if test="appDescription != null and appDescription !=''">
+	          AND APP_DESCRIPTION=#{appDescription}
+	          </if>
+		      <if test="appVersion != null and appVersion !=''">
+	          AND APP_VERSION=#{appVersion}
+	          </if>
+		      <if test="status == 1 or status ==-1">
+	          AND SA.STATUS=#{status}
+	          </if>
+		      <if test="fileId != null and fileId >0">
+	          AND FILE_ID=#{fileId}
+	          </if>
+		      <if test="systemPlatform != null and systemPlatform >0">
+	          AND SYSTEM_PLATFORM=#{systemPlatform}
+	          </if>
+		      <if test="downloanCount != null and downloanCount >0">
+	          AND DOWNLOAN_COUNT=#{downloanCount}
+	          </if>
+		      <if test="coercivenessUpgradesStatus != null and coercivenessUpgradesStatus >0">
+	          AND COERCIVENESS_UPGRADES_STATUS=#{coercivenessUpgradesStatus}
+	          </if>
+		      <if test="appCategory != null and appCategory >0">
+	          AND APP_CATEGORY=#{appCategory}
+	          </if>
+		      <if test="createrDate != null and createrDate !=''">
+	          AND SA.CREATER_DATE=#{createrDate}
+	          </if>
+		      <if test="createrId != null and createrId >0">
+	          AND SA.CREATER_ID=#{createrId}
+	          </if>
+		      <if test="updateId != null and updateId >0">
+	          AND SA.UPDATE_ID=#{updateId}
+	          </if>
+		      <if test="updateDate != null and updateDate !=''">
+	          AND SA.UPDATE_DATE=#{updateDate}
+	          </if>
+			</trim>
+		</where>
+		ORDER BY CREATER_DATE DESC
+	</select>
+	<!-- 根据id获取 -->
+	<select id="getById" resultMap="sysAppVersionInfoMap">
+		SELECT <include refid="column_list" /> FROM SYS_APP_VERSION_INFO SA LEFT JOIN BIZ_FILE F
+		ON SA.FILE_ID=F.PID  WHERE SA.PID=#{pid}
+	</select>
+	<!-- 插入一条数据 -->
+	<insert id="insert" parameterType="com.xlkfinance.bms.rpc.system.SysAppVersionInfo">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_SYS_APP_VERSION_INFO.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO SYS_APP_VERSION_INFO
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+				PID,
+			</if>
+		    <if test="appName != null and appName !=''">
+				APP_NAME,
+			</if>
+		    <if test="appDescription != null and appDescription !=''">
+				APP_DESCRIPTION,
+			</if>
+		    <if test="appVersion != null and appVersion !=''">
+				APP_VERSION,
+			</if>
+		    <if test="status == 1 or status ==-1">
+				STATUS,
+			</if>
+		    <if test="fileId != null and fileId >0">
+				FILE_ID,
+			</if>
+		    <if test="systemPlatform != null and systemPlatform >0">
+				SYSTEM_PLATFORM,
+			</if>
+		    <if test="downloanCount != null and downloanCount >0">
+				DOWNLOAN_COUNT,
+			</if>
+		    <if test="coercivenessUpgradesStatus != null and coercivenessUpgradesStatus >0">
+				COERCIVENESS_UPGRADES_STATUS,
+			</if>
+			<if test="appCategory != null and appCategory >0">
+	            APP_CATEGORY,
+	        </if>
+				CREATER_DATE,
+		    <if test="createrId != null and createrId >0">
+				CREATER_ID,
+			</if>
+		    <if test="updateId != null and updateId >0">
+				UPDATE_ID,
+			</if>
+				UPDATE_DATE
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+		    #{pid},
+			</if>
+		    <if test="appName != null and appName !=''">
+		    #{appName},
+			</if>
+		    <if test="appDescription != null and appDescription !=''">
+		    #{appDescription},
+			</if>
+		    <if test="appVersion != null and appVersion !=''">
+		    #{appVersion},
+			</if>
+		    <if test="status == 1 or status ==-1">
+		    #{status},
+			</if>
+		    <if test="fileId != null and fileId >0">
+		    #{fileId},
+			</if>
+		    <if test="systemPlatform != null and systemPlatform >0">
+		    #{systemPlatform},
+			</if>
+		    <if test="downloanCount != null and downloanCount >0">
+		    #{downloanCount},
+			</if>
+		    <if test="coercivenessUpgradesStatus != null and coercivenessUpgradesStatus >0">
+		    #{coercivenessUpgradesStatus},
+			</if>
+			<if test="appCategory != null and appCategory >0">
+	        #{appCategory},
+	        </if>
+		    SYSDATE,
+		    <if test="createrId != null and createrId >0">
+		    #{createrId},
+			</if>
+		    <if test="updateId != null and updateId >0">
+		    #{updateId},
+			</if>
+		    SYSDATE
+		</trim>
+	</insert>
+	<!-- 根据id删除数据 -->
+	<delete id="deleteById" parameterType="com.xlkfinance.bms.rpc.system.SysAppVersionInfo">
+		<![CDATA[DELETE FROM SYS_APP_VERSION_INFO WHERE PID=#{pid}]]>
+	</delete>
+	<!-- 根据id更新数据 -->
+		<update id="update" parameterType="com.xlkfinance.bms.rpc.system.SysAppVersionInfo">
+		UPDATE SYS_APP_VERSION_INFO
+		<set>
+		    <if test="pid != null and pid >0">
+		     PID=#{pid},
+			</if>
+		    <if test="appName != null and appName !=''">
+		     APP_NAME=#{appName},
+			</if>
+		    <if test="appDescription != null and appDescription !=''">
+		     APP_DESCRIPTION=#{appDescription},
+			</if>
+		    <if test="appVersion != null and appVersion !=''">
+		     APP_VERSION=#{appVersion},
+			</if>
+		    <if test="status == 1 or status ==-1">
+		     STATUS=#{status},
+			</if>
+		    <if test="fileId != null and fileId >0">
+		     FILE_ID=#{fileId},
+			</if>
+		    <if test="systemPlatform != null and systemPlatform >0">
+		     SYSTEM_PLATFORM=#{systemPlatform},
+			</if>
+		    <if test="downloanCount != null and downloanCount >0">
+		     DOWNLOAN_COUNT=#{downloanCount},
+			</if>
+		    <if test="coercivenessUpgradesStatus != null and coercivenessUpgradesStatus >0">
+		     COERCIVENESS_UPGRADES_STATUS=#{coercivenessUpgradesStatus},
+			</if>
+			<if test="appCategory != null and appCategory >0">
+	         APP_CATEGORY=#{appCategory},
+	        </if>
+		    <if test="updateId != null and updateId >0">
+		     UPDATE_ID=#{updateId},
+			</if>
+		     UPDATE_DATE=SYSDATE
+		</set>
+		WHERE PID = #{pid}
+	</update>
+	<!-- 根据传入多个id删除数据 -->
+	<delete id="deleteByIds" parameterType="java.util.List">
+		DELETE FROM SYS_APP_VERSION_INFO WHERE PID in
+		<foreach collection="list" item="item" index="index" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+	<!-- 分页查询 -->
+	<select id="querySysAppVersionInfo"  resultMap="sysAppVersionInfoMap" parameterType="com.xlkfinance.bms.rpc.system.SysAppVersionInfo">
+		<if test="page!=-1">
+			SELECT D.* FROM (SELECT T.*, ROWNUM RN
+			FROM (
+		</if>
+		SELECT  <include refid="column_list" />
+		FROM SYS_APP_VERSION_INFO SA LEFT JOIN BIZ_FILE F
+		ON SA.FILE_ID=F.PID 
+		<where>
+			<trim>
+			  <if test="appName != null and appName !=''">
+			    AND SA.APP_NAME LIKE '%${appName}%'
+			  </if>
+			  <if test="appVersion != null and appVersion !=''">
+			    AND SA.app_Version LIKE '%${appVersion}%'
+			  </if>
+			  <if test="systemPlatform != null and systemPlatform >0">
+	          	AND SA.SYSTEM_PLATFORM=#{systemPlatform}
+	          </if>
+			</trim>
+		</where>
+		<if test="page!=-1">
+			<![CDATA[
+			) T
+			WHERE ROWNUM <=#{page}*#{rows}
+			) D
+			WHERE D.RN > ((#{page}-1)*#{rows})
+			]]>
+		</if>
+	</select>
+	
+	<!-- 查询app版本总数 -->
+	<select id="getSysAppVersionInfoTotal" resultType="Integer" parameterType="com.xlkfinance.bms.rpc.system.SysAppVersionInfo">
+		<![CDATA[
+		SELECT COUNT(1) FROM
+				(SELECT  SA.PID
+				FROM SYS_APP_VERSION_INFO SA LEFT JOIN BIZ_FILE F
+				ON SA.FILE_ID=F.PID  
+		]]>
+		<where>
+			<trim>
+			  <if test="appName != null and appName !=''">
+			    AND SA.APP_NAME LIKE '%${appName}%'
+			  </if>
+			  <if test="appVersion != null and appVersion !=''">
+			    AND SA.app_Version LIKE '%${appVersion}%'
+			  </if>
+			  <if test="systemPlatform != null and systemPlatform >0">
+	          	AND SA.SYSTEM_PLATFORM=#{systemPlatform}
+	          </if>
+			</trim>
+		</where>
+		) T
+	</select>
+</mapper>

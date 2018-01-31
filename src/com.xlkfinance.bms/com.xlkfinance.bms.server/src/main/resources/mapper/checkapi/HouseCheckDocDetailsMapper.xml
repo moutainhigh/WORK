@@ -1,0 +1,144 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.checkapi.mapper.HouseCheckDocDetailsMapper">
+
+<resultMap type="com.xlkfinance.bms.rpc.checkapi.HouseCheckDocDetails" id="baseResultMap">
+    <id column="PID" property="pid" />
+    <result column="HOUSE_CHECK_DOC_ID" property="houseCheckDocId" />
+    <result column="CHECK_DOC_TIME" property="checkDocTime" />
+    <result column="CHECK_DOC_CONTENT" property="checkDocContent" />
+    <result column="CHECK_STATUS" property="checkStatus" />
+    <result column="CREATE_TIME" property="createTime" />
+</resultMap>
+ 
+
+<!-- 获取PID -->
+<select id="getSeqHouseCheckDocDetails" resultType="java.lang.Integer">
+	SELECT SEQ_HOUSE_CHECK_DOC_DETAILS.Nextval as PID from DUAL 
+</select>
+
+<!-- 查询列表 -->
+<select id="getCheckDocDetailsList" resultMap="baseResultMap" parameterType="com.xlkfinance.bms.rpc.checkapi.HouseCheckDocDetails">
+	select H.PID, H.HOUSE_CHECK_DOC_ID, H.CHECK_DOC_TIME, H.CHECK_DOC_CONTENT,
+		  	H.CHECK_STATUS, H.CREATE_TIME
+		from BIZ_HOUSE_CHECK_DOC_DETAILS H 
+		where 	1 = 1 
+	    
+      <if test="pid != null and pid > 0"  >
+        AND H.PID = #{pid,jdbcType=INTEGER}
+      </if>
+      <if test="houseCheckDocId != null and houseCheckDocId > 0" >
+        AND  H.HOUSE_CHECK_DOC_ID = #{houseCheckDocId,jdbcType=INTEGER}
+      </if>
+      <if test="checkStatus != null and checkStatus > 0" >
+         AND H.CHECK_STATUS = #{checkStatus,jdbcType=INTEGER}
+      </if>
+	    ORDER BY  H.CHECK_DOC_TIME DESC
+</select>
+
+
+<!-- 查询列表数量 -->
+<select id="getHouseCheckDocDetailsCount" resultType="java.lang.Integer" parameterType="com.xlkfinance.bms.rpc.checkapi.HouseCheckDocDetails">
+	 
+	select count(0) from BIZ_HOUSE_CHECK_DOC_DETAILS H 
+	where 	1 = 1 
+      <if test="pid != null and pid > 0"  >
+        AND H.PID = #{pid,jdbcType=INTEGER}
+      </if>
+      <if test="houseCheckDocId != null and houseCheckDocId > 0" >
+        AND H.HOUSE_CHECK_DOC_ID = #{houseCheckDocId,jdbcType=INTEGER}
+      </if>
+      <if test="checkStatus != null and checkStatus > 0" >
+         AND H.CHECK_STATUS = #{checkStatus,jdbcType=INTEGER}
+      </if>
+</select>
+
+ 
+
+<!-- 新增 -->
+<insert id="addHouseCheckDocDetails" parameterType="com.xlkfinance.bms.rpc.checkapi.HouseCheckDocDetails">
+ 
+	INSERT INTO BIZ_HOUSE_CHECK_DOC_DETAILS
+	
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+        PID, 
+      <if test="houseCheckDocId != null and houseCheckDocId > 0" >
+        	HOUSE_CHECK_DOC_ID,
+      </if>
+      <if test="checkDocTime != null and checkDocTime != ''" >
+        	CHECK_DOC_TIME,
+      </if>
+      <if test="checkDocContent != null and checkDocContent != ''" >
+       		CHECK_DOC_CONTENT,
+      </if>
+      <if test="checkStatus != null and checkStatus > 0" >
+        	CHECK_STATUS,
+      </if>
+      <if test="createTime != null and createTime != ''" >
+        	CREATE_TIME,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+    		#{pid,jdbcType=INTEGER}, 
+    		
+      <if test="houseCheckDocId != null and houseCheckDocId > 0" >
+        	#{houseCheckDocId,jdbcType=INTEGER}, 
+      </if>
+      <if test="checkDocTime != null and checkDocTime != ''" >
+        	#{checkDocTime},
+      </if>
+      <if test="checkDocContent != null and checkDocContent != ''" >
+       		#{checkDocContent},
+      </if>
+      <if test="checkStatus != null and checkStatus > 0" >
+        	#{checkStatus,jdbcType=INTEGER},
+      </if>
+	  <if test="createTime != null and createTime != ''">
+	    	#{createTime,javaType=String, jdbcType=TIMESTAMP},
+	  </if>
+    </trim>
+</insert>
+
+
+<!-- 查询列表 -->
+<select id="getLastOneCheckDocDetails" resultMap="baseResultMap" parameterType="java.util.HashMap">
+	select H.PID, H.HOUSE_CHECK_DOC_ID, H.CHECK_DOC_TIME, H.CHECK_DOC_CONTENT,
+		  	H.CHECK_STATUS, H.CREATE_TIME
+		from BIZ_HOUSE_CHECK_DOC_DETAILS H  
+			LEFT JOIN BIZ_HOUSE_CHECK_DOC D ON D.PID = H.HOUSE_CHECK_DOC_ID
+		where 	1 = 1 
+		
+		and  rownum = 1  
+	    
+      <if test="pid != null and pid > 0"  >
+        AND H.PID = #{pid,jdbcType=INTEGER}
+      </if>
+      <if test="houseCheckDocId != null and houseCheckDocId > 0" >
+        AND  H.HOUSE_CHECK_DOC_ID = #{houseCheckDocId,jdbcType=INTEGER}
+      </if>
+      <if test="checkStatus != null and checkStatus > 0" >
+         AND H.CHECK_STATUS = #{checkStatus,jdbcType=INTEGER}
+      </if>
+      
+      
+	  <if test="queryType != null and queryType > 0">
+    		AND D.QUERY_TYPE = #{queryType,jdbcType=INTEGER}
+      </if>
+	  <if test="certType != null and certType > 0">
+    		AND D.CERT_TYPE = #{certType,jdbcType=INTEGER}
+      </if>
+	  <if test="certNo != null and certNo != ''">
+    		AND D.CERT_NO = #{certNo}
+      </if>
+	  <if test="year != null and year != ''">
+    		AND D.YEAR = #{year}
+      </if>
+	  <if test="personInfo != null and personInfo != ''">
+    		AND D.PERSON_INFO = #{personInfo}
+      </if>
+	    ORDER BY  H.CREATE_TIME DESC
+</select>
+
+
+
+
+</mapper>

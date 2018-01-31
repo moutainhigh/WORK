@@ -1,0 +1,598 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.beforeloan.mapper.ElementLendMapper">
+<resultMap type="com.xlkfinance.bms.rpc.beforeloan.ElementLend" id="elementLendMapper">
+	<id property="pid" column="PID"/>
+	<id property="projectId" column="PROJECT_ID"/>
+	<id property="lendUserId" column="LEND_USER_ID"/>
+	<id property="orgId" column="ORG_ID"/>
+	<id property="lendFilesId" column="LEND_FILES_ID"/>
+	<id property="returnFilesId" column="RETURN_FILES_ID"/>
+	<id property="lendTime" column="LEND_TIME"  jdbcType="TIMESTAMP" javaType="String"/>
+	<id property="originalReturnTime" column="ORIGINAL_RETURN_TIME"/>
+	<id property="actualReturnTime" column="ACTUAL_RETURN_TIME"/>
+	<id property="signTime" column="SIGN_TIME"/>
+	<id property="signUser" column="SIGN_USER"/>
+	<id property="lendState" column="LEND_STATE"/>
+	<id property="remark" column="REMARK"/>
+	<id property="updateTime" column="UPDATE_TIME" jdbcType="TIMESTAMP" javaType="String"/>
+	<id property="productId" column="PRODUCT_ID"/>
+	<id property="porpuse" column="porpuse"/>
+	
+	<id property="productName" column="product_name"/>
+	<id property="orgName" column="name"/>
+	<id property="realName" column="real_name"/>
+	<id property="projectName" column="project_name"/>
+</resultMap>
+<!-- 要件借出列表展示 -->
+<resultMap id="BaseResultMap" type="com.xlkfinance.bms.rpc.common.GridViewDTO">
+    <id property="pid" column="pid" />
+    <result property="value1" column="PROJECT_NAME" />
+    <result property="value2" column="PRODUCT_NAME" />
+    <result property="value3" column="REAL_NAME" />
+    <result property="value4" column="NAME" />
+    <result property="value5" column="HOUSE_NAME" />
+    <result property="value6" column="BUYER_NAME" />
+    <result property="value7" column="SELLER_NAME" />
+    
+    <result property="value8" column="FILENAME" />
+    <result property="value9" column="PORPUSE" />
+    <result property="value10" column="lentTime" />
+    <result property="value11" column="originalReturnTime" />
+    <result property="value12" column="signTime" />
+    <result property="value13" column="SIGN_USER" />
+    <result property="value14" column="LEND_STATE" />
+     <result property="value15" column="project_id" />
+     <result property="value16" column="actualReturnTime" />
+</resultMap>
+
+<!-- 移动端要件申请查询结果-->
+<resultMap id="ElementProjectResultMap" type="com.xlkfinance.bms.rpc.beforeloan.GridViewMobileDto">
+    <result property="pid" column="PID" />
+    <result property="projectName" column="PROJECT_NAME" />
+    <result property="productName" column="PRODUCT_NAME" />
+    <result property="loanMoney" column="LOAN_MONEY" />
+    <result property="createrDate" column="CREATER_DATE" />
+    <result property="applyStatus" column="APPLY_STATUS" />
+    <result property="lendId" column="LEND_ID" />
+    <result property="orgId" column="ORG_ID" />
+    <result property="lendFilesCount" column="LEND_FILES_COUNT" />
+    <result property="lendState" column="LEND_STATE" />
+    <result property="updateTime" column="UPDATE_TIME" />
+ </resultMap>
+
+<resultMap id="elementDetailsMap" type="com.xlkfinance.bms.rpc.beforeloan.ElementLendDetails">
+    <id property="pid" column="pid" />
+    <result property="lendId" column="lend_id" />
+    <result property="elementFileId" column="ELEMENT_FILE_ID" />
+    <result property="elementFileName" column="ELEMENT_FILE_NAME" />
+    <result property="lendTime" column="LEND_TIME" />
+    <result property="returnTime" column="RETURN_TIME" />
+    <result property="status" column="STATUS" />
+    <result property="buyerSellerType" column="BUYER_SELLER_TYPE" />
+    
+    <result property="buyerSellerName" column="BUYER_SELLER_NAME" />
+    <result property="remark" column="REMARK" />
+    <result property="code" column="CODE" />
+</resultMap>
+<select id="queryElementList" parameterType="com.xlkfinance.bms.rpc.beforeloan.ElementMobileDto"  resultMap="ElementProjectResultMap">
+<if test="page!=-1">
+			SELECT D.* FROM (SELECT T.*, ROWNUM RN
+			FROM (
+</if>
+	<![CDATA[
+	SELECT A.PID, A.PROJECT_NAME, B.PRODUCT_NAME, D.LOAN_MONEY, A.REQUEST_DTTM AS CREATER_DATE,G.PID AS LEND_ID, G.LEND_STATE,H.ORG_ID,
+	(SELECT COUNT(0) FROM BIZ_ELEMENT_LEND M, BIZ_ELEMENT_LEND_DETAILS N WHERE M.PID = N.LEND_ID AND N.STATUS = 1 AND M.PID = G.PID ) LEND_FILES_COUNT,
+	G.UPDATE_TIME,
+	CASE WHEN G.PID IS NULL THEN 1
+	ELSE 2 END APPLY_STATUS
+	 FROM 
+	 BIZ_PROJECT A 
+	LEFT JOIN  BIZ_PRODUCT B
+	ON A.PRODUCT_ID = B.PID 
+	LEFT JOIN BIZ_PROJECT_GUARANTEE D
+  	ON A.PID = D.PROJECT_ID
+	LEFT JOIN BIZ_ELEMENT_LEND G 
+	ON   A.PID = G.PROJECT_ID 
+	LEFT JOIN SYS_USER H
+	  ON A.PM_USER_ID = H.PID
+	WHERE B.PRODUCT_TYPE = 2
+	    AND A.IS_CHECHAN = 0
+	   AND A.STATUS = 1
+	   AND A.PROJECT_TYPE = 2]]>
+  
+    <if test="projectName != null and projectName != '' ">
+		AND A.PROJECT_NAME like  '%${projectName}%'
+	</if>
+	<if test="productId != null and productId >0"> 
+    	AND A.PRODUCT_ID = #{productId}
+    </if>
+	<if test="applyStatus != null and applyStatus == 1"> 
+    	AND G.Pid is null
+    </if>
+    
+    <if test="applyStatus != null and applyStatus == 2"> 
+    	AND G.Pid is not null
+    </if>
+    <!-- 数据权限 -->
+	<if test="userIds!=null and userIds.size()>0">
+		AND	G.LEND_USER_ID IN
+	<foreach item="itemId" collection="userIds" open="(" separator="," close=")">
+	          #{itemId}
+	</foreach>
+	</if>
+	<if test="page!=-1">
+	<![CDATA[
+	 ORDER BY G.UPDATE_TIME DESC) T
+	WHERE ROWNUM <=#{page}*#{rows}
+	) D
+	WHERE D.RN > ((#{page}-1)*#{rows})
+	]]>
+		</if>
+</select>
+
+<select id="getTotalElement" parameterType="com.xlkfinance.bms.rpc.beforeloan.ElementMobileDto"  resultType="Integer">
+	<![CDATA[
+	SELECT count(*) FROM (
+	SELECT ROWNUM RN,A.PID, A.PROJECT_NAME, B.PRODUCT_NAME, D.LOAN_MONEY,
+	CASE WHEN G.PID IS NULL THEN 0
+	ELSE 1 END APPLY_STATUS
+	 FROM 
+	 BIZ_PROJECT A 
+	LEFT JOIN  BIZ_PRODUCT B
+	ON A.PRODUCT_ID = B.PID 
+	LEFT JOIN BIZ_PROJECT_PROPERTY C
+	ON C.PROJECT_ID = A.PID
+	LEFT JOIN BIZ_PROJECT_GUARANTEE D
+	ON A.PID = D.PROJECT_ID
+	LEFT JOIN BIZ_ELEMENT_LEND G
+	ON   A.PID = G.PROJECT_ID WHERE 1=1]]>
+
+    <if test="projectName != null and projectName != '' ">
+		AND A.PROJECT_NAME like  '%${projectName}%'
+	</if>
+	<if test="productId != null and productId >0"> 
+    	AND A.PRODUCT_ID = #{productId}
+    </if>
+	<if test="applyStatus != null and applyStatus == 1"> 
+    	AND G.Pid is null
+    </if>
+    <!-- 数据权限 -->
+	<if test="userIds!=null and userIds.size()>0">
+		AND	G.LEND_USER_ID IN
+	<foreach item="itemId" collection="userIds" open="(" separator="," close=")">
+	          #{itemId}
+	</foreach>
+	</if>
+    <if test="applyStatus != null and applyStatus == 2"> 
+    	AND G.Pid is not null
+    </if>
+    	ORDER BY G.UPDATE_TIME desc)zA
+</select>
+
+
+<select id="getAllElementLend" parameterType="com.xlkfinance.bms.rpc.beforeloan.ElementLend"  resultMap="BaseResultMap">
+	<![CDATA[
+	SELECT * FROM (
+	SELECT rownum rn,A.PID,A.project_id,
+B.PROJECT_NAME,
+C.PRODUCT_NAME,
+DD.REAL_NAME,
+E.NAME,
+TO_CHAR(H.HOUSE_NAME) AS HOUSE_NAME,
+F.BUYER_NAME,
+F.SELLER_NAME,
+A.PORPUSE,
+to_char(A.LEND_TIME,'yyyy-MM-dd') lentTime,
+to_char(A.ORIGINAL_RETURN_TIME,'yyyy-MM-dd') originalReturnTime,
+to_char(A.ACTUAL_RETURN_TIME,'yyyy-MM-dd') actualReturnTime,
+to_char(A.SIGN_TIME,'yyyy-MM-dd') signTime,
+A.SIGN_USER ,
+A.LEND_STATE
+  FROM BIZ_ELEMENT_LEND A
+  INNER JOIN BIZ_PROJECT B
+    ON A.PROJECT_ID = B.PID
+  INNER JOIN BIZ_PRODUCT C
+  ON B.PRODUCT_ID = C.PID
+  INNER JOIN SYS_USER DD
+  ON A.LEND_USER_ID = DD.PID
+  INNER JOIN SYS_ORG_INFO E
+  ON E.ID = A.ORG_ID
+  left JOIN BIZ_PROJECT_PROPERTY F
+  ON A.PROJECT_ID = F.PROJECT_ID
+  LEFT JOIN (
+    SELECT P.PID,WM_CONCAT(S.HOUSE_NAME) AS HOUSE_NAME
+              FROM BIZ_PROJECT_ESTATE S, BIZ_PROJECT P
+             WHERE S.PROJECT_ID = P.PID
+               AND S.STATUS = 1
+         GROUP BY P.PID
+    )H
+    ON H.PID = B.PID
+  
+   where 1=1]]>
+  
+  <if test="userIds!=null and userIds.size()>0">
+		AND	A.LEND_USER_ID in
+	<foreach item="itemId" collection="userIds" open="(" separator="," close=")">
+	          #{itemId}
+	</foreach>
+	</if>
+	<if test="projectId != null and projectId >0"> 
+    	AND A.PROJECT_ID = #{projectId}
+    </if>
+    <if test="projectName != null and projectName != '' ">
+		AND B.PROJECT_NAME like  '%${projectName}%'
+	</if>
+	<if test="productId != null and productId >0"> 
+    	AND B.PRODUCT_ID = #{productId}
+    </if>
+	<if test="orgId != null and orgId >0"> 
+    	AND A.org_id = #{orgId}
+    </if>
+    
+    <if test="realName != null and realName!=''"> 
+    	AND DD.real_name like '%${realName}%'
+    </if>
+    
+    <if test="lendState != null and lendState >0"> 
+    	AND A.lend_state = #{lendState}
+    </if>
+    
+    <if test="lendTime != null and lendTime !=''">
+			 AND A.LEND_TIME <![CDATA[>= ]]> to_date(#{lendTime},'yyyy-MM-dd')
+	</if>
+	<if test="lendTimeEnd != null and lendTimeEnd !=''">
+		 AND A.LEND_TIME <![CDATA[<= ]]> to_date(#{lendTimeEnd},'yyyy-MM-dd')
+	</if>
+	
+	<if test="actualReturnTime != null and actualReturnTime !=''">
+		AND A.ORIGINAL_RETURN_TIME <![CDATA[>= ]]> to_date(#{actualReturnTime},'yyyy-MM-dd')
+	</if>
+	<if test="actualReturnTimeEnd != null and actualReturnTimeEnd !=''">
+		 AND A.ORIGINAL_RETURN_TIME <![CDATA[<= ]]> to_date(#{actualReturnTimeEnd},'yyyy-MM-dd')
+	</if>
+	<if test="condition != null and condition!=''"> 
+    	AND (H.HOUSE_NAME like '%${condition}%' OR F.BUYER_NAME like '%${condition}%' OR F.SELLER_NAME like '%${condition}%')
+    </if>
+	AND rownum<![CDATA[<=]]>#{page}*#{rows} ORDER BY A.UPDATE_Time desc)zA
+         WHERE rn>=((#{page}-1)*#{rows})+1
+</select>
+
+<select id="getTotalElementLends" parameterType="com.xlkfinance.bms.rpc.beforeloan.ElementLend"  resultType="Integer">
+	<![CDATA[
+	SELECT count(*) FROM (
+	SELECT A.PID
+  FROM BIZ_ELEMENT_LEND A
+  INNER JOIN BIZ_PROJECT B
+    ON A.PROJECT_ID = B.PID
+  INNER JOIN BIZ_PRODUCT C
+  ON B.PRODUCT_ID = C.PID
+  INNER JOIN SYS_USER DD
+  ON A.LEND_USER_ID = DD.PID
+  INNER JOIN SYS_ORG_INFO E
+  ON E.ID = A.ORG_ID
+  left JOIN BIZ_PROJECT_PROPERTY F
+  ON A.PROJECT_ID = F.PROJECT_ID
+  LEFT JOIN (
+    SELECT P.PID,WM_CONCAT(S.HOUSE_NAME) AS HOUSE_NAME
+              FROM BIZ_PROJECT_ESTATE S, BIZ_PROJECT P
+             WHERE S.PROJECT_ID = P.PID
+               AND S.STATUS = 1
+         GROUP BY P.PID
+    )H
+    ON H.PID = B.PID
+   where 1=1]]>
+  <if test="userIds!=null and userIds.size()>0">
+		AND	A.LEND_USER_ID in
+	<foreach item="itemId" collection="userIds" open="(" separator="," close=")">
+	          #{itemId}
+	</foreach>
+	</if>
+	<if test="projectId != null and projectId >0"> 
+    	AND A.PROJECT_ID = #{projectId}
+    </if>
+    <if test="projectName != null and projectName != '' ">
+		AND B.PROJECT_NAME like  '%${projectName}%'
+	</if>
+	<if test="productId != null and productId >0"> 
+    	AND B.PRODUCT_ID = #{productId}
+    </if>
+	<if test="orgId != null and orgId >0"> 
+    	AND A.org_id = #{orgId}
+    </if>
+    
+    <if test="realName != null and realName!=''"> 
+    	AND DD.real_name like '%${realName}%'
+    </if>
+    
+    <if test="lendState != null and lendState >0"> 
+    	AND A.lend_state = #{lendState}
+    </if>
+    
+    <if test="lendTime != null and lendTime !=''">
+		AND A.LEND_TIME <![CDATA[>= ]]>to_date(#{lendTime},'yyyy-MM-dd')
+	</if>
+	<if test="lendTimeEnd != null and lendTimeEnd !=''">
+		 AND A.LEND_TIME <![CDATA[<= ]]>to_date(#{lendTimeEnd},'yyyy-MM-dd')
+	</if>
+	<if test="actualReturnTime != null and actualReturnTime !=''">
+		AND A.ORIGINAL_RETURN_TIME <![CDATA[>= ]]> to_date(#{actualReturnTime},'yyyy-MM-dd')
+	</if>
+	<if test="actualReturnTimeEnd != null and actualReturnTimeEnd !=''">
+		 AND A.ORIGINAL_RETURN_TIME <![CDATA[<= ]]> to_date(#{actualReturnTimeEnd},'yyyy-MM-dd')
+	</if>
+	<if test="condition != null and condition!=''"> 
+    	AND (H.HOUSE_NAME like '%${condition}%' OR F.BUYER_NAME like '%${condition}%' OR F.SELLER_NAME like '%${condition}%')
+    </if>
+    	ORDER BY A.UPDATE_Time desc)zA
+</select>
+
+<!-- 获取要件借出信息的PID -->
+<select id="getSeqBizElementLend" resultType="java.lang.Integer">
+	SELECT SEQ_BIZ_ELEMENT_LEND.Nextval as PID from DUAL 
+</select>
+
+<!-- 新增要件借出 -->
+<insert id="addElementLend" parameterType="com.xlkfinance.bms.rpc.beforeloan.ElementLend">
+	INSERT INTO BIZ_ELEMENT_LEND 
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+        PID, 
+    	<if test="projectId != null and projectId >0"> 
+    	PROJECT_ID, 
+    	</if>
+    	<if test="lendFilesId != null and lendFilesId !=''">
+    	LEND_FILES_ID, 
+    	</if>
+    	<if test="lendTime != null and lendTime!=''">
+    	LEND_TIME, 
+    	</if>
+    	<if test="originalReturnTime != null and originalReturnTime!=''">
+    	ORIGINAL_RETURN_TIME, 
+    	</if>
+    	<if test="signTime != null and signTime!=''">
+    	SIGN_TIME, 
+    	</if>
+    	
+    	<if test="signUser != null and signUser!=''">
+    	SIGN_USER, 
+    	</if>
+    	<if test="remark != null and remark!=''">
+    	REMARK, 
+    	</if>
+    	<if test="lendUserId != null and lendUserId>0">
+    	LEND_USER_ID, 
+    	</if>
+    	<if test="updateTime != null and updateTime!=''">
+    	UPDATE_TIME,
+    	</if>
+    	<if test="actualReturnTime != null and actualReturnTime!=''">
+    	ACTUAL_RETURN_TIME,
+    	</if>
+    	<if test="returnFilesId != null and returnFilesId!=''">
+    	RETURN_FILES_ID,
+    	</if>
+    	<if test="orgId != null and orgId >0">
+    	ORG_ID,
+    	</if>
+    	<if test="porpuse != null and porpuse!=''">
+    	PORPUSE,
+    	</if>
+    	LEND_STATE
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+    		#{pid,jdbcType=INTEGER}, 
+    	<if test="projectId != null and projectId >0"> 
+    		#{projectId,jdbcType=INTEGER}, 
+    	</if>
+    	<if test="lendFilesId != null and lendFilesId !=''">
+    		#{lendFilesId}, 
+    	</if>
+    	<if test="lendTime != null and lendTime!=''">
+    		#{lendTime,jdbcType=DATE,javaType=String}, 
+    	</if>
+    	<if test="originalReturnTime != null and originalReturnTime!=''">
+    		#{originalReturnTime,jdbcType=DATE,javaType=String}, 
+    	</if>
+    	<if test="signTime != null and signTime!=''">
+    		#{signTime,jdbcType=DATE,javaType=String}, 
+    	</if>
+    	
+    	<if test="signUser != null and signUser!=''">
+    		#{signUser}, 
+    	</if>
+    	<if test="remark != null and remark!=''">
+    		#{remark}, 
+    	</if>
+    	<if test="lendUserId != null and lendUserId>0">
+    		#{lendUserId,jdbcType=INTEGER}, 
+    	</if>
+    	<if test="updateTime != null and updateTime!=''">
+    		#{updateTime,javaType=String, jdbcType=TIMESTAMP}, 
+    	</if>
+    	<if test="actualReturnTime != null and actualReturnTime!=''">
+    		#{actualReturnTime,jdbcType=DATE,javaType=String}, 
+    	</if>
+    	<if test="returnFilesId != null and returnFilesId!=''">
+    		#{returnFilesId}, 
+    	</if>
+    	<if test="orgId != null and orgId >0">
+    		#{orgId,jdbcType=INTEGER}, 
+    	</if>
+    	<if test="porpuse != null and porpuse!=''">
+    		#{porpuse}, 
+    	</if>
+    	1 
+    </trim>
+</insert>
+<!-- 修改要件借出信息 -->
+<update id="updateByPrimaryKey" parameterType="com.xlkfinance.bms.rpc.beforeloan.ElementLend">
+	UPDATE BIZ_ELEMENT_LEND
+	<set>
+		<if test="projectId != null and projectId >0"> 
+    		PROJECT_ID = #{projectId,jdbcType=INTEGER}, 
+    	</if>
+    	<if test="lendFilesId != null and lendFilesId !=''">
+    		LEND_FILES_ID = #{lendFilesId}, 
+    	</if>
+    	<if test="lendTime != null and lendTime!=''">
+    		LEND_TIME = #{lendTime,jdbcType=DATE,javaType=String}, 
+    	</if>
+    	<if test="originalReturnTime != null and originalReturnTime!=''">
+    		ORIGINAL_RETURN_TIME = #{originalReturnTime,jdbcType=DATE,javaType=String}, 
+    	</if>
+    	<if test="signTime != null and signTime!=''">
+    		SIGN_TIME = #{signTime,jdbcType=DATE,javaType=String}, 
+    	</if>
+    	<if test="signUser != null and signUser!=''">
+    		SIGN_USER = #{signUser}, 
+    	</if>
+    	<if test="remark != null and remark!=''">
+    		  REMARK = #{remark}, 
+    	</if>
+    	<if test="lendState != null and lendState>0">
+    		LEND_STATE = #{lendState,jdbcType=INTEGER}, 
+    	</if>
+    	<if test="updateTime != null and updateTime!=''">
+    		UPDATE_TIME = #{updateTime,javaType=String, jdbcType=TIMESTAMP}, 
+    	</if>
+    	<if test="actualReturnTime != null and actualReturnTime!=''">
+    		ACTUAL_RETURN_TIME = #{actualReturnTime,jdbcType=DATE,javaType=String}, 
+    	</if>
+    	<if test="returnFilesId != null and returnFilesId!=''">
+    		RETURN_FILES_ID = #{returnFilesId}, 
+    	</if>
+    	<if test="porpuse != null and porpuse!=''">
+    		PORPUSE = #{porpuse}, 
+    	</if>
+	</set>
+	where pid = #{pid}
+</update>
+	<!-- 通过主键查询要件借出详情 -->
+	<select id="getElementLendByPid" resultMap="elementLendMapper" parameterType="java.lang.Integer">
+		select A.*,DD.REAL_NAME,E.NAME,P.PROJECT_NAME from 
+			BIZ_ELEMENT_LEND A INNER 
+			JOIN SYS_USER DD
+  			ON A.LEND_USER_ID = DD.PID
+  			INNER JOIN SYS_ORG_INFO E
+  			ON E.ID = A.ORG_ID
+  			INNER JOIN BIZ_PROJECT P
+  			ON A.PROJECT_ID = P.PID
+  			 where A.PID = #{pid}
+	</select>
+
+	<!-- 修改要件借出状态 -->
+	<update id="updateLendStateByPid" parameterType="java.util.Map">
+		UPDATE BIZ_ELEMENT_LEND 
+		SET LEND_STATE = #{lendState}
+		<if test="updateTime != null and updateTime!=''">
+    		,UPDATE_TIME = #{updateTime,javaType=String, jdbcType=TIMESTAMP}
+    	</if>
+		WHERE PID = #{pid}
+	</update>
+	
+	<!-- 新增要件借出详情 -->
+	<insert id="addElementLendDetails" parameterType="com.xlkfinance.bms.rpc.beforeloan.ElementLendDetails">
+		<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+			SELECT SEQ_ELEMENT_LEND_DETAILS.Nextval as PID from DUAL
+		</selectKey>
+			INSERT INTO BIZ_ELEMENT_LEND_DETAILS
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+	        	PID, 
+	    	<if test="lendId != null and lendId >0">
+	    		LEND_ID, 
+	    	</if>
+	    	<if test="elementFileId != null and elementFileId >=0">
+	    		ELEMENT_FILE_ID,
+	    	</if>
+	    	<if test="elementFileName != null and elementFileName!=''">
+	    		ELEMENT_FILE_NAME,
+	    	</if>
+	    	<if test="lendTime != null and lendTime!=''">
+	    		LEND_TIME,
+	    	</if>
+	    		STATUS
+	    </trim>
+	    <trim prefix="values (" suffix=")" suffixOverrides=",">
+	    		#{pid}, 
+	    	<if test="lendId != null and lendId >0">
+	    		#{lendId}, 
+	    	</if>
+	    	<if test="elementFileId != null and elementFileId >=0">
+	    		#{elementFileId}, 
+	    	</if>
+	    	<if test="elementFileName != null and elementFileName!=''">
+	    		#{elementFileName}, 
+	    	</if>
+	    	<if test="lendTime != null and lendTime!=''">
+	    		#{lendTime,jdbcType=DATE,javaType=String}, 
+	    	</if>
+	    	1
+	    </trim>
+	</insert>
+	
+	<update id="updateElementLendDetails" parameterType="com.xlkfinance.bms.rpc.beforeloan.ElementLendDetails">
+		UPDATE BIZ_ELEMENT_LEND_DETAILS
+		<set>
+			<if test="lendTime != null and lendTime!=''">
+		    	LEND_TIME = #{lendTime,jdbcType=DATE,javaType=String},
+		    </if> 
+		    <if test="returnTime != null and returnTime!=''">
+		    	RETURN_TIME = #{returnTime,jdbcType=DATE,javaType=String},
+		    </if>
+		    <if test="status != null and status>0">
+		    	STATUS = #{status},
+		    </if>
+		</set>
+		where lend_id = #{lendId} and ELEMENT_FILE_ID in
+		<foreach item="itemId" collection="returnFileIds" open="(" separator="," close=")">
+		          #{itemId}
+		</foreach>
+	</update>
+	
+	<update id="updateElementLendDetailByKey" parameterType="com.xlkfinance.bms.rpc.beforeloan.ElementLendDetails">
+		UPDATE BIZ_ELEMENT_LEND_DETAILS
+		<set>
+			<if test="lendTime != null and lendTime!=''">
+		    	LEND_TIME = #{lendTime,jdbcType=DATE,javaType=String},
+		    </if> 
+		    <if test="returnTime != null and returnTime!=''">
+		    	RETURN_TIME = #{returnTime,jdbcType=DATE,javaType=String},
+		    </if>
+		    <if test="status != null and status>0">
+		    	STATUS = #{status},
+		    </if>
+		</set>
+		where PID = #{pid}
+	</update>
+	
+	<update id="batchUpdateElementLendDetails" parameterType="java.util.List">
+	begin
+		<foreach collection="list" item="item" index="index" open="" close="" separator=";">
+		UPDATE BIZ_ELEMENT_LEND_DETAILS
+		   SET STATUS = #{item.status,jdbcType=INTEGER},
+		   RETURN_TIME = #{item.returnTime, jdbcType=DATE,javaType=String}
+		 WHERE PID = #{item.pid,jdbcType=INTEGER}
+		</foreach>
+        ;end;
+	</update>
+	
+	<select id="queryElementLendDetail" parameterType="com.xlkfinance.bms.rpc.beforeloan.ElementLendDetails" resultMap="elementDetailsMap">
+		SELECT ED.PID,ED.LEND_ID,ED.ELEMENT_FILE_ID,ED.LEND_TIME,
+		ED.RETURN_TIME,ED.STATUS,CF.REMARK,CF.BUYER_SELLER_TYPE,CF.BUYER_SELLER_NAME ,
+		CF.FNAME AS  ELEMENT_FILE_NAME,cf.fcode AS CODE
+		 FROM BIZ_ELEMENT_LEND_DETAILS ed ,biz_collect_files cf where cf.pid = ed.element_file_id 
+    		 AND ED.LEND_ID = #{lendId}
+    		<if test="status != null and status>0">
+		    	AND ED.STATUS = #{status}
+		    </if>
+		    <if test="buyerSellerType != null and buyerSellerType > 0">
+		    	AND cf.BUYER_SELLER_TYPE = #{buyerSellerType}
+		    </if>
+		    <if test="buyerSellerName != null and buyerSellerName != ''">
+		    	AND cf.BUYER_SELLER_NAME = #{buyerSellerName,javaType=String}
+		    </if>
+	</select>
+	<update id="deleteElementLendDetails" parameterType="com.xlkfinance.bms.rpc.beforeloan.ElementLendDetails">
+		delete from BIZ_ELEMENT_LEND_DETAILS where lend_id = #{lendId}
+	</update>
+</mapper>

@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xlkfinance.bms.server.aom.system.mapper.OrgUserFunAccountMapper">
+	<resultMap id="orgUserFunAccountMap" type="com.qfang.xk.aom.rpc.system.OrgUserFunAccount">
+		<id property="pid" column="PID" />
+		<id property="userId" column="USER_ID" />
+		<id property="totalMoney" column="TOTAL_MONEY" />
+		<id property="availableMoney" column="AVAILABLE_MONEY" />
+		<id property="freezeMoney" column="FREEZE_MONEY" />
+		<id property="traderPassword" column="TRADER_PASSWORD" />
+		<id property="updateDate" column="UPDATE_DATE" />
+		<id property="status" column="STATUS" />
+	</resultMap>
+	<sql id="column_list">
+        PID,USER_ID,TOTAL_MONEY,AVAILABLE_MONEY,FREEZE_MONEY,TRADER_PASSWORD,UPDATE_DATE,STATUS
+	</sql>
+	<!-- 查询所有 -->
+	<select id="getAll" resultMap="orgUserFunAccountMap" parameterType="com.qfang.xk.aom.rpc.system.OrgUserFunAccount">
+		SELECT
+		<include refid="column_list" />
+		FROM ORG_USER_FUN_ACCOUNT
+		<where>
+			<trim>
+		      <if test="pid != null and pid >0">
+	          PID=#{pid}
+	          </if>
+		      <if test="userId != null and userId >0">
+	          AND USER_ID=#{userId}
+	          </if>
+		      <if test="totalMoney != null and totalMoney >0">
+	          AND TOTAL_MONEY=#{totalMoney}
+	          </if>
+		      <if test="availableMoney != null and availableMoney >0">
+	          AND AVAILABLE_MONEY=#{availableMoney}
+	          </if>
+		      <if test="freezeMoney != null and freezeMoney >0">
+	          AND FREEZE_MONEY=#{freezeMoney}
+	          </if>
+		      <if test="traderPassword != null and traderPassword !=''">
+	          AND TRADER_PASSWORD=#{traderPassword}
+	          </if>
+		      <if test="updateDate != null and updateDate !=''">
+	          AND UPDATE_DATE=#{updateDate}
+	          </if>
+		      <if test="status != null and status >0">
+	          AND STATUS=#{status}
+	          </if>
+			</trim>
+		</where>
+	</select>
+	<!-- 根据id获取 -->
+	<select id="getById" resultMap="orgUserFunAccountMap">
+		SELECT <include refid="column_list" /> FROM ORG_USER_FUN_ACCOUNT WHERE PID=#{pid}
+	</select>
+	<!-- 插入一条数据 -->
+	<insert id="insert" parameterType="com.qfang.xk.aom.rpc.system.OrgUserFunAccount">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_ORG_USER_FUN_ACCOUNT.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO ORG_USER_FUN_ACCOUNT
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+				PID,
+			</if>
+		    <if test="userId != null and userId >0">
+				USER_ID,
+			</if>
+		    <if test="totalMoney != null and totalMoney >0">
+				TOTAL_MONEY,
+			</if>
+		    <if test="availableMoney != null and availableMoney >0">
+				AVAILABLE_MONEY,
+			</if>
+		    <if test="freezeMoney != null and freezeMoney >0">
+				FREEZE_MONEY,
+			</if>
+		    <if test="traderPassword != null and traderPassword !=''">
+				TRADER_PASSWORD,
+			</if>
+		    <if test="updateDate != null and updateDate !=''">
+				UPDATE_DATE,
+			</if>
+		    <if test="status != null and status >0">
+				STATUS,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+		    #{pid},
+			</if>
+		    <if test="userId != null and userId >0">
+		    #{userId},
+			</if>
+		    <if test="totalMoney != null and totalMoney >0">
+		    #{totalMoney},
+			</if>
+		    <if test="availableMoney != null and availableMoney >0">
+		    #{availableMoney},
+			</if>
+		    <if test="freezeMoney != null and freezeMoney >0">
+		    #{freezeMoney},
+			</if>
+		    <if test="traderPassword != null and traderPassword !=''">
+		    #{traderPassword},
+			</if>
+		    <if test="updateDate != null and updateDate !=''">
+		    #{updateDate,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		    <if test="status != null and status >0">
+		    #{status},
+			</if>
+		</trim>
+	</insert>
+
+	<!-- 根据id更新数据 -->
+		<update id="update" parameterType="com.qfang.xk.aom.rpc.system.OrgUserFunAccount">
+		UPDATE ORG_USER_FUN_ACCOUNT
+		<set>
+		    <if test="pid != null and pid >0">
+		     PID=#{pid},
+			</if>
+		    <if test="userId != null and userId >0">
+		     USER_ID=#{userId},
+			</if>
+		    <if test="totalMoney != null and totalMoney >0">
+		     TOTAL_MONEY=#{totalMoney},
+			</if>
+		    <if test="availableMoney != null and availableMoney >0">
+		     AVAILABLE_MONEY=#{availableMoney},
+			</if>
+		    <if test="freezeMoney != null and freezeMoney >0">
+		     FREEZE_MONEY=#{freezeMoney},
+			</if>
+		    <if test="traderPassword != null and traderPassword !=''">
+		     TRADER_PASSWORD=#{traderPassword},
+			</if>
+		    <if test="updateDate != null and updateDate !=''">
+		     UPDATE_DATE=#{updateDate,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		    <if test="status != null and status >0">
+		     STATUS=#{status},
+			</if>
+		</set>
+		WHERE PID = #{pid}
+	</update>
+    <!-- 根据用户id删除客户 -->
+    <delete id="deleteByUserId" parameterType="Integer">
+	 DELETE FROM ORG_USER_FUN_ACCOUNT T WHERE T.USER_ID=#{userId}
+	</delete>
+</mapper>

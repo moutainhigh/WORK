@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.mortgage.mapper.ProjectAssOwnMapper">
+	<resultMap id="ProjectAssOwnResultMap" type="com.xlkfinance.bms.rpc.mortgage.ProjectAssOwn">
+		<id column="PID" property="pid" jdbcType="INTEGER"/>
+		<result column="BASE_ID" property="baseId"  />
+		<result column="PUBLIC_OWN_USER_ID" property="publicOwnUserId"  />
+		<result column="STATUS" property="status" />
+		<result column="acctName" property="acctName" />
+		<result column="acctTypeText" property="acctTypeText" />
+		<result column="acctId" property="acctId" />
+		<result column="certType" property="certType" />
+		<result column="certNumber" property="certNumber" />
+	</resultMap>
+	
+	<!-- 查询抵质押物共有人-根据抵质押物ID -->
+	<select id="getProjectAssOwnByBaseId" resultMap="ProjectAssOwnResultMap" parameterType="java.lang.Integer">
+		<if test=" ownType == 1 ">
+			SELECT pao.pid,p.china_name acctName,'个人' acctTypeText,p.cert_number certNumber,
+       		(SELECT lv.lookup_desc FROM sys_lookup_val lv WHERE lv.pid = p.cert_type) certType
+	    	FROM BIZ_PROJECT_ASS_OWN pao,CUS_PERSON p
+	    	WHERE pao.public_own_user_id = p.pid
+	    	AND p.status = 1 
+		 	AND p.relation_type > 0
+			AND p.relation_type != 4 
+		  	AND p.acct_id NOT IN(SELECT distinct abr.ACCT_ID FROM CUS_ACCT_BLACKLIST_REFUSE abr WHERE abr.status = 1)
+	    	AND pao.base_id = #{baseId}
+    	</if>
+    	<if test=" ownType != 1 ">
+    		SELECT pao.pid,c.cpy_name acctName,'企业' acctTypeText,c.Org_Code certNumber,'营业执照' certType
+    		FROM BIZ_PROJECT_ASS_OWN pao,CUS_COM_BASE c
+    		WHERE pao.public_own_user_id = c.pid
+    		AND c.status = 1 
+	  		AND c.acct_id NOT IN(SELECT distinct abr.ACCT_ID FROM CUS_ACCT_BLACKLIST_REFUSE abr WHERE abr.status = 1)
+	    	AND pao.base_id = #{baseId}
+    	</if>
+	</select>
+	
+	<!-- 查询抵质押物共有人-根据类型人ID和所有人类型查询 -->
+	<select id="getProjectAssOwnByRelationId" resultMap="ProjectAssOwnResultMap" >
+		<if test=" ownType == 1 ">
+			SELECT p.pid,p.china_name acctName,'个人'  acctTypeText,p.cert_number certNumber,
+       		(SELECT lv.lookup_desc FROM sys_lookup_val lv WHERE lv.pid = p.cert_type) certType
+	        FROM CUS_PERSON p
+			WHERE p.status = 1 
+			AND p.relation_type > 0
+			AND p.relation_type != 4 
+	    	AND p.acct_id NOT IN(SELECT distinct abr.ACCT_ID FROM CUS_ACCT_BLACKLIST_REFUSE abr WHERE abr.status = 1)
+	    	AND p.pid in 
+			<foreach item="item" collection="pids" open="(" separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		<if test=" ownType != 1 ">
+			SELECT c.pid,c.cpy_name acctName,'企业' acctTypeText,c.Org_Code certNumber,'营业执照' certType
+	      	FROM CUS_COM_BASE c
+	      	WHERE c.status = 1
+	     	AND c.acct_id NOT IN(SELECT distinct abr.ACCT_ID FROM CUS_ACCT_BLACKLIST_REFUSE abr WHERE abr.status = 1)
+	     	AND c.pid in 
+			<foreach item="item" collection="pids" open="(" separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+	</select>
+	
+	<!-- 查询所有-抵质押物共有人列表 -->
+	<select id="getAllProjectAssOwnByOwnType" resultMap="ProjectAssOwnResultMap" parameterType="com.xlkfinance.bms.rpc.mortgage.ProjectAssOwn">
+		<if test=" cusType == 1 ">
+			SELECT * FROM (
+			SELECT rownum rnum ,aa.* FROM (  
+			SELECT  rownum rid,  p.pid,p.china_name acctName,'个人' acctTypeText,p.cert_number certNumber,
+       		(SELECT lv.lookup_desc FROM sys_lookup_val lv WHERE lv.pid = p.cert_type) certType
+	    	FROM CUS_PERSON p,cus_acct a
+            WHERE  p.acct_id = a.pid
+            AND a.status = 1
+       		AND p.status = 1 
+		 	AND p.relation_type > 0
+			AND p.relation_type != 4 
+		  	AND p.acct_id NOT IN(SELECT distinct abr.ACCT_ID FROM CUS_ACCT_BLACKLIST_REFUSE abr WHERE abr.status = 1)
+	    	<if test=" acctName != null and acctName != '' ">
+	    		AND p.china_name like '%${acctName}%' 
+	    	</if> 
+	    	 ORDER BY p.china_name  ) aa
+			) bb 
+			where 1=1 
+			<if test="page != null and page !=0 and rows!=null and rows!=0">
+				and rnum<![CDATA[<=]]>#{page}*#{rows}
+				and rnum>=((#{page}-1)*#{rows})+1
+			</if>
+    	</if>
+    	<if test=" cusType != 1 ">
+    		SELECT * FROM (
+			SELECT rownum rnum ,aa.* FROM (  
+			SELECT  rownum rid,  c.pid,c.cpy_name acctName,'企业' acctTypeText,c.Org_Code certNumber,'营业执照' certType
+    		FROM CUS_COM_BASE c,cus_acct a
+            WHERE  c.acct_id = a.pid
+            AND C.STATUS = 1
+            AND a.status = 1
+	  		AND c.acct_id NOT IN(SELECT distinct abr.ACCT_ID FROM CUS_ACCT_BLACKLIST_REFUSE abr WHERE abr.status = 1)
+	    	<if test=" acctName != null and acctName != '' ">
+	    		AND c.cpy_name like '%${acctName}%' 
+	    	</if>
+	    	<if test=" ecoTrade != null and ecoTrade != -1 ">
+	    		AND c.eco_trade = #{ecoTrade}
+	    	</if>
+	    	 ORDER BY c.cpy_name  ) aa
+			) bb 
+			where 1=1 
+			<if test="page != null and page !=0 and rows!=null and rows!=0">
+				and rnum<![CDATA[<=]]>#{page}*#{rows}
+				and rnum>=((#{page}-1)*#{rows})+1
+			</if>
+    	</if>
+	</select>
+	
+	<!-- 查询所有-抵质押物共有人数量 -->
+	<select id="getAllProjectAssOwnByOwnTypeCount" resultType="java.lang.Integer" parameterType="com.xlkfinance.bms.rpc.mortgage.ProjectAssOwn">
+		<if test=" cusType == 1 ">
+			SELECT COUNT(p.pid) 
+			FROM CUS_PERSON p,cus_acct a
+            WHERE  p.acct_id = a.pid
+            AND a.status = 1
+       		AND p.status = 1 
+		 	AND p.relation_type > 0
+			AND p.relation_type != 4 
+		  	AND p.acct_id NOT IN(SELECT distinct abr.ACCT_ID FROM CUS_ACCT_BLACKLIST_REFUSE abr WHERE abr.status = 1)
+	    	<if test=" acctName != null and acctName != '' ">
+	    		AND p.china_name like '%${acctName}%' 
+	    	</if>
+		</if>
+		<if test=" cusType != 1 ">
+    		SELECT COUNT(c.pid)
+    		FROM CUS_COM_BASE c,cus_acct a
+            WHERE  c.acct_id = a.pid
+            AND C.STATUS = 1
+            AND a.status = 1
+	  		AND c.acct_id NOT IN(SELECT distinct abr.ACCT_ID FROM CUS_ACCT_BLACKLIST_REFUSE abr WHERE abr.status = 1)
+	    	<if test=" acctName != null and acctName != '' ">
+	    		AND c.cpy_name like '%${acctName}%' 
+	    	</if>
+	    	<if test=" ecoTrade != null and ecoTrade != -1 ">
+	    		AND c.eco_trade = #{ecoTrade}
+	    	</if>
+    	</if>
+	</select>
+	
+	<!-- 新增抵质押物共有人 -->
+	<insert id="addProjectAssOwn" parameterType="com.xlkfinance.bms.rpc.mortgage.ProjectAssOwn">
+		<selectKey order="BEFORE" resultType="java.lang.Integer" keyProperty="pid">
+			SELECT SEQ_BIZ_PROJECT_ASS_OWN.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_PROJECT_ASS_OWN (PID,BASE_ID,PUBLIC_OWN_USER_ID,STATUS) 
+        VALUES (#{pid}, #{baseId}, #{publicOwnUserId}, #{status})
+	</insert>
+	
+	<!-- 查询当前共有人在当前抵质押物是否存在 -->
+	<select id="checkBaseIdAndOwnUser" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+		SELECT COUNT(*)
+		FROM BIZ_PROJECT_ASS_OWN pao
+		WHERE pao.BASE_ID = #{baseId}
+		AND pao.PUBLIC_OWN_USER_ID = #{publicOwnUserId}
+		AND pao.STATUS = 1
+	</select>
+	
+	<!-- 删除抵质押物共有人-根据抵质押物ID  -->
+	<delete id="deleteProjectAssOwn" parameterType="java.lang.Integer">
+		DELETE BIZ_PROJECT_ASS_OWN  
+    	WHERE BASE_ID = #{baseId}
+	</delete>
+	
+	<!-- 批量删除抵质押物共有人-根据主键 -->
+	<delete id="batchDeleteProjectAssOwn" parameterType="java.lang.String">
+		DELETE BIZ_PROJECT_ASS_OWN  
+    	WHERE PID in 
+    	<foreach item="idItem" collection="array" open="(" separator="," close=")">
+			#{idItem}
+		</foreach>
+	</delete>
+	
+</mapper>

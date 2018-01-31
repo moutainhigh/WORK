@@ -1,0 +1,46 @@
+
+
+
+添加字典项
+	1、主配置类型---------
+	
+	配置类型：CHECK_DOC_EXCEPTION_NOTICE_ROLE
+	配置名称：系统查档异常通知角色
+	描述：用于系统查档异常通知角色，生成预警
+	
+	配置值---------
+	数据字典值：角色编码
+	数据字典描述：角色名称
+
+
+
+添加配置  
+	job-config.xml 修改查档配置时间，将其它定时，统一修改为配置
+	
+	  <!-- Task 配置 -->
+      <task:scheduled-tasks>  
+
+        
+        <!-- 清除差异预警处理表数据  每天 凌晨10分开始执行一次 -->
+        <task:scheduled ref="cleanHandleDifferWarnJob" method="execute" cron="0 10 0 ? * *"/>
+        
+        <!-- 更新授信状态  每天 凌晨15分开始执行一次 -->
+        <task:scheduled ref="creditStatusJob" method="execute" cron="0 15 0 ? * *"/>
+        
+        <!-- 机构合作状态更新  每天 凌晨01分开始执行一次-->
+        <task:scheduled ref="orgCooperateStatusJob" method="execute" cron="0 01 0 ? * *"/>
+        
+        <!-- 费用结算  每月1号  凌晨1点开始执行-->
+        <task:scheduled ref="orgCooperateStatusJob" method="execute" cron="0 0 1 1 * ?"/>
+        
+        <!-- 系统自动查档   每天 凌晨25分开始执行一次 -->
+        <task:scheduled ref="checkDocumentJob" method="execute" cron="0 25 0 ? * *"/>
+        
+         <!-- 资金合作机构生成还扣款文件定时任务   每天下午15点30分 -->
+        <task:scheduled ref="partnerFileJob" method="createPaymentFile" cron="0 30 15 * * ?"/>  
+        
+         <!-- 资金合作机构读取放款文件定时任务   02-08点之间每30分钟执行一次  -->
+        <task:scheduled ref="partnerFileJob" method="readLoanFile" cron="0 0/30 02,08 * * ?"/>
+        
+           
+      </task:scheduled-tasks>

@@ -1,0 +1,519 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.contract.mapper.ContractTempLateMapper">
+	<!-- 添加合同模板 -->
+	<insert id="addTempLate" parameterType="com.xlkfinance.bms.rpc.contract.ContractTempLate">
+		<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+			SELECT SEQ_BIZ_CONTRACT_TEMPLATE.Nextval as PID from DUAL
+		</selectKey>
+		insert into biz_contract_template 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			PID,
+			<if test="templateCatelog != null">
+				TEMPLATE_CATELOG,
+			</if>
+			<if test="templateType != null">
+				TEMPLATE_TYPE,
+			</if>
+			<if test="templateOwner != null">
+				TEMPLATE_OWNER,
+			</if>
+			<if test="templateParFun != null">
+				TEMPLATE_PAR_FUN,
+			</if>
+			<if test="contractTypeCode != null">
+				CONTRACT_TYPE_CODE,
+			</if>
+			<if test="templateUseMode != null">
+				TEMPLATE_USE_MODE,
+			</if>
+			<if test="templateName != null">
+				TEMPLATE_NAME,
+			</if>
+			<if test="templateUrl != null">
+				TEMPLATE_URL,
+			</if>
+			<if test="contractNumberFun != null">
+				CONTRACT_NUMBER_FUN,
+			</if>
+			<if test="templateDesc != null">
+				TEMPLATE_DESC,
+			</if>
+			<if test="updateDttm != null">
+				UPDATE_DTTM,
+			</if>
+			<if test="uploadUserId != null">
+				UPLOAD_USER_ID,
+			</if>
+			<if test="applyType != null">
+				APPLY_TYPE,
+			</if>
+			<if test="cycleType != null">
+				CYCLE_TYPE,
+			</if>
+			status,
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+				#{pid},
+			<if test="templateCatelog != null">
+				#{templateCatelog},
+			</if>
+			<if test="templateType != null">
+				#{templateType},
+			</if>
+			<if test="templateOwner != null">
+				#{templateOwner},
+			</if>
+			<if test="templateParFun != null">
+				#{templateParFun},
+			</if>
+			<if test="contractTypeCode != null">
+				#{contractTypeCode},
+			</if>
+			<if test="templateUseMode != null">
+				#{templateUseMode},
+			</if>
+			<if test="templateName != null">
+				#{templateName},
+			</if>
+			<if test="templateUrl != null">
+				#{templateUrl},
+			</if>
+			<if test="contractNumberFun != null">
+				#{contractNumberFun},
+			</if>
+			<if test="templateDesc != null">
+				#{templateDesc},
+			</if>
+			<if test="updateDttm != null">
+				#{updateDttm,jdbcType=TIMESTAMP,javaType=String},
+			</if>
+			<if test="uploadUserId != null">
+				#{uploadUserId},
+			</if>
+			<if test="applyType != null">
+				#{applyType},
+			</if>
+			<if test="cycleType != null">
+				#{cycleType},
+			</if>
+			1
+		</trim>
+	</insert>
+	
+	<!-- 分页查询所有模板信息 -->
+	<select id="pageTempLateList" parameterType="com.xlkfinance.bms.rpc.contract.ContractTempLate" resultType="com.xlkfinance.bms.rpc.contract.ContractTempLate">
+		  SELECT R.PID,
+		  		 R.TEMPLATE_NAME || '-' || V.LOOKUP_DESC comboboxTemplateText, 
+		         V.LOOKUP_DESC as templateTypeText, 
+		         V1.LOOKUP_DESC as templateCatelogText,
+		         V2.LOOKUP_DESC as templateParFunText,
+		  		 R.TEMPLATE_NAME as templateName, 
+		  		 R.TEMPLATE_URL as templateUrl,
+		  		 R.CONTRACT_NUMBER_FUN as contractNumberFun, 
+		  		 R.TEMPLATE_DESC as templateDesc, 
+		  		 TO_CHAR(R.UPDATE_DTTM,'yyyy-mm-dd hh24:mi:ss') as updateDttm, 
+		  		 R.UPLOAD_USER_ID as uploadUserId,
+		  		 R.TEMPLATE_CATELOG    AS templateCatelog,
+		         R.TEMPLATE_OWNER      AS templateOwner,
+		         R.TEMPLATE_TYPE       AS templateType,
+		         R.TEMPLATE_USE_MODE   AS templateUseMode,
+		         R.TEMPLATE_PAR_FUN   AS templateParFun,
+		         R.CONTRACT_TYPE_CODE AS contractTypeCode,
+		         R.APPLY_TYPE    AS applyType,
+		         R.CYCLE_TYPE    AS cycleType,
+		         R.status 
+		  	FROM BIZ_CONTRACT_TEMPLATE R, SYS_LOOKUP_VAL V, SYS_LOOKUP_VAL V1, SYS_LOOKUP_VAL V2
+			 WHERE V.PID = R.TEMPLATE_TYPE
+   				AND V1.PID(+) = R.TEMPLATE_CATELOG
+   				AND V2.PID(+) = R.TEMPLATE_PAR_FUN
+			 	AND r.rowid IN
+				  (select rid from 
+				    (select rownum rn,rid FROM
+				      (select rowid rid,pid 
+				      FROM biz_contract_template
+				      where status=1
+					  <if test="templateCatelog != null and templateCatelog != '' and templateCatelog !=0 and templateCatelog !=-1">
+						and template_catelog = #{templateCatelog}
+					  </if>
+					  <if test="templateCatelogText != null and templateCatelogText != '' and templateCatelogText != 'ALL'">
+					  	<if test="templateCatelogText =='SX,DK'">
+					  	and template_catelog IN
+				  			( SELECT SLV.PID FROM SYS_LOOKUP SL,SYS_LOOKUP_VAL SLV WHERE SL.PID=SLV.LOOKUP_ID 
+							AND SL.LOOKUP_TYPE='CONTRACT_TEMPLATE_CATELOG' 
+							AND SLV.LOOKUP_VAL IN('SX','DK') )
+					  	</if>
+					  	<if test="templateCatelogText =='ZKBZ,BZ'">
+					  	and template_catelog IN
+				  			( SELECT SLV.PID FROM SYS_LOOKUP SL,SYS_LOOKUP_VAL SLV WHERE SL.PID=SLV.LOOKUP_ID 
+							AND SL.LOOKUP_TYPE='CONTRACT_TEMPLATE_CATELOG' 
+							AND SLV.LOOKUP_VAL IN('ZKBZ','BZ') )
+					  	</if>
+					  	<if test="templateCatelogText !='SX,DK' and templateCatelogText !='ZKBZ,BZ'">
+						and template_catelog =
+				  			( SELECT SLV.PID FROM SYS_LOOKUP SL,SYS_LOOKUP_VAL SLV WHERE SL.PID=SLV.LOOKUP_ID 
+							AND SL.LOOKUP_TYPE='CONTRACT_TEMPLATE_CATELOG' 
+							AND SLV.LOOKUP_VAL =#{templateCatelogText} )
+						</if>
+					  </if>
+					  <if test="templateType != null and templateType != '' and templateType !=0 and templateType !=-1">
+						and template_type = #{templateType}
+					  </if>
+					  <if test="templateName != null and templateName!='' ">
+						and template_name like '%'||#{templateName}||'%'
+					  </if>
+					  <if test="templateUseMode !=null and templateUseMode !=0">
+		   					AND (TEMPLATE_USE_MODE=#{templateUseMode,jdbcType=INTEGER} OR TEMPLATE_USE_MODE=0 OR TEMPLATE_USE_MODE=-1)
+		   			  </if>
+		   			  <if test="templateOwner !=null and templateOwner!=0">
+		   			  		AND (TEMPLATE_OWNER=#{templateOwner} OR TEMPLATE_OWNER=3)
+		   			  </if>
+		   			  <if test="applyType !=null and applyType !=5 and applyType!=0">
+		   			  		AND (APPLY_TYPE=#{applyType} or APPLY_TYPE=3 )
+		   			  </if>
+		   			  <if test="cycleType !=null and cycleType !=0">
+		   			  		AND (CYCLE_TYPE=(SELECT TO_NUMBER(LOOKUP_VAL) FROM SYS_LOOKUP_VAL WHERE PID=#{cycleType}) OR CYCLE_TYPE=3)
+		   			  </if>
+				      order by TEMPLATE_NAME)
+				    where rownum<![CDATA[<=]]>#{page}*#{rows}) 
+			  	where rn>=((#{page}-1)*#{rows})+1)
+	</select>
+	
+	<!-- 查询模板总记录数 -->
+	<select id="pageTempLateCount" parameterType="com.xlkfinance.bms.rpc.contract.ContractTempLate" 
+	        resultType="java.lang.Integer">
+		SELECT COUNT(PID) as total FROM biz_contract_template
+		WHERE status=1
+		  <if test="templateCatelog != null and templateCatelog != '' and templateCatelog !=0 and templateCatelog !=-1">
+			and template_catelog = #{templateCatelog}
+		  </if>
+		  <if test="templateCatelogText != null and templateCatelogText != '' and templateCatelogText != 'ALL'">
+			<if test="templateCatelogText =='SX,DK'">
+		  	and template_catelog IN
+	  			( SELECT SLV.PID FROM SYS_LOOKUP SL,SYS_LOOKUP_VAL SLV WHERE SL.PID=SLV.LOOKUP_ID 
+				AND SL.LOOKUP_TYPE='CONTRACT_TEMPLATE_CATELOG' 
+				AND SLV.LOOKUP_VAL IN('SX','DK') )
+		  	</if>
+		  	<if test="templateCatelogText =='ZKBZ,BZ'">
+		  	and template_catelog IN
+	  			( SELECT SLV.PID FROM SYS_LOOKUP SL,SYS_LOOKUP_VAL SLV WHERE SL.PID=SLV.LOOKUP_ID 
+				AND SL.LOOKUP_TYPE='CONTRACT_TEMPLATE_CATELOG' 
+				AND SLV.LOOKUP_VAL IN('ZKBZ','BZ') )
+		  	</if>
+		  	<if test="templateCatelogText !='SX,DK' and templateCatelogText !='ZKBZ,BZ'">
+			and template_catelog =
+	  			( SELECT SLV.PID FROM SYS_LOOKUP SL,SYS_LOOKUP_VAL SLV WHERE SL.PID=SLV.LOOKUP_ID 
+				AND SL.LOOKUP_TYPE='CONTRACT_TEMPLATE_CATELOG' 
+				AND SLV.LOOKUP_VAL =#{templateCatelogText} )
+			</if>
+		  </if>
+		  <if test="templateType != null and templateType != '' and templateType !=0 and templateType !=-1">
+			and template_type = #{templateType}
+		  </if>
+		  <if test="templateName != null and templateName!='' ">
+			and template_name like '%'||#{templateName}||'%'
+		  </if>
+		  <if test="templateUseMode !=null and templateUseMode !=0">
+				AND (TEMPLATE_USE_MODE=#{templateUseMode,jdbcType=INTEGER} OR TEMPLATE_USE_MODE=0 OR TEMPLATE_USE_MODE=-1)
+		  </if>
+		  <if test="templateOwner !=null and templateOwner!=0">
+		  		AND (TEMPLATE_OWNER=#{templateOwner} OR TEMPLATE_OWNER=3)
+		  </if>
+		  <if test="applyType !=null and applyType !=5 and applyType!=0">
+		  		AND (APPLY_TYPE=#{applyType} or APPLY_TYPE=3 )
+		  </if>
+		  <if test="cycleType !=null and cycleType !=0">
+		  		AND (CYCLE_TYPE=(SELECT TO_NUMBER(LOOKUP_VAL) FROM SYS_LOOKUP_VAL WHERE PID=#{cycleType}) OR CYCLE_TYPE=3)
+		  </if>
+	</select>
+	
+	
+	<!-- 修改模板路径，重传模板 -->
+	<update id="updateTempLateById" parameterType="com.xlkfinance.bms.rpc.contract.ContractTempLate">
+		UPDATE biz_contract_template 
+		<set> 
+		<if test="templateUrl!=null and templateUrl!=''">
+			template_url=#{templateUrl},
+		</if>
+		<if test="templateCatelog!=null and templateCatelog!=''">
+			TEMPLATE_CATELOG=#{templateCatelog},
+		</if>
+		<if test="templateType!=null and templateType!=''">
+			TEMPLATE_TYPE=#{templateType},
+		</if>
+		<if test="templateOwner!=null and templateOwner!=''">
+			TEMPLATE_OWNER=#{templateOwner},
+		</if>
+		<if test="templateParFun!=null and templateParFun!=''">
+			TEMPLATE_PAR_FUN=#{templateParFun},
+		</if>
+		<if test="contractTypeCode!=null and contractTypeCode!=''">
+			CONTRACT_TYPE_CODE=#{contractTypeCode},
+		</if>
+		<if test="templateUseMode!=null">
+			TEMPLATE_USE_MODE=#{templateUseMode},
+		</if>
+		<if test="applyType!=null and applyType!=0">
+			APPLY_TYPE=#{applyType},
+		</if>
+		<if test="cycleType!=null and cycleType!=0">
+			CYCLE_TYPE=#{cycleType},
+		</if>
+		<if test="contractNumberFun!=null and contractNumberFun!=''">
+			CONTRACT_NUMBER_FUN=#{contractNumberFun},
+		</if>
+		<if test="templateDesc!=null and templateDesc!=''">
+			TEMPLATE_DESC=#{templateDesc},
+		</if>
+		<if test="templateName!=null and templateName!=''">
+			TEMPLATE_NAME=#{templateName},
+		</if>
+		update_dttm=sysdate
+		</set>
+		WHERE pid=#{pid}  
+	</update>
+	
+	<!-- 逻辑删除模板 -->
+	<update id="deleteTempLate" parameterType="java.lang.Integer">
+		UPDATE biz_contract_template SET status=0
+		WHERE pid=#{pid}
+	</update>
+	<!-- 新增模板参数 -->
+	<insert id="addTempLateParm" parameterType="com.xlkfinance.bms.rpc.contract.ContractTempLateParm">
+		<selectKey resultType="int" order="BEFORE" keyProperty="pid">
+			select SEQ_BIZ_CONTRACT_TEMPLATE_PARM.nextval as pid from dual 
+		</selectKey>
+		insert into biz_contract_template_parm 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			pid,
+			<if test="contractTemplateId != null">
+				contract_template_id,
+			</if>
+			<if test="matchFlag != null">
+				match_flag,
+			</if>
+			<if test="matchName != null">
+				match_name,
+			</if>
+			<if test="showIndex != null">
+				show_index,
+			</if>
+			<if test="outputType != null">
+				output_type,
+			</if>
+			<if test="isTable != null">
+				is_table,
+			</if>
+			<if test="valConvertFlag != null">
+				val_convert_flag,
+			</if>
+			status,
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+				${pid},
+			<if test="contractTemplateId != null">
+				#{contractTemplateId},
+			</if>
+			<if test="matchFlag != null">
+				#{matchFlag},
+			</if>
+			<if test="matchName != null">
+				#{matchName},
+			</if>
+			<if test="showIndex != null">
+				#{showIndex},
+			</if>
+			<if test="outputType != null">
+				#{outputType},
+			</if>
+			<if test="isTable != null">
+				#{isTable},
+			</if>
+			<if test="valConvertFlag != null">
+				#{valConvertFlag},
+			</if>
+			1
+		</trim>
+	</insert>
+	
+	<!-- 更新模板参数 -->
+	<update id="updateTempLateParm" parameterType="com.xlkfinance.bms.rpc.contract.ContractTempLateParm">
+		UPDATE biz_contract_template_parm SET match_flag = #{matchFlag}
+		 WHERE contract_template_id=#{pid}
+	</update>
+	
+	<!-- 删除模板匹配符 -->
+	<delete id="deleteTempLateParm" parameterType="java.lang.Integer">
+	 	delete from biz_contract_template_parm
+	 	 WHERE contract_template_id=#{pid}
+	</delete>
+	
+	<delete id="deleteTempLateParmByParmId" parameterType="java.lang.Integer">
+	 	delete from biz_contract_template_parm
+	 	 WHERE pid=#{pid}
+	</delete>
+	
+	<!-- 根据合同模板ID查询合同模板文件服务器保存地址 -->
+	<select id="srearchTempLateUrl" resultType="java.lang.String" parameterType="java.lang.Integer">
+		SELECT t.template_url FROM biz_contract_template t
+		 WHERE t.pid=#{pid}
+	</select>
+	
+	<select id="getTempParmList" parameterType="com.xlkfinance.bms.rpc.contract.TempLateParmDto" 
+			resultType="com.xlkfinance.bms.rpc.contract.TempLateParmDto">
+		SELECT 
+			t.pid,t1.template_name AS tempLateName,v.lookup_val AS tempLateTypeText,
+			t.contract_template_id AS contractTemplateId,t.match_flag as matchFlag,
+			t.match_name AS matchName,t.show_index AS showIndex,t.output_type AS outputType ,t.is_table AS isTable,
+			t.val_convert_flag AS valConvertFlag,	t.fixed_val AS fixedVal,t.status 
+		FROM biz_contract_template_parm t
+		  LEFT JOIN biz_contract_template t1
+		    ON t1.pid = t.contract_template_id
+		  LEFT JOIN  sys_lookup_val v
+		    ON v.pid = t1.template_type
+		where t.rowid IN
+		  (select rid from 
+		    (select rownum rn,rid FROM
+		      (select rowid rid,pid FROM biz_contract_template_parm m
+		       WHERE m.contract_template_id=#{contractTemplateId,jdbcType=INTEGER}
+		       and status=1
+		       order by show_index asc)
+	    	where rownum<![CDATA[<=]]>#{page}*#{rows}) 
+	  	where rn>=((#{page}-1)*#{rows})+1)
+	  	order by showIndex asc
+	</select>
+	
+	<select id="getTempTotaleCount" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+		 SELECT COUNT(1) AS total FROM  biz_contract_template_parm WHERE status =1
+		    AND contract_template_id=#{contractTemplateId}
+	</select>
+	
+	<!-- 批量修改参数模板文件 -->
+	<update id="updateTempLateParmDto" parameterType="com.xlkfinance.bms.rpc.contract.TempLateParmDto">
+		UPDATE biz_contract_template_parm
+		  <set>
+			<if test="matchFlag != null">
+			  match_flag=#{matchFlag},
+			</if>
+			<if test="matchName != null">
+			  match_name=#{matchName},
+			</if>
+			<if test="showIndex != null">
+			  show_index=#{showIndex},
+			</if>
+			<if test="outputType != null">
+			  output_type=#{outputType},
+			</if>
+			<if test="isTable != null">
+			  is_table=#{isTable},
+			</if>
+			<if test="valConvertFlag != null">
+			  val_convert_flag=#{valConvertFlag},
+			</if>
+			<if test="fixedVal != null">
+			  fixed_Val=#{fixedVal}
+			</if>
+		  </set> 
+		WHERE pid = #{pid}
+	</update>
+	
+	
+	<!-- 根据合同模板ID查询模板信息 -->
+	<select id="getContractTempLateInfoById" parameterType="java.lang.Integer" 
+			resultType="com.xlkfinance.bms.rpc.contract.ContractTempLate">
+		 SELECT 
+		   r.PID as pid, 
+		   r.TEMPLATE_CATELOG as templateCatelog,
+		   r.TEMPLATE_TYPE as templateType, 
+		   r.TEMPLATE_OWNER as templateOwner,
+		   r.TEMPLATE_PAR_FUN as templateParFun, 
+		   r.CONTRACT_TYPE_CODE as contractTypeCode, 
+		   r.TEMPLATE_USE_MODE as templateUseMode, 
+		   r.TEMPLATE_NAME as templateName, 
+		   r.TEMPLATE_URL as templateUrl,
+		   r.CONTRACT_NUMBER_FUN as contractNumberFun, 
+		   r.TEMPLATE_DESC as templateDesc, 
+		   r.UPDATE_DTTM as updateDttm, 
+		   r.UPLOAD_USER_ID as uploadUserId,
+		   r.STATUS as status 
+		  FROM BIZ_CONTRACT_TEMPLATE r 
+		  LEFT JOIN sys_lookup_val v
+			ON v.pid = r.template_type
+		 WHERE r.pid=#{pid}
+	</select>
+	
+	<!-- 根据合同模板ID查询模板信息 -->
+	<select id="getContractTempLateParFunById" parameterType="java.lang.Integer"  resultType="java.lang.String">
+		 SELECT V.LOOKUP_VAL
+		  FROM BIZ_CONTRACT_TEMPLATE R, SYS_LOOKUP_VAL V
+		 WHERE R.PID = #{pid}
+		   AND R.TEMPLATE_PAR_FUN = V.PID
+	</select>
+	
+	<!-- 根据合同ID获取参数类容 用户合同编辑 -->
+	
+   <select id="getParmValueByCidAndPid" resultType="com.xlkfinance.bms.rpc.contract.TempLateParmDto"
+   		   parameterType="java.util.Map">
+   		 SELECT PID pid,
+		        CONTRACT_ID contractId,
+		        PARAMETER_ID contractTemplateId,
+		        PARAMETER_VAL matchValue,
+		        MATCH_FLAG matchFlag,
+		        MATCH_NAME matchName,
+		        SHOW_INDEX showIndex
+		   FROM BIZ_CONTRACT_PARAMETER
+		  WHERE CONTRACT_ID = #{contractId}
+		    AND STATUS=1
+		  ORDER BY SHOW_INDEX ASC
+   </select>
+   
+   <!-- 根据合同模板ID查询模板所有匹配符 -->
+   <select id="getTempLateParmListTid" resultType="com.xlkfinance.bms.rpc.contract.TempLateParmDto" parameterType="java.lang.Integer">
+   		SELECT 
+			t.pid,t.contract_template_id AS contractTemplateId,t.match_flag as matchFlag,
+			t.match_name AS matchName,t.show_index AS showIndex,t.output_type AS outputType ,t.is_table AS isTable,
+			t.val_convert_flag AS valConvertFlag,t.fixed_Val AS fixedVal,t.status  
+		 FROM biz_contract_template_parm t 
+		 WHERE t.contract_template_id=#{tempLateId}
+		 order by showIndex asc
+   </select>
+   
+   <!-- 根据合同模板ID查询模板非表格匹配符 -->
+   <select id="getTempLateParmListNotTable" resultType="com.xlkfinance.bms.rpc.contract.TempLateParmDto" parameterType="java.lang.Integer">
+   		SELECT 
+			t.pid,t.contract_template_id AS contractTemplateId,t.match_flag as matchFlag,
+			t.match_name AS matchName,t.show_index AS showIndex,t.output_type AS outputType ,t.is_table AS isTable,
+			t.val_convert_flag AS valConvertFlag,t.fixed_Val AS fixedVal,t.status  
+		 FROM biz_contract_template_parm t 
+		 WHERE t.contract_template_id=#{tempLateId}
+		 AND T.STATUS=1
+		 AND T.IS_TABLE != 1
+		 order by showIndex asc
+   </select>
+   
+   <!-- 根据合同模板ID查询模板表格匹配符 -->
+   <select id="getTempLateParmListIsTable" resultType="com.xlkfinance.bms.rpc.contract.TempLateParmDto" parameterType="java.lang.Integer">
+   		SELECT 
+			t.pid,t.contract_template_id AS contractTemplateId,t.match_flag as matchFlag,
+			t.match_name AS matchName,t.show_index AS showIndex,t.output_type AS outputType ,t.is_table AS isTable,
+			t.val_convert_flag AS valConvertFlag,t.fixed_Val AS fixedVal,t.status  
+		 FROM biz_contract_template_parm t 
+		 WHERE t.contract_template_id=#{tempLateId}
+		 AND T.IS_TABLE = 1
+		 order by showIndex asc
+   </select>
+   
+   <!-- 根据匹配符的id删除模板中的一个匹配符 -->
+   <update id="delTempLateOneParm" parameterType="java.lang.Integer">
+   		UPDATE biz_contract_template_parm
+   		SET STATUS = 0
+   		WHERE PID = #{pid}
+   </update>
+   
+   	<!-- 根据合同模版ID查询合同生成规则 -->
+   	<select id="getContractNumberFunByTemplateId" parameterType="java.lang.Integer" resultType="java.lang.String">
+   		SELECT ct.CONTRACT_NUMBER_FUN 
+		FROM BIZ_CONTRACT_TEMPLATE ct
+		WHERE ct.PID = #{templateId}
+   	</select>
+</mapper>

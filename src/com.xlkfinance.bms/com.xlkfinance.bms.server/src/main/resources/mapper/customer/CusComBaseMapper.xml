@@ -1,0 +1,1576 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.customer.mapper.CusComBaseMapper">
+<resultMap id="CusComBaseMap" type="com.xlkfinance.bms.rpc.common.GridViewDTO">
+        <id property="pid" column="pid"/>
+        <result property="value1" column="CPY_NAME" />
+        <result property="value2" column="CPY_ABBR_NAME" />
+        <result property="value3" column="ORG_CODE" />
+        <result property="value4" column="BUS_LIC_CERT" />
+        <result property="value5" column="COM_ALL_NATURE" />
+        <result property="value6" column="COM_OWN_ID" />
+        <result property="value7" column="REG_MONEY" />
+        <result property="value8" column="TELEPHONE" />
+        <result property="value9" column="FOUND_DATE" jdbcType="DATE" javaType="String"/>
+        <result property="value10" column="CUS_STATUS_val" />
+        <result property="value11" column="CUS_STATUS" />
+        <result property="value12" column="real_name" />
+        <result property="value13" column="COM_ID" />
+    </resultMap>
+    
+    <resultMap id="CusComBaseMapById" type="com.xlkfinance.bms.rpc.customer.CusComBase">
+        <id property="pid" column="pid"/>
+        <result column="ACCT_ID" property="cusAcct.pid" jdbcType="INTEGER" />
+        <result property="cpyName" column="CPY_NAME" />
+        <result property="cpyEngName" column="CPY_ENG_NAME" />
+        <result property="cpyAbbrName" column="CPY_ABBR_NAME" />
+        <result property="loanNo" column="LOAN_NO" />
+        <result property="cpyScale" column="CPY_SCALE" />
+        <result property="cusLevel" column="CUS_LEVEL" />
+        <result property="ecoTrade" column="ECO_TRADE" />
+        <result property="staffNum" column="STAFF_NUM" />
+        <result property="basHouStatus" column="BAS_HOU_STATUS" />
+        <result property="orgStatus" column="ORG_STATUS" />
+        <result property="busLicCert" column="BUS_LIC_CERT" />
+        <result property="orgCode" column="ORG_CODE" />
+        <result property="natCert" column="NAT_CERT" />
+        <result property="landCert" column="LAND_CERT" />
+        <result property="creditCode" column="CREDIT_CODE" />
+        <result property="exitCert" column="EXIT_CERT" />
+        <result property="regAddr" column="REG_ADDR" />
+        <result property="regCode" column="REG_CODE" />
+        <result property="regPlan" column="REG_PLAN" />
+        <result property="regCurrency" column="REG_CURRENCY" />
+        <result property="telephone" column="TELEPHONE" />
+        <result property="regMoney" column="REG_MONEY" />
+        <result property="fax" column="FAX" />
+        <result property="shareRatio" column="SHARE_RATIO" />
+        <result property="mgeSiteType" column="MGE_SITE_TYPE" />
+        <result property="area" column="AREA" />
+        <result property="rent" column="RENT" />
+        <result property="foundDate" column="FOUND_DATE" />
+        <result property="mgeCity" column="MGE_CITY" />
+        <result property="actBizAdd" column="ACT_BIZ_ADD" />
+        <result property="actBizCode" column="ACT_BIZ_CODE" />
+        <result property="commAddr" column="COMM_ADDR" />
+        <result property="commCode" column="COMM_CODE" />
+        <result property="recPerson" column="REC_PERSON" />
+        <result property="mail" column="MAIL" />
+        <result property="cpyUrl" column="CPY_URL" />
+        <result property="cusIntro" column="CUS_INTRO" />
+        <result property="busLicCertUrl" column="BUS_LIC_CERT_URL" />
+        <result property="orgCodeCertUrl" column="ORG_CODE_CERT_URL" />
+        <result property="taxCertUrl" column="TAX_CERT_URL" />
+        <result property="loanCardUrl" column="LOAN_CARD_URL" />
+        <result property="comOwnId" column="COM_OWN_ID" />
+        <result property="comAllNature" column="COM_ALL_NATURE" />
+        <result property="unitNature" column="UNIT_NATURE" />
+        <result property="cusAcctManagerName" column="CUS_ACCT_MANAGER_NAME" />
+        <result property="orgCodeCreitsUrl" column="ORG_CODE_CREDITS_URL" />
+        <result property="ecoTradeText" column="ecoTradeText"/>
+        
+        <result property="orgId" column="ORG_ID" />
+        <result property="comOwnName" column="COM_OWN_NAME" />
+        <result property="comOwnPhone" column="COM_OWN_PHONE" />
+        <result property="comOwnCard" column="COM_OWN_CARD"/>
+    </resultMap>
+    
+    <resultMap id="CusComBaseResultMap" type="com.xlkfinance.bms.rpc.customer.CusDTO">
+    	<id property="pid" column="PID"/>
+        <result column="ACCT_ID" property="acctId"/>
+        <result column="CPY_NAME" property="cpyName"/>
+        <result column="CPY_ABBR_NAME" property="cpyAbbrName"/>
+        <result column="BUS_LIC_CERT" property="busLicCert"/>
+        <result column="ORG_CODE" property="orgCode"/>
+        <result column="TELEPHONE" property="cusTelephone"/>
+        <result column="COMM_ADDR" property="commAddr"/>
+        <result column="CHINA_NAME" property="chinaName"/>
+        <result column="SEX" property="sexName"/>
+        <result column="CERT_TYPE" property="certTypeName"/>
+        <result column="CERT_NUMBER" property="certNumber"/>
+        <result column="PER_TELEPHONE" property="perTelephone"/>
+        <result column="MAIL" property="cusMail"/>
+        <result column="REG_MONEY" property="cusRegMoney"/>
+        <result column="FOUND_DATE" property="cusFoundDate"/>
+        <result column="CUS_STATUS_VAL" property="cusStatusVal"/>
+        <result column="REAL_NAME" property="realName"/>
+        <result column="ECO_TRADE" property="ecoTrade"/>
+        <result column="comAllNatureText" property="comAllNatureText"/>
+    </resultMap>
+    
+    <resultMap id="BusinessResultMaps" type="com.xlkfinance.bms.rpc.common.GridViewDTO">
+	    <id property="pid" column="PROJECT_ID" />
+	    <result property="value1" column="ACCT_NAME" />
+	    <result property="value2" column="ACCT_TYPE" />
+	    <result property="value3" column="PROJECT_NAME" />
+	    <result property="value4" column="CREDIT_AMT" />
+	    <result property="value5" column="ASS_WAY" />
+	    <result property="value6" column="DK_CREDIT_AMT" />
+	    <result property="value7" column="DAY_LOAN_INTEREST" />
+	    <result property="value8" column="REPAY_CYCLE" />
+	    <result property="value9" column="CREDTI_START_DT"   jdbcType="DATE" javaType="String"/>
+	    <result property="value10" column="CREDTI_END_DT"  jdbcType="DATE" javaType="String"/>
+	    <result property="value11" column="PLAN_OUT_LOAN_DT"  jdbcType="DATE" javaType="String"/>
+	    <result property="value12" column="PLAN_REPAY_LOAN_DT"  jdbcType="DATE" javaType="String"/>
+	    <result property="value13" column="IS_COMPLETE" />
+	    <result property="value14" column="CERT_NUMBER" />
+	    <result property="value15" column="TELEPHONE" />
+	    <result property="value16" column="PM_USER_ID" />
+	    <result property="value17" column="ACCT_ID" />
+	</resultMap>
+	<resultMap id="comExportResultMap" type="com.xlkfinance.bms.rpc.common.GridViewDTO">
+	  	 <id property="pid" column="pid" />
+	    <result property="value1" column="CPY_NAME" />
+	    <result property="value2" column="LOAN_NO" />
+	    <result property="value3" column="ORG_CODE" />
+	    <result property="value4" column="LAND_CERT" />
+	    <result property="value5" column="" />
+	    <result property="value6" column="" />
+	    <result property="value7" column="REG_ADDR" />
+	    <result property="value8" column="FOUND_DATE" />
+	    <result property="value9" column=""/>
+	    <result property="value10" column=""/>
+	    <result property="value11" column="REG_CURRENCY"/>
+	    <result property="value12" column="REG_MONEY"/>
+	    <result property="value13" column="CPY_SCALE" />
+	    <result property="value14" column="ACT_BIZ_ADD" />
+	    <result property="value15" column="COM_OWN_ID" />
+	    <result property="value16" column="cert_Type" />
+	    <result property="value17" column="CERT_NUMBER" />
+	    <result property="value18" column="" />
+	    <result property="value19" column="" />
+	    <result property="value20" column="" />
+	    <result property="value21" column="" />
+	    <result property="value22" column="work_service" />
+	    <result property="value23" column="" />
+	    <result property="value24" column="" />
+	</resultMap>
+	
+	<resultMap type="com.xlkfinance.bms.rpc.customer.ExportCusComBase" id="ExportCusComBaseMap">
+		<result property="pid" column="PID"/>
+		<result property="cpyName" column="CPY_NAME"/>
+		<result property="regMoney" column="REG_MONEY"/>
+		<result property="foundDate" column="FOUND_DATE"/>
+		<result property="telephone" column="TELEPHONE"/>
+		<result property="busLicCert" column="BUS_LIC_CERT"/>
+		<result property="orgCode" column="ORG_CODE"/>
+		<result property="bankName" column="BANK_NAME"/>
+		<result property="bankType" column="bankType"/>
+		<result property="loanCardId" column="LOAN_CARD_ID"/>
+		<result property="bankType" column="BANKTYPE"/>
+		<result property="ChinaName" column="CHINA_NAME"/>
+		<result property="mobilePhone" column="MOBILE_PHONE"/>
+		<result property="certNumber" column="CERTNUMBER"/>
+		<result property="liveAddr" column="live_addr"/>
+		<result property="regAddr" column="REG_ADDR"/>
+		<result property="actBizAdd" column="ACT_BIZ_ADD"/>
+		<result property="ecotradeText" column="ECOTRADETEXT"/>
+		<result property="personMoneyTotal" column="PERSONMONEYTOTAL"/>
+		<result property="mgeCity" column="MGE_CITY"/>
+	</resultMap>
+	
+    
+    <sql id="cusComBase_Column_List">
+		CPB.PID,CPB.ACCT_ID,CPB.CPY_NAME,CPB.CPY_ABBR_NAME,CPB.BUS_LIC_CERT,CPB.ORG_CODE,
+       	CPB.COMM_ADDR,PERSON.CHINA_NAME,PERSON.CERT_NUMBER,PERSON.TELEPHONE AS PER_TELEPHONE,
+       	CPB.MAIL,CPB.REG_MONEY,CPB.FOUND_DATE,PERSON.RELATION_TYPE,CPB.TELEPHONE,
+       	CASE ACCT.CUS_STATUS
+       				WHEN 1 THEN
+                    '普通'
+                   WHEN 2 THEN
+                    '黑名单'
+                   WHEN 3 THEN
+                    '拒贷'
+                   WHEN 4 THEN
+                    '借贷'
+                   WHEN 5 THEN
+                    '黑名单、拒贷'
+                   WHEN 6 THEN
+                    '借贷、黑名单'
+                   WHEN 7 THEN
+                    '借贷、拒贷'
+                   WHEN 9 THEN
+                    '借贷、黑名单、拒贷'
+                 END CUS_STATUS_VAL,
+       	(SELECT LOOK.LOOKUP_VAL FROM SYS_LOOKUP_VAL LOOK WHERE LOOK.PID = PERSON.SEX) AS SEX,
+       	(SELECT LOOK.LOOKUP_VAL FROM SYS_LOOKUP_VAL LOOK WHERE LOOK.PID = PERSON.CERT_TYPE) AS CERT_TYPE,
+       	(SELECT LOOK.LOOKUP_VAL FROM SYS_LOOKUP_VAL LOOK WHERE LOOK.PID = CPB.COM_ALL_NATURE) AS comAllNatureText,
+       	(SELECT SU.REAL_NAME FROM SYS_USER SU WHERE SU.PID = ACCT.PM_USER_ID) REAL_NAME
+    </sql>
+    
+    <!-- 查询当前用户的企业客户的所需的列 -->
+    <sql id="connectSQLList">
+        FROM CUS_COM_BASE CPB,
+       	CUS_ACCT     ACCT,
+       	CUS_PERSON   PERSON
+ 		WHERE ACCT.PID = CPB.ACCT_ID 
+		AND CPB.COM_OWN_ID = PERSON.PID 
+   		AND PERSON.ISCOMOWN = 1 
+   		AND acct.STATUS = 1 
+       	AND acct.CUS_TYPE = 2 
+       	AND acct.PM_USER_ID IN (SELECT t.pid FROM SYS_USER t START WITH t.pid = #{userId}
+     	CONNECT BY t.superior_user_id = PRIOR t.pid) 
+     	<if test="cpyName != null and cpyName != '' "> 
+	   		AND cpb.CPY_NAME LIKE '%${cpyName}%'
+	    </if>
+	    <if test="ecoTrade != null and ecoTrade !=-1 ">
+	   		AND cpb.ECO_TRADE  = #{ecoTrade}   
+	    </if>
+    </sql>
+<!--     企业客户资信评估的用的 -->
+      <sql id="connectSQLLists">
+        FROM CUS_COM_BASE CPB,
+       	CUS_ACCT     ACCT,
+       	CUS_PERSON   PERSON,
+       	SYS_USER     SU
+ 		WHERE ACCT.PID = CPB.ACCT_ID 
+		AND CPB.COM_OWN_ID = PERSON.PID 
+   		AND PERSON.ISCOMOWN = 1 
+   		AND acct.STATUS = 1 
+       	AND acct.CUS_TYPE = 2 
+       	AND ACCT.PM_USER_ID = SU.PID(+)
+       	AND (SU.SUPERIOR_USER_ID=#{userId,jdbcType=INTEGER} OR SU.PID=#{userId,jdbcType=INTEGER})
+    </sql>
+    
+    
+    <!-- 查询所有企业客户的信息所需要的列 -->
+    <sql id="connectSQLListTwo">
+    	FROM CUS_COM_BASE CPB,
+       	CUS_ACCT     ACCT,
+       	CUS_PERSON   PERSON
+ 		WHERE ACCT.PID = CPB.ACCT_ID 
+		AND CPB.COM_OWN_ID = PERSON.PID 
+   		AND PERSON.ISCOMOWN = 1 
+   		AND acct.STATUS = 1 
+       	AND acct.CUS_TYPE = 2 
+       	AND CPB.ACCT_ID  NOT IN(SELECT distinct abr.ACCT_ID FROM CUS_ACCT_BLACKLIST_REFUSE abr WHERE abr.status = 1)
+     	<if test="cpyName != null and cpyName != '' "> 
+	   		AND cpb.CPY_NAME LIKE '%${cpyName}%'
+	    </if>
+	    <if test="ecoTrade != null and ecoTrade !=-1 ">
+	   		AND cpb.ECO_TRADE  = #{ecoTrade}   
+	    </if>
+    </sql>
+    
+    <sql id="connectSQL">
+        FROM CUS_COM_BASE CPB,
+        BIZ_PROJECT P,
+       	CUS_ACCT     ACCT,
+       	CUS_PERSON   PERSON
+ 		WHERE P.ACCT_ID = ACCT.PID
+ 		AND ACCT.PID = CPB.ACCT_ID 
+		AND CPB.COM_OWN_ID = PERSON.PID 
+   		AND PERSON.ISCOMOWN = 1 
+   		AND acct.STATUS = 1 
+       	AND acct.CUS_TYPE = 2 
+    </sql>
+    
+    <!-- 查询企业客户的信息 -->
+    <select id="getEnterpriseList" resultMap="CusComBaseResultMap" parameterType="com.xlkfinance.bms.rpc.customer.CusDTO">
+    	SELECT * FROM (
+		SELECT rownum rnum ,aa.* FROM (  
+		SELECT  rownum rid, 
+		<include refid="cusComBase_Column_List" /> 
+		<include refid="connectSQLList" />
+		ORDER BY PERSON.CHINA_NAME DESC ) aa
+		) bb 
+		where 1=1 
+		<if test="page != null and page !=0 and rows!=null and rows!=0">
+			and rnum<![CDATA[<=]]>#{page}*#{rows}
+			and rnum<![CDATA[>=]]>((#{page}-1)*#{rows})+1
+		</if>
+    </select>
+    
+    <!-- 查询企业客户的总数 -->
+    <select id="getEnterpriseListCount" resultType="java.lang.Integer" parameterType="com.xlkfinance.bms.rpc.customer.CusDTO">
+    	SELECT count(*)
+    	<include refid="connectSQLList" />
+    </select>
+    
+    <select id="selectByPidPrimaryKey" resultMap="CusComBaseResultMap" parameterType="java.lang.Integer">
+     	SELECT 
+		<include refid="cusComBase_Column_List" />  
+		<include refid="connectSQL" />
+		AND P.PID = #{pid,jdbcType=INTEGER}
+     </select> 
+    
+    <!-- 根据客户ID查询企业信息 -->
+    <select id="getCusComByAcctId" resultMap="CusComBaseResultMap" parameterType="java.lang.Integer">
+    	SELECT 
+		<include refid="cusComBase_Column_List" />  
+		FROM CUS_COM_BASE CPB,
+        CUS_ACCT     ACCT,
+        CUS_PERSON   PERSON
+     	WHERE ACCT.PID = CPB.ACCT_ID 
+    	AND CPB.COM_OWN_ID = PERSON.PID 
+       	AND PERSON.ISCOMOWN = 1 
+       	AND acct.STATUS = 1 
+        AND acct.CUS_TYPE = 2
+		AND ACCT.PID = #{acctId}
+    </select>
+    
+    <!-- 查询所有企业的法人相关信息  -->
+    <select id="getEnterpriseLegalPersonList" resultMap="CusComBaseResultMap" parameterType="com.xlkfinance.bms.rpc.customer.CusDTO">
+    	SELECT * FROM (
+		SELECT rownum rnum ,aa.* FROM (  
+		SELECT  rownum rid, 
+		<include refid="cusComBase_Column_List" /> 
+		<include refid="connectSQLListTwo" />
+		ORDER BY PERSON.CHINA_NAME DESC ) aa
+		) bb 
+		where 1=1 
+		<if test="page != null and page !=0 and rows!=null and rows!=0">
+			and rnum<![CDATA[<=]]>#{page}*#{rows}
+			and rnum>=((#{page}-1)*#{rows})+1
+		</if>
+    </select>
+    
+    <!-- 查询所有企业的数量 -->
+    <select id="getEnterpriseLegalPersonCount" resultType="java.lang.Integer" parameterType="com.xlkfinance.bms.rpc.customer.CusDTO">
+    	SELECT count(*)
+    	<include refid="connectSQLListTwo" />
+    </select>
+    
+    <select id="getCusComBases" resultMap="CusComBaseMap" parameterType="com.xlkfinance.bms.rpc.common.GridViewDTO">
+  	     select * from(
+  	      SELECT rownum rn,
+  	      		 CA.PID,
+                 CPB.PID COM_ID,
+                 CPB.CPY_NAME,
+                 CPB.CPY_ABBR_NAME,
+                 CPB.ORG_CODE,
+                 CPB.BUS_LIC_CERT,
+                 (SELECT slv.lookup_desc FROM sys_lookup_val slv WHERE slv.pid=CPB.COM_ALL_NATURE ) COM_ALL_NATURE,
+                 (select cp.china_name from cus_person cp where cp.acct_id=cpb.acct_id and cp.iscomown=1 ) COM_OWN_ID,
+                 CPB.REG_MONEY,
+                 CPB.TELEPHONE,
+                 CPB.FOUND_DATE,
+                 CASE CA.CUS_STATUS
+                   WHEN 1 THEN
+                    '普通'
+                   WHEN 2 THEN
+                    '黑名单'
+                   WHEN 3 THEN
+                    '拒贷'
+                   WHEN 4 THEN
+                    '借贷'
+                   WHEN 5 THEN
+                    '黑名单、拒贷'
+                   WHEN 6 THEN
+                    '借贷、黑名单'
+                   WHEN 7 THEN
+                    '借贷、拒贷'
+                   WHEN 9 THEN
+                    '借贷、黑名单、拒贷'
+                 END CUS_STATUS_VAL,
+                 SU.real_name,
+                 CA.CUS_STATUS CUS_STATUS
+            FROM CUS_ACCT     CA,
+                 SYS_USER     SU,
+                 CUS_COM_BASE CPB
+                 WHERE 1 = 1
+                   AND CA.PM_USER_ID = SU.PID(+)
+                   AND CPB.ACCT_ID = CA.PID
+                   AND CA.STATUS = 1
+                   AND CA.CUS_TYPE = 2
+                   AND CA.PM_USER_ID IN (
+	        				SELECT t.pid FROM SYS_USER t START WITH t.pid = #{userId} 
+	        				CONNECT BY t.superior_user_id = PRIOR t.pid)
+  	     <if test="cpyName != null and cpyName !=''"> 
+	   	    AND CPB.CPY_NAME LIKE '%${cpyName}%'
+	     </if>
+	   <if test="orgCode != null and orgCode !=''">
+	   		AND CPB.ORG_CODE  LIKE '%${orgCode}%'   
+	   </if>
+	   <if test="comAllNature != null and comAllNature !=-1 and comAllNature !=0">
+	   	AND  CPB.COM_ALL_NATURE = #{comAllNature,jdbcType=INTEGER}
+	   </if>
+	   <if test="busLicCert != null and busLicCert !=''">
+	   	AND CPB.BUS_LIC_CERT LIKE '%${busLicCert}%'
+	   </if> 
+	    <if test="cusStatus != null and cusStatus !=0">
+	   	AND CA.CUS_STATUS  = #{cusStatus,jdbcType=INTEGER}
+	   </if>
+	   AND rownum<![CDATA[<=]]>#{page}*#{rows}
+	   ORDER BY CA.PID DESC)zA
+       WHERE rn>=((#{page}-1)*#{rows})+1
+  	</select>
+  	<select id="getTotalCusComBases" parameterType="com.xlkfinance.bms.rpc.common.GridViewDTO" resultType="java.lang.Integer">
+  	    SELECT COUNT(PID) FROM (
+  	    SELECT CA.PID,
+                 CPB.PID COM_ID,
+                 CPB.CPY_NAME,
+                 CPB.CPY_ABBR_NAME,
+                 CPB.ORG_CODE,
+                 CPB.BUS_LIC_CERT,
+                 (SELECT slv.lookup_desc FROM sys_lookup_val slv WHERE slv.pid=CPB.COM_ALL_NATURE ) COM_ALL_NATURE,
+                 (select cp.china_name from cus_person cp where cp.acct_id=cpb.acct_id and cp.iscomown=1 ) COM_OWN_ID,
+                 CPB.REG_MONEY,
+                 CPB.TELEPHONE,
+                 CPB.FOUND_DATE,
+                 CASE CA.CUS_STATUS
+                   WHEN 1 THEN
+                    '普通'
+                   WHEN 2 THEN
+                    '黑名单'
+                   WHEN 3 THEN
+                    '拒贷'
+                   WHEN 4 THEN
+                    '借贷'
+                   WHEN 5 THEN
+                    '黑名单、拒贷'
+                   WHEN 6 THEN
+                    '借贷、黑名单'
+                   WHEN 7 THEN
+                    '借贷、拒贷'
+                   WHEN 9 THEN
+                    '借贷、黑名单、拒贷'
+                 END CUS_STATUS_VAL,
+                 SU.real_name,
+                 CA.CUS_STATUS CUS_STATUS
+            FROM CUS_ACCT     CA,
+                 SYS_USER     SU,
+                 CUS_COM_BASE CPB
+                 WHERE 1 = 1
+                   AND CA.PM_USER_ID = SU.PID(+)
+                   AND CPB.ACCT_ID = CA.PID
+                   AND CA.STATUS = 1
+                   AND CA.CUS_TYPE = 2
+                   AND CA.PM_USER_ID IN (
+	        				SELECT t.pid FROM SYS_USER t START WITH t.pid = #{userId} 
+	        				CONNECT BY t.superior_user_id = PRIOR t.pid)
+  	     <if test="cpyName != null and cpyName !=''"> 
+	   	    AND CPB.CPY_NAME LIKE '%${cpyName}%'
+	     </if>
+	   <if test="orgCode != null and orgCode !=''">
+	   		AND CPB.ORG_CODE  LIKE '%${orgCode}%'   
+	   </if>
+	   <if test="comAllNature != null and comAllNature !=-1 and comAllNature !=0">
+	   	AND  CPB.COM_ALL_NATURE = #{comAllNature,jdbcType=INTEGER}
+	   </if>
+	   <if test="busLicCert != null and busLicCert !=''">
+	   	AND CPB.BUS_LIC_CERT LIKE '%${busLicCert}%'
+	   </if> 
+	    <if test="cusStatus != null and cusStatus !=0">
+	   	AND CA.CUS_STATUS  = #{cusStatus,jdbcType=INTEGER}
+	   </if>
+	   ORDER BY CA.PID DESC)
+  	</select>
+  	
+<!--   	查询企业客户基础信息ID -->
+  	 <select id="selectCusComBaseById" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+	  	select ccb.pid from Cus_Com_Base ccb where ccb.acct_id=#{acctId,jdbcType=INTEGER}
+     </select> 
+     
+     <!--   	查询客户ID By企业基础信息ID -->
+     <select id="selectAcctIdByComId" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+	  	SELECT acct_id FROM cus_com_base WHERE pid=#{comId,jdbcType=INTEGER}
+     </select> 
+     
+  	 <select id="selectByPrimaryKey" resultMap="CusComBaseMapById" parameterType="java.lang.Integer">
+	  	select * from Cus_Com_Base ccb where ccb.pid=#{comId,jdbcType=INTEGER}
+     </select> 
+     
+     
+  	
+<insert id="insert" parameterType="com.xlkfinance.bms.rpc.customer.CusComBase">
+    <selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+		SELECT SEQ_CUS_COM_BASE.Nextval as PID from DUAL
+	</selectKey>
+    insert into cus_com_base (
+	    PID, 
+	    <if test="cusAcct.pid !=null">
+	    ACCT_ID, 
+	    </if>
+	    <if test="cpyName !=null and cpyName !=''">
+	    CPY_NAME, 
+	    </if>
+	    <if test="cpyEngName !=null and cpyEngName !=''">
+	    CPY_ENG_NAME, 
+	    </if>
+	    <if test="cpyAbbrName !=null and cpyAbbrName !=''">
+	    CPY_ABBR_NAME, 
+	    </if>
+	    <if test="cpyScale !=null">
+	    CPY_SCALE, 
+	    </if>
+	    <if test="ecoTrade !=null">
+	    ECO_TRADE, 
+	    </if>
+	    <if test="staffNum !=null">
+	    STAFF_NUM, 
+	    </if>
+	    <if test="basHouStatus !=null">
+	    BAS_HOU_STATUS,
+	    </if> 
+	    <if test="orgStatus !=null">
+	    ORG_STATUS, 
+	    </if>
+	    <if test="busLicCert !=null and busLicCert !=''">
+	    BUS_LIC_CERT, 
+	    </if>
+	    <if test="busLicCertUrl !=null and busLicCertUrl !=''">
+	    BUS_LIC_CERT_URL, 
+	    </if>
+	    <if test="orgCode !=null and orgCode !=''">
+	    ORG_CODE, 
+	    </if>
+	    <if test="orgCodeCertUrl !=null and orgCodeCertUrl !=''">
+	    ORG_CODE_CERT_URL,
+	    </if> 
+	    <if test="natCert !=null and natCert !=''">
+	    NAT_CERT, 
+	    </if>
+	    <if test="landCert !=null and landCert !=''">
+	    LAND_CERT, 
+	    </if>
+	    <if test="taxCertUrl !=null and taxCertUrl !=''">
+	    TAX_CERT_URL, 
+	    </if>
+	    <if test="orgCodeCreitsUrl !=null and orgCodeCreitsUrl !=''">
+	    ORG_CODE_CREDITS_URL, 
+	    </if>
+	    <if test="creditCode !=null and creditCode !=''">
+	    CREDIT_CODE, 
+	    </if>
+	    <if test="exitCert !=null and exitCert !=''">
+	    EXIT_CERT, 
+	    </if>
+	    <if test="regAddr !=null and regAddr !=''">
+	    REG_ADDR, 
+	    </if>
+	    <if test="regCode !=null and regCode !=''">
+	    REG_CODE, 
+	    </if>
+	    <if test="regPlan !=null and regPlan !=''">
+	    REG_PLAN, 
+	    </if>
+	    <if test="regMoney !=null and regMoney !=''">
+	    REG_MONEY, 
+	    </if>
+	    <if test="regCurrency !=null">
+	    REG_CURRENCY, 
+	    </if>
+	    <if test="mgeSiteType !=null and mgeSiteType !=''">
+	    MGE_SITE_TYPE, 
+	    </if>
+	    <if test="mgeSiteValue !=null and mgeSiteValue !=''">
+	    MGE_SITE_VALUE, 
+	    </if>
+	    <if test="area !=null and area !=''">
+	    AREA, 
+	    </if>
+	    <if test="rent !=null">
+	    RENT, 
+	    </if>
+	    <if test="foundDate !=null and foundDate !=''">
+	    FOUND_DATE,
+	    </if> 
+	    <if test="shareRatio !=null">
+	    SHARE_RATIO, 
+	    </if>
+	    <if test="mgeCity !=null and mgeCity !=''">
+	    MGE_CITY, 
+	    </if>
+	    <if test="actBizAdd !=null and actBizAdd !=''">
+	    ACT_BIZ_ADD,
+	    </if> 
+	    <if test="actBizCode !=null and actBizCode !=''">
+	    ACT_BIZ_CODE, 
+	    </if>
+	    <if test="commAddr !=null and commAddr !=''">
+	    COMM_ADDR, 
+	    </if>
+	    <if test="commCode !=null and commCode !=''">
+	    COMM_CODE, 
+	    </if>
+	    <if test="recPerson !=null and recPerson !=''">
+	    REC_PERSON, 
+	    </if>
+	    <if test="mail !=null and mail !=''">
+	    MAIL, 
+	    </if>
+	    <if test="cusLevel !=null and cusLevel !=''">
+	    CUS_LEVEL, 
+	    </if>
+	    <if test="cpyUrl !=null and cpyUrl !=''">
+	    CPY_URL, 
+	    </if>
+	    <if test="cusIntro !=null and cusIntro !=''">
+	    CUS_INTRO,
+	    </if> 
+	    <if test="telephone !=null and telephone !=''">
+	    TELEPHONE, 
+	    </if>
+	    <if test="fax !=null and fax !=''">
+	    FAX, 
+	    </if>
+	    <if test="loanNo !=null and loanNo !=''">
+	    LOAN_NO, 
+	    </if>
+	    <if test="loanCardUrl !=null and loanCardUrl !=''">
+	    LOAN_CARD_URL,
+	    </if>
+	    <if test="comOwnId !=null and comOwnId !=''">
+	    COM_OWN_ID,
+	    </if>
+	    <if test="comAllNature !=null">
+	    com_all_nature,
+	    </if>
+	    <if test="unitNature !=null and unitNature !=''">
+	    unit_nature,
+	    </if>
+	    
+	     <if test="orgId !=null and orgId >0">
+	    ORG_ID,
+	    </if>
+	    <if test="comOwnName !=null and comOwnName !=''">
+	    COM_OWN_NAME,
+	    </if>
+	    <if test="comOwnPhone !=null and comOwnPhone !=''">
+	    COM_OWN_PHONE,
+	    </if>
+	    <if test="comOwnCard !=null and comOwnCard !=''">
+	    COM_OWN_CARD,
+	    </if>
+	    
+	     STATUS)
+    values (
+	    #{pid,jdbcType=INTEGER}, 
+	    <if test="cusAcct.pid !=null">
+	    #{cusAcct.pid,jdbcType=INTEGER}, 
+	    </if>
+	    <if test="cpyName !=null and cpyName !=''">
+	    #{cpyName,jdbcType=VARCHAR}, 
+	    </if>
+	    <if test="cpyEngName !=null and cpyEngName !=''">
+	    #{cpyEngName,jdbcType=VARCHAR}, 
+	    </if>
+	    <if test="cpyAbbrName !=null and cpyAbbrName !=''">
+	    #{cpyAbbrName,jdbcType=VARCHAR},
+	    </if> 
+	    <if test="cpyScale !=null">
+	    #{cpyScale,jdbcType=INTEGER},
+	    </if>
+	    <if test="ecoTrade !=null">
+	    #{ecoTrade,jdbcType=INTEGER},
+	    </if>
+	    <if test="staffNum !=null">
+	    #{staffNum,jdbcType=INTEGER},
+	    </if> 
+	    <if test="basHouStatus !=null">
+	    #{basHouStatus,jdbcType=INTEGER},
+	    </if>
+	    <if test="orgStatus !=null">
+	    #{orgStatus,jdbcType=INTEGER},
+	    </if>
+	    <if test="busLicCert !=null and busLicCert !=''">
+      	#{busLicCert,jdbcType=VARCHAR},
+      	</if>
+      	<if test="busLicCertUrl !=null and busLicCertUrl !=''">
+      	#{busLicCertUrl,jdbcType=VARCHAR},
+      	</if>
+      	<if test="orgCode !=null and orgCode !=''">
+      	#{orgCode,jdbcType=VARCHAR},
+      	</if>
+      	<if test="orgCodeCertUrl !=null and orgCodeCertUrl !=''">
+      	#{orgCodeCertUrl,jdbcType=VARCHAR},
+      	</if>
+      	<if test="natCert !=null and natCert !=''">
+      	#{natCert,jdbcType=VARCHAR},
+      	</if>
+      	<if test="landCert !=null and landCert !=''">
+      	#{landCert,jdbcType=VARCHAR},
+      	</if>
+      	<if test="taxCertUrl !=null and taxCertUrl !=''">
+      	#{taxCertUrl,jdbcType=VARCHAR},
+      	</if>
+	    <if test="orgCodeCreitsUrl !=null and orgCodeCreitsUrl !=''">
+      	#{orgCodeCreitsUrl,jdbcType=VARCHAR},
+      	</if>
+      	<if test="creditCode !=null and creditCode !=''">
+      	#{creditCode,jdbcType=VARCHAR},
+      	</if>
+      	<if test="exitCert !=null and exitCert !=''">
+      	#{exitCert,jdbcType=VARCHAR},
+      	</if>
+      	<if test="regAddr !=null and regAddr !=''">
+      	#{regAddr,jdbcType=VARCHAR},
+      	</if>
+      	<if test="regCode !=null and regCode !=''">
+      	#{regCode,jdbcType=VARCHAR},
+      	</if>
+      	<if test="regPlan !=null and regPlan !=''">
+      	#{regPlan,jdbcType=VARCHAR},
+      	</if>
+      	<if test="regMoney !=null and regMoney !=''">
+      	#{regMoney,jdbcType=DOUBLE},
+		</if>      	
+		<if test="regCurrency !=null">
+      	#{regCurrency,jdbcType=INTEGER},
+      	</if>
+      	<if test="mgeSiteType !=null and mgeSiteType !=''">
+      	#{mgeSiteType,jdbcType=VARCHAR},
+      	</if>
+      	<if test="mgeSiteValue !=null and mgeSiteValue !=''">
+      	#{mgeSiteValue,jdbcType=DOUBLE},
+      	</if>
+      	<if test="area !=null and area !=''">
+      	#{area,jdbcType=DOUBLE},
+      	</if>
+      	<if test="rent !=null">
+      	#{rent,jdbcType=INTEGER},
+      	</if>
+      	<if test="foundDate !=null and foundDate !=''">
+     	#{foundDate,jdbcType=DATE,javaType=String},
+     	</if>
+     	<if test="shareRatio !=null">
+      	#{shareRatio,jdbcType=INTEGER},
+      	</if>
+      	<if test="mgeCity !=null and mgeCity !=''">
+      	#{mgeCity,jdbcType=VARCHAR},
+      	</if>
+      	<if test="actBizAdd !=null and actBizAdd !=''">
+      	#{actBizAdd,jdbcType=VARCHAR},
+      	</if>
+      	<if test="actBizCode !=null and actBizCode !=''">
+      	#{actBizCode,jdbcType=VARCHAR},
+      	</if>
+      	<if test="commAddr !=null and commAddr !=''">
+      	#{commAddr,jdbcType=VARCHAR},
+      	</if>
+      	<if test="commCode !=null and commCode !=''">
+      	#{commCode,jdbcType=VARCHAR},
+      	</if>
+      	<if test="recPerson !=null and recPerson !=''">
+      	#{recPerson,jdbcType=VARCHAR},
+      	</if>
+      	<if test="mail !=null and mail !=''">
+      	#{mail,jdbcType=VARCHAR},
+      	</if>
+      	<if test="cusLevel !=null and cusLevel !=''">
+      	#{cusLevel,jdbcType=INTEGER},
+      	</if>
+      	<if test="cpyUrl !=null and cpyUrl !=''">
+      	#{cpyUrl,jdbcType=VARCHAR},
+      	</if>
+      	<if test="cusIntro !=null and cusIntro !=''">
+      	#{cusIntro,jdbcType=VARCHAR},
+      	</if>
+      	<if test="telephone !=null and telephone !=''">
+      	#{telephone,jdbcType=VARCHAR},
+      	</if>
+      	<if test="fax !=null and fax !=''">
+      	#{fax,jdbcType=VARCHAR},
+      	</if>
+      	<if test="loanNo !=null and loanNo !=''">
+      	#{loanNo,jdbcType=VARCHAR},
+      	</if>
+      	<if test="loanCardUrl !=null and loanCardUrl !=''">
+      	#{loanCardUrl,jdbcType=VARCHAR},
+      	</if>
+      	<if test="comOwnId !=null and comOwnId !=''">
+      	#{comOwnId,jdbcType=VARCHAR},
+      	</if>
+      	<if test="comAllNature !=null">
+      	#{comAllNature,jdbcType=INTEGER},
+      	</if>
+      	<if test="unitNature !=null  and unitNature !=''">
+      	#{unitNature,jdbcType=INTEGER},
+      	</if>
+      	
+      	<if test="orgId !=null and orgId >0">
+	    #{orgId,jdbcType=INTEGER},
+	    </if>
+	    <if test="comOwnName !=null and comOwnName !=''">
+	    #{comOwnName,jdbcType=VARCHAR},
+	    </if>
+	    <if test="comOwnPhone !=null and comOwnPhone !=''">
+	    #{comOwnPhone,jdbcType=VARCHAR},
+	    </if>
+	    <if test="comOwnCard !=null and comOwnCard !=''">
+	    #{comOwnCard,jdbcType=VARCHAR},
+	    </if>
+      	
+      	#{status,jdbcType=INTEGER})
+  </insert>
+     <!-- 更新的方法 -->
+	<update id="updateByPrimaryKey" parameterType="com.xlkfinance.bms.rpc.customer.CusComBase">
+		update cus_com_base
+		<set>
+		<if test="cusAcct.pid != null">
+		    ACCT_ID = #{cusAcct.pid,jdbcType=INTEGER}, 
+		</if>
+		<if test="cpyName != null">
+			CPY_NAME = #{cpyName,jdbcType=VARCHAR}, 
+		</if> 
+	    <if test="cpyEngName != null">
+	    	CPY_ENG_NAME = #{cpyEngName,jdbcType=VARCHAR},
+	    </if> 
+	    <if test="cpyAbbrName != null">
+	    	CPY_ABBR_NAME = #{cpyAbbrName,jdbcType=VARCHAR}, 
+	    </if>
+	    <if test="cpyScale != null">
+	    	CPY_SCALE = #{cpyScale,jdbcType=INTEGER},
+	     </if>
+	    <if test="ecoTrade != null">
+	    	ECO_TRADE = #{ecoTrade,jdbcType=INTEGER},
+	     </if>
+	    <if test="staffNum != null">
+	    	STAFF_NUM = #{staffNum,jdbcType=INTEGER}, 
+	    </if>
+	    <if test="basHouStatus != null">
+	    	BAS_HOU_STATUS = #{basHouStatus,jdbcType=INTEGER},
+	    </if>
+	    <if test="orgStatus != null">
+	    	ORG_STATUS = #{orgStatus,jdbcType=INTEGER},
+	    </if>
+	    <if test="busLicCert != null">
+      		BUS_LIC_CERT = #{busLicCert,jdbcType=VARCHAR},
+      	</if>
+      	<if test="busLicCertUrl != null">
+      		BUS_LIC_CERT_URL = #{busLicCertUrl,jdbcType=VARCHAR},
+      	</if>
+      	<if test="orgCode != null">
+      		ORG_CODE = #{orgCode,jdbcType=VARCHAR},
+      	</if>
+      	<if test="orgCodeCertUrl != null">
+      		ORG_CODE_CERT_URL = #{orgCodeCertUrl,jdbcType=VARCHAR},
+      	</if>
+      	<if test="natCert != null">
+      		NAT_CERT = #{natCert,jdbcType=VARCHAR},
+      	</if>
+      	<if test="landCert != null">
+      		LAND_CERT = #{landCert,jdbcType=VARCHAR},
+      	</if>
+      	<if test="taxCertUrl != null">
+      		TAX_CERT_URL = #{taxCertUrl,jdbcType=VARCHAR},
+      	</if>
+      	<if test="creditCode != null">
+      		CREDIT_CODE = #{creditCode,jdbcType=VARCHAR},
+      	</if>
+      	<if test="exitCert != null">
+      		EXIT_CERT = #{exitCert,jdbcType=VARCHAR},
+      	</if>
+      	<if test="regAddr != null">
+      		REG_ADDR = #{regAddr,jdbcType=VARCHAR},
+      	</if>
+      	<if test="regCode != null">
+      		REG_CODE = #{regCode,jdbcType=VARCHAR},
+      	</if>
+      	<if test="regPlan != null">
+      		REG_PLAN = #{regPlan,jdbcType=VARCHAR},
+      	</if>
+      	<if test="regMoney != null">
+      		REG_MONEY = #{regMoney,jdbcType=DOUBLE},
+      	</if>
+      	<if test="regCurrency != null">
+      		REG_CURRENCY = #{regCurrency,jdbcType=INTEGER},
+      	</if>
+      	<if test="mgeSiteType != null">
+      		MGE_SITE_TYPE = #{mgeSiteType,jdbcType=VARCHAR},
+      	</if>
+      	<if test="mgeSiteValue != null">
+      		MGE_SITE_VALUE = #{mgeSiteValue,jdbcType=DOUBLE},
+      	</if>
+      	<if test="area != null">
+      		AREA = #{area,jdbcType=DOUBLE},
+      	</if>
+      	<if test="rent != null">
+      		RENT = #{rent,jdbcType=INTEGER},
+      	</if>
+      	<if test="foundDate != null">
+      		FOUND_DATE  = #{foundDate,jdbcType=DATE},
+      	</if>
+      	<if test="shareRatio != null">
+      		SHARE_RATIO  = #{shareRatio,jdbcType=INTEGER},
+      	</if>
+      	<if test="mgeCity != null">
+      		MGE_CITY = #{mgeCity,jdbcType=VARCHAR},
+      	</if>
+      	<if test="actBizAdd != null">
+      		ACT_BIZ_ADD = #{actBizAdd,jdbcType=VARCHAR},
+      	</if>
+      	<if test="actBizCode != null">
+      		ACT_BIZ_CODE  = #{actBizCode,jdbcType=VARCHAR},
+      	</if>
+      	<if test="commAddr != null">
+      		COMM_ADDR = #{commAddr,jdbcType=VARCHAR},
+      	</if>
+      	<if test="commCode != null">
+      		COMM_CODE = #{commCode,jdbcType=VARCHAR},
+      	</if>
+      	<if test="recPerson != null">
+      		REC_PERSON  = #{recPerson,jdbcType=VARCHAR},
+      	</if>
+      	<if test="mail != null">
+      		MAIL = #{mail,jdbcType=VARCHAR},
+      	</if>
+      	<if test="cusLevel != null">
+      		CUS_LEVEL  = #{cusLevel,jdbcType=INTEGER},
+      	</if>
+      	<if test="cpyUrl != null">
+      		CPY_URL = #{cpyUrl,jdbcType=VARCHAR},
+      	</if>
+      	<if test="cusIntro != null">
+      		CUS_INTRO  = #{cusIntro,jdbcType=VARCHAR},
+      	</if>
+      	<if test="telephone != null">
+      		TELEPHONE  = #{telephone,jdbcType=VARCHAR},
+      	</if>
+      	<if test="fax != null">
+      		FAX = #{fax,jdbcType=VARCHAR},
+      	</if>
+      	<if test="loanNo != null">
+      		LOAN_NO  = #{loanNo,jdbcType=VARCHAR},
+      	</if>
+      	<if test="loanCardUrl != null">
+      		LOAN_CARD_URL = #{loanCardUrl,jdbcType=VARCHAR},
+      	</if>
+      	<if test="status != null">
+      		STATUS = #{status,jdbcType=INTEGER},
+      	</if>
+      	<if test="unitNature != null">
+      		unit_nature = #{unitNature,jdbcType=INTEGER},
+      	</if>
+      	<if test="comAllNature != null">
+      		com_all_nature = #{comAllNature,jdbcType=INTEGER},
+      	</if>
+      	<if test="cusAcctManagerName != null">
+      		CUS_ACCT_MANAGER_NAME = #{cusAcctManagerName,jdbcType=INTEGER},
+      	</if>
+      	<if test="comOwnId != null">
+      		COM_OWN_ID = #{comOwnId,jdbcType=INTEGER},
+      	</if>
+      	<if test="orgCodeCreitsUrl !=null and orgCodeCreitsUrl !=''">
+      		ORG_CODE_CREDITS_URL = #{orgCodeCreitsUrl,jdbcType=VARCHAR},
+      	</if>
+      	
+	    <if test="comOwnName !=null and comOwnName !=''">
+	    COM_OWN_NAME = #{comOwnName,jdbcType=VARCHAR},
+	    </if>
+	    <if test="comOwnPhone !=null and comOwnPhone !=''">
+	    COM_OWN_PHONE = #{comOwnPhone,jdbcType=VARCHAR},
+	    </if>
+	    <if test="comOwnCard !=null and comOwnCard !=''">
+	    COM_OWN_CARD = #{comOwnCard,jdbcType=VARCHAR},
+	    </if>
+      	
+		</set>
+		where pid = #{pid,jdbcType=INTEGER}
+	</update>
+	
+	<select id="getCusUnderCom" parameterType="com.xlkfinance.bms.rpc.customer.CusPerBase" resultMap="CusComBaseMap">
+  	   select * from(
+  	   	SELECT   rownum rn,
+  	   			CCB.PID,
+		        CCB.CPY_NAME,
+		        CCB.ORG_CODE,
+		        CCB.BUS_LIC_CERT,
+		        (SELECT SLV.LOOKUP_DESC
+		           FROM SYS_LOOKUP_VAL SLV
+		          WHERE SLV.PID = CCB.COM_ALL_NATURE) COM_ALL_NATURE,
+		        (SELECT CP.CHINA_NAME
+		           FROM CUS_PERSON CP
+		          WHERE CP.PID = CCB.COM_OWN_ID) COM_OWN_ID,
+		        CCB.REG_MONEY,
+		        CCB.TELEPHONE,
+		        CCB.FOUND_DATE
+		   FROM CUS_COM_BASE CCB
+		   WHERE 1 = 1
+		    AND STATUS = 1
+		    AND (SELECT CA.STATUS FROM CUS_ACCT CA WHERE CA.PID=CCB.ACCT_ID)=1
+		    AND CCB.PID IN
+		        (SELECT CPC.COM_ID
+		           FROM CUS_PER_COM CPC
+		          WHERE CPC.STATUS = 1
+		            AND CPC.CUS_PER_ID =
+		                (SELECT PID FROM CUS_PER_BASE WHERE ACCT_ID = #{cusAcct.pid,jdbcType=INTEGER}))
+			AND rownum<![CDATA[<=]]>#{page}*#{rows}) zA
+      		 WHERE rn>=((#{page}-1)*#{rows})+1	
+	</select>
+	<select id="getTotalUnderCom" parameterType="com.xlkfinance.bms.rpc.customer.CusPerBase" resultType="java.lang.Integer">
+			 SELECT COUNT(PID) FROM (
+					     SELECT CCB.PID,
+				        CCB.CPY_NAME,
+				        CCB.ORG_CODE,
+				        CCB.BUS_LIC_CERT,
+				        (SELECT SLV.LOOKUP_DESC
+				           FROM SYS_LOOKUP_VAL SLV
+				          WHERE SLV.PID = CCB.COM_ALL_NATURE) COM_ALL_NATURE,
+				        (SELECT CP.CHINA_NAME
+				           FROM CUS_PERSON CP
+				          WHERE CP.PID = CCB.COM_OWN_ID) COM_OWN_ID,
+				        CCB.REG_MONEY,
+				        CCB.TELEPHONE,
+				        CCB.FOUND_DATE
+		   FROM CUS_COM_BASE CCB
+		   WHERE 1 = 1
+		    AND STATUS = 1
+		    AND (SELECT CA.STATUS FROM CUS_ACCT CA WHERE CA.PID=CCB.ACCT_ID)=1
+		    AND CCB.PID IN
+		        (SELECT CPC.COM_ID
+		           FROM CUS_PER_COM CPC
+		          WHERE CPC.STATUS = 1
+		            AND CPC.CUS_PER_ID =
+		                (SELECT PID FROM CUS_PER_BASE WHERE ACCT_ID = #{cusAcct.pid,jdbcType=INTEGER})))
+	</select>
+	
+	<update id="deleteUnderCom" parameterType="java.util.List">
+		update CUS_PER_COM CPC
+		set
+		CPC.STATUS=0
+		where CPC.COM_ID in 
+		<foreach item="itemId" collection="list" open="(" separator="," close=")">
+		          #{itemId}
+		</foreach>
+	</update>
+	<delete id="deleteCusComBase" parameterType="java.util.List">
+		update CUS_ACCT CA
+		set
+		CA.STATUS=0
+		where CA.PID in 
+		<foreach item="itemId" collection="list" open="(" separator="," close=")">
+		          #{itemId}
+		</foreach>
+	</delete>
+	<update id="updateByComOwnId" parameterType="java.util.HashMap">
+	     update cus_person cp set cp.acct_id = #{acctId}
+	     where cp.pid = #{comOwnId}
+	</update>
+	
+	<select id="getCertTypeOrCertNumber" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+  	      SELECT COUNT(*)
+                   FROM CUS_PERSON CPP
+                   LEFT JOIN CUS_ACCT A
+                   ON CPP.ACCT_ID = A.PID AND A.STATUS = 1
+                  WHERE CPP.RELATION_TYPE = 1
+                   AND CPP.CERT_NUMBER = #{certNumber}
+                   	<if test="personId != null and personId !=''">
+                     AND CPP.PID != #{personId} 
+                    </if>
+                    <if test="cusSource != null and cusSource !=''">
+                     AND A.CUS_SOURCE = #{cusSource} 
+                    </if>
+                    <if test="orgId != null and orgId !=''">
+                     AND A.ORG_ID = #{orgId} 
+                    </if>
+	</select>
+	
+	<select id="selectCusPerIdByCusAcctId" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+  		select cpb.pid from cus_per_base cpb where cpb.acct_id= #{acctId,jdbcType=INTEGER}
+  	</select>
+  	
+  	<update id="updatePmUserId" parameterType="com.xlkfinance.bms.rpc.customer.CusAcct">
+	     UPDATE CUS_ACCT CA SET CA.PM_USER_ID =#{pmUserId} WHERE CA.PID=#{pid}
+	</update>
+<!-- 	验证营业执照号码 -->
+   <select id="validateBusLicCert" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+        select COUNT(*) from cus_com_base ccb 
+                        where ccb.BUS_LIC_CERT = #{busLicCert}
+        <if test="cusComId != null and cusComId !=''">
+                     AND ccb.PID != #{cusComId}
+        </if>
+   </select>
+<!--   查询所有的业务往来列表 -->
+<!--	{ call PKG_BUSSINESS.PRO_SELECT_BUSINESS(
+				#{results,mode=OUT,jdbcType=CURSOR,javaType=ResultSet,resultMap=BusinessResultMaps}, 
+				#{acctId, mode=IN, jdbcType=INTEGER},
+				#{cusName, mode=IN, jdbcType=VARCHAR},
+				#{certNumber, mode=IN, jdbcType=VARCHAR},
+				#{acctType, mode=IN, jdbcType=INTEGER},
+				#{businessVariet, mode=IN, jdbcType=INTEGER},
+				#{currLoginId, mode=IN, jdbcType=INTEGER},
+				#{page, mode=IN, jdbcType=INTEGER},
+				#{rows, mode=IN, jdbcType=INTEGER},
+				#{isComplete, mode=IN, jdbcType=VARCHAR})
+				}    查询担保方式statementType="CALLABLE"  -->
+				
+   <select id="getBusinessAllInfo" resultMap="BusinessResultMaps" parameterType="com.xlkfinance.bms.rpc.customer.QueryPersonDTO" >  
+
+		
+				 SELECT * FROM (
+      SELECT rownum rn,
+             BP.PID PROJECT_ID,
+             CP.ACCT_NAME,
+             cp.ACCT_ID,
+             CASE CP.ACCT_TYPE
+               WHEN 1 THEN
+                '个人'
+               WHEN 2 THEN
+                '企业'
+             END ACCT_TYPE,
+             BP.PROJECT_NAME,
+             BC.CREDIT_AMT,
+             BL.CREDIT_AMT AS DK_CREDIT_AMT,
+             BL.DAY_LOAN_INTEREST,
+             BL.REPAY_CYCLE,
+             BC.CREDTI_START_DT,
+             BC.CREDTI_END_DT,
+             BL.PLAN_OUT_LOAN_DT,
+             BL.PLAN_REPAY_LOAN_DT,
+             CP.CERT_NUMBER,
+             CP.TELEPHONE,
+             (select su.real_name from sys_user su where su.pid=BP.PM_USER_ID) as PM_USER_ID,
+            CASE
+              WHEN BPC.IS_COMPLETE=0 or BPC.IS_COMPLETE is null THEN
+                '未结清'
+               WHEN BPC.IS_COMPLETE=1 THEN
+                '已结清'
+             END IS_COMPLETE,
+   
+             (SELECT TO_CHAR(WMSYS.WM_CONCAT(LKV.LOOKUP_VAL))
+                FROM BIZ_PROJECT_ASS_BASE       PAB,
+                     BIZ_PROJECT_GUARANTEE_TYPE PGT,
+                     SYS_LOOKUP                 LK,
+                     SYS_LOOKUP_VAL             LKV
+               WHERE 1 = 1
+                 AND PAB.PROJECT_ID = BP.PID
+                 AND LK.LOOKUP_TYPE = 'ASS_WAY' 
+                 AND LKV.LOOKUP_ID = LK.PID
+                 AND LKV.PID = PGT.GUARANTEE_TYPE
+                 AND PAB.PROJECT_ID=PGT.PROJECT_ID
+                 AND PAB.PROJECT_ID = BP.PID) ASS_WAY
+
+        FROM BIZ_CREDIT           BC,
+             BIZ_LOAN             BL,
+             BIZ_PROJECT          BP
+             left join BIZ_PROJECT_COMPLETE BPC  
+             on bpc.project_id = bp.pid,
+             CUS_ACCT_V           CP,
+             SYS_USER             SU
+       WHERE BC.PROJECT_ID = BP.PID
+         AND BP.ACCT_ID = CP.ACCT_ID
+         AND BL.PROJECT_ID = BP.PID
+         AND SU.PID=CP.PM_USER_ID
+         AND BP.REQUEST_STATUS=4 
+         AND CP.STATUS = 1
+        
+         <if test="cusName != null and  cusName!=''">
+			AND CP.ACCT_NAME LIKE '%${cusName}%' 
+		</if>
+		<if test="certNumber != null and  certNumber !=''">
+			and cp.cert_number like  '%${certNumber}%' 
+		</if>
+      <if test="acctType != null and  acctType !='' and acctType !=-1">
+			and CP.ACCT_TYPE = #{acctType}
+		</if>
+		<if test="businessVariet != null and  businessVariet !='' and businessVariet !=-1 ">
+			and BP.BUSINESS_TYPE =  ${businessVariet}
+		</if>
+		<if test="isComplete != null and  isComplete !=''">
+			and BPC.IS_COMPLETE  =  #{isComplete}
+		</if>
+       
+        AND ( SU.SUPERIOR_USER_ID=#{currLoginId} OR SU.PID=#{currLoginId} )
+        AND rownum <![CDATA[<=]]> #{page}*#{rows}) zA
+           WHERE rn>=((#{page}-1)*#{rows})+1
+				
+			
+  </select>
+  
+  <!--   查询所有的业务往来列表 总数 
+  select PKG_BUSSINESS.PRO_SELECT_BUSINESS_TOTAL(#{acctId, mode=IN, jdbcType=INTEGER},
+				#{cusName, mode=IN, jdbcType=VARCHAR},
+				#{certNumber, mode=IN, jdbcType=VARCHAR},
+				#{acctType, mode=IN, jdbcType=INTEGER},
+				#{businessVariet, mode=IN, jdbcType=INTEGER},
+				#{currLoginId, mode=IN, jdbcType=INTEGER},
+				#{isComplete, mode=IN, jdbcType=VARCHAR}) from dual-->
+   <select id="getTotalCusAndPerBusiness"  resultType="java.lang.Integer" parameterType="com.xlkfinance.bms.rpc.customer.QueryPersonDTO" >  
+		
+      SELECT count(*)
+
+        FROM BIZ_CREDIT           BC,
+             BIZ_LOAN             BL,
+             BIZ_PROJECT          BP
+             left join BIZ_PROJECT_COMPLETE BPC  
+             on bpc.project_id = bp.pid,
+             CUS_ACCT_V           CP,
+             SYS_USER             SU
+       WHERE BC.PROJECT_ID = BP.PID
+         AND BP.ACCT_ID = CP.ACCT_ID
+         AND BL.PROJECT_ID = BP.PID
+         AND SU.PID=CP.PM_USER_ID
+         AND BP.REQUEST_STATUS=4 
+         AND CP.STATUS = 1
+        
+         <if test="cusName != null and  cusName!=''">
+			AND CP.ACCT_NAME LIKE '%${cusName}%' 
+		</if>
+		<if test="certNumber != null and  certNumber !=''">
+			and cp.cert_number like  '%${certNumber}%' 
+		</if>
+      <if test="acctType != null and  acctType !='' and acctType !=-1 ">
+			and CP.ACCT_TYPE = ${acctType}
+		</if>
+		<if test="businessVariet != null and  businessVariet !='' and businessVariet!=-1">
+			and BP.BUSINESS_TYPE =  ${businessVariet}
+		</if>
+		<if test="isComplete != null and  isComplete !=''">
+			and BPC.IS_COMPLETE  =  ${isComplete}
+		</if> AND ( SU.SUPERIOR_USER_ID=${currLoginId} OR SU.PID=${currLoginId} )  
+       
+      
+  </select>
+<!--   根据当前登录人ID查询该用户是否有查看黑名单详情 -->
+ 	 <select id="validateIsPermissions" resultType="java.lang.Integer" parameterType="java.util.HashMap">
+ 		  SELECT COUNT(*) FROM SYS_USER WHERE PID IN(SELECT PID FROM SYS_USER 
+ 		         WHERE PID= #{currUserId} OR SUPERIOR_USER_ID= #{currUserId}) 
+ 		         AND PID=#{spid}
+  	</select>
+<!--   	企业客户的导出 -->
+   <select id="searchComExportByPid" resultMap="comExportResultMap" parameterType="java.util.List">
+        SELECT rownum rn,
+  	      		 CA.PID,
+                 CPB.PID COM_ID,
+                 CPB.CPY_NAME,
+                 CPB.CPY_ABBR_NAME, 
+                 CPB.ORG_CODE,
+                 CPB.BUS_LIC_CERT,
+                 (SELECT slv.lookup_desc FROM sys_lookup_val slv WHERE slv.pid=CPB.COM_ALL_NATURE ) COM_ALL_NATURE,
+                 (select cp.china_name from cus_person cp where cp.acct_id=cpb.acct_id and cp.iscomown=1 ) COM_OWN_ID,
+                 (select slv.lookup_desc from cus_person cp,sys_lookup_val slv where cp.acct_id=cpb.acct_id and slv.pid=cp.cert_type and cp.iscomown=1 ) cert_Type,
+                 (select cp.CERT_NUMBER from cus_person cp where cp.acct_id=cpb.acct_id and cp.iscomown=1 ) CERT_NUMBER,
+                 (select cp.work_service from cus_person cp where cp.acct_id=cpb.acct_id and cp.iscomown=1 )work_service,
+                 CPB.REG_MONEY,
+                 CPB.TELEPHONE,
+                 CPB.FOUND_DATE,
+                 CASE CA.CUS_STATUS
+                   WHEN 1 THEN
+                    '普通'
+                   WHEN 2 THEN
+                    '黑名单'
+                   WHEN 3 THEN
+                    '拒贷'
+                   WHEN 4 THEN
+                    '借贷'
+                   WHEN 5 THEN
+                    '黑名单、拒贷'
+                   WHEN 6 THEN
+                    '借贷、黑名单'
+                   WHEN 7 THEN
+                    '借贷、拒贷'
+                   WHEN 9 THEN
+                    '借贷、黑名单、拒贷'
+                 END CUS_STATUS_VAL,
+                 SU.real_name,
+                 CPB.LOAN_NO,
+                 CPB.LAND_CERT,
+                 CPB.REG_ADDR,
+                 CPB.FOUND_DATE,
+                 (select slv.lookup_desc from sys_lookup_val slv where slv.pid=cpb.reg_currency) REG_CURRENCY,
+                 CPB.REG_MONEY,
+                 (select slv.lookup_desc from sys_lookup_val slv where slv.pid=cpb.cpy_scale) CPY_SCALE,
+                 CPB.ACT_BIZ_ADD,
+                 CA.CUS_STATUS CUS_STATUS
+            FROM CUS_ACCT     CA,
+                 SYS_USER     SU,
+                 CUS_COM_BASE CPB
+                 WHERE 1 = 1
+                   AND CA.PM_USER_ID = SU.PID(+)
+                   AND CPB.ACCT_ID = CA.PID
+                   AND CA.STATUS = 1
+                   AND CA.CUS_TYPE = 2
+                   AND CA.PID IN 
+        <foreach item="itemId" collection="list" open="(" separator="," close=")">
+		          #{itemId}
+		</foreach>
+   </select>
+   
+   <select id="searcherBlackListRefuse" parameterType="java.lang.Integer" resultType="java.lang.String">
+  	      select refuse_reason from(select rownum rn,cabr.refuse_reason from
+  	      					 		  CUS_ACCT_BLACKLIST_REFUSE cabr 
+  	      						 where cabr.acct_id= #{pid}
+  	      						 and   cabr.status=1
+  	      						 AND rownum <![CDATA[<]]> 2) zA
+  	      						 where rn <![CDATA[>=]]> 1
+	</select>
+   
+   
+   <select id="selectCompanyByAcctId" parameterType="java.lang.Integer" resultMap="ExportCusComBaseMap">
+   		SELECT CCB.PID,
+   			   CCB.CPY_NAME,
+   			   CONCAT(CCB.REG_MONEY,'万元') REG_MONEY,
+		       CCB.ORG_CODE,
+		       CCB.REG_ADDR,
+		       CCB.MGE_CITY,
+		       CCB.TELEPHONE,
+		       TO_CHAR(CCB.FOUND_DATE,'yyyy-mm-dd') FOUND_DATE,
+		       CCB.ACT_BIZ_ADD,
+		       CCB.BUS_LIC_CERT,
+		       (SELECT SLV.LOOKUP_DESC
+		          FROM SYS_LOOKUP_VAL SLV
+		         WHERE SLV.PID = CCB.ECO_TRADE) ECOTRADETEXT,
+		       CP.CHINA_NAME,
+		       CP.LIVE_ADDR,
+		       CP.MOBILE_PHONE,
+		       (SELECT CPP.CERT_NUMBER
+		          FROM SYS_LOOKUP_VAL SLV, CUS_PERSON CPP
+		         WHERE SLV.PID = CPP.CERT_TYPE
+		           AND SLV.LOOKUP_DESC = '身份证'
+		           AND CPP.PID = CP.PID) CERTNUMBER,
+		       A.BANK_NAME,
+		       A.LOAN_CARD_ID,
+		       A.BANKTYPE
+		  FROM CUS_PERSON CP, CUS_COM_BASE CCB
+		  LEFT JOIN (SELECT CAB.ACCT_ID,
+		                    CAB.BANK_NAME,
+		                    CAB.LOAN_CARD_ID,
+		                    SLV.LOOKUP_DESC BANKTYPE
+		               FROM CUS_ACCT_BANK CAB, SYS_LOOKUP_VAL SLV
+		              WHERE SLV.PID = CAB.ACC_TYPE
+		                AND SLV.LOOKUP_DESC LIKE '基本%' AND CAB.STATUS=1) A
+		    ON A.ACCT_ID = CCB.ACCT_ID
+		 WHERE CCB.COM_OWN_ID = CP.PID
+		   AND CCB.ACCT_ID = #{acctId}
+   </select>
+   
+   <select id="getPersonTotal" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+   		SELECT SUM(PERSON_NUM) TOTAL
+		  FROM (SELECT CCS.PERSON_NUM, ROWNUM RN
+		          FROM CUS_COM_STAFF CCS
+		         WHERE CUS_COM_ID = #{acctId})
+		 WHERE RN BETWEEN 12 AND 16
+   </select>
+   
+   <select id="excelCusComIncomeReportByComId" parameterType="java.lang.Integer" resultType="com.xlkfinance.bms.rpc.customer.ExcelCusComIncomeReport">
+   		SELECT CCIR.THIS_MONTH_VAL thisMonthVal,
+		       CCIR.THIS_YEAR_VAL thisYearVal,
+		       CCIRM.ITEM_NAME,
+		       CCFR.ACCOUNTING_YEAR,
+		       CCFR.ACCOUNTING_MONTH
+		  FROM CUS_COM_INCOME_REPORT      CCIR,
+		       CUS_COM_INCOME_REPORT_META CCIRM,
+		       CUS_COM_FINANCE_REPORT     CCFR
+		 WHERE CCIR.INCOME_ITEM_ID = CCIRM.PID
+		   AND CCFR.PID = CCIR.REPORT_ID
+		   AND CCFR.COM_ID = #{comId}
+		   AND CCFR.ACCOUNTING_YEAR =
+		       (SELECT MAX(ACCOUNTING_YEAR)
+		          FROM CUS_COM_FINANCE_REPORT
+		         WHERE COM_ID = #{comId})
+		   AND CCFR.ACCOUNTING_MONTH =
+		       (SELECT MAX(ACCOUNTING_MONTH)
+		          FROM CUS_COM_FINANCE_REPORT
+		         WHERE COM_ID = #{comId}
+		           AND ACCOUNTING_YEAR = (SELECT MAX(ACCOUNTING_YEAR)
+		                                    FROM CUS_COM_FINANCE_REPORT
+		                                   WHERE COM_ID = #{comId}))
+		 ORDER BY CCIRM.LINE_NUM
+   </select>
+   
+   
+   <select id="excelCusComBalanceSheetByComId" parameterType="java.lang.Integer" resultType="com.xlkfinance.bms.rpc.customer.ExcelCusComBalanceSheet">
+   		SELECT CCNS.END_VAL endVal,
+   		 	   CCNSM.ACCOUNTS_NAME,
+		       CCFR.ACCOUNTING_YEAR accountsCode,
+		       CCFR.ACCOUNTING_MONTH accountsName
+		  FROM CUS_COM_BALANCE_SHEET      CCNS,
+		       CUS_COM_BALANCE_SHEET_META CCNSM,
+		       CUS_COM_FINANCE_REPORT     CCFR
+		 WHERE CCNS.ACCOUNTS_ID = CCNSM.PID
+		   AND CCFR.PID = CCNS.REPORT_ID
+		   AND CCFR.COM_ID = #{comId}
+		   AND CCFR.ACCOUNTING_YEAR =
+		       (SELECT MAX(ACCOUNTING_YEAR)
+		          FROM CUS_COM_FINANCE_REPORT
+		         WHERE COM_ID = #{comId})
+		   AND CCFR.ACCOUNTING_MONTH =
+		       (SELECT MAX(ACCOUNTING_MONTH)
+		          FROM CUS_COM_FINANCE_REPORT
+		         WHERE COM_ID = #{comId}
+		           AND ACCOUNTING_YEAR = (SELECT MAX(ACCOUNTING_YEAR)
+		                                    FROM CUS_COM_FINANCE_REPORT
+		                                   WHERE COM_ID = #{comId}))
+		 ORDER BY CCNSM.LINE_NUM
+   </select>
+   
+   
+   <select id="getAcctIdByComId" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+   		select ca.pid from cus_com_base ccb ,cus_acct ca
+   		where ccb.acct_id = ca.pid
+   		and ccb.pid = #{comId}
+   </select>
+<!--    根据客户ID查客户类型 -->
+   <select id="searcherCusTypeByAcctId" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+           SELECT CAV.ACCT_TYPE  FROM CUS_ACCT_V CAV WHERE CAV.ACCT_ID = #{pid}
+   </select>
+   <!-- 根据机构ID查询企业信息 -->
+   <select id="getComBaseByOrgId" resultMap="CusComBaseMapById" parameterType="java.lang.Integer">
+	  	SELECT * FROM CUS_COM_BASE CCB WHERE CCB.ORG_ID=#{orgId,jdbcType=INTEGER}
+     </select> 
+   
+   <!-- 更新的方法 -->
+	<update id="updateByOrgId" parameterType="com.xlkfinance.bms.rpc.customer.CusComBase">
+		update cus_com_base
+		<set>
+		<if test="cusAcct.pid != null">
+		    ACCT_ID = #{cusAcct.pid,jdbcType=INTEGER}, 
+		</if>
+		<if test="cpyName != null">
+			CPY_NAME = #{cpyName,jdbcType=VARCHAR}, 
+		</if> 
+	    <if test="cpyEngName != null">
+	    	CPY_ENG_NAME = #{cpyEngName,jdbcType=VARCHAR},
+	    </if> 
+	    <if test="cpyAbbrName != null">
+	    	CPY_ABBR_NAME = #{cpyAbbrName,jdbcType=VARCHAR}, 
+	    </if>
+	    <if test="cpyScale != null">
+	    	CPY_SCALE = #{cpyScale,jdbcType=INTEGER},
+	     </if>
+	    <if test="ecoTrade != null">
+	    	ECO_TRADE = #{ecoTrade,jdbcType=INTEGER},
+	     </if>
+	    <if test="staffNum != null">
+	    	STAFF_NUM = #{staffNum,jdbcType=INTEGER}, 
+	    </if>
+	    <if test="basHouStatus != null">
+	    	BAS_HOU_STATUS = #{basHouStatus,jdbcType=INTEGER},
+	    </if>
+	    <if test="orgStatus != null">
+	    	ORG_STATUS = #{orgStatus,jdbcType=INTEGER},
+	    </if>
+	    <if test="busLicCert != null">
+      		BUS_LIC_CERT = #{busLicCert,jdbcType=VARCHAR},
+      	</if>
+      	<if test="busLicCertUrl != null">
+      		BUS_LIC_CERT_URL = #{busLicCertUrl,jdbcType=VARCHAR},
+      	</if>
+      	<if test="orgCode != null">
+      		ORG_CODE = #{orgCode,jdbcType=VARCHAR},
+      	</if>
+      	<if test="orgCodeCertUrl != null">
+      		ORG_CODE_CERT_URL = #{orgCodeCertUrl,jdbcType=VARCHAR},
+      	</if>
+      	<if test="natCert != null">
+      		NAT_CERT = #{natCert,jdbcType=VARCHAR},
+      	</if>
+      	<if test="landCert != null">
+      		LAND_CERT = #{landCert,jdbcType=VARCHAR},
+      	</if>
+      	<if test="taxCertUrl != null">
+      		TAX_CERT_URL = #{taxCertUrl,jdbcType=VARCHAR},
+      	</if>
+      	<if test="creditCode != null">
+      		CREDIT_CODE = #{creditCode,jdbcType=VARCHAR},
+      	</if>
+      	<if test="exitCert != null">
+      		EXIT_CERT = #{exitCert,jdbcType=VARCHAR},
+      	</if>
+      	<if test="regAddr != null">
+      		REG_ADDR = #{regAddr,jdbcType=VARCHAR},
+      	</if>
+      	<if test="regCode != null">
+      		REG_CODE = #{regCode,jdbcType=VARCHAR},
+      	</if>
+      	<if test="regPlan != null">
+      		REG_PLAN = #{regPlan,jdbcType=VARCHAR},
+      	</if>
+      	<if test="regMoney != null">
+      		REG_MONEY = #{regMoney,jdbcType=DOUBLE},
+      	</if>
+      	<if test="regCurrency != null">
+      		REG_CURRENCY = #{regCurrency,jdbcType=INTEGER},
+      	</if>
+      	<if test="mgeSiteType != null">
+      		MGE_SITE_TYPE = #{mgeSiteType,jdbcType=VARCHAR},
+      	</if>
+      	<if test="mgeSiteValue != null">
+      		MGE_SITE_VALUE = #{mgeSiteValue,jdbcType=DOUBLE},
+      	</if>
+      	<if test="area != null">
+      		AREA = #{area,jdbcType=DOUBLE},
+      	</if>
+      	<if test="rent != null">
+      		RENT = #{rent,jdbcType=INTEGER},
+      	</if>
+      	<if test="foundDate != null">
+      		FOUND_DATE  = #{foundDate,jdbcType=DATE},
+      	</if>
+      	<if test="shareRatio != null">
+      		SHARE_RATIO  = #{shareRatio,jdbcType=INTEGER},
+      	</if>
+      	<if test="mgeCity != null">
+      		MGE_CITY = #{mgeCity,jdbcType=VARCHAR},
+      	</if>
+      	<if test="actBizAdd != null">
+      		ACT_BIZ_ADD = #{actBizAdd,jdbcType=VARCHAR},
+      	</if>
+      	<if test="actBizCode != null">
+      		ACT_BIZ_CODE  = #{actBizCode,jdbcType=VARCHAR},
+      	</if>
+      	<if test="commAddr != null">
+      		COMM_ADDR = #{commAddr,jdbcType=VARCHAR},
+      	</if>
+      	<if test="commCode != null">
+      		COMM_CODE = #{commCode,jdbcType=VARCHAR},
+      	</if>
+      	<if test="recPerson != null">
+      		REC_PERSON  = #{recPerson,jdbcType=VARCHAR},
+      	</if>
+      	<if test="mail != null">
+      		MAIL = #{mail,jdbcType=VARCHAR},
+      	</if>
+      	<if test="cusLevel != null">
+      		CUS_LEVEL  = #{cusLevel,jdbcType=INTEGER},
+      	</if>
+      	<if test="cpyUrl != null">
+      		CPY_URL = #{cpyUrl,jdbcType=VARCHAR},
+      	</if>
+      	<if test="cusIntro != null">
+      		CUS_INTRO  = #{cusIntro,jdbcType=VARCHAR},
+      	</if>
+      	<if test="telephone != null">
+      		TELEPHONE  = #{telephone,jdbcType=VARCHAR},
+      	</if>
+      	<if test="fax != null">
+      		FAX = #{fax,jdbcType=VARCHAR},
+      	</if>
+      	<if test="loanNo != null">
+      		LOAN_NO  = #{loanNo,jdbcType=VARCHAR},
+      	</if>
+      	<if test="loanCardUrl != null">
+      		LOAN_CARD_URL = #{loanCardUrl,jdbcType=VARCHAR},
+      	</if>
+      	<if test="status != null">
+      		STATUS = #{status,jdbcType=INTEGER},
+      	</if>
+      	<if test="unitNature != null">
+      		unit_nature = #{unitNature,jdbcType=INTEGER},
+      	</if>
+      	<if test="comAllNature != null">
+      		com_all_nature = #{comAllNature,jdbcType=INTEGER},
+      	</if>
+      	<if test="cusAcctManagerName != null">
+      		CUS_ACCT_MANAGER_NAME = #{cusAcctManagerName,jdbcType=INTEGER},
+      	</if>
+      	<if test="comOwnId != null">
+      		COM_OWN_ID = #{comOwnId,jdbcType=INTEGER},
+      	</if>
+      	<if test="orgCodeCreitsUrl !=null and orgCodeCreitsUrl !=''">
+      		ORG_CODE_CREDITS_URL = #{orgCodeCreitsUrl,jdbcType=VARCHAR},
+      	</if>
+      	
+      	<if test="orgId !=null and orgId >0">
+	    ORG_ID = #{orgId,jdbcType=INTEGER},
+	    </if>
+	    <if test="comOwnName !=null and comOwnName !=''">
+	    COM_OWN_NAME = #{comOwnName,jdbcType=VARCHAR},
+	    </if>
+	    <if test="comOwnPhone !=null and comOwnPhone !=''">
+	    COM_OWN_PHONE = #{comOwnPhone,jdbcType=VARCHAR},
+	    </if>
+	    <if test="comOwnCard !=null and comOwnCard !=''">
+	    COM_OWN_CARD = #{comOwnCard,jdbcType=VARCHAR},
+	    </if>
+      	
+		</set>
+		where org_id = #{orgId,jdbcType=INTEGER}
+	</update>
+	<!-- 根据用户id删除客户 -->
+    <delete id="deleteByOrgId" parameterType="Integer">
+	 DELETE FROM CUS_COM_BASE T WHERE T.ORG_ID=#{orgId}
+	</delete>
+</mapper>

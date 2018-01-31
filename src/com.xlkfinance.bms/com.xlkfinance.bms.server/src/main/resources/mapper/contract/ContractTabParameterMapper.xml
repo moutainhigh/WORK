@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.contract.mapper.ContractTabParameterMapper">
+	
+	
+<!-- 插入合同参数表数据 -->
+<insert id="addContractTabParam" parameterType="java.util.List">
+	INSERT INTO BIZ_CONTRACT_TAB_PARAMETER
+	  (PID,
+	   CONTRACT_ID,
+	   LINE_NUMBER,
+	   GOODS_NAME,
+	   GOODS_NUMBER,
+	   GOODS_COUNT,
+	   GOODS_UNIT,
+	   GOODS_ADDRESS,
+	   GOODS_VALUE,
+	   GOODS_EFFECTIVE,
+	   STATUS)
+	SELECT SEQ_BIZ_CONTRACT_TAB_PARAMETER.Nextval,A.* from(
+        <foreach collection="list" item="item" index="index"
+            separator="UNION">
+            SELECT
+				#{item.contractId,jdbcType=INTEGER},
+		    	#{item.lineNumber,jdbcType=INTEGER}, 
+				#{item.col0,jdbcType=VARCHAR}, 
+				#{item.col1,jdbcType=VARCHAR}, 
+				#{item.col2,jdbcType=VARCHAR}, 
+				#{item.col3,jdbcType=VARCHAR}, 
+				#{item.col4,jdbcType=VARCHAR}, 
+				#{item.col5,jdbcType=VARCHAR}, 
+				#{item.col6,jdbcType=VARCHAR}, 
+				1
+            from dual 
+        </foreach>
+    	) A
+</insert>
+	
+<!-- 编辑合同参数值 -->
+<update id="updateContractTabParam" parameterType="java.util.List">
+	begin
+	<foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            UPDATE BIZ_CONTRACT_TAB_PARAMETER
+			<set>
+				<if test="item.col0 != null and item.col0 != ''">
+				    GOODS_NAME = #{item.col0,jdbcType=VARCHAR},
+				</if>
+				<if test="item.col1 != null and item.col1 != ''">
+				    GOODS_NUMBER = #{item.col1,jdbcType=VARCHAR},
+				</if>
+				<if test="item.col2 != null and item.col2 != ''">
+				    GOODS_COUNT = #{item.col2,jdbcType=VARCHAR},
+				</if>
+				<if test="item.col3 != null and item.col3 != ''">
+				    GOODS_UNIT = #{item.col3,jdbcType=VARCHAR},
+				</if>
+				<if test="item.col4 != null and item.col4 != ''">
+				    GOODS_ADDRESS = #{item.col4,jdbcType=VARCHAR},
+				</if>
+				<if test="item.col5 != null and item.col5 != ''">
+				    GOODS_VALUE = #{item.col5,jdbcType=VARCHAR},
+				</if>
+				<if test="item.col6 != null and item.col7 != ''">
+				    GOODS_EFFECTIVE = #{item.col6,jdbcType=VARCHAR},
+				</if>
+			</set> 
+			WHERE PID= #{item.pid,jdbcType=INTEGER}
+       </foreach>
+        ;end;
+</update>
+
+<select id="getContractTabs" resultType="com.xlkfinance.bms.rpc.contract.ContractDynamicTableParameter" parameterType="java.lang.Integer">
+	SELECT PID pid,
+	       CONTRACT_ID contractId,
+	       LINE_NUMBER lineNumber,
+	       STATUS status,
+	       GOODS_NAME col0,
+	       GOODS_NUMBER col1,
+	       GOODS_COUNT col2,
+	       GOODS_UNIT col3,
+	       GOODS_ADDRESS col4,
+	       GOODS_VALUE col5,
+	       GOODS_EFFECTIVE col6
+	  FROM BIZ_CONTRACT_TAB_PARAMETER 
+	 WHERE CONTRACT_ID=#{contractId,jdbcType=INTEGER}
+</select>
+</mapper>

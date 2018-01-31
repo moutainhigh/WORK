@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.customer.mapper.CusComFinanceReportMapper">
+  <resultMap id="CusComFinanceReportMap" type="com.xlkfinance.bms.rpc.customer.CusComFinanceReport">
+        <id property="pid" column="PID"/>
+        <result property="comId" column="COM_ID" />
+        <result property="accountingYear" column="ACCOUNTING_YEAR" />
+        <result property="accountingMonth" column="ACCOUNTING_MONTH" />
+        <result property="reportType" column="REPORT_TYPE" />
+        <result property="reportDttm" column="REPORT_DTTM" />
+        <result property="reportUserId" column="REPORT_USER_ID" />
+        <result property="reportName" column="REPORT_NAME" />
+        <result property="status" column="STATUS" />
+    </resultMap>
+    
+    <resultMap id="CusComFinanceReportOverviewDTOMap" type="com.xlkfinance.bms.rpc.customer.CusComFinanceReportOverviewDTO">
+        <id property="pid" column="PID"/>
+        <result property="comId" column="COM_ID" />
+        <result property="reportPeriod" column="REPORTPERIOD" />
+        <result property="reportName" column="REPORT_NAME" />
+    </resultMap>
+    
+    <select id="selectCusComFinanceReportByComIdAndYearMonth" resultMap="CusComFinanceReportMap" parameterType="java.util.Map">
+	      	 SELECT CCFR.PID,
+			       CCFR.COM_ID,
+			       CCFR.ACCOUNTING_YEAR,
+			       CCFR.ACCOUNTING_MONTH,
+			       CCFR.REPORT_TYPE,
+			       CCFR.REPORT_DTTM,
+			       CCFR.REPORT_USER_ID,
+			       CCFR.REPORT_NAME,
+			       CCFR.STATUS
+			  FROM CUS_COM_FINANCE_REPORT CCFR
+			  WHERE 1=1
+			  AND CCFR.COM_ID=#{comId,jdbcType=INTEGER}
+			  AND CCFR.ACCOUNTING_YEAR=#{accountingYear,jdbcType=INTEGER}
+			  AND CCFR.ACCOUNTING_MONTH=#{accountingMonth,jdbcType=INTEGER}
+  	</select> 
+  	
+  	<select id="obtainCusComFinanceReportOverviewCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+	      	SELECT COUNT(1) FROM (
+		      	SELECT 
+		      		CCFR.PID,
+	       			CCFR.ACCOUNTING_YEAR || '年' || CCFR.ACCOUNTING_MONTH || '月' REPORTPERIOD,
+	       			CCFR.REPORT_NAME 
+	  			FROM CUS_COM_FINANCE_REPORT CCFR
+	 			WHERE 1 = 1
+				  AND CCFR.COM_ID = #{comId,jdbcType=INTEGER}
+				  AND CCFR.ACCOUNTING_YEAR BETWEEN #{startYear,jdbcType=INTEGER} AND #{endYear,jdbcType=INTEGER}
+			    ORDER BY CCFR.ACCOUNTING_YEAR DESC,CCFR.ACCOUNTING_MONTH DESC)
+  	</select> 
+  	
+  	<select id="selectCusComFinanceReportOverviewDTOByAnnual" resultMap="CusComFinanceReportOverviewDTOMap" parameterType="java.util.Map">
+	      	
+		SELECT TAB2.PID, TAB2.REPORTPERIOD, TAB2.REPORT_NAME
+		  FROM (SELECT ROWNUM RN, TAB1.*
+		          FROM (SELECT CCFR.PID,
+		                       CCFR.ACCOUNTING_YEAR || '年' ||
+		                       DECODE(CCFR.ACCOUNTING_MONTH,
+		                              13,
+		                              '年度',
+		                              CCFR.ACCOUNTING_MONTH || '月') REPORTPERIOD,
+		                       CCFR.REPORT_NAME
+		                  FROM CUS_COM_FINANCE_REPORT CCFR
+		                 WHERE 1 = 1
+		                   AND CCFR.COM_ID = #{comId,jdbcType=INTEGER}
+		                   AND CCFR.ACCOUNTING_YEAR BETWEEN #{startYear,jdbcType=INTEGER} AND #{endYear,jdbcType=INTEGER}
+		                 ORDER BY CCFR.ACCOUNTING_YEAR  DESC,
+		                          CCFR.ACCOUNTING_MONTH DESC) TAB1) TAB2
+		 WHERE TAB2.RN BETWEEN #{start,jdbcType=INTEGER} AND #{number,jdbcType=INTEGER}
+
+  	</select> 
+  	
+  	<select id="selectCusComFinanceReportByComId" resultMap="CusComFinanceReportMap" parameterType="java.lang.Integer">
+	      	 SELECT CCFR.PID,
+			       CCFR.COM_ID,
+			       CCFR.ACCOUNTING_YEAR,
+			       CCFR.ACCOUNTING_MONTH,
+			       CCFR.REPORT_TYPE,
+			       CCFR.REPORT_DTTM,
+			       CCFR.REPORT_USER_ID,
+			       CCFR.STATUS
+			  FROM CUS_COM_FINANCE_REPORT CCFR
+			  WHERE 1=1
+			  AND CCFR.COM_ID=#{comId,jdbcType=INTEGER}
+  	</select> 
+  	
+  	    
+	<insert id="saveCusComFinanceReport"  parameterType="com.xlkfinance.bms.rpc.customer.CusComFinanceReport">
+	   <selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+			SELECT SEQ_CUS_COM_FINANCE_REPORT.Nextval as PID from DUAL
+		</selectKey>
+	    INSERT INTO CUS_COM_FINANCE_REPORT(
+	    	PID, 
+	    	COM_ID, 
+	    	ACCOUNTING_YEAR, 
+	    	ACCOUNTING_MONTH, 
+	    	REPORT_TYPE, 
+	    	REPORT_DTTM,
+	    	REPORT_USER_ID,
+	    	REPORT_NAME,
+	    	STATUS)
+	    VALUES (
+	    	#{pid,jdbcType=INTEGER}, 
+	     	#{comId,jdbcType=INTEGER},
+	     	#{accountingYear,jdbcType=INTEGER},
+	     	#{accountingMonth,jdbcType=INTEGER},
+	     	#{reportType,jdbcType=VARCHAR},
+	     	#{reportDttm,javaType=String,jdbcType=DATE},
+	     	#{reportUserId,jdbcType=INTEGER},
+	     	#{reportName,jdbcType=VARCHAR},
+	     	#{status,jdbcType=INTEGER})
+  </insert>
+  
+  <delete id="deleteCusComFinanceReportByPID" parameterType = "java.lang.Integer">
+  	DELETE FROM CUS_COM_FINANCE_REPORT WHERE PID=#{pid,jdbcType=INTEGER}
+  </delete>
+  
+  <delete id = "deleteCusComFinanceReportByPIDUseBatch" parameterType = "java.util.List">  
+      <![CDATA[  
+         DELETE FROM CUS_COM_FINANCE_REPORT WHERE PID IN
+      ]]>  
+      <foreach collection="list" item = "model" open="(" separator="," close=")">#{model.pid}</foreach>  
+  </delete>  
+  
+  
+    
+</mapper>

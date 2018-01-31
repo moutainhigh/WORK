@@ -1,0 +1,661 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xlkfinance.bms.server.aom.fee.mapper.OrgFeeSettleMapper">
+	<resultMap id="orgFeeSettleMap" type="com.qfang.xk.aom.rpc.fee.OrgFeeSettle">
+		<id property="pid" column="PID" />
+		<id property="orgId" column="ORG_ID" />
+		<id property="partnerId" column="PARTNER_ID" />
+		<id property="applyMoneyTotal" column="APPLY_MONEY_TOTAL" />
+		<id property="loanMoneyTotal" column="LOAN_MONEY_TOTAL" />
+		<id property="paymentMoneyTotal" column="PAYMENT_MONEY_TOTAL" />
+		<id property="settleDate" column="SETTLE_DATE" />
+		<id property="rebateRate" column="REBATE_RATE" />
+		<id property="returnCommRate" column="RETURN_COMM_RATE" />
+		<id property="refundMoneyTotal" column="REFUND_MONEY_TOTAL" />
+		<id property="returnCommTotal" column="RETURN_COMM_TOTAL" />
+		<id property="chargeMoneyTotal" column="CHARGE_MONEY_TOTAL" />
+		<id property="rebateMoneyTotal" column="REBATE_MONEY_TOTAL" />
+		<id property="rebateType" column="REBATE_TYPE" />
+		<id property="extimateFeeRate" column="EXTIMATE_FEE_RATE" />
+		<id property="actualFeeRate" column="ACTUAL_FEE_RATE" />
+		<id property="fundSizeMoney" column="FUND_SIZE_MONEY" />
+	</resultMap>
+	
+	<resultMap id="orgFeeSettleDTOMap" type="com.qfang.xk.aom.rpc.fee.OrgFeeSettleDTO">
+		<id property="pid" column="PID" />
+		<id property="orgId" column="ORG_ID" />
+		<id property="partnerId" column="PARTNER_ID" />
+		<id property="applyMoneyTotal" column="APPLY_MONEY_TOTAL" />
+		<id property="loanMoneyTotal" column="LOAN_MONEY_TOTAL" />
+		<id property="paymentMoneyTotal" column="PAYMENT_MONEY_TOTAL" />
+		<id property="settleDate" column="SETTLE_DATE" />
+		<id property="rebateRate" column="REBATE_RATE" />
+		<id property="returnCommRate" column="RETURN_COMM_RATE" />
+		<id property="refundMoneyTotal" column="REFUND_MONEY_TOTAL" />
+		<id property="returnCommTotal" column="RETURN_COMM_TOTAL" />
+		<id property="chargeMoneyTotal" column="CHARGE_MONEY_TOTAL" />
+		<id property="rebateMoneyTotal" column="REBATE_MONEY_TOTAL" />
+		<id property="rebateType" column="REBATE_TYPE" />
+		
+		<id property="orgName" column="ORG_NAME" />
+		<id property="partnerName" column="PARTNER_NAME" />
+		<id property="orgCode" column="ORG_CODE" />
+		<id property="extimateFeeRate" column="EXTIMATE_FEE_RATE" />
+		<id property="actualFeeRate" column="ACTUAL_FEE_RATE" />
+		<id property="fundSizeMoney" column="FUND_SIZE_MONEY" />
+	</resultMap>
+
+	<resultMap id="orgFeeSettlePageMap" type="com.qfang.xk.aom.rpc.fee.OrgFeeSettlePage">
+		<id property="pid" column="PID" />
+		<id property="orgId" column="ORG_ID" />
+		<id property="partnerId" column="PARTNER_ID" />
+		<id property="applyMoneyTotal" column="APPLY_MONEY_TOTAL" />
+		<id property="loanMoneyTotal" column="LOAN_MONEY_TOTAL" />
+		<id property="paymentMoneyTotal" column="PAYMENT_MONEY_TOTAL" />
+		<id property="settleDate" column="SETTLE_DATE" />
+		<id property="rebateRate" column="REBATE_RATE" />
+		<id property="refundMoneyTotal" column="REFUND_MONEY_TOTAL" />
+		<id property="chargeMoneyTotal" column="CHARGE_MONEY_TOTAL" />
+		<id property="rebateMoneyTotal" column="REBATE_MONEY_TOTAL" />
+		<id property="rebateType" column="REBATE_TYPE" />
+	</resultMap>
+	<!-- 合伙人息费列表 -->
+	<resultMap id="partnerFeeSettlePageMap" type="com.qfang.xk.aom.rpc.fee.PartnerFeeSettlePage">
+		<id property="feeSettleId" column="FEE_SETTLE_ID" />
+		<id property="orgId" column="ORG_ID" />
+		<id property="orgName" column="ORG_NAME" />
+		<id property="contact" column="CONTACT" />
+		<id property="phone" column="PHONE" />
+		<id property="partnerId" column="PARTNER_ID" />
+		<id property="applyMoneyTotal" column="APPLY_MONEY_TOTAL" />
+		<id property="loanMoneyTotal" column="LOAN_MONEY_TOTAL" />
+		<id property="paymentMoneyTotal" column="PAYMENT_MONEY_TOTAL" />
+		<id property="settleDate" column="SETTLE_DATE" />
+		<id property="returnCommRate" column="RETURN_COMM_RATE" />
+		<id property="returnCommTotal" column="RETURN_COMM_TOTAL" />
+	</resultMap>
+	<sql id="column_list">
+        PID,ORG_ID,PARTNER_ID,APPLY_MONEY_TOTAL,LOAN_MONEY_TOTAL,PAYMENT_MONEY_TOTAL,
+        SETTLE_DATE,REBATE_RATE,RETURN_COMM_RATE,REFUND_MONEY_TOTAL,RETURN_COMM_TOTAL,
+        CHARGE_MONEY_TOTAL,REBATE_MONEY_TOTAL,REBATE_TYPE,ACTUAL_FEE_RATE,EXTIMATE_FEE_RATE
+	</sql>
+	<!-- 查询所有 -->
+	<select id="getAll" resultMap="orgFeeSettleMap" parameterType="com.qfang.xk.aom.rpc.fee.OrgFeeSettle">
+		SELECT
+		<include refid="column_list" />
+		FROM ORG_FEE_SETTLE
+		<where>
+			<trim>
+		      <if test="pid != null and pid >0">
+	          PID=#{pid}
+	          </if>
+		      <if test="orgId != null and orgId >0">
+	          AND ORG_ID=#{orgId}
+	          </if>
+		      <if test="partnerId != null and partnerId >0">
+	          AND PARTNER_ID=#{partnerId}
+	          </if>
+		      <if test="applyMoneyTotal != null and applyMoneyTotal >0">
+	          AND APPLY_MONEY_TOTAL=#{applyMoneyTotal}
+	          </if>
+		      <if test="loanMoneyTotal != null and loanMoneyTotal >0">
+	          AND LOAN_MONEY_TOTAL=#{loanMoneyTotal}
+	          </if>
+		      <if test="paymentMoneyTotal != null and paymentMoneyTotal >0">
+	          AND PAYMENT_MONEY_TOTAL=#{paymentMoneyTotal}
+	          </if>
+		      <if test="settleDate != null and settleDate !=''">
+	          AND SETTLE_DATE=#{settleDate,jdbcType= TIMESTAMP,javaType= java.lang.String}
+	          </if>
+		      <if test="rebateRate != null and rebateRate >0">
+	          AND REBATE_RATE=#{rebateRate}
+	          </if>
+		      <if test="returnCommRate != null and returnCommRate >0">
+	          AND RETURN_COMM_RATE=#{returnCommRate}
+	          </if>
+		      <if test="refundMoneyTotal != null and refundMoneyTotal >0">
+	          AND REFUND_MONEY_TOTAL=#{refundMoneyTotal}
+	          </if>
+		      <if test="returnCommTotal != null and returnCommTotal >0">
+	          AND RETURN_COMM_TOTAL=#{returnCommTotal}
+	          </if>
+		      <if test="chargeMoneyTotal != null and chargeMoneyTotal >0">
+	          AND CHARGE_MONEY_TOTAL=#{chargeMoneyTotal}
+	          </if>
+		      <if test="rebateMoneyTotal != null and rebateMoneyTotal >0">
+	          AND REBATE_MONEY_TOTAL=#{rebateMoneyTotal}
+	          </if>
+		      <if test="rebateType != null and rebateType >0">
+	          AND REBATE_TYPE=#{rebateType}
+	          </if>
+			</trim>
+		</where>
+	</select>
+	<!-- 根据id获取 -->
+	<select id="getById" resultMap="orgFeeSettleMap">
+		SELECT <include refid="column_list" /> FROM ORG_FEE_SETTLE WHERE PID=#{pid}
+	</select>
+	<!-- 插入一条数据 -->
+	<insert id="insert" parameterType="com.qfang.xk.aom.rpc.fee.OrgFeeSettle">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_ORG_FEE_SETTLE.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO ORG_FEE_SETTLE
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+				PID,
+			</if>
+		    <if test="orgId != null and orgId >0">
+				ORG_ID,
+			</if>
+		    <if test="partnerId != null and partnerId >0">
+				PARTNER_ID,
+			</if>
+		    <if test="applyMoneyTotal != null">
+				APPLY_MONEY_TOTAL,
+			</if>
+		    <if test="loanMoneyTotal != null">
+				LOAN_MONEY_TOTAL,
+			</if>
+		    <if test="paymentMoneyTotal != null">
+				PAYMENT_MONEY_TOTAL,
+			</if>
+		    <if test="settleDate != null and settleDate !=''">
+				SETTLE_DATE,
+			</if>
+		    <if test="rebateRate != null">
+				REBATE_RATE,
+			</if>
+		    <if test="returnCommRate != null">
+				RETURN_COMM_RATE,
+			</if>
+		    <if test="refundMoneyTotal != null">
+				REFUND_MONEY_TOTAL,
+			</if>
+		    <if test="returnCommTotal != null">
+				RETURN_COMM_TOTAL,
+			</if>
+		    <if test="chargeMoneyTotal != null">
+				CHARGE_MONEY_TOTAL,
+			</if>
+		    <if test="rebateMoneyTotal != null">
+				REBATE_MONEY_TOTAL,
+			</if>
+		    <if test="rebateType != null and rebateType >0">
+				REBATE_TYPE,
+			</if>
+			<if test="extimateFeeRate != null and extimateFeeRate !=-1">
+				EXTIMATE_FEE_RATE,
+			</if>
+			<if test="actualFeeRate != null and actualFeeRate !=-1">
+				ACTUAL_FEE_RATE,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+		    #{pid},
+			</if>
+		    <if test="orgId != null and orgId >0">
+		    #{orgId},
+			</if>
+		    <if test="partnerId != null and partnerId >0">
+		    #{partnerId},
+			</if>
+		    <if test="applyMoneyTotal != null">
+		    #{applyMoneyTotal},
+			</if>
+		    <if test="loanMoneyTotal != null">
+		    #{loanMoneyTotal},
+			</if>
+		    <if test="paymentMoneyTotal != null">
+		    #{paymentMoneyTotal},
+			</if>
+		    <if test="settleDate != null and settleDate !=''">
+		    #{settleDate,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		    <if test="rebateRate != null">
+		    #{rebateRate},
+			</if>
+		    <if test="returnCommRate != null">
+		    #{returnCommRate},
+			</if>
+		    <if test="refundMoneyTotal != null">
+		    #{refundMoneyTotal},
+			</if>
+		    <if test="returnCommTotal != null">
+		    #{returnCommTotal},
+			</if>
+		    <if test="chargeMoneyTotal != null">
+		    #{chargeMoneyTotal},
+			</if>
+		    <if test="rebateMoneyTotal != null">
+		    #{rebateMoneyTotal},
+			</if>
+		    <if test="rebateType != null and rebateType >0">
+		    #{rebateType},
+			</if>
+			<if test="extimateFeeRate != null and extimateFeeRate !=-1">
+			#{extimateFeeRate},
+			</if>
+			<if test="actualFeeRate != null and actualFeeRate !=-1">
+			#{actualFeeRate},
+			</if>
+		</trim>
+	</insert>
+
+	<!-- 根据id更新数据 -->
+		<update id="update" parameterType="com.qfang.xk.aom.rpc.fee.OrgFeeSettle">
+		UPDATE ORG_FEE_SETTLE
+		<set>
+		    <if test="pid != null and pid >0">
+		     PID=#{pid},
+			</if>
+		    <if test="orgId != null and orgId >0">
+		     ORG_ID=#{orgId},
+			</if>
+		    <if test="partnerId != null and partnerId >0">
+		     PARTNER_ID=#{partnerId},
+			</if>
+		    <if test="applyMoneyTotal != null and applyMoneyTotal !=-1">
+		     APPLY_MONEY_TOTAL=#{applyMoneyTotal},
+			</if>
+		    <if test="loanMoneyTotal != null and loanMoneyTotal !=-1">
+		     LOAN_MONEY_TOTAL=#{loanMoneyTotal},
+			</if>
+		    <if test="paymentMoneyTotal != null and paymentMoneyTotal !=-1">
+		     PAYMENT_MONEY_TOTAL=#{paymentMoneyTotal},
+			</if>
+		    <if test="settleDate != null and settleDate !=''">
+		     SETTLE_DATE=#{settleDate,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		    <if test="rebateRate != null and rebateRate !=-1">
+		     REBATE_RATE=#{rebateRate},
+			</if>
+		    <if test="returnCommRate != null and returnCommRate !=-1">
+		     RETURN_COMM_RATE=#{returnCommRate},
+			</if>
+		    <if test="refundMoneyTotal != null and refundMoneyTotal !=-1">
+		     REFUND_MONEY_TOTAL=#{refundMoneyTotal},
+			</if>
+		    <if test="returnCommTotal != null and returnCommTotal !=-1">
+		     RETURN_COMM_TOTAL=#{returnCommTotal},
+			</if>
+		    <if test="chargeMoneyTotal != null and chargeMoneyTotal !=-1">
+		     CHARGE_MONEY_TOTAL=#{chargeMoneyTotal},
+			</if>
+		    <if test="rebateMoneyTotal != null and rebateMoneyTotal !=-1">
+		     REBATE_MONEY_TOTAL=#{rebateMoneyTotal},
+			</if>
+		    <if test="rebateType != null and rebateType >0">
+		     REBATE_TYPE=#{rebateType},
+			</if>
+			<if test="extimateFeeRate != null and extimateFeeRate !=-1">
+			 EXTIMATE_FEE_RATE = #{extimateFeeRate},
+			</if>
+			<if test="actualFeeRate != null and actualFeeRate !=-1">
+			 ACTUAL_FEE_RATE = #{actualFeeRate},
+			</if>
+		</set>
+		WHERE PID = #{pid}
+	</update>
+	
+	<!-- 查询一段时间内机构的提单放款金额总和 -->
+	<select id="getLoanTotalMoney" parameterType="com.qfang.xk.aom.rpc.fee.OrgFeeSettleDTO" resultMap="orgFeeSettleMap">
+		SELECT A.PID AS ORG_ID,A.PARTNER_ID,B.REC_TOTAL_MONEY AS LOAN_MONEY_TOTAL ,B.PLAN_LOAN_MONEY AS APPLY_MONEY_TOTAL
+		,C.ACTUAL_FEE_RATE,C.FUND_SIZE_MONEY,C.RATE AS EXTIMATE_FEE_RATE
+		FROM ORG_ASSETS_COOPERATION_INFO A 
+		LEFT JOIN (
+		SELECT BP.ORG_ID AS ORG_ID,SUM(BLA.REC_MONEY) AS REC_TOTAL_MONEY,SUM(E.LOAN_MONEY)  AS PLAN_LOAN_MONEY
+		       FROM BIZ_PROJECT BP
+		       LEFT JOIN BIZ_PROJECT_FORECLOSURE BPF
+		       ON BP.PID = BPF.PROJECT_ID
+		       LEFT JOIN BIZ_LOAN_FINANCE_HANDLE BLF
+		       ON BP.PID = BLF.PROJECT_ID
+		       LEFT JOIN BIZ_PROJECT_GUARANTEE E
+        		ON E.PROJECT_ID = BP.PID
+		       INNER JOIN BIZ_LOAN_APPLY_FINANCE_HANDLE BLA
+		       ON BLF.PID = BLA.FINANCE_HANDLE_ID
+		WHERE BP.PROJECT_TYPE =6 AND BP.STATUS = 1 AND BP.FORECLOSURE_STATUS IN (11,12,13)
+		AND BLA.REC_PRO IN (3,5) AND BP.IS_CLOSED =2
+		 <if test="loanDateStart != null and loanDateStart !=''">
+		   AND BLA.REC_DATE <![CDATA[>= ]]> #{loanDateStart,jdbcType= TIMESTAMP,javaType= java.lang.String}
+		 </if>
+		 <if test="loanDateEnd != null and loanDateEnd !=''">
+		   AND BLA.REC_DATE <![CDATA[<= ]]> #{loanDateEnd,jdbcType= TIMESTAMP,javaType= java.lang.String}
+		 </if>
+		 GROUP BY BP.ORG_ID) B
+		ON A.PID = B.ORG_ID 
+		LEFT JOIN ORG_COOPERAT_COMPANY_APPLY_INF C
+    	ON A.PID = C.ORG_ID
+		WHERE A.COOPERATE_STATUS IN (2,3)
+	</select>
+	
+	<!-- 批量入库费用信息 -->
+	<insert id="insertOrgFeeSettle" parameterType="java.util.List">
+	INSERT INTO ORG_FEE_SETTLE(PID,ORG_ID,PARTNER_ID,APPLY_MONEY_TOTAL,
+	LOAN_MONEY_TOTAL,SETTLE_DATE,REBATE_RATE,RETURN_COMM_RATE,REBATE_TYPE,EXTIMATE_FEE_RATE,ACTUAL_FEE_RATE)
+	SELECT SEQ_ORG_FEE_SETTLE.NEXTVAL,A.* FROM(
+        <foreach collection="list" item="item" index="index"
+            separator="UNION">
+            SELECT
+	    	#{item.orgId,jdbcType=INTEGER},
+	     	#{item.partnerId,jdbcType=INTEGER},
+	     	#{item.applyMoneyTotal,jdbcType=NUMERIC},
+	     	#{item.loanMoneyTotal,jdbcType=NUMERIC},
+	     	#{item.settleDate,jdbcType= TIMESTAMP,javaType= java.lang.String},
+	     	#{item.rebateRate,jdbcType=NUMERIC},
+	     	#{item.returnCommRate,jdbcType=NUMERIC},
+	     	#{item.rebateType,jdbcType=INTEGER},
+	     	#{item.extimateFeeRate,jdbcType=NUMERIC},
+	     	#{item.actualFeeRate,jdbcType=NUMERIC},
+            FROM DUAL 
+             </foreach>
+        ) A
+	</insert>
+	<!-- 查询合伙人所属机构截止上个月月末放款总金额  -->
+	<select id="getRecMoneyByPartner" parameterType="com.qfang.xk.aom.rpc.fee.OrgFeeSettleDTO" resultMap="orgFeeSettleMap">
+		SELECT SUM(BLA.REC_MONEY) AS LOAN_MONEY_TOTAL 
+			FROM ORG_PARTNER_INFO OPI 
+			INNER JOIN ORG_ASSETS_COOPERATION_INFO OAC 
+ 			ON OPI.PID = OAC.PARTNER_ID
+            LEFT JOIN BIZ_PROJECT BP
+       		ON OAC.PID = BP.ORG_ID 
+       		LEFT JOIN BIZ_PROJECT_FORECLOSURE BPF
+       		ON BP.PID = BPF.PROJECT_ID
+       		LEFT JOIN BIZ_LOAN_FINANCE_HANDLE BLF
+       		ON BP.PID = BLF.PROJECT_ID
+       		INNER JOIN BIZ_LOAN_APPLY_FINANCE_HANDLE BLA
+       		ON BLF.PID = BLA.FINANCE_HANDLE_ID
+			WHERE BP.PROJECT_TYPE =6 AND BP.STATUS = 1 AND BP.FORECLOSURE_STATUS IN (11,12,13)
+			AND BLA.REC_PRO IN (3,5) AND BP.IS_CLOSED =2
+			 <if test="loanDateEnd != null and loanDateEnd !=''">
+			   AND BLA.REC_DATE <![CDATA[<= ]]> #{loanDateEnd,jdbcType= TIMESTAMP,javaType= java.lang.String}
+			 </if>
+			AND OAC.PARTNER_ID = #{partnerId} AND OPI.COOPERATION_STATUS = 2
+	</select>
+
+     <!-- 机构息费列表(分页查询) -->
+	<select id="queryOrgFeeSettlePage" resultMap="orgFeeSettlePageMap"
+		parameterType="com.qfang.xk.aom.rpc.fee.OrgFeeSettlePage">
+		<if test="page!=-1">
+			SELECT D.* FROM (SELECT T.*, ROWNUM RN
+			FROM (
+		</if>
+	   SELECT PID,
+       ORG_ID,
+       PARTNER_ID,
+       APPLY_MONEY_TOTAL,
+       LOAN_MONEY_TOTAL,
+       SETTLE_DATE,
+       REBATE_RATE,
+       B.PAYMENT_MONEY_TOTAL,
+       B.REFUND_MONEY_TOTAL,
+       B.CHARGE_MONEY_TOTAL,
+       B.REBATE_MONEY_TOTAL,
+       REBATE_TYPE
+      FROM ORG_FEE_SETTLE A
+      LEFT JOIN (SELECT C.SETTLE_ID,
+                    SUM(C.PAYMENT_MONEY) AS PAYMENT_MONEY_TOTAL,
+                    SUM(C.CHARGE) AS CHARGE_MONEY_TOTAL,
+                    SUM(C.REFUND) AS REFUND_MONEY_TOTAL,
+                    SUM(C.REBATE_MONEY) AS REBATE_MONEY_TOTAL
+               FROM ORG_FEE_SETTLE_DETAIL C
+              GROUP BY C.SETTLE_ID) B
+    ON A.PID = B.SETTLE_ID
+		<where>
+			<trim>
+				<if test="settleDate != null and settleDate !=''">
+					AND A.SETTLE_DATE >=
+					TO_DATE(#{settleDate},'yyyy-MM-dd')
+				</if>
+				<if test="settleDateEnd != null and settleDateEnd !=''">
+					AND A.SETTLE_DATE <![CDATA[<=]]>
+					TO_DATE(CONCAT(#{settleDateEnd},' 23:59:59'),'yyyy-mm-dd hh24:mi:ss')
+				</if>
+				<if test="rebateType != null and rebateType >0">
+					AND A.REBATE_TYPE = #{rebateType}
+				</if>
+				<if test="1==1">
+					AND A.ORG_ID = #{orgId}
+				</if>
+			</trim>
+		</where>
+	    ORDER BY A.PID DESC
+		<if test="page!=-1">
+	<![CDATA[
+	) T
+	WHERE ROWNUM <=#{page}*#{rows}
+	) D
+	WHERE D.RN > ((#{page}-1)*#{rows})
+	]]>
+		</if>
+	</select>
+	<!--机构息费列表总数 -->
+	<select id="getOrgFeeSettlePageTotal" resultType="Integer"
+		parameterType="com.qfang.xk.aom.rpc.fee.OrgFeeSettlePage">
+	<![CDATA[
+	SELECT COUNT(1) FROM
+			(SELECT A.PID
+		FROM ORG_FEE_SETTLE A
+	]]>
+		<where>
+			<trim>
+			   <if test="settleDate != null and settleDate !=''">
+					AND A.SETTLE_DATE >=
+					TO_DATE(#{settleDate},'yyyy-MM-dd')
+				</if>
+				<if test="settleDateEnd != null and settleDateEnd !=''">
+					AND A.SETTLE_DATE <![CDATA[<=]]>
+					TO_DATE(CONCAT(#{settleDateEnd},' 23:59:59'),'yyyy-mm-dd hh24:mi:ss')
+				</if>
+				<if test="rebateType != null and rebateType >0">
+					AND A.REBATE_TYPE = #{rebateType}
+				</if>
+				<if test="1==1">
+					AND A.ORG_ID = #{orgId}
+				</if>
+			</trim>
+		</where>
+		) T
+	</select>
+	 <!-- 合伙人息费列表(分页查询) -->
+	<select id="queryPartnerFeeSettlePage" resultMap="partnerFeeSettlePageMap"
+		parameterType="com.qfang.xk.aom.rpc.fee.PartnerFeeSettlePage">
+		<if test="page!=-1">
+			SELECT D.* FROM (SELECT T.*, ROWNUM RN
+			FROM (
+		</if>
+			SELECT B.ORG_NAME,
+       B.CONTACT,
+       B.PHONE,
+       A.PID AS FEE_SETTLE_ID,
+       A.ORG_ID,
+       A.PARTNER_ID,
+       A.APPLY_MONEY_TOTAL,
+       A.LOAN_MONEY_TOTAL,
+       C.PAYMENT_MONEY_TOTAL,
+       A.SETTLE_DATE,
+       A.RETURN_COMM_RATE,
+       C.RETURN_COMM_TOTAL
+  FROM ORG_FEE_SETTLE A
+  LEFT JOIN ORG_ASSETS_COOPERATION_INFO B
+    ON A.ORG_ID = B.PID
+  LEFT JOIN (SELECT C.SETTLE_ID,
+                    SUM(C.PAYMENT_MONEY) AS PAYMENT_MONEY_TOTAL,
+                    SUM(C.RETURN_COMM) AS RETURN_COMM_TOTAL
+               FROM ORG_FEE_SETTLE_DETAIL C
+              GROUP BY C.SETTLE_ID) C
+    ON A.PID = C.SETTLE_ID
+		<where>
+			<trim>
+				<if test="settleDate != null and settleDate !=''">
+					AND A.SETTLE_DATE >=
+					TO_DATE(#{settleDate},'yyyy-MM-dd')
+				</if>
+				<if test="settleDateEnd != null and settleDateEnd !=''">
+					AND A.SETTLE_DATE <![CDATA[<=]]>
+					TO_DATE(CONCAT(#{settleDateEnd},' 23:59:59'),'yyyy-mm-dd hh24:mi:ss')
+				</if>
+                <if test="orgName !=null and orgName !=''">
+			        AND B.ORG_NAME LIKE '%${orgName}%'
+		        </if>
+                <if test="contact !=null and contact !=''">
+			        AND B.CONTACT LIKE '%${contact}%'
+		        </if>
+				<if test="1==1">
+					AND A.PARTNER_ID = #{partnerId}
+				</if>
+			</trim>
+		</where>
+		ORDER BY A.PID DESC
+		<if test="page!=-1">
+	<![CDATA[
+	) T
+	WHERE ROWNUM <=#{page}*#{rows}
+	) D
+	WHERE D.RN > ((#{page}-1)*#{rows})
+	]]>
+		</if>
+	</select>
+	<!--合伙人息费列表总数 -->
+	<select id="getPartnerFeeSettlePageTotal" resultType="Integer"
+		parameterType="com.qfang.xk.aom.rpc.fee.PartnerFeeSettlePage">
+	<![CDATA[
+	SELECT COUNT(1) FROM
+			(SELECT
+			       A.ORG_ID
+			  FROM ORG_FEE_SETTLE A
+			  LEFT JOIN ORG_ASSETS_COOPERATION_INFO B
+			    ON A.ORG_ID = B.PID
+	]]>
+		<where>
+			<trim>
+			   <if test="settleDate != null and settleDate !=''">
+					AND A.SETTLE_DATE >=
+					TO_DATE(#{settleDate},'yyyy-MM-dd')
+				</if>
+				<if test="settleDateEnd != null and settleDateEnd !=''">
+					AND A.SETTLE_DATE <![CDATA[<=]]>
+					TO_DATE(CONCAT(#{settleDateEnd},' 23:59:59'),'yyyy-mm-dd hh24:mi:ss')
+				</if>
+                <if test="orgName !=null and orgName !=''">
+			        AND B.ORG_NAME LIKE '%${orgName}%'
+		        </if>
+                <if test="contact !=null and contact !=''">
+			        AND B.CONTACT LIKE '%${contact}%'
+		        </if>
+				<if test="1==1">
+					AND A.PARTNER_ID = #{partnerId}
+				</if>
+			</trim>
+		</where>
+		) T
+	</select>
+	
+	<select id="queryOrgFeeSettleByPage" parameterType="com.qfang.xk.aom.rpc.fee.OrgFeeSettleDTO" resultMap="orgFeeSettleDTOMap">
+		<if test="page!=-1">
+			SELECT D.* FROM (SELECT T.*, ROWNUM RN
+			FROM (
+		</if>
+			SELECT A.PID,
+		       A.ORG_ID,
+		       A.PARTNER_ID,
+		       A.LOAN_MONEY_TOTAL,
+		       TO_CHAR(A.SETTLE_DATE, 'yyyyMM') AS SETTLE_DATE,
+		       A.RETURN_COMM_RATE,
+		       A.REBATE_RATE,
+		       A.REBATE_TYPE,
+		       B.ORG_NAME,
+		       B.CODE AS ORG_CODE,
+		       D.PAYMENT_MONEY AS PAYMENT_MONEY_TOTAL,
+		       D.CHARGE AS CHARGE_MONEY_TOTAL,
+		       D.REFUND AS REFUND_MONEY_TOTAL,
+		       D.REBATE_MONEY AS REBATE_MONEY_TOTAL,
+		       D.RETURN_COMM AS RETURN_COMM_TOTAL,
+		       U.REAL_NAME AS PARTNER_NAME,
+		       A.EXTIMATE_FEE_RATE,
+		       A.ACTUAL_FEE_RATE
+		  FROM ORG_FEE_SETTLE A
+		  LEFT JOIN ORG_ASSETS_COOPERATION_INFO B
+		    ON A.ORG_ID = B.PID
+		  LEFT JOIN (SELECT C.SETTLE_ID,
+		                    SUM(C.PAYMENT_MONEY) AS PAYMENT_MONEY,
+		                    SUM(C.CHARGE) AS CHARGE,
+		                    SUM(C.REFUND) AS REFUND,
+		                    SUM(C.REBATE_MONEY) AS REBATE_MONEY,
+		                    SUM(C.RETURN_COMM) AS RETURN_COMM
+		               FROM ORG_FEE_SETTLE_DETAIL C
+		              GROUP BY C.SETTLE_ID) D
+		    ON A.PID = D.SETTLE_ID
+		    LEFT JOIN ORG_PARTNER_INFO P
+		    ON P.PID = A.PARTNER_ID
+		    LEFT JOIN ORG_USER_INFO U
+		    ON P.USER_ID = U.PID
+			<where>
+				<trim>
+					<if test="1==1">
+						AND B.AUDIT_STATUS = 3
+					</if>
+				   <if test="settleDate != null and settleDate !=''">
+						AND A.SETTLE_DATE >=
+						TO_DATE(#{settleDate},'yyyy-MM-dd')
+					</if>
+					<if test="settleDateEnd != null and settleDateEnd !=''">
+						AND A.SETTLE_DATE <![CDATA[<=]]>
+						TO_DATE(CONCAT(#{settleDateEnd},' 23:59:59'),'yyyy-mm-dd hh24:mi:ss')
+					</if>
+					<if test="orgName != null and orgName !=''">
+						AND B.ORG_NAME LIKE '%${orgName}%'
+					</if>
+				    <if test="orgCode != null and orgCode !=''">
+						AND B.CODE LIKE '%${orgCode}%'
+					</if>
+				</trim>
+			</where>
+			 ORDER BY A.PID DESC
+		<if test="page!=-1">
+			<![CDATA[
+			) T
+			WHERE ROWNUM <=#{page}*#{rows}
+			) D
+			WHERE D.RN > ((#{page}-1)*#{rows})
+			]]>
+		</if>
+	</select>
+	
+	<select id="getOrgFeeSettleCount"  parameterType="com.qfang.xk.aom.rpc.fee.OrgFeeSettleDTO" resultType="Integer">
+		<![CDATA[
+			SELECT COUNT(1) FROM
+				(
+			SELECT A.PID
+			FROM ORG_FEE_SETTLE A 
+			LEFT JOIN ORG_ASSETS_COOPERATION_INFO B
+			ON A.ORG_ID = B.PID
+			LEFT JOIN ( SELECT C.SETTLE_ID FROM ORG_FEE_SETTLE_DETAIL C GROUP BY C.SETTLE_ID) D 
+			 ON A.PID = D.SETTLE_ID
+		]]>
+		<where>
+				<trim>
+					<if test="1==1">
+						AND B.AUDIT_STATUS = 3
+					</if>
+				   <if test="settleDate != null and settleDate !=''">
+						AND A.SETTLE_DATE >=
+						TO_DATE(#{settleDate},'yyyy-MM-dd')
+					</if>
+					<if test="settleDateEnd != null and settleDateEnd !=''">
+						AND A.SETTLE_DATE <![CDATA[<=]]>
+						TO_DATE(CONCAT(#{settleDateEnd},' 23:59:59'),'yyyy-mm-dd hh24:mi:ss')
+					</if>
+					<if test="orgName != null and orgName !=''">
+						AND B.ORG_NAME LIKE '%${orgName}%'
+					</if>
+				    <if test="orgCode != null and orgCode !=''">
+						AND B.CODE LIKE '%${orgCode}%'
+					</if>
+				</trim>
+			</where>
+			) T
+	</select>
+</mapper>

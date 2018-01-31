@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans-3.0.xsd 
+						http://www.springframework.org/schema/tx 
+						http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+						http://www.springframework.org/schema/aop 
+						http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+						http://www.springframework.org/schema/context 
+						http://www.springframework.org/schema/context/spring-context-3.0.xsd 
+						http://www.springframework.org/schema/task
+	  					http://www.springframework.org/schema/task/spring-task-3.0.xsd">
+
+	<!-- 定时任务注解 -->
+	<task:annotation-driven scheduler="qbScheduler"
+		mode="proxy" />
+	<!-- 任务池 -->
+	<task:scheduler id="qbScheduler" pool-size="1000" />
+
+	  <!-- Task 配置 -->
+      <task:scheduled-tasks>  
+
+        
+        <!-- 清除差异预警处理表数据  每天 凌晨10分开始执行一次 -->
+        <task:scheduled ref="cleanHandleDifferWarnJob" method="execute" cron="0 10 0 ? * *"/>
+        
+        <!-- 更新授信状态  每天 凌晨15分开始执行一次 -->
+        <!-- <task:scheduled ref="creditStatusJob" method="execute" cron="0 15 0 ? * *"/> -->
+        
+        <!-- 机构合作状态更新  每天 凌晨01分开始执行一次-->
+        <task:scheduled ref="orgCooperateStatusJob" method="execute" cron="0 01 0 ? * *"/>
+        
+        <!-- 费用结算  每月1号  凌晨1点开始执行-->
+        <task:scheduled ref="orgCooperateStatusJob" method="execute" cron="0 0 1 1 * ?"/>
+        
+        <!-- 系统自动查档   每天 凌晨25分开始执行一次 -->
+        <task:scheduled ref="checkDocumentJob" method="execute" cron="0 25 0 ? * *"/>
+        
+         <!-- 资金合作机构生成还扣款文件定时任务   每天下午15点30分 -->
+        <task:scheduled ref="partnerFileJob" method="createPaymentFile" cron="0 30 15 * * ?"/>  
+        
+         <!-- 资金合作机构读取放款文件定时任务   02-08点之间每30分钟执行一次  -->
+        <task:scheduled ref="partnerFileJob" method="readLoanFile" cron="0 0/30 02,08 * * ?"/>
+        
+        <!-- 房抵贷逾期信息更新  每天 凌晨10分开始执行一次  -->
+        <task:scheduled ref="overdueJob" method="execute" cron="0 10 0 ? * *"/>
+        
+           
+      </task:scheduled-tasks>
+ 
+
+</beans>

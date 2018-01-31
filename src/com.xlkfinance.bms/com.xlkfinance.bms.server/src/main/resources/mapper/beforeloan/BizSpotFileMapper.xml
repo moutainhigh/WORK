@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xlkfinance.bms.server.beforeloan.mapper.BizSpotFileMapper">
+	<resultMap id="bizSpotFileMap" type="com.xlkfinance.bms.rpc.beforeloan.BizSpotFile">
+		<id property="pid" column="PID" />
+		<id property="spotId" column="SPOT_ID" />
+		<id property="fileId" column="FILE_ID" />
+		<id property="status" column="STATUS" />
+		<id property="fileName" column="FILE_NAME" />
+		<id property="fileUrl" column="FILE_URL" />
+	</resultMap>
+	<sql id="column_list">
+        A.PID,A.SPOT_ID,A.FILE_ID,A.STATUS,B.FILE_NAME,B.FILE_URL,B.FILE_TYPE
+	</sql>
+	<!-- 查询所有 -->
+	<select id="getAll" resultMap="bizSpotFileMap" parameterType="com.xlkfinance.bms.rpc.beforeloan.BizSpotFile">
+		<![CDATA[
+		SELECT D.* FROM (SELECT T.*, ROWNUM RN
+	          FROM (
+			SELECT
+			]]>
+			<include refid="column_list" />
+			<![CDATA[
+			FROM BIZ_SPOT_FILE A LEFT JOIN BIZ_FILE B ON A.FILE_ID = B.PID 
+			]]>
+			<where>
+				<trim>
+			      <if test="pid != null and pid >0">
+		          PID=#{pid}
+		          </if>
+			      <if test="spotId != null and spotId >0">
+		          AND SPOT_ID=#{spotId}
+		          </if>
+			      <if test="fileId != null and fileId >0">
+		          AND FILE_ID=#{fileId}
+		          </if>
+			      <if test="status != null and status >0">
+		          AND STATUS=#{status}
+		          </if>
+				</trim>
+			</where>
+			
+		<![CDATA[ORDER BY A.PID desc) T
+				WHERE ROWNUM <=#{page}*#{rows}
+				) D
+		WHERE D.RN > ((#{page}-1)*#{rows})]]>
+	</select>
+	
+	<select id="getAllCount" resultType="Integer" parameterType="com.xlkfinance.bms.rpc.beforeloan.BizSpotFile">
+			SELECT
+				count(A.PID)
+			FROM BIZ_SPOT_FILE A LEFT JOIN BIZ_FILE B ON A.FILE_ID = B.PID 
+			<where>
+				<trim>
+			      <if test="pid != null and pid >0">
+		          PID=#{pid}
+		          </if>
+			      <if test="spotId != null and spotId >0">
+		          AND SPOT_ID=#{spotId}
+		          </if>
+			      <if test="fileId != null and fileId >0">
+		          AND FILE_ID=#{fileId}
+		          </if>
+			      <if test="status != null and status >0">
+		          AND STATUS=#{status}
+		          </if>
+				</trim>
+			</where>
+	</select>
+	
+	<!-- 根据id获取 -->
+	<select id="getById" resultMap="bizSpotFileMap">
+		SELECT <include refid="column_list" /> FROM BIZ_SPOT_FILE A LEFT JOIN BIZ_FILE B ON A.FILE_ID = B.PID WHERE A.PID=#{pid}
+	</select>
+	<!-- 插入一条数据 -->
+	<insert id="insert" parameterType="com.xlkfinance.bms.rpc.beforeloan.BizSpotFile">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_BIZ_SPOT_FILE.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_SPOT_FILE
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+				PID,
+			</if>
+		    <if test="spotId != null and spotId >0">
+				SPOT_ID,
+			</if>
+		    <if test="fileId != null and fileId >0">
+				FILE_ID,
+			</if>
+		    <if test="status != null and status >0">
+				STATUS,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+		    #{pid},
+			</if>
+		    <if test="spotId != null and spotId >0">
+		    #{spotId},
+			</if>
+		    <if test="fileId != null and fileId >0">
+		    #{fileId},
+			</if>
+		    <if test="status != null and status >0">
+		    #{status},
+			</if>
+		</trim>
+	</insert>
+	<!-- 根据id删除数据 -->
+	<delete id="deleteById" parameterType="com.xlkfinance.bms.rpc.beforeloan.BizSpotFile">
+		<![CDATA[DELETE FROM BIZ_SPOT_FILE WHERE PID=#{pid}]]>
+	</delete>
+	<!-- 根据id更新数据 -->
+		<update id="update" parameterType="com.xlkfinance.bms.rpc.beforeloan.BizSpotFile">
+		UPDATE BIZ_SPOT_FILE
+		<set>
+		    <if test="pid != null and pid >0">
+		     PID=#{pid},
+			</if>
+		    <if test="spotId != null and spotId >0">
+		     SPOT_ID=#{spotId},
+			</if>
+		    <if test="fileId != null and fileId >0">
+		     FILE_ID=#{fileId},
+			</if>
+		    <if test="status != null and status >0">
+		     STATUS=#{status},
+			</if>
+		</set>
+		WHERE PID = #{pid}
+	</update>
+	<!-- 根据传入多个id删除数据 -->
+	<delete id="deleteByIds" parameterType="java.util.List">
+		DELETE FROM BIZ_SPOT_FILE WHERE PID in
+		<foreach collection="list" item="item" index="index" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+</mapper>

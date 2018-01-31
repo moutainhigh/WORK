@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.system.mapper.SysLookupMapper">
+	<resultMap id="SysLookupResultMap" type="com.xlkfinance.bms.rpc.system.SysLookup">
+		<id column="PID" property="pid" jdbcType="INTEGER" />
+		<result column="LOOKUP_TYPE" property="lookupType" />
+		<result column="LOOKUP_NAME" property="lookupName" />
+		<result column="LOOKUP_DESC" property="lookupDesc" />
+		<result column="STATUS" property="status" />
+		<result column="CREATE_DATETIME" property="createDatetime" javaType="String" jdbcType="TIMESTAMP"/>
+	</resultMap>
+	
+	<sql id="SysLookup_Column_List">
+		PID,LOOKUP_TYPE,LOOKUP_NAME,LOOKUP_DESC,STATUS,CREATE_DATETIME
+	</sql>
+
+	<!-- 添加数据字典 -->
+	<insert id="insert" parameterType="com.xlkfinance.bms.rpc.system.SysLookup">
+		<!-- 获取序列号 -->
+		<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+			SELECT SEQ_SYS_LOOKUP.Nextval as PID from DUAL
+		</selectKey>
+		
+		INSERT INTO SYS_LOOKUP
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			PID,
+			STATUS,
+			<if test="lookupType != null">
+				LOOKUP_TYPE,
+			</if>
+			<if test="lookupName != null">
+				LOOKUP_NAME,
+			</if>
+			<if test="lookupDesc != null">
+				LOOKUP_DESC,
+			</if>
+			<if test="createDatetime != null">
+				CREATE_DATETIME,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{pid},
+			1,
+			<if test="lookupType != null">
+				#{lookupType},
+			</if>
+			<if test="lookupName != null">
+				#{lookupName},
+			</if>
+			<if test="lookupDesc != null">
+				#{lookupDesc},
+			</if>
+			<if test="createDatetime != null">
+				#{createDatetime,javaType=String,jdbcType=TIMESTAMP},
+			</if>
+		</trim>
+	</insert>
+	
+	<!-- 删除数据字典 -->
+	<delete id="batchDelete" parameterType="java.lang.String">
+		DELETE FROM SYS_LOOKUP WHERE PID in 
+		<foreach item="idItem" collection="array" open="(" separator="," close=")">
+			#{idItem}
+		</foreach>
+	</delete>
+	
+	<!-- 修改数据字典 -->
+	<update id="updateByPrimaryKey" parameterType="com.xlkfinance.bms.rpc.system.SysLookup">
+		UPDATE SYS_LOOKUP
+		<trim prefix="set" suffixOverrides=",">
+			<if test="lookupType != null">
+				LOOKUP_TYPE = #{lookupType},
+			</if>
+			<if test="lookupName != null">
+				LOOKUP_NAME = #{lookupName},
+			</if>
+			<if test="lookupDesc != null">
+				LOOKUP_DESC = #{lookupDesc},
+			</if>
+			<if test="createDatetime != null">
+				CREATE_DATETIME = #{createDatetime,javaType=String,jdbcType=TIMESTAMP},
+			</if>
+		</trim>
+		WHERE PID = #{pid}
+	</update>
+	
+	<!-- 逻辑删除操作 -->
+	<update id="deleteLookup" parameterType="List">
+		UPDATE SYS_LOOKUP  set
+       	STATUS = 0 
+		WHERE PID in
+		<foreach item="item" collection="list" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</update>
+	
+	<!-- 查询数据字典 根据条件查询 -->
+	<select id="getAllSysLookup" resultMap="SysLookupResultMap" parameterType="com.xlkfinance.bms.rpc.system.SysLookup">
+		SELECT 
+			<include refid="SysLookup_Column_List" /> 
+  			FROM 
+  			(SELECT A.*, ROWNUM RN FROM (
+  				SELECT 
+  					<include refid="SysLookup_Column_List" /> 
+  				FROM SYS_LOOKUP WHERE STATUS = 1
+  					<if test="lookupType != null and lookupType != '' ">
+						AND LOOKUP_TYPE like '%${lookupType}%' 
+					</if>
+					<if test="lookupName != null and lookupName != '' ">
+						AND LOOKUP_NAME like '%${lookupName}%' 
+					</if>
+				 ORDER BY LOOKUP_TYPE ASC
+  				) A)
+  		WHERE RN BETWEEN (((#{page}-1) * #{rows})+1) AND (#{page} * #{rows})
+	</select>
+	<!-- 查询数据字典 根据条件查询 -->
+	<select id="getAllSysLookupSum" resultType="Integer" parameterType="com.xlkfinance.bms.rpc.system.SysLookup">
+		SELECT 
+			COUNT(pid)
+  			FROM SYS_LOOKUP 
+  			WHERE STATUS = 1
+			<if test="lookupType != null and lookupType != '' ">
+				AND LOOKUP_TYPE like '%${lookupType}%' 
+			</if>
+			<if test="lookupName != null and lookupName != '' ">
+				AND LOOKUP_NAME like '%${lookupName}%' 
+			</if>
+	</select>
+</mapper>

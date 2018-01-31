@@ -1,0 +1,544 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xlkfinance.bms.server.aom.finance.mapper.OrgFinanceMapper">
+	<!-- 机构订单数据汇总（用于机构首页的数据展现） -->
+	<resultMap id="orgOrderSummaryMap" type="com.qfang.xk.aom.rpc.finance.OrgOrderSummary">
+		<id property="orgId" column="ORG_ID" />
+		<id property="availableMoney" column="AVAILABLE_MONEY" />
+		<id property="frozenMoney" column="FROZEN_MONEY" />
+		<id property="feeSettleTotalMoney" column="FEE_SETTLE_TOTAL_MONEY" />
+		<id property="hisTotal" column="HIS_TOTAL" />
+		<id property="hisTotalMoney" column="HIS_TOTAL_MONEY" />
+		<id property="curTotal" column="CUR_TOTAL" />
+		<id property="applyTotal" column="APPLY_TOTAL" />
+		<id property="applyTotalMoney" column="APPLY_TOTAL_MONEY" />
+		<id property="reinsuranceTotal" column="REINSURANCE_TOTAL" />
+		<id property="reinsuranceTotalMoney" column="REINSURANCE_TOTAL_MONEY" />
+	</resultMap>
+	<!-- 合伙人数据汇总（用于合伙人首页的数据展现） -->
+	<resultMap id="partnerOrderSummaryMap" type="com.qfang.xk.aom.rpc.finance.PartnerOrderSummary">
+		<id property="notFeeSettleTotalMoney" column="NOT_FEE_SETTLE_TOTAL_MONEY" />
+		<id property="feeSettleTotalMoney" column="FEE_SETTLE_TOTAL_MONEY" />
+		<id property="orgTotal" column="ORG_TOTAL" />
+	</resultMap>
+	<!-- 机构放款列表 -->
+	<resultMap id="orgMakeLoansIndexMap" type="com.qfang.xk.aom.rpc.finance.OrgMakeLoansIndex">
+  		<id property="pid" column="PID"/>
+  		<id property="projectId" column="PROJECT_ID"/>
+  		<id property="projectNumber" column="PROJECT_NUMBER"/>
+  		<id property="projectName" column="PROJECT_NAME"/>
+  		<id property="projectType" column="PROJECT_TYPE"/>
+  		<id property="extensionFee" column="EXTENSION_FEE"/>
+  		<id property="status" column="STATUS"/>
+  		<id property="realLoan" column="REAL_LOAN"/>
+  		<id property="loanMoney" column="LOAN_MONEY"/>
+  		<id property="projectStatus" column="PROJECT_STATUS"/>
+  		<id property="projectSource" column="PROJECT_SOURCE"/>
+  		<id property="bizHandleId" column="BIZ_HANDLE_ID"/>
+  		<id property="houseName" column="HOUSE_NAME"/>
+  		<id property="buyerName" column="BUYER_NAME"/>
+  		<id property="sellerName" column="SELLER_NAME"/>
+  		<id property="isChechan" column="IS_CHECHAN"/>
+  		<id property="makeLoansApplyFinanceId" column="MAKE_LOANS_APPLY_FINANCE_ID"/>
+  		<id property="makeLoansApplyFinanceApplyStatus" column="MAKE_LOANS_APPLY_STATUS"/>
+  		<id property="makeLoansDate" column="MAKE_LOANS_DATE"/>
+     </resultMap>
+    <!-- 机构回款首页列表 -->
+	<resultMap id="orgRepaymentIndexMap" type="com.qfang.xk.aom.rpc.finance.OrgRepaymentIndex">
+		<id property="repaymentId" column="REPAYMENT_ID" />
+		<id property="projectId" column="PROJECT_ID" />
+		<id property="projectNumber" column="PROJECT_NUMBER" />
+		<id property="projectName" column="PROJECT_NAME" />
+		<id property="realRepaymentMoney" column="REAL_REPAYMENT_MONEY" />
+		<id property="realRepaymentDate" column="REAL_REPAYMENT_DATE" />
+		<id property="planRepaymentMoney" column="PLAN_REPAYMENT_MONEY" />
+		<id property="planRepaymentDate" column="PLAN_REPAYMENT_DATE" />
+		<id property="repaymentStatus" column="REPAYMENT_STATUS" />
+		<id property="overdueFee" column="OVERDUE_FEE" />
+		<id property="overdueDay" column="OVERDUE_DAY" />
+		<id property="houseName" column="HOUSE_NAME"/>
+  		<id property="buyerName" column="BUYER_NAME"/>
+  		<id property="sellerName" column="SELLER_NAME"/>
+	</resultMap>
+	<!-- 根据机构id查询机构订单数据汇总（用于机构首页的数据展现） -->
+	<select id="getOrgOrderSummaryByOrgId" resultMap="orgOrderSummaryMap">
+		SELECT A.PID AS ORG_ID,
+       B.AVAILABLE_LIMIT AS AVAILABLE_MONEY,
+       (SELECT OUL.USED_LIMIT FROM ORG_USED_LIMIT OUL WHERE OUL.ORG_ID=A.PID) AS FROZEN_MONEY,
+       
+       (SELECT SUM(OFSD.REFUND)
+		  FROM ORG_FEE_SETTLE_DETAIL OFSD
+		  LEFT JOIN ORG_FEE_SETTLE OFS
+		    ON OFSD.SETTLE_ID = OFS.PID
+		    WHERE OFS.ORG_ID = A.PID) AS FEE_SETTLE_TOTAL_MONEY,
+       
+       (SELECT COUNT(1)
+          FROM ORG_BIZ_PROJECT_VIEW PV
+         WHERE PV.ORG_ID = A.PID
+           AND PV.FORECLOSURE_STATUS = 13) AS HIS_TOTAL,
+       
+       (SELECT SUM(AFH.REC_MONEY)
+          FROM ORG_BIZ_PROJECT_VIEW PV
+          LEFT JOIN BIZ_LOAN_FINANCE_HANDLE FH
+            ON PV.PID = FH.PROJECT_ID
+          LEFT JOIN BIZ_LOAN_APPLY_FINANCE_HANDLE AFH
+            ON AFH.FINANCE_HANDLE_ID = FH.PID
+         WHERE PV.ORG_ID = A.PID
+           AND AFH.REC_PRO IN (3, 4)
+           AND PV.FORECLOSURE_STATUS = 13) AS HIS_TOTAL_MONEY,
+       (SELECT COUNT(1)
+          FROM ORG_BIZ_PROJECT_VIEW PV
+         WHERE PV.ORG_ID = A.PID
+           AND PV.FORECLOSURE_STATUS != 13) CUR_TOTAL,
+           
+       (SELECT COUNT(1)
+          FROM ORG_BIZ_PROJECT_VIEW PV
+         WHERE PV.ORG_ID = A.PID
+           AND PV.FORECLOSURE_STATUS IN(1,2,3,4,5,6,7,8,9,10,14,5,15) AND PV.IS_REJECT IN(2,3) AND REQUEST_STATUS in (2, 3, 4, 5)) AS APPLY_TOTAL,
+       
+       (SELECT SUM(PG.LOAN_MONEY)
+          FROM ORG_BIZ_PROJECT_VIEW PV
+          LEFT JOIN BIZ_PROJECT_GUARANTEE PG
+          ON PV.PID=PG.PROJECT_ID
+         WHERE PV.ORG_ID = A.PID
+           AND PV.FORECLOSURE_STATUS IN(1,2,3,4,5,6,7,8,9,10,14,5,15) AND PV.IS_REJECT IN(2,3) AND REQUEST_STATUS in (2, 3, 4, 5)) AS APPLY_TOTAL_MONEY,
+       
+       (SELECT COUNT(1)
+          FROM ORG_BIZ_PROJECT_VIEW PV
+          LEFT JOIN BIZ_LOAN_REPAYMENT R
+            ON PV.PID = R.PROJECT_ID
+          LEFT JOIN BIZ_LOAN_FINANCE_HANDLE FH
+            ON PV.PID = FH.PROJECT_ID
+         WHERE PV.ORG_ID = A.PID
+           AND FH.STATUS = 3
+           AND (R.STATUS = 1 OR R.STATUS IS NULL)) AS REINSURANCE_TOTAL,
+       
+       (SELECT SUM(AFH.REC_MONEY)
+          FROM ORG_BIZ_PROJECT_VIEW PV
+          LEFT JOIN BIZ_LOAN_FINANCE_HANDLE FH
+            ON PV.PID = FH.PROJECT_ID
+          LEFT JOIN BIZ_LOAN_APPLY_FINANCE_HANDLE AFH
+            ON AFH.FINANCE_HANDLE_ID = FH.PID
+          LEFT JOIN BIZ_LOAN_REPAYMENT R
+            ON PV.PID = R.PROJECT_ID
+         WHERE PV.ORG_ID = A.PID
+           AND AFH.REC_PRO IN (3, 4)
+           AND FH.STATUS = 3
+           AND (R.STATUS = 1 OR R.STATUS IS NULL)) AS REINSURANCE_TOTAL_MONEY
+  FROM ORG_ASSETS_COOPERATION_INFO A
+  LEFT JOIN ORG_COOPERAT_COMPANY_APPLY_INF B
+    ON A.PID = B.ORG_ID
+    WHERE A.PID=#{orgId}
+	</select>
+	<!-- 根据机构id查询合伙人数据汇总（用于合伙人首页的数据展现） -->
+	<select id="getPartnerOrderSummary" resultMap="partnerOrderSummaryMap">
+		SELECT 0 AS NOT_FEE_SETTLE_TOTAL_MONEY,       
+       (SELECT SUM(FSD.RETURN_COMM)
+          FROM ORG_FEE_SETTLE FS LEFT JOIN ORG_FEE_SETTLE_DETAIL FSD
+          ON FS.PID=FSD.SETTLE_ID          
+           WHERE FS.PARTNER_ID=A.PID) AS FEE_SETTLE_TOTAL_MONEY,           
+       (SELECT COUNT(1)
+          FROM ORG_ASSETS_COOPERATION_INFO ORG
+         WHERE ORG.PARTNER_ID = A.PID) AS ORG_TOTAL
+  FROM ORG_PARTNER_INFO A
+    WHERE A.USER_ID=#{userId}
+	</select>
+	<!-- 机构放款列表(分页查询) -->
+	<select id="queryOrgMakeLoansIndex" resultMap="orgMakeLoansIndexMap"
+	parameterType="com.qfang.xk.aom.rpc.finance.OrgMakeLoansIndex">
+	<![CDATA[
+	SELECT D.* FROM (SELECT T.*, ROWNUM RN
+	        FROM (SELECT B.PID,
+       B.PROJECT_ID,
+       B.STATUS,
+       A.PROJECT_NAME,
+       A.PROJECT_NUMBER,
+       A.PROJECT_SOURCE,
+       A.PROJECT_TYPE,
+       A.IS_CHECHAN,
+       (SELECT SUM(AFH.REC_MONEY)
+          FROM BIZ_LOAN_APPLY_FINANCE_HANDLE AFH
+         WHERE AFH.FINANCE_HANDLE_ID = B.PID
+           AND AFH.REC_PRO IN (3, 4, 5, 6)) AS REAL_LOAN,
+       (SELECT AFH.PID
+          FROM BIZ_LOAN_APPLY_FINANCE_HANDLE AFH
+         WHERE AFH.FINANCE_HANDLE_ID = B.PID
+           AND AFH.REC_PRO = 3) AS MAKE_LOANS_APPLY_FINANCE_ID,
+       (SELECT AFH.APPLY_STATUS
+          FROM BIZ_LOAN_APPLY_FINANCE_HANDLE AFH
+         WHERE AFH.FINANCE_HANDLE_ID = B.PID
+           AND AFH.REC_PRO = 3) AS MAKE_LOANS_APPLY_STATUS,
+       (SELECT AFH.REC_DATE
+          FROM BIZ_LOAN_APPLY_FINANCE_HANDLE AFH
+         WHERE AFH.FINANCE_HANDLE_ID = B.PID
+           AND AFH.REC_PRO = 3) AS MAKE_LOANS_DATE,
+       A.FORECLOSURE_STATUS AS PROJECT_STATUS,
+       C.LOAN_MONEY,
+       (SELECT SUM(AFH.REC_MONEY)
+          FROM BIZ_LOAN_APPLY_FINANCE_HANDLE AFH
+          LEFT JOIN BIZ_LOAN_FINANCE_HANDLE FH  
+          ON AFH.FINANCE_HANDLE_ID=FH.PID
+         WHERE AFH.REC_PRO IN (8)
+           AND FH.PROJECT_ID IN (SELECT PE.PROJECT_ID FROM biz_project_extension PE WHERE PE.EXTENSION_PROJECT_ID=A.PID)) AS EXTENSION_FEE,
+       TO_CHAR(H.HOUSE_NAME) AS HOUSE_NAME,
+       E.BUYER_NAME,
+       E.SELLER_NAME
+  FROM BIZ_PROJECT A
+ INNER JOIN BIZ_LOAN_FINANCE_HANDLE B
+    ON A.PID = B.PROJECT_ID
+ INNER JOIN BIZ_PROJECT_GUARANTEE C
+    ON C.PROJECT_ID = A.PID
+  LEFT JOIN BIZ_LOAN_HANDLE_INFO D
+    ON D.PROJECT_ID = A.PID
+  LEFT JOIN BIZ_PROJECT_PROPERTY E
+    ON E.PROJECT_ID = A.PID
+    LEFT JOIN (
+    SELECT P.PID,WM_CONCAT(S.HOUSE_NAME) AS HOUSE_NAME
+              FROM BIZ_PROJECT_ESTATE S, BIZ_PROJECT P
+             WHERE S.PROJECT_ID = P.PID
+               AND S.STATUS = 1
+         GROUP BY P.PID
+    )H
+    ON H.PID = A.PID
+	]]>
+	<where>
+		<trim>
+		
+		    <if test="1==1">
+		        AND A.FORECLOSURE_STATUS IN (10, 11, 12, 13) 
+		        AND A.IS_CLOSED=2
+		        AND A.ORG_ID=#{orgId}
+		    </if>
+			<if test="status!=null and status>0">
+				AND B.STATUS = #{status}
+			</if>
+			<if test="makeLoansDate != null and makeLoansDate !=''">
+			    AND EXISTS(SELECT AFH.FINANCE_HANDLE_ID
+			          FROM BIZ_LOAN_APPLY_FINANCE_HANDLE AFH
+			         WHERE AFH.FINANCE_HANDLE_ID = B.PID AND AFH.REC_PRO = 3 AND AFH.REC_DATE>=TO_DATE(#{makeLoansDate},'yyyy-MM-dd'))
+			</if>
+			<if test="makeLoansDateEnd != null and makeLoansDateEnd !=''">
+			   AND EXISTS(SELECT AFH.FINANCE_HANDLE_ID
+			          FROM BIZ_LOAN_APPLY_FINANCE_HANDLE AFH
+			         WHERE AFH.FINANCE_HANDLE_ID = B.PID AND AFH.REC_PRO = 3 AND AFH.REC_DATE<![CDATA[<=]]>
+				TO_DATE(CONCAT(#{makeLoansDateEnd},' 23:59:59'),'yyyy-mm-dd hh24:mi:ss'))
+			</if>
+			<if test="projectName!=null and projectName!=''">
+				AND A.PROJECT_NAME LIKE '%${projectName}%'
+			</if>
+			<if test="projectNumber!=null and projectNumber!=''">
+				AND A.PROJECT_NUMBER LIKE '%${projectNumber}%'
+			</if>
+           <if test="houseName !=null and houseName !=''">
+			   AND H.HOUSE_NAME LIKE '%${houseName}%'
+		   </if>
+		    <if test="buyerName !=null and buyerName !=''">
+			   AND E.BUYER_NAME LIKE '%${buyerName}%'
+		   </if>
+		   <if test="sellerName !=null and sellerName !=''">
+			   AND E.SELLER_NAME LIKE '%${sellerName}%'
+		   </if>
+			<if test="projectId!=null and projectId >0">
+				AND A.PID = #{projectId}
+			</if>
+			<if test="applyUserId!=null and applyUserId >0">
+				AND A.APPLY_USER_ID = #{applyUserId}
+			</if>
+			<if test="pid!=null and pid>0">
+				AND B.PID = #{pid}
+			</if>
+		</trim>
+	</where>
+	<![CDATA[
+	ORDER BY B.CREATER_DATE DESC,B.PID DESC
+	) T
+	WHERE ROWNUM <=#{page}*#{rows}
+	) D
+	WHERE D.RN > ((#{page}-1)*#{rows})
+	]]>
+</select>
+<select id="getOrgMakeLoansIndexTotal" parameterType="com.qfang.xk.aom.rpc.finance.OrgMakeLoansIndex"
+		resultType="Integer">
+	<![CDATA[
+	SELECT COUNT(1) FROM
+			(SELECT A.PID
+  FROM BIZ_PROJECT A
+ INNER JOIN BIZ_LOAN_FINANCE_HANDLE B
+    ON A.PID = B.PROJECT_ID
+ INNER JOIN BIZ_PROJECT_GUARANTEE C
+    ON C.PROJECT_ID = A.PID
+  LEFT JOIN BIZ_LOAN_HANDLE_INFO D
+    ON D.PROJECT_ID = A.PID
+  LEFT JOIN BIZ_PROJECT_PROPERTY E
+    ON E.PROJECT_ID = A.PID
+    LEFT JOIN (
+    SELECT P.PID,WM_CONCAT(S.HOUSE_NAME) AS HOUSE_NAME
+              FROM BIZ_PROJECT_ESTATE S, BIZ_PROJECT P
+             WHERE S.PROJECT_ID = P.PID
+               AND S.STATUS = 1
+         GROUP BY P.PID
+    )H
+    ON H.PID = A.PID
+	]]>
+		<where>
+			<trim>
+		    <if test="1==1">
+		        AND A.FORECLOSURE_STATUS IN (10, 11, 12, 13) 
+		         AND A.IS_CLOSED=2
+		        AND A.ORG_ID=#{orgId}
+		    </if>
+			<if test="status!=null and status>0">
+				AND B.STATUS = #{status}
+			</if>
+			<if test="makeLoansDate != null and makeLoansDate !=''">
+			    AND EXISTS(SELECT AFH.FINANCE_HANDLE_ID
+			          FROM BIZ_LOAN_APPLY_FINANCE_HANDLE AFH
+			         WHERE AFH.FINANCE_HANDLE_ID = B.PID AND AFH.REC_PRO = 3 AND AFH.REC_DATE>=TO_DATE(#{makeLoansDate},'yyyy-MM-dd'))
+			</if>
+			<if test="makeLoansDateEnd != null and makeLoansDateEnd !=''">
+			   AND EXISTS(SELECT AFH.FINANCE_HANDLE_ID
+			          FROM BIZ_LOAN_APPLY_FINANCE_HANDLE AFH
+			         WHERE AFH.FINANCE_HANDLE_ID = B.PID AND AFH.REC_PRO = 3 AND AFH.REC_DATE<![CDATA[<=]]>
+				TO_DATE(CONCAT(#{makeLoansDateEnd},' 23:59:59'),'yyyy-mm-dd hh24:mi:ss'))
+			</if>
+			<if test="projectName!=null and projectName!=''">
+				AND A.PROJECT_NAME LIKE '%${projectName}%'
+			</if>
+			<if test="projectNumber!=null and projectNumber!=''">
+				AND A.PROJECT_NUMBER LIKE '%${projectNumber}%'
+			</if>
+           <if test="houseName !=null and houseName !=''">
+			   AND H.HOUSE_NAME LIKE '%${houseName}%'
+		   </if>
+		    <if test="buyerName !=null and buyerName !=''">
+			   AND E.BUYER_NAME LIKE '%${buyerName}%'
+		   </if>
+		   <if test="sellerName !=null and sellerName !=''">
+			   AND E.SELLER_NAME LIKE '%${sellerName}%'
+		   </if>
+		   	<if test="applyUserId!=null and applyUserId >0">
+				AND A.APPLY_USER_ID = #{applyUserId}
+			</if>
+			<if test="projectId!=null and projectId >0">
+				AND A.PID = #{projectId}
+			</if>
+			<if test="pid!=null and pid>0">
+				AND B.PID = #{pid}
+			</if>
+			</trim>
+		</where>
+		) T
+	</select>
+	
+	<!-- 机构回款首页列表(分页查询) -->
+	<select id="queryOrgRepaymentIndex" resultMap="orgRepaymentIndexMap"
+		parameterType="com.qfang.xk.aom.rpc.finance.OrgRepaymentIndex">
+		<if test="page!=-1">
+			SELECT D.* FROM (SELECT T.*, ROWNUM RN
+			FROM (
+		</if>
+		SELECT A.PID AS PROJECT_ID,
+       A.PROJECT_NAME,
+       A.PROJECT_NUMBER,
+       B.PID AS REPAYMENT_ID,
+       B.REPAYMENT_MONEY AS REAL_REPAYMENT_MONEY,
+       B.NEW_REPAYMENT_DATE AS REAL_REPAYMENT_DATE,
+       (CASE
+         WHEN B.STATUS > 0 THEN
+          B.STATUS
+         ELSE
+          1
+       END) AS REPAYMENT_STATUS,
+       (SELECT SUM(AFH.REC_MONEY)
+          FROM BIZ_LOAN_FINANCE_HANDLE FH
+         INNER JOIN BIZ_LOAN_APPLY_FINANCE_HANDLE AFH
+            ON FH.PID = AFH.FINANCE_HANDLE_ID
+         WHERE AFH.REC_PRO IN (3, 4, 5, 6)
+           AND FH.PROJECT_ID = A.PID) AS PLAN_REPAYMENT_MONEY,
+       D.PAYMENT_DATE AS PLAN_REPAYMENT_DATE,
+       (CASE
+         WHEN TO_DATE(TO_CHAR(B.NEW_REPAYMENT_DATE, 'yyyy-MM-dd'),
+                      'yyyy-MM-dd') -
+              TO_DATE(TO_CHAR(D.PAYMENT_DATE, 'yyyy-MM-dd'), 'yyyy-MM-dd') > 0 THEN
+          TO_DATE(TO_CHAR(B.NEW_REPAYMENT_DATE, 'yyyy-MM-dd'), 'yyyy-MM-dd') -
+          TO_DATE(TO_CHAR(D.PAYMENT_DATE, 'yyyy-MM-dd'), 'yyyy-MM-dd')
+         ELSE
+          0
+       END) AS OVERDUE_DAY,
+       E.OVERDUE_FEE,
+       (CASE
+         WHEN E.IS_CONFIRM > 0 THEN
+          E.IS_CONFIRM
+         ELSE
+          1
+       END) AS OVERDUE_FEE_CONFIRM,
+       TO_CHAR(H.HOUSE_NAME) AS HOUSE_NAME,
+       F.BUYER_NAME,
+       F.SELLER_NAME
+  FROM BIZ_PROJECT A
+  LEFT JOIN BIZ_LOAN_REPAYMENT B
+    ON A.PID = B.PROJECT_ID
+ INNER JOIN BIZ_PROJECT_FORECLOSURE D
+    ON A.PID = D.PROJECT_ID
+  LEFT JOIN BIZ_LOAN_OVERDUE_FEE E
+    ON E.PROJECT_ID = A.PID
+  LEFT JOIN BIZ_PROJECT_PROPERTY F
+    ON F.PROJECT_ID = A.PID
+    LEFT JOIN (
+    SELECT P.PID,WM_CONCAT(S.HOUSE_NAME) AS HOUSE_NAME
+              FROM BIZ_PROJECT_ESTATE S, BIZ_PROJECT P
+             WHERE S.PROJECT_ID = P.PID
+               AND S.STATUS = 1
+         GROUP BY P.PID
+    )H
+    ON H.PID = A.PID
+		<where>
+			<trim>
+				<if test="1==1">
+					AND A.FORECLOSURE_STATUS IN(11,12,13)
+					 AND A.IS_CLOSED=2
+					 AND A.ORG_ID=#{orgId}
+				</if>
+				<if test="realRepaymentDate != null and realRepaymentDate !=''">
+					AND B.NEW_REPAYMENT_DATE >=
+					TO_DATE(#{realRepaymentDate},'yyyy-MM-dd')
+				</if>
+				<if test="realRepaymentDateEnd != null and realRepaymentDateEnd !=''">
+					AND B.NEW_REPAYMENT_DATE <![CDATA[<=]]>
+					TO_DATE(CONCAT(#{realRepaymentDateEnd},' 23:59:59'),'yyyy-mm-dd hh24:mi:ss')
+				</if>
+				<if test="planRepaymentDate != null and planRepaymentDate !=''">
+					AND D.PAYMENT_DATE >=
+					TO_DATE(#{planRepaymentDate},'yyyy-MM-dd')
+				</if>
+				<if test="planRepaymentDateEnd != null and planRepaymentDateEnd !=''">
+					AND D.PAYMENT_DATE <![CDATA[<=]]>
+					TO_DATE(CONCAT(#{planRepaymentDateEnd},' 23:59:59'),'yyyy-mm-dd hh24:mi:ss')
+				</if>
+				<if test="repaymentStatus != null and repaymentStatus >0">
+					<if test="repaymentStatus ==1">
+						AND (B.STATUS IS NULL OR B.STATUS=1)
+					</if>
+					<if test="repaymentStatus !=1">
+						AND B.STATUS=#{repaymentStatus}
+					</if>
+				</if>
+				<if test="projectName!=null and projectName!=''">
+					AND A.PROJECT_NAME LIKE '%${projectName}%'
+				</if>
+				<if test="projectNumber!=null and projectNumber!=''">
+					AND A.PROJECT_NUMBER LIKE '%${projectNumber}%'
+				</if>
+				<if test="houseName !=null and houseName !=''">
+				    AND H.HOUSE_NAME LIKE '%${houseName}%'
+			    </if>
+			    <if test="buyerName !=null and buyerName !=''">
+				    AND F.BUYER_NAME LIKE '%${buyerName}%'
+			    </if>
+			    <if test="sellerName !=null and sellerName !=''">
+				    AND F.SELLER_NAME LIKE '%${sellerName}%'
+			    </if>
+			    <if test="applyUserId!=null and applyUserId >0">
+				    AND A.APPLY_USER_ID = #{applyUserId}
+			    </if>
+				<if test="projectId!=null and projectId >0">
+					AND A.PID = #{projectId}
+				</if>
+				<if test="repaymentId!=null and repaymentId >0">
+					AND B.PID = #{repaymentId}
+				</if>
+			</trim>
+		</where>
+		<if test="page!=-1">
+	<![CDATA[
+	) T
+	WHERE ROWNUM <=#{page}*#{rows}
+	) D
+	WHERE D.RN > ((#{page}-1)*#{rows})
+	]]>
+		</if>
+	</select>
+	<!--机构回款首页列表总数 -->
+	<select id="getOrgRepaymentIndexTotal" resultType="Integer"
+		parameterType="com.qfang.xk.aom.rpc.finance.OrgRepaymentIndex">
+	<![CDATA[
+	SELECT COUNT(1) FROM
+			(		SELECT A.PID
+    FROM BIZ_PROJECT A
+    LEFT JOIN BIZ_LOAN_REPAYMENT B
+    ON A.PID = B.PROJECT_ID
+    INNER JOIN BIZ_PROJECT_FORECLOSURE D
+    ON A.PID = D.PROJECT_ID
+    LEFT JOIN BIZ_LOAN_OVERDUE_FEE E
+    ON E.PROJECT_ID = A.PID
+    LEFT JOIN BIZ_PROJECT_PROPERTY F
+    ON F.PROJECT_ID=A.PID
+    LEFT JOIN (
+    SELECT P.PID,WM_CONCAT(S.HOUSE_NAME) AS HOUSE_NAME
+              FROM BIZ_PROJECT_ESTATE S, BIZ_PROJECT P
+             WHERE S.PROJECT_ID = P.PID
+               AND S.STATUS = 1
+         GROUP BY P.PID
+    )H
+    ON H.PID = A.PID
+	]]>
+		<where>
+			<trim>
+			   <if test="1==1">
+					AND A.FORECLOSURE_STATUS IN(11,12,13)
+					 AND A.IS_CLOSED=2
+					 AND A.ORG_ID=#{orgId}
+				</if>
+				<if test="realRepaymentDate != null and realRepaymentDate !=''">
+					AND B.NEW_REPAYMENT_DATE >=
+					TO_DATE(#{realRepaymentDate},'yyyy-MM-dd')
+				</if>
+				<if test="realRepaymentDateEnd != null and realRepaymentDateEnd !=''">
+					AND B.NEW_REPAYMENT_DATE <![CDATA[<=]]>
+					TO_DATE(CONCAT(#{realRepaymentDateEnd},' 23:59:59'),'yyyy-mm-dd hh24:mi:ss')
+				</if>
+				<if test="planRepaymentDate != null and planRepaymentDate !=''">
+					AND D.PAYMENT_DATE >=
+					TO_DATE(#{planRepaymentDate},'yyyy-MM-dd')
+				</if>
+				<if test="planRepaymentDateEnd != null and planRepaymentDateEnd !=''">
+					AND D.PAYMENT_DATE <![CDATA[<=]]>
+					TO_DATE(CONCAT(#{planRepaymentDateEnd},' 23:59:59'),'yyyy-mm-dd hh24:mi:ss')
+				</if>
+				<if test="repaymentStatus != null and repaymentStatus >0">
+					<if test="repaymentStatus ==1">
+						AND (B.STATUS IS NULL OR B.STATUS=1)
+					</if>
+					<if test="repaymentStatus !=1">
+						AND B.STATUS=#{repaymentStatus}
+					</if>
+				</if>
+				<if test="projectName!=null and projectName!=''">
+					AND A.PROJECT_NAME LIKE '%${projectName}%'
+				</if>
+				<if test="projectNumber!=null and projectNumber!=''">
+					AND A.PROJECT_NUMBER LIKE '%${projectNumber}%'
+				</if>
+				<if test="houseName !=null and houseName !=''">
+				    AND H.HOUSE_NAME LIKE '%${houseName}%'
+			    </if>
+			    <if test="buyerName !=null and buyerName !=''">
+				    AND F.BUYER_NAME LIKE '%${buyerName}%'
+			    </if>
+			    <if test="sellerName !=null and sellerName !=''">
+				    AND F.SELLER_NAME LIKE '%${sellerName}%'
+			    </if>
+			    <if test="applyUserId!=null and applyUserId >0">
+				    AND A.APPLY_USER_ID = #{applyUserId}
+			    </if>
+				<if test="projectId!=null and projectId >0">
+					AND A.PID = #{projectId}
+				</if>
+				<if test="repaymentId!=null and repaymentId >0">
+					AND B.PID = #{repaymentId}
+				</if>
+			</trim>
+		</where>
+		) T
+	</select>
+</mapper>

@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.customer.mapper.CusPerCreditMapper">
+
+	<resultMap id="creditResultMap" type="com.xlkfinance.bms.rpc.common.GridViewDTO">
+        <id property="pid" column="pid" />
+        <result property="value1" column="CRE_NO" />
+        <result property="value2" column="QUERY_DATE" jdbcType="DATE" javaType="String"/>
+        <result property="value3" column="REP_QUERY_DATE" jdbcType="DATE" javaType="String"/>
+        <result property="value4" column="CRE_ACC_NUM" />
+        <result property="value5" column="LOAN_SURP" />
+    </resultMap>
+    
+    <resultMap id="selectAllResultMap" type="com.xlkfinance.bms.rpc.customer.CusPerCredit" >
+	       <id column="PID" property="pid" jdbcType="INTEGER" />
+		   <result column="CRE_NO" property="creNo" jdbcType="VARCHAR" />
+		   <result column="QUERY_DATE" property="queryDate" jdbcType="DATE" javaType="String"/>
+		   <result column="REP_QUERY_DATE" property="repQueryDate" jdbcType="DATE" javaType="String" />
+		   <result column="CRE_ACC_NUM" property="creAccNum" jdbcType="INTEGER" />
+		   <result column="CRE_QUOTA" property="creQuota" jdbcType="DOUBLE" />
+		   <result column="LOAN_SURP" property="loanSurp" jdbcType="DOUBLE" />
+		   <result column="CLEAR_ACC_NUM" property="clearAccNum" jdbcType="INTEGER" />
+		   <result column="OPEN_ACC_NUM" property="openAccNum" jdbcType="INTEGER" />
+		   <result column="OTHER_ACC_NUM" property="otherAccNum" jdbcType="INTEGER" />
+		   <result column="CUS_PER_ID" property="cusPerBase.pid" jdbcType="INTEGER" />
+		   <result column="STATUS" property="status" jdbcType="INTEGER" />
+		    <result column="CREDIT_LIMIT" property="creditLimit" jdbcType="DOUBLE" />
+		   <result column="CREDIT_USED_LIMIT" property="creditUsedLimit" jdbcType="DOUBLE" />
+	</resultMap>
+	
+	 <!-- 查询记录 -->
+	<select id="getCusPerCredits" resultMap="creditResultMap" parameterType="com.xlkfinance.bms.rpc.customer.CusPerBase">
+  	SELECT * FROM(
+	  	SELECT rownum rn,
+	  		pid,
+	  		cre_no,
+	  		query_date,
+	  		rep_query_date,
+	  		cre_acc_num,
+	  		loan_surp
+		FROM 
+			cus_per_credit
+		WHERE 1=1 
+			AND STATUS=1 
+			AND CUS_PER_ID=#{cusAcct.pid,jdbcType=INTEGER}
+			 AND rownum<![CDATA[<=]]>#{page}*#{rows})
+	    WHERE rn>=((#{page}-1)*#{rows})+1
+  </select> 
+  <select id="getTotalCusPerBase" parameterType="com.xlkfinance.bms.rpc.customer.CusPerBase" resultType="java.lang.Integer">
+     SELECT COUNT(PID) FROM (
+        SELECT 
+  		pid,
+  		cre_no,
+  		query_date,
+  		rep_query_date,
+  		cre_acc_num,
+  		loan_surp
+	FROM 
+		cus_per_credit
+	WHERE 1=1 
+		AND STATUS=1 
+		AND CUS_PER_ID=#{cusAcct.pid,jdbcType=INTEGER})
+  </select>
+
+
+<insert id="insert" parameterType="com.xlkfinance.bms.rpc.customer.CusPerCredit">
+   <selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+		SELECT SEQ_CUS_PER_CREDIT.Nextval as PID from DUAL
+	</selectKey>
+    insert into cus_per_credit (
+    	PID, 
+    	CRE_NO, 
+    	QUERY_DATE, 
+    	REP_QUERY_DATE, 
+    	CRE_ACC_NUM, 
+    	CRE_QUOTA, 
+    	LOAN_SURP, 
+    	CLEAR_ACC_NUM, 
+    	OPEN_ACC_NUM, 
+    	OTHER_ACC_NUM, 
+    	CUS_PER_ID,
+    	CREDIT_LIMIT,
+    	CREDIT_USED_LIMIT,
+    	status)
+    values (
+    	#{pid,jdbcType=INTEGER}, 
+     	#{creNo,jdbcType=VARCHAR},
+     	#{queryDate,jdbcType=DATE,javaType=String},
+     	#{repQueryDate,jdbcType=DATE,javaType=String},
+     	#{creAccNum,jdbcType=INTEGER},
+     	#{creQuota,jdbcType=DOUBLE},
+     	#{loanSurp,jdbcType=DOUBLE},
+     	#{clearAccNum,jdbcType=INTEGER},
+     	#{openAccNum,jdbcType=INTEGER},
+     	#{otherAccNum,jdbcType=INTEGER},
+     	#{cusPerBase.pid,jdbcType=INTEGER},
+     	#{creditLimit,jdbcType=DOUBLE},
+     	#{creditUsedLimit,jdbcType=DOUBLE},
+     	#{status,jdbcType=INTEGER})
+  </insert>
+  <!-- 更新的方法 -->
+	<update id="updateByPrimaryKey" parameterType="com.xlkfinance.bms.rpc.customer.CusPerCredit">
+		update cus_per_credit
+		<set>
+		<if test="creNo != null">
+		    CRE_NO = #{creNo,jdbcType=VARCHAR},
+		</if>
+		<if test="queryDate != null">
+		    QUERY_DATE = #{queryDate,jdbcType=DATE,javaType=String},
+		</if>
+    	<if test="repQueryDate != null">
+      		REP_QUERY_DATE = #{repQueryDate,jdbcType=DATE,javaType=String},
+      	</if>
+      	<if test="creAccNum != null">
+      		CRE_ACC_NUM = #{creAccNum,jdbcType=INTEGER},
+      	</if>
+      	<if test="creQuota != null">
+      		CRE_QUOTA = #{creQuota,jdbcType=DOUBLE},
+      	</if>
+      	<if test="loanSurp != null">
+      		LOAN_SURP = #{loanSurp,jdbcType=DOUBLE},
+      	</if>
+      	<if test="clearAccNum != null">
+      		CLEAR_ACC_NUM = #{clearAccNum,jdbcType=INTEGER},
+      	</if>
+      	<if test="openAccNum != null">
+      		OPEN_ACC_NUM = #{openAccNum,jdbcType=INTEGER},
+      	</if>
+      	<if test="otherAccNum != null">
+      		OTHER_ACC_NUM = #{otherAccNum,jdbcType=INTEGER},
+      	</if>
+      	<if test="cusPerBase != null">
+      		CUS_PER_ID = #{cusPerBase.pid,jdbcType=INTEGER},
+      	</if>
+      	<if test="status != null">
+      		status = #{status,jdbcType=INTEGER},
+      	</if>
+      	<if test="creditLimit != null">
+      		CREDIT_LIMIT = #{creditLimit,jdbcType=DOUBLE},
+      	</if>
+      	<if test="creditUsedLimit != null">
+      		CREDIT_USED_LIMIT = #{creditUsedLimit,jdbcType=DOUBLE},
+      	</if>
+		</set> 
+		where pid = #{pid,jdbcType=INTEGER}
+	</update>
+	
+	<select id="selectByPrimaryKey" resultMap="selectAllResultMap" parameterType="java.lang.Integer">
+  		select * from cus_per_credit where pid=#{pid,jdbcType=INTEGER}
+  	</select>
+  	
+  	<update id="deleteCusPerCredit" parameterType="java.util.List">
+	  	update 
+	  		cus_per_credit 
+  		set 
+  			status=0 
+		where pid in 
+		<foreach item="itemId" collection="list" open="(" separator="," close=")">
+		          #{itemId}
+		</foreach>
+	</update>
+	
+</mapper>

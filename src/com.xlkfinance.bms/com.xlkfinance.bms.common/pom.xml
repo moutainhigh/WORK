@@ -1,0 +1,20 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.xlkfinance.bms</groupId>
+		<artifactId>com.xlkfinance.bms</artifactId>
+		<version>0.0.1</version>
+	</parent>
+	<artifactId>com.xlkfinance.bms.common</artifactId>
+	<name>前海小科信贷款业务平台-BMS通用组件</name>
+	<description>前海小科信贷款业务平台-BMS通用组件</description>
+	<dependencies>
+		<!-- 模块依赖 -->
+		<dependency>
+			<groupId>com.xlkfinance.bms</groupId>
+			<artifactId>com.xlkfinance.bms.rpc</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+	</dependencies>
+</project>

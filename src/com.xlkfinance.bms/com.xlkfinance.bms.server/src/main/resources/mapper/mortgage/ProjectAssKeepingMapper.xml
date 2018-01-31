@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.mortgage.mapper.ProjectAssKeepingMapper">
+	<resultMap id="projectAssKeepingResultMap" type="com.xlkfinance.bms.rpc.mortgage.ProjectAssKeeping">
+		<id column="PID" property="pid" jdbcType="INTEGER"/>
+		<result column="BASE_ID" property="baseId"  />
+		<result column="SAVE_USER_ID" property="saveUserId"  />
+		<result column="saveUserName" property="saveUserName"  />
+		<result column="SAVE_DTTM" property="saveDttm" javaType="String" jdbcType="TIMESTAMP" />
+		<result column="SAVE_REMARK" property="saveRemark" />
+		<result column="STATUS" property="status" />
+	</resultMap>
+	
+	<!-- 查询所需的列 -->
+	<sql id="queryRequiredColumn">
+		k.PID,k.BASE_ID,k.SAVE_USER_ID,u.real_name saveUserName,k.SAVE_DTTM,k.SAVE_REMARK,k.STATUS
+	</sql>
+	
+	<!-- 查询条件 -->
+	<sql id="queryCondition">
+		FROM BIZ_PROJECT_ASS_KEEPING k,SYS_USER u 
+		WHERE k.SAVE_USER_ID = u.PID 
+		AND k.STATUS = 1 
+		AND k.BASE_ID = #{baseId} 
+		ORDER BY k.SAVE_DTTM DESC 
+	</sql>
+	
+	<!-- 查询所有的抵质押物保管信息 -->
+	<select id="getAllProjectAssKeeping" resultMap="projectAssKeepingResultMap">
+		
+	</select>
+	
+	<!-- 查询所有的抵质押物保管信息的数量 -->
+	<select id="getAllProjectAssKeepingCount" resultType="java.lang.Integer">
+		
+	</select>
+	
+	<!-- 查询当前抵质押物下面的最新保管信息 -->
+	<select id="getProjectAssKeepingByBaseId" resultType="com.xlkfinance.bms.rpc.mortgage.ProjectAssKeeping"  parameterType="java.lang.Integer">
+		SELECT k.PID,k.BASE_ID baseId,k.SAVE_USER_ID saveUserId,u.real_name saveUserName,
+		k.SAVE_DTTM saveDttm,k.SAVE_REMARK saveRemark,k.STATUS 
+		FROM BIZ_PROJECT_ASS_KEEPING k,SYS_USER u 
+		WHERE k.SAVE_USER_ID = u.PID 
+		AND k.STATUS = 1 
+		AND k.BASE_ID = #{baseId} 
+		AND k.PID = (SELECT MAX(PID) FROM BIZ_PROJECT_ASS_KEEPING pak WHERE pak.BASE_ID = #{baseId} )
+	</select>
+	
+	<!-- 查询当前抵质押物下面的保管信息 -->
+	<select id="getListProjectAssKeepingByBaseId" resultMap="projectAssKeepingResultMap" parameterType="java.lang.Integer">
+		SELECT * FROM (
+		SELECT rownum rnum ,aa.* FROM (  
+		SELECT  rownum rid, 
+		<include refid="queryRequiredColumn" /> 
+		<include refid="queryCondition" /> 
+		) aa ) bb 
+	</select>
+	
+	<!-- 查询当前抵质押物下面的保管信息的数量 -->
+	<select id="getListProjectAssKeepingCountByBaseId" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+		SELECT COUNT(*) 
+		<include refid="queryCondition" /> 
+	</select>
+	
+	<!-- 新增 -->
+	<insert id="insert" parameterType="com.xlkfinance.bms.rpc.mortgage.ProjectAssKeeping">
+		<!-- 获取序列号 -->
+		<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+			SELECT SEQ_BIZ_PROJECT_ASS_KEEPING.Nextval as PID from DUAL
+		</selectKey>
+		
+		INSERT INTO BIZ_PROJECT_ASS_KEEPING
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+				PID,
+			<if test="baseId != null and baseId != -1 ">
+				BASE_ID,
+			</if>
+			<if test="saveUserId != null and saveUserId != -1 ">
+				SAVE_USER_ID,
+			</if>
+			<if test="saveDttm != null and saveDttm != '' ">
+				SAVE_DTTM,
+			</if>
+			<if test="saveRemark != null and saveRemark != '' ">
+				SAVE_REMARK,
+			</if>
+			<if test="status != null and status != -1 ">
+				STATUS,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+				#{pid},
+			<if test="baseId != null and baseId != -1 ">
+				#{baseId},
+			</if>
+			<if test="saveUserId != null and saveUserId != -1 ">
+				#{saveUserId},
+			</if>
+			<if test="saveDttm != null and saveDttm != '' ">
+				#{saveDttm,javaType=String, jdbcType=TIMESTAMP},
+			</if>
+			<if test="saveRemark != null and saveRemark != '' ">
+				#{saveRemark},
+			</if>
+			<if test="status != null and status != -1 ">
+				#{status},
+			</if>
+		</trim>
+	</insert>
+	
+	<!-- 批量删除抵质押物的保管信息 -->
+	<update id="batchDelete" parameterType="java.lang.String">
+		UPDATE BIZ_PROJECT_ASS_KEEPING SET
+       	STATUS = 0 
+        WHERE PID in 
+        <foreach item="idItem" collection="array" open="(" separator="," close=")">
+			#{idItem}
+		</foreach>
+	</update>
+	
+</mapper>

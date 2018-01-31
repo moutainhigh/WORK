@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.customer.mapper.CusEstValueMapper">
+
+	<insert id="insert" parameterType="com.xlkfinance.bms.rpc.customer.CusEstValue">
+	<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+		SELECT SEQ_CUS_EST_VALUE.Nextval as PID from DUAL
+	</selectKey>
+    insert into cus_est_value (
+    	PID, 
+    	EST_ID, 
+    	EST_OPTION_ID,
+    	STATUS)
+    values (
+    	#{pid,jdbcType=INTEGER}, 
+    	#{cusEst.pid,jdbcType=INTEGER},
+    	#{cusEstOption.pid,jdbcType=INTEGER},
+    	#{status,jdbcType=INTEGER})
+  </insert>
+  
+  
+<!-- 更新的方法 -->
+	<update id="updateByPrimaryKey" parameterType="com.xlkfinance.bms.rpc.customer.CusEstValue">
+		update cus_est_value
+		<set>
+		<if test="cusEst.pid != null">
+		    EST_ID = #{cusEst.pid,jdbcType=INTEGER},  
+		</if>
+		<if test="cusEstOption.pid != null">
+		    EST_OPTION_ID = #{cusEstOption.pid,jdbcType=INTEGER},
+		</if>
+    	<if test="status != null">
+      		STATUS = #{status,jdbcType=INTEGER} 
+      	</if>
+		</set>
+		where pid = #{pid,jdbcType=INTEGER}
+	</update>
+	
+	<insert id="insertCusEstValues" parameterType="java.util.List">
+	    insert into cus_est_value (
+	    	PID, 
+	    	EST_ID, 
+	    	EST_OPTION_ID,
+	    	STATUS)
+		select SEQ_CUS_EST_VALUE.Nextval,A.* from(
+	    <foreach collection="list" item="item" index="index" separator="UNION">
+	        SELECT
+		    	#{item.cusEstInfo.pid,jdbcType=INTEGER},
+		    	#{item.cusEstOption.pid,jdbcType=INTEGER},
+		    	#{item.status,jdbcType=INTEGER}
+	      	from dual 
+	     </foreach>
+	        ) A
+	
+	</insert>
+	
+	
+	<update id="updateCusEstValues" parameterType="java.util.List">
+		begin
+		 <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+			update cus_est_value
+			<set>
+<!--				<if test="item.cusEstInfo.pid != null"> -->
+				    EST_ID = #{item.cusEstInfo.pid,jdbcType=INTEGER},  
+<!-- 				</if> -->
+<!-- 				<if test="item.cusEstOption.pid != null"> -->
+				    EST_OPTION_ID = #{item.cusEstOption.pid,jdbcType=INTEGER},
+<!-- 				</if> -->
+<!-- 		    	<if test="item.status != null"> -->
+		      		STATUS = #{item.status,jdbcType=INTEGER},
+<!-- 		      	</if> -->
+			</set>
+			where pid = #{item.pid,jdbcType=INTEGER}
+		</foreach>
+		;end;
+	</update>
+	
+	<select id="getEstInfoSorce" resultType="java.lang.Double" parameterType="java.util.List">
+		SELECT SUM(ceo.score*efw.weight/100) score
+		  FROM CUS_EST_OPTION CEO,
+			   CUS_EST_QUOTA CEQ, 
+			   CUS_EST_FACTOR_WEIGHTS EFW
+		 WHERE 1 = 1
+		   AND CEO.QUOTA_ID = CEQ.PID
+		   AND CEQ.FACTOR_ID = EFW.PID
+		   AND ceo.pid IN 
+		   <foreach item="item" collection="list" open="(" separator="," close=")">
+		          #{item.cusEstOption.pid,jdbcType=INTEGER}
+		   </foreach>
+	</select>
+	
+</mapper>

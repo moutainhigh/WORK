@@ -1,0 +1,606 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xlkfinance.bms.server.inloan.mapper.BizInterviewInfoMapper">
+	<resultMap id="bizInterviewInfoMap" type="com.xlkfinance.bms.rpc.inloan.BizInterviewInfo">
+		<id property="pid" column="PID" />
+		<id property="projectId" column="PROJECT_ID" />
+		<id property="interviewId" column="INTERVIEW_ID" />
+		<id property="interviewTime" column="INTERVIEW_TIME" />
+		<id property="interviewPlace" column="INTERVIEW_PLACE" />
+		<id property="notarizationType" column="NOTARIZATION_TYPE" />
+		<id property="receiveTime" column="RECEIVE_TIME" />
+		<id property="notarizationId" column="NOTARIZATION_ID" />
+		<id property="handingTime" column="HANDING_TIME" />
+		<id property="mortgageName" column="MORTGAGE_NAME" />
+		<id property="mortgageCode" column="MORTGAGE_CODE" />
+		<id property="mortgageTime" column="MORTGAGE_TIME" />
+		<id property="mortgageUser" column="MORTGAGE_USER" />
+		<id property="mortgageHandTime" column="MORTGAGE_HAND_TIME" />
+		<id property="hisWarrant" column="HIS_WARRANT" />
+		<id property="hisWarrantTime" column="HIS_WARRANT_TIME" />
+		<id property="hisWarrantUser" column="HIS_WARRANT_USER" />
+		<id property="interviewStatus" column="INTERVIEW_STATUS" />
+		<id property="notarizationStatus" column="NOTARIZATION_STATUS" />
+		<id property="mortgageStatus" column="MORTGAGE_STATUS" />
+		<id property="createDate" column="CREATE_DATE" />
+		<id property="createrId" column="CREATER_ID" />
+		<id property="updateId" column="UPDATE_ID" />
+		<id property="updateDate" column="UPDATE_DATE" />
+		<id property="interviewer" column="INTERVIEWER" />
+		<id property="notarizator" column="NOTARIZATOR" />
+		<id property="mortgator" column="MORTGATOR" />
+		<id property="hisWarrantUserName" column="HIS_WARRANT_USER_NAME" />
+	</resultMap>
+	
+	<resultMap id="indexResultMap" type="com.xlkfinance.bms.rpc.inloan.BizInterviewInfoIndexDTO">
+		<id property="pid" column="PID" />
+		<id property="projectId" column="PROJECT_ID" />
+		<id property="productType" column="PRODUCT_TYPE" />
+		<id property="projectType" column="PROJECT_TYPE" />
+		<id property="projectNumber" column="PROJECT_NUMBER" />
+		<id property="projectName" column="PROJECT_NAME" />
+		<id property="loanMoney" column="LOAN_MONEY" />
+		<id property="acctName" column="ACCT_NAME" />
+		<id property="interviewTime" column="INTERVIEW_TIME" />
+		<id property="foreclosureStatus" column="FORECLOSURE_STATUS" />
+		<id property="interviewStatus" column="INTERVIEW_STATUS" />
+		<id property="interviewer" column="INTERVIEWER" />
+		<id property="notarizationStatus" column="NOTARIZATION_STATUS" />
+		<id property="notarizator" column="NOTARIZATOR" />
+		<id property="mortgageStatus" column="MORTGAGE_STATUS" />
+		<id property="mortgator" column="MORTGATOR" />
+		<id property="hisWarrantUserName" column="HIS_WARRANT_USER_NAME" />
+		<id property="hisWarrantTime" column="HIS_WARRANT_TIME" />
+		<id property="interviewId" column="INTERVIEW_ID" />
+		<id property="pmUserId" column="PM_USER_ID" />
+		<id property="pmUserName" column="PM_USER_NAME" />
+		<id property="notarizationId" column="NOTARIZATION_ID" />
+		<id property="mortgageUser" column="MORTGAGE_USER" />
+	</resultMap>
+	
+	<sql id="column_list">
+        PID,PROJECT_ID,INTERVIEW_ID,INTERVIEW_TIME,INTERVIEW_PLACE,NOTARIZATION_TYPE,RECEIVE_TIME,NOTARIZATION_ID,HANDING_TIME,MORTGAGE_NAME,MORTGAGE_CODE,MORTGAGE_TIME,MORTGAGE_USER,MORTGAGE_HAND_TIME,HIS_WARRANT,HIS_WARRANT_TIME,HIS_WARRANT_USER,INTERVIEW_STATUS,NOTARIZATION_STATUS,MORTGAGE_STATUS,CREATE_DATE,CREATER_ID,UPDATE_ID,UPDATE_DATE
+	</sql>
+	
+	<!--  -->
+	<select id="getProjectByPage" resultMap="indexResultMap" parameterType="com.xlkfinance.bms.rpc.inloan.BizInterviewInfoIndexDTO">
+		<![CDATA[
+	SELECT D.* FROM (SELECT T.*, ROWNUM RN
+          FROM (
+		    SELECT TO_CHAR(A.REQUEST_DTTM, 'yyyy-MM-dd hh24:mi:ss') REQUEST_DTTM,
+		       A.PID AS PROJECT_ID,
+		       A.PROJECT_NUMBER,
+		       A.PROJECT_TYPE,
+		       A.PROJECT_NAME,
+		       F.CHINA_NAME AS ACCT_NAME,
+		       B.PRODUCT_NAME,
+		       C.LOAN_MONEY,
+		       A.FORECLOSURE_STATUS,
+		       A.PM_USER_ID,
+		       D.REAL_NAME,
+		       A.DECLARATION,
+		       A.RECORD_CLERK_ID,
+		       I.LOOKUP_DESC AS LOAN_TYPE,
+		       G.LOAN_MONEY AS APPLY_LOAN_MONEY,
+		       B.LOAN_WORK_PROCESS_ID AS LOAN_WORK_PROCESS,
+		       INTERVIEW.INTERVIEW_STATUS,
+		       INTERVIEW.PID AS PID,
+		       INTERVIEW.INTERVIEW_ID,
+		       INTERVIEW.NOTARIZATION_STATUS,
+		       INTERVIEW.NOTARIZATION_ID,
+		       INTERVIEW.MORTGAGE_STATUS,
+		       INTERVIEW.MORTGAGE_USER,
+		       
+		       (SELECT U.REAL_NAME FROM SYS_USER U WHERE U.PID=A.PM_USER_ID) AS PM_USER_NAME,
+		       (SELECT U.REAL_NAME FROM SYS_USER U WHERE U.PID=INTERVIEW.INTERVIEW_ID) AS INTERVIEWER,
+		       (SELECT U.REAL_NAME FROM SYS_USER U WHERE U.PID=INTERVIEW.NOTARIZATION_ID) AS NOTARIZATOR,
+		       (SELECT U.REAL_NAME FROM SYS_USER U WHERE U.PID=INTERVIEW.MORTGAGE_USER) AS MORTGATOR,
+		       (SELECT U.REAL_NAME FROM SYS_USER U WHERE U.PID=INTERVIEW.HIS_WARRANT_USER) AS HIS_WARRANT_USER_NAME,
+		       TO_CHAR(INTERVIEW.HIS_WARRANT_TIME, 'yyyy-MM-dd hh24:mi:ss') HIS_WARRANT_TIME,
+		       INTERVIEW.HIS_WARRANT_USER
+		       
+			  FROM (SELECT *
+			          FROM BIZ_PROJECT
+			         WHERE IS_CHECHAN = 0
+			           AND STATUS = 1
+			           AND PROJECT_TYPE = 8) A
+			  LEFT JOIN BIZ_PRODUCT B
+			    ON A.PRODUCT_ID = B.PID
+			  LEFT JOIN BIZ_PROJECT_GUARANTEE C
+			    ON A.PID = C.PROJECT_ID
+			  LEFT JOIN SYS_USER D
+			    ON A.PM_USER_ID = D.PID
+			  LEFT JOIN (SELECT ACCT_ID, CHINA_NAME FROM CUS_PERSON WHERE RELATION_TYPE = 1) F
+			    ON F.ACCT_ID = A.ACCT_ID
+			  LEFT JOIN (SELECT HL.LOAN_MONEY, HL.PROJECT_ID
+			               FROM (SELECT * FROM BIZ_PROJECT BP, BIZ_HIS_LOAN_INFO BH
+			                      WHERE PROJECT_ID = BP.PID ORDER BY BH.CREATE_DATE) HL
+			              WHERE ROWNUM = 1) G
+			    ON G.PROJECT_ID = A.PID
+			  LEFT JOIN (SELECT SLV.LOOKUP_VAL, SLV.LOOKUP_DESC
+			               FROM SYS_LOOKUP SL, SYS_LOOKUP_VAL SLV
+			              WHERE SL.PID = SLV.LOOKUP_ID
+			                AND SL.LOOKUP_TYPE = 'FDD_LOAN_TYPE') I
+			   ON I.LOOKUP_VAL = A.LOAN_TYPE
+			   LEFT JOIN (SELECT SLV.LOOKUP_VAL, SLV.LOOKUP_DESC
+			               FROM SYS_LOOKUP SL, SYS_LOOKUP_VAL SLV
+			              WHERE SL.PID = SLV.LOOKUP_ID
+			                AND SL.LOOKUP_TYPE = 'MORTGAGE_LOAN_BUSINESS_SOURCE' )J
+			   ON A.BUSINESS_SOURCE = J.LOOKUP_VAL
+			   LEFT JOIN BIZ_INTERVIEW_INFO INTERVIEW
+			   ON A.PID = INTERVIEW.PROJECT_ID
+			   
+		    WHERE 1=1 AND A.FORECLOSURE_STATUS IN (8,9,10,11,12) 
+			]]>
+				<!-- 数据权限 -->
+				<if test="userIds!=null and userIds.size()>0">
+					AND (
+					<if test="recordClerkId != null and recordClerkId >0">
+				  		A.RECORD_CLERK_ID =#{recordClerkId} OR  
+					</if>
+				   A.PM_USER_ID IN
+				<foreach item="itemId" collection="userIds" open="(" separator="," close=")">
+				          #{itemId}
+				</foreach>
+				)
+				</if>
+				<if test="projectName != null and projectName != '' ">
+					AND A.PROJECT_NAME LIKE '%${projectName}%'
+				</if>
+				<if test="projectNumber != null and projectNumber != '' ">
+					AND A.PROJECT_NUMBER LIKE '%${projectNumber}%'
+				</if>
+				<if test="acctName != null and acctName != '' ">
+					AND F.CHINA_NAME like '%${acctName}%' 
+				</if>
+				<if test="foreclosureStatus != null and foreclosureStatus >0">
+					AND	A.FORECLOSURE_STATUS =#{foreclosureStatus}
+				</if>
+				<if test="interviewStatus != null and interviewStatus >0">
+					AND	INTERVIEW.INTERVIEW_STATUS =#{interviewStatus}
+				</if>
+				<if test="notarizationStatus != null and notarizationStatus >0">
+					AND	INTERVIEW.NOTARIZATION_STATUS =#{notarizationStatus}
+				</if>
+				<if test="mortgageStatus != null and mortgageStatus >0">
+					AND	INTERVIEW.MORTGAGE_STATUS =#{mortgageStatus}
+				</if>
+				<if test="hisWarrantStartTime != null and hisWarrantStartTime != '' ">
+					AND	INTERVIEW.HIS_WARRANT_TIME <![CDATA[>= ]]> #{hisWarrantStartTime,jdbcType=TIMESTAMP,javaType=String}
+				</if>
+				<if test="hisWarrantEndTime != null and hisWarrantEndTime != '' ">
+					AND	INTERVIEW.HIS_WARRANT_TIME <![CDATA[<= ]]> #{hisWarrantEndTime,jdbcType=TIMESTAMP,javaType=String} +1
+				</if>
+				<![CDATA[ORDER BY A.REQUEST_DTTM desc) T
+				WHERE ROWNUM <=#{page}*#{rows}
+				) D
+		WHERE D.RN > ((#{page}-1)*#{rows})]]>
+	</select>
+	
+	<select id="getProjectCount" resultType="Integer" parameterType="com.xlkfinance.bms.rpc.inloan.BizInterviewInfoIndexDTO">
+		SELECT COUNT(*) FROM (
+			SELECT 
+	       A.PID
+	    FROM (SELECT * FROM BIZ_PROJECT
+	        WHERE IS_CHECHAN = 0 
+	        AND STATUS = 1
+	        AND PROJECT_TYPE=8
+	    ) A
+	    LEFT JOIN  BIZ_PRODUCT B
+	    ON A.PRODUCT_ID = B.PID 
+	    LEFT JOIN BIZ_PROJECT_GUARANTEE C
+	    ON A.PID = C.PROJECT_ID
+	    LEFT JOIN SYS_USER D
+	    ON A.PM_USER_ID = D.PID
+	    LEFT JOIN BUSINESS_SOURCE_V E
+	    ON E.PID = A.PID
+	    LEFT JOIN 
+	       (SELECT ACCT_ID,
+	                  CHINA_NAME
+	             FROM CUS_PERSON
+	            WHERE RELATION_TYPE = 1) F
+	    ON F.ACCT_ID = A.ACCT_ID
+	    LEFT JOIN 
+	    (SELECT HL.LOAN_MONEY,HL.PROJECT_ID FROM 
+	            (SELECT * FROM BIZ_PROJECT BP,BIZ_HIS_LOAN_INFO BH
+	                    WHERE PROJECT_ID = BP.PID ORDER BY BH.CREATE_DATE)HL 
+	                          WHERE ROWNUM =1 ) G
+	    ON G.PROJECT_ID = A.PID
+	    LEFT JOIN BIZ_INTERVIEW_INFO INTERVIEW
+			   ON A.PID = INTERVIEW.PROJECT_ID
+	    WHERE 1=1 AND A.FORECLOSURE_STATUS IN (8,9,10,11,12) 
+			<!-- 数据权限 -->
+			<if test="userIds!=null and userIds.size()>0">
+				AND (
+				<if test="recordClerkId != null and recordClerkId >0">
+			  		A.RECORD_CLERK_ID =#{recordClerkId} OR  
+				</if>
+			   A.PM_USER_ID IN
+			<foreach item="itemId" collection="userIds" open="(" separator="," close=")">
+			          #{itemId}
+			</foreach>
+			)
+			</if>
+			<if test="projectName != null and projectName != '' ">
+				AND A.PROJECT_NAME LIKE '%${projectName}%'
+			</if>
+			<if test="projectNumber != null and projectNumber != '' ">
+				AND A.PROJECT_NUMBER LIKE '%${projectNumber}%'
+			</if>
+			<if test="acctName != null and acctName != '' ">
+				AND F.CHINA_NAME like '%${acctName}%' 
+			</if>
+			<if test="foreclosureStatus != null and foreclosureStatus >0">
+				AND	A.FORECLOSURE_STATUS =#{foreclosureStatus}
+			</if>
+			<if test="interviewStatus != null and interviewStatus >0">
+				AND	INTERVIEW.INTERVIEW_STATUS =#{interviewStatus}
+			</if>
+			<if test="notarizationStatus != null and notarizationStatus >0">
+				AND	INTERVIEW.NOTARIZATION_STATUS =#{notarizationStatus}
+			</if>
+			<if test="mortgageStatus != null and mortgageStatus >0">
+				AND	INTERVIEW.MORTGAGE_STATUS =#{mortgageStatus}
+			</if>
+			<if test="hisWarrantStartTime != null and hisWarrantStartTime != '' ">
+				AND	INTERVIEW.HIS_WARRANT_TIME <![CDATA[>= ]]> #{hisWarrantStartTime,jdbcType=TIMESTAMP,javaType=String}
+			</if>
+			<if test="hisWarrantEndTime != null and hisWarrantEndTime != '' ">
+				AND	INTERVIEW.HIS_WARRANT_TIME <![CDATA[<= ]]> #{hisWarrantEndTime,jdbcType=TIMESTAMP,javaType=String} +1
+			</if>
+			 ) DP
+	</select>
+	
+	
+	<!-- 查询所有 -->
+	<select id="getAll" resultMap="bizInterviewInfoMap" parameterType="com.xlkfinance.bms.rpc.inloan.BizInterviewInfo">
+		SELECT
+		<include refid="column_list" />
+		FROM BIZ_INTERVIEW_INFO
+		<where>
+			<trim>
+		      <if test="pid != null and pid >0">
+	          PID=#{pid}
+	          </if>
+		      <if test="projectId != null and projectId >0">
+	          AND PROJECT_ID=#{projectId}
+	          </if>
+		      <if test="interviewId != null and interviewId >0">
+	          AND INTERVIEW_ID=#{interviewId}
+	          </if>
+		      <if test="interviewTime != null and interviewTime !=''">
+	          AND INTERVIEW_TIME=#{interviewTime}
+	          </if>
+		      <if test="interviewPlace != null and interviewPlace !=''">
+	          AND INTERVIEW_PLACE=#{interviewPlace}
+	          </if>
+		      <if test="notarizationType != null and notarizationType !=''">
+	          AND NOTARIZATION_TYPE=#{notarizationType}
+	          </if>
+		      <if test="receiveTime != null and receiveTime !=''">
+	          AND RECEIVE_TIME=#{receiveTime}
+	          </if>
+		      <if test="notarizationId != null and notarizationId >0">
+	          AND NOTARIZATION_ID=#{notarizationId}
+	          </if>
+		      <if test="handingTime != null and handingTime !=''">
+	          AND HANDING_TIME=#{handingTime}
+	          </if>
+		      <if test="mortgageName != null and mortgageName !=''">
+	          AND MORTGAGE_NAME=#{mortgageName}
+	          </if>
+		      <if test="mortgageCode != null and mortgageCode !=''">
+	          AND MORTGAGE_CODE=#{mortgageCode}
+	          </if>
+		      <if test="mortgageTime != null and mortgageTime !=''">
+	          AND MORTGAGE_TIME=#{mortgageTime}
+	          </if>
+		      <if test="mortgageUser != null and mortgageUser >0">
+	          AND MORTGAGE_USER=#{mortgageUser}
+	          </if>
+		      <if test="mortgageHandTime != null and mortgageHandTime !=''">
+	          AND MORTGAGE_HAND_TIME=#{mortgageHandTime}
+	          </if>
+		      <if test="hisWarrant != null and hisWarrant !=''">
+	          AND HIS_WARRANT=#{hisWarrant}
+	          </if>
+		      <if test="hisWarrantTime != null and hisWarrantTime !=''">
+	          AND HIS_WARRANT_TIME=#{hisWarrantTime}
+	          </if>
+		      <if test="hisWarrantUser != null and hisWarrantUser >0">
+	          AND HIS_WARRANT_USER=#{hisWarrantUser}
+	          </if>
+		      <if test="interviewStatus != null and interviewStatus >0">
+	          AND INTERVIEW_STATUS=#{interviewStatus}
+	          </if>
+		      <if test="notarizationStatus != null and notarizationStatus >0">
+	          AND NOTARIZATION_STATUS=#{notarizationStatus}
+	          </if>
+		      <if test="mortgageStatus != null and mortgageStatus >0">
+	          AND MORTGAGE_STATUS=#{mortgageStatus}
+	          </if>
+		      <if test="createDate != null and createDate !=''">
+	          AND CREATE_DATE=#{createDate}
+	          </if>
+		      <if test="createrId != null and createrId >0">
+	          AND CREATER_ID=#{createrId}
+	          </if>
+		      <if test="updateId != null and updateId >0">
+	          AND UPDATE_ID=#{updateId}
+	          </if>
+		      <if test="updateDate != null and updateDate !=''">
+	          AND UPDATE_DATE=#{updateDate}
+	          </if>
+			</trim>
+		</where>
+	</select>
+	<!-- 根据id获取 -->
+	<select id="getById" resultMap="bizInterviewInfoMap">
+		SELECT <include refid="column_list" /> FROM BIZ_INTERVIEW_INFO WHERE PID=#{pid}
+	</select>
+	
+	<!-- 根据项目ID查询面签公证抵押信息 用于查看 -->
+	<select id="getByProjectId" resultMap="bizInterviewInfoMap">
+		SELECT 
+			PID,PROJECT_ID,INTERVIEW_ID,INTERVIEW_TIME,
+			INTERVIEW_PLACE,NOTARIZATION_TYPE,RECEIVE_TIME,
+			NOTARIZATION_ID,HANDING_TIME,MORTGAGE_NAME,
+			MORTGAGE_CODE,MORTGAGE_TIME,MORTGAGE_USER,MORTGAGE_HAND_TIME,
+			HIS_WARRANT,HIS_WARRANT_TIME,HIS_WARRANT_USER,INTERVIEW_STATUS,
+			NOTARIZATION_STATUS,MORTGAGE_STATUS,CREATE_DATE,CREATER_ID,UPDATE_ID,UPDATE_DATE,
+		    (SELECT U.REAL_NAME FROM SYS_USER U WHERE U.PID=INTERVIEW_ID) AS INTERVIEWER,
+		    (SELECT U.REAL_NAME FROM SYS_USER U WHERE U.PID=NOTARIZATION_ID) AS NOTARIZATOR,
+		    (SELECT U.REAL_NAME FROM SYS_USER U WHERE U.PID=MORTGAGE_USER) AS MORTGATOR,
+		    (SELECT U.REAL_NAME FROM SYS_USER U WHERE U.PID=HIS_WARRANT_USER) AS HIS_WARRANT_USER_NAME
+		FROM BIZ_INTERVIEW_INFO A 
+		WHERE A.PROJECT_ID=#{projectId}
+	</select>
+	
+	<!-- 插入一条数据 -->
+	<insert id="insert" parameterType="com.xlkfinance.bms.rpc.inloan.BizInterviewInfo">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_BIZ_INTERVIEW_INFO.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_INTERVIEW_INFO
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+				PID,
+			</if>
+		    <if test="projectId != null and projectId >0">
+				PROJECT_ID,
+			</if>
+		    <if test="interviewId != null and interviewId >0">
+				INTERVIEW_ID,
+			</if>
+		    <if test="interviewTime != null and interviewTime !=''">
+				INTERVIEW_TIME,
+			</if>
+		    <if test="interviewPlace != null and interviewPlace !=''">
+				INTERVIEW_PLACE,
+			</if>
+		    <if test="notarizationType != null and notarizationType !=''">
+				NOTARIZATION_TYPE,
+			</if>
+		    <if test="receiveTime != null and receiveTime !=''">
+				RECEIVE_TIME,
+			</if>
+		    <if test="notarizationId != null and notarizationId >0">
+				NOTARIZATION_ID,
+			</if>
+		    <if test="handingTime != null and handingTime !=''">
+				HANDING_TIME,
+			</if>
+		    <if test="mortgageName != null and mortgageName !=''">
+				MORTGAGE_NAME,
+			</if>
+		    <if test="mortgageCode != null and mortgageCode !=''">
+				MORTGAGE_CODE,
+			</if>
+		    <if test="mortgageTime != null and mortgageTime !=''">
+				MORTGAGE_TIME,
+			</if>
+		    <if test="mortgageUser != null and mortgageUser >0">
+				MORTGAGE_USER,
+			</if>
+		    <if test="mortgageHandTime != null and mortgageHandTime !=''">
+				MORTGAGE_HAND_TIME,
+			</if>
+		    <if test="hisWarrant != null and hisWarrant !=''">
+				HIS_WARRANT,
+			</if>
+		    <if test="hisWarrantTime != null and hisWarrantTime !=''">
+				HIS_WARRANT_TIME,
+			</if>
+		    <if test="hisWarrantUser != null and hisWarrantUser >0">
+				HIS_WARRANT_USER,
+			</if>
+		    <if test="interviewStatus != null and interviewStatus >0">
+				INTERVIEW_STATUS,
+			</if>
+		    <if test="notarizationStatus != null and notarizationStatus >0">
+				NOTARIZATION_STATUS,
+			</if>
+		    <if test="mortgageStatus != null and mortgageStatus >0">
+				MORTGAGE_STATUS,
+			</if>
+		    <if test="createDate != null and createDate !=''">
+				CREATE_DATE,
+			</if>
+		    <if test="createrId != null and createrId >0">
+				CREATER_ID,
+			</if>
+		    <if test="updateId != null and updateId >0">
+				UPDATE_ID,
+			</if>
+		    <if test="updateDate != null and updateDate !=''">
+				UPDATE_DATE,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+		    #{pid},
+			</if>
+		    <if test="projectId != null and projectId >0">
+		    #{projectId},
+			</if>
+		    <if test="interviewId != null and interviewId >0">
+		    #{interviewId},
+			</if>
+		    <if test="interviewTime != null and interviewTime !=''">
+		    #{interviewTime,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		    <if test="interviewPlace != null and interviewPlace !=''">
+		    #{interviewPlace},
+			</if>
+		    <if test="notarizationType != null and notarizationType !=''">
+		    #{notarizationType},
+			</if>
+		    <if test="receiveTime != null and receiveTime !=''">
+		    #{receiveTime,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		    <if test="notarizationId != null and notarizationId >0">
+		    #{notarizationId},
+			</if>
+		    <if test="handingTime != null and handingTime !=''">
+		    #{handingTime,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		    <if test="mortgageName != null and mortgageName !=''">
+		    #{mortgageName},
+			</if>
+		    <if test="mortgageCode != null and mortgageCode !=''">
+		    #{mortgageCode},
+			</if>
+		    <if test="mortgageTime != null and mortgageTime !=''">
+		    #{mortgageTime,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		    <if test="mortgageUser != null and mortgageUser >0">
+		    #{mortgageUser},
+			</if>
+		    <if test="mortgageHandTime != null and mortgageHandTime !=''">
+		    #{mortgageHandTime,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		    <if test="hisWarrant != null and hisWarrant !=''">
+		    #{hisWarrant},
+			</if>
+		    <if test="hisWarrantTime != null and hisWarrantTime !=''">
+		    #{hisWarrantTime,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		    <if test="hisWarrantUser != null and hisWarrantUser >0">
+		    #{hisWarrantUser},
+			</if>
+		    <if test="interviewStatus != null and interviewStatus >0">
+		    #{interviewStatus},
+			</if>
+		    <if test="notarizationStatus != null and notarizationStatus >0">
+		    #{notarizationStatus},
+			</if>
+		    <if test="mortgageStatus != null and mortgageStatus >0">
+		    #{mortgageStatus},
+			</if>
+		    <if test="createDate != null and createDate !=''">
+		    #{createDate,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		    <if test="createrId != null and createrId >0">
+		    #{createrId},
+			</if>
+		    <if test="updateId != null and updateId >0">
+		    #{updateId},
+			</if>
+		    <if test="updateDate != null and updateDate !=''">
+		    #{updateDate,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		</trim>
+	</insert>
+	<!-- 根据id删除数据 -->
+	<delete id="deleteById" parameterType="com.xlkfinance.bms.rpc.inloan.BizInterviewInfo">
+		<![CDATA[DELETE FROM BIZ_INTERVIEW_INFO WHERE PID=#{pid}]]>
+	</delete>
+	<!-- 根据id更新数据 -->
+		<update id="update" parameterType="com.xlkfinance.bms.rpc.inloan.BizInterviewInfo">
+		UPDATE BIZ_INTERVIEW_INFO
+		<set>
+		    <if test="pid != null and pid >0">
+		     PID=#{pid},
+			</if>
+		    <if test="projectId != null and projectId >0">
+		     PROJECT_ID=#{projectId},
+			</if>
+		    <if test="interviewId != null and interviewId >0">
+		     INTERVIEW_ID=#{interviewId},
+			</if>
+		    <if test="interviewTime != null and interviewTime !=''">
+		     INTERVIEW_TIME=#{interviewTime,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		    <if test="interviewPlace != null and interviewPlace !=''">
+		     INTERVIEW_PLACE=#{interviewPlace},
+			</if>
+		    <if test="notarizationType != null and notarizationType !=''">
+		     NOTARIZATION_TYPE=#{notarizationType},
+			</if>
+		    <if test="receiveTime != null and receiveTime !=''">
+		     RECEIVE_TIME=#{receiveTime,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		    <if test="notarizationId != null and notarizationId >0">
+		     NOTARIZATION_ID=#{notarizationId},
+			</if>
+		    <if test="handingTime != null and handingTime !=''">
+		     HANDING_TIME=#{handingTime,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		    <if test="mortgageName != null and mortgageName !=''">
+		     MORTGAGE_NAME=#{mortgageName},
+			</if>
+		    <if test="mortgageCode != null and mortgageCode !=''">
+		     MORTGAGE_CODE=#{mortgageCode},
+			</if>
+		    <if test="mortgageTime != null and mortgageTime !=''">
+		     MORTGAGE_TIME=#{mortgageTime,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		    <if test="mortgageUser != null and mortgageUser >0">
+		     MORTGAGE_USER=#{mortgageUser},
+			</if>
+		    <if test="mortgageHandTime != null and mortgageHandTime !=''">
+		     MORTGAGE_HAND_TIME=#{mortgageHandTime,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		    <if test="hisWarrant != null and hisWarrant !=''">
+		     HIS_WARRANT=#{hisWarrant},
+			</if>
+		    <if test="hisWarrantTime != null and hisWarrantTime !=''">
+		     HIS_WARRANT_TIME=#{hisWarrantTime,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		    <if test="hisWarrantUser != null and hisWarrantUser >0">
+		     HIS_WARRANT_USER=#{hisWarrantUser},
+			</if>
+		    <if test="interviewStatus != null and interviewStatus >0">
+		     INTERVIEW_STATUS=#{interviewStatus},
+			</if>
+		    <if test="notarizationStatus != null and notarizationStatus >0">
+		     NOTARIZATION_STATUS=#{notarizationStatus},
+			</if>
+		    <if test="mortgageStatus != null and mortgageStatus >0">
+		     MORTGAGE_STATUS=#{mortgageStatus},
+			</if>
+		    <if test="createDate != null and createDate !=''">
+		     CREATE_DATE=#{createDate,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		    <if test="createrId != null and createrId >0">
+		     CREATER_ID=#{createrId},
+			</if>
+		    <if test="updateId != null and updateId >0">
+		     UPDATE_ID=#{updateId},
+			</if>
+		    <if test="updateDate != null and updateDate !=''">
+		     UPDATE_DATE=#{updateDate,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		</set>
+		WHERE PID = #{pid}
+	</update>
+	<!-- 根据传入多个id删除数据 -->
+	<delete id="deleteByIds" parameterType="java.util.List">
+		DELETE FROM BIZ_INTERVIEW_INFO WHERE PID in
+		<foreach collection="list" item="item" index="index" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+</mapper>

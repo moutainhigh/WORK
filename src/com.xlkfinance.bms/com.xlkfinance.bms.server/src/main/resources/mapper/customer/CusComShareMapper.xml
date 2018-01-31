@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.customer.mapper.CusComShareMapper">
+<resultMap id="selectAllResultMap" type="com.xlkfinance.bms.rpc.customer.CusComShare" >
+        <id column="PID" property="pid" jdbcType="INTEGER" />
+        <result column="CUS_COM_ID" property="cusComBase.pid" jdbcType="INTEGER" /> 
+        <result column="SHARE_TYPE" property="shareType" jdbcType="INTEGER" /> 
+    	<result column="SHARE_NAME" property="shareName" jdbcType="VARCHAR" /> 
+    	<result column="INV_MONEY" property="invMoney" jdbcType="DOUBLE" /> 
+    	<result column="INV_WAY" property="invWay" jdbcType="INTEGER" /> 
+    	<result column="SHARE_RATIO" property="shareRatio" jdbcType="DOUBLE"/> 
+    	<result column="REMARK" property="remark" jdbcType="VARCHAR" /> 
+    	<result column="STATUS" property="status" jdbcType="VARCHAR" /> 
+	</resultMap>	  
+	
+	<resultMap id="cusComShareResultMap" type="com.xlkfinance.bms.rpc.customer.CusComShare" >
+        <id column="PID" property="pid" jdbcType="INTEGER" />
+        <result column="CUS_COM_ID" property="cusComId" jdbcType="INTEGER" /> 
+        <result column="SHARE_TYPE" property="shareType" jdbcType="INTEGER" /> 
+    	<result column="SHARE_NAME" property="shareName" jdbcType="VARCHAR" /> 
+    	<result column="INV_MONEY" property="invMoney" jdbcType="DOUBLE" /> 
+    	<result column="INV_WAY" property="invWay" jdbcType="INTEGER" /> 
+    	<result column="SHARE_RATIO" property="shareRatio" jdbcType="DOUBLE"/> 
+    	<result column="REMARK" property="remark" jdbcType="VARCHAR" /> 
+    	<result column="STATUS" property="status" jdbcType="VARCHAR" /> 
+    	<result column="SHARE_TYPE_NAME" property="shareTypeName" jdbcType="VARCHAR" /> 
+    	<result column="INV_WAY_NAME" property="invWayName" jdbcType="VARCHAR" /> 
+	</resultMap>
+	
+	<sql id="CusComShare_Column_List">
+		s.PID,s.CUS_COM_ID,s.SHARE_TYPE,s.SHARE_NAME,s.INV_MONEY,s.INV_WAY,s.SHARE_RATIO,s.REMARK,s.STATUS,
+		val.lookup_val as SHARE_TYPE_NAME,CASE WHEN s.INV_WAY = '' THEN '' WHEN s.INV_WAY IS NULL THEN '' ELSE
+		(SELECT LOOK.LOOKUP_VAL FROM SYS_LOOKUP_VAL LOOK WHERE LOOK.PID = s.INV_WAY) END AS INV_WAY_NAME
+	</sql>
+	
+<insert id="insertCusComShares" parameterType="java.util.List">
+    insert into cus_com_share (
+    	PID, 
+    	CUS_COM_ID, 
+    	SHARE_TYPE, 
+    	SHARE_NAME, 
+    	INV_MONEY, 
+    	INV_WAY, 
+    	SHARE_RATIO, 
+    	REMARK,
+    	STATUS)
+select SEQ_CUS_COM_SHARE.Nextval,A.* from(
+        <foreach collection="list" item="item" index="index"
+            separator="UNION">
+            SELECT
+		    #{item.cusComBase.pid,jdbcType=INTEGER}, 
+		    #{item.shareType,jdbcType=INTEGER}, 
+		    #{item.shareName,jdbcType=VARCHAR}, 
+	     	#{item.invMoney,jdbcType=DOUBLE}, 
+	     	#{item.invWay,jdbcType=INTEGER},
+	     	#{item.shareRatio,jdbcType=DOUBLE}, 
+	     	#{item.remark,jdbcType=VARCHAR},
+	     	#{item.status,jdbcType=INTEGER}
+            from dual 
+        </foreach>
+        ) A
+  </insert>
+  
+    <select id="selectShareById" resultMap="selectAllResultMap" parameterType="java.lang.Integer">
+  		select * from Cus_Com_Share where CUS_COM_ID=#{pid,jdbcType=INTEGER} and STATUS=1
+  	</select>
+  	
+  	<!-- 查询企业股东信息列表 -->
+    <select id="getShareList" resultMap="cusComShareResultMap" parameterType="java.lang.Integer">
+  		SELECT 
+  		<include refid="CusComShare_Column_List" />
+  		FROM Cus_Com_Share s,SYS_LOOKUP_VAL val
+  		WHERE val.pid = s.share_type AND s.CUS_COM_ID=#{cusComId,jdbcType=INTEGER}
+  		AND S.STATUS=1
+  	</select>
+	
+	  <!-- 更新的方法 -->
+	<update id="updateCusComShares" parameterType="java.util.List">
+	   <foreach collection="list" item="item" index="index" open="begin" close=";end;" separator=";">
+		  update cus_com_share
+		<set>
+<!-- 		<if test="item.cusComBase.pid != null"> -->
+<!-- 		    CUS_COM_ID = #{item.cusComBase.pid,jdbcType=INTEGER}, -->
+<!-- 		</if> -->
+		<if test="item.shareType != null">
+		   SHARE_TYPE = #{item.shareType,jdbcType=INTEGER},
+		</if>
+    	<if test="item.shareName != null">
+      		SHARE_NAME = #{item.shareName,jdbcType=VARCHAR},
+      	</if>
+      	<if test="item.invMoney != null">
+      		INV_MONEY = #{item.invMoney,jdbcType=INTEGER}, 
+      	</if>
+      	<if test="item.invWay != null">
+      		INV_WAY = #{item.invWay,jdbcType=INTEGER},
+      	</if>
+      	<if test="item.shareRatio != null">
+      		 SHARE_RATIO = #{item.shareRatio,jdbcType=VARCHAR},
+      	</if>
+      	<if test="item.remark != null">
+      		REMARK = #{item.remark,jdbcType=VARCHAR},
+      	</if>
+      	<if test="item.status != null">
+      		STATUS = #{item.status,jdbcType=VARCHAR},
+      	</if>
+		</set> 
+		where pid = #{item.pid,jdbcType=INTEGER}
+	 </foreach>
+</update>
+	<update id="deleteCusComShares" parameterType="java.util.List">
+	    UPDATE cus_com_share
+  	   SET STATUS = 0
+ 	 WHERE CUS_COM_ID =#{list[0].cusComBase.pid}
+  	   AND PID NOT IN
+	<foreach item="item" collection="list" open="(" separator="," close=")">
+	          #{item.pid}
+	</foreach>
+	</update>
+</mapper>

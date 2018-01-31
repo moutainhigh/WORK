@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.customer.mapper.CusPerComMapper">
+<insert id="insert" parameterType="java.util.HashMap">
+    <selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+		SELECT SEQ_CUS_PER_COM.Nextval as PID from DUAL
+	</selectKey>
+    insert into CUS_PER_COM (
+	    PID, 
+	    CUS_PER_ID,
+	    COM_ID,
+	    STATUS)
+    values (
+	    #{pid,jdbcType=INTEGER}, 
+	    #{cusPerId,jdbcType=INTEGER},
+      	#{comIds,jdbcType=INTEGER},
+      	#{status,jdbcType=INTEGER})
+  </insert>
+  <insert id="addUnderCom" parameterType="java.util.List">
+    insert into CUS_PER_COM (
+    	PID, 
+	    CUS_PER_ID,
+	    COM_ID,
+	    STATUS)
+    select SEQ_CUS_PER_COM.Nextval,A.* from(
+        <foreach collection="list" item="item" index="index"
+            separator="UNION">
+            SELECT
+		    #{item.cusPerId,jdbcType=INTEGER}, 
+		    #{item.comId,jdbcType=INTEGER}, 
+	     	1
+            from dual 
+        </foreach>
+        ) A
+  </insert>
+</mapper>

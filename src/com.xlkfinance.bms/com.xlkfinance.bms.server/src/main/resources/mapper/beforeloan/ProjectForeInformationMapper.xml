@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.beforeloan.mapper.ProjectForeInformationMapper">
+		<resultMap id="projectForeInformationMapper" type="com.xlkfinance.bms.rpc.beforeloan.ProjectForeInformation">
+			<result property="pid" column="PID" />
+			<result property="projectId" column="PROJECT_ID" />
+			<result property="foreId" column="FORE_ID" />
+			<result property="originalNumber" column="ORIGINAL_NUMBER" />
+			<result property="copyNumber" column="COPY_NUMBER" />
+			<result property="remark" column="REMARK" />
+			<result property="foreInformationName" column="fore_Information_Name" />
+		</resultMap>
+    
+	<!-- 根据项目ID查询项目赎楼清单信息-->
+	<select id="queryForeInformations"  resultMap="projectForeInformationMapper" parameterType="java.lang.Integer">
+		SELECT LV.PID AS FORE_ID,LV.LOOKUP_VAL AS FORE_INFORMATION_NAME,
+    (CASE WHEN F.PID IS NULL THEN -1 ELSE F.PID END) PID,
+    (CASE WHEN F.PROJECT_ID IS NULL THEN -1 ELSE F.PROJECT_ID END)AS PROJECT_ID,
+    (CASE WHEN F.ORIGINAL_NUMBER IS NULL THEN 0 ELSE F.ORIGINAL_NUMBER END) AS ORIGINAL_NUMBER,
+    (CASE WHEN F.COPY_NUMBER IS NULL THEN 0 ELSE F.COPY_NUMBER END) AS COPY_NUMBER ,F.REMARK
+        FROM SYS_LOOKUP L,SYS_LOOKUP_VAL LV
+        LEFT JOIN BIZ_PROJECT_FORE_INFORMATION F
+        ON F.FORE_ID = LV.PID
+        WHERE LV.STATUS = 1  AND L.PID = LV.LOOKUP_ID 
+        AND L.LOOKUP_TYPE = 'PROJECT_FORE_INFORMATION'
+		AND F.PROJECT_ID = #{projectId}
+		     ORDER BY LV.PID ASC
+	</select>
+	
+	<!-- 新增项目赎楼清单信息 -->
+	<insert id="insertProjectForeInformation" parameterType="com.xlkfinance.bms.rpc.beforeloan.ProjectForeInformation">
+		<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+			SELECT SEQ_BIZ_PROJECT_FORE_INFO.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_PROJECT_FORE_INFORMATION
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			PID,
+			<if test="projectId != null and projectId >0 ">
+				PROJECT_ID,
+			</if>
+			<if test="foreId != null and foreId>0 ">
+				FORE_ID,
+			</if>
+			<if test="originalNumber != null and originalNumber != -1 ">
+				ORIGINAL_NUMBER,
+			</if>
+			<if test="copyNumber != null and copyNumber!=-1">
+				COPY_NUMBER,
+			</if>
+			<if test="remark != null and remark != ''">
+				REMARK,
+			</if>
+			
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+				#{pid},
+			<if test="projectId != null and projectId >0 ">
+				#{projectId},
+			</if>
+			<if test="foreId != null and foreId>0 ">
+				#{foreId},
+			</if>
+			<if test="originalNumber != null and originalNumber != -1 ">
+				#{originalNumber},
+			</if>
+			<if test="copyNumber != null and copyNumber!=-1">
+				#{copyNumber},
+			</if>
+			<if test="remark != null and remark != ''">
+				#{remark},
+			</if>
+		</trim>
+	</insert>
+	
+	<!-- 修改项目赎楼清单信息 -->
+	<update id="updateProjectForeInformation" parameterType="com.xlkfinance.bms.rpc.beforeloan.ProjectForeInformation">
+		UPDATE BIZ_PROJECT_FORE_INFORMATION
+		<trim prefix="set" suffixOverrides=",">
+			<if test="originalNumber != null and originalNumber != -1 ">
+				ORIGINAL_NUMBER = #{originalNumber},
+			</if>
+			<if test="copyNumber != null and copyNumber!=-1">
+				COPY_NUMBER = #{copyNumber},
+			</if>
+			<if test="remark != null and remark != ''">
+				REMARK = #{remark},
+			</if>
+		</trim>
+		WHERE project_id = #{projectId}
+		<if test="pid != null and pid >0 ">
+			and PID = #{pid}
+		</if>
+		<if test="foreId != null and foreId>0 ">
+			and fore_id = #{foreId}
+		</if>
+	</update>
+</mapper>

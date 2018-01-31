@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <title></title>
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+    <!-- 基础文件 -->
+    <link rel="stylesheet" href="http://res.xinlikang.com/base/reset.css" />
+    <script src="http://res.xinlikang.com/l/seajs/sea.js"></script>
+    <script src="http://res.xinlikang.com/base/config.js"></script>
+
+    <!-- 项目样式文件 -->
+    <link rel="stylesheet" href="http://res.xinlikang.com/p/xlk/css/transaction.css" />
+</head>
+
+<body>
+    <div class="g_o">
+        <div class="content">
+            <div class="g_cf hd">
+                <h3 class="g_fl title">
+                    <strong>新增交易方账号管理</strong>
+                </h3>
+                <div class="g_fr crumbs"><a href="">首页</a>&gt;<a href="">交易方信息中心</a>&gt;新增交易方账号管理</div>
+            </div>
+
+            <div class="add_bankAccount">
+                <form action="" class="form_bd">
+                    <ul>
+                        <li class="g_cf">
+                            <div class="key">
+                                <span class="star">*</span>账号名称：</div>
+                            <div class="value">
+                                <input type="text" class="txt">
+                            </div>
+
+                        </li>
+                        <li class="g_cf">
+                            <div class="key">
+                                <span class="star">*</span>开户行：</div>
+                            <div class="value">
+                                <input type="text" class="txt">
+                            </div>
+                        </li>
+                        <li class="g_cf">
+                            <div class="key"></div>
+                            <div class="value">
+                                <span class="f_tips">国外开户行名称，由半角英文字符和符号组成，例：Citi Bank, N.A.</span>
+                            </div>
+                        </li>
+                        <li class="g_cf">
+                            <div class="key">
+                                <span class="star">*</span>银行账号：</div>
+                            <div class="value">
+                                <input type="text" class="txt">
+                            </div>
+                        </li>
+                        <li class="g_cf">
+                            <div class="key"></div>
+                            <div class="value">
+                                <span class="f_tips">银行账号，由半角英文字符和数字组成。</span>
+                            </div>
+                        </li>
+                        <li class="g_cf">
+                            <div class="key">银行编号：</div>
+                            <div class="value">
+                                <input name="" type="text" class="txt">
+                            </div>
+                        </li>
+                        <li class="g_cf">
+                            <div class="key"></div>
+                            <div class="value">
+                                <span class="f_tips">SWIFT清算系统编码，由字母、空格和数字组成。</span>
+                            </div>
+                        </li>
+                        <li class="g_cf">
+                            <div class="key">银行地址：</div>
+                            <div class="value">
+                                <input name="" type="text" class="txt">
+                            </div>
+                        </li>
+                        <li class="g_cf">
+                            <div class="key">区域：</div>
+                            <div class="value">
+                                <input name="" type="text" class="txt">
+                            </div>
+                        </li>
+                        <li class="g_cf">
+                            <div class="key"><sapn class="star">*</sapn>银行资料：</div>
+                            <div class="value">
+                                <input type="text" id="imgurl0" readonly > <input type="text" id="picUpload" ><br>
+                            </div>
+                        </li>
+                        <li class="g_cf">
+                            <div class="key"></div>
+                            <div class="value">
+                                <span class="f_tips">请上传盖章的INVOICE 或 PI 或 付汇委托书。</span><br>
+                                <span class="f_tips">上传png、jpg、jpeg、doc、docx、pdf格式附件，小于2M</span>
+                            </div>
+                        </li>
+                        <li class="g_cf">
+                            <div class="key">&nbsp;</div>
+                            <div class="value">
+                                <input type="submit" class="btn" value="提交">
+                            </div>
+                        </li>
+                    </ul>
+                </form>
+            </div>
+            <div class="common_tb" id="bankAccountList">
+                <table cellpadding="0" cellspadding="0" border="0" width="100%">
+                    <thead>
+
+                        <tr>
+                            <th>账号名称</th>
+                            <th>开户行</th>
+                            <th>银行账号</th>
+                            <th>银行编号</th>
+                            <th>银行地址</th>
+                            <th>区域</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>香港上海匯豐銀行有限公司</td>
+                            <td>香港銀行</td>
+                            <td>6225 4421 4545 2135 461</td>
+                            <td>000111</td>
+                            <td>中国香港00街001号</td>
+                            <td>中国香港</td>
+                            <td><a href="javascript:" target="blank">删除</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>香港上海匯豐銀行有限公司</td>
+                            <td>香港銀行</td>
+                            <td>6225 4421 4545 2135 461</td>
+                            <td>000111</td>
+                            <td>中国香港00街001号</td>
+                            <td>中国香港</td>
+                            <td><a href="javascript:" target="blank">删除</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>香港上海匯豐銀行有限公司</td>
+                            <td>香港銀行</td>
+                            <td>6225 4421 4545 2135 461</td>
+                            <td>000111</td>
+                            <td>中国香港00街001号</td>
+                            <td>中国香港</td>
+                            <td><a href="javascript:" target="blank">删除</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>香港上海匯豐銀行有限公司</td>
+                            <td>香港銀行</td>
+                            <td>6225 4421 4545 2135 461</td>
+                            <td>000111</td>
+                            <td>中国香港00街001号</td>
+                            <td>中国香港</td>
+                            <td><a href="javascript:" target="blank">删除</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- 项目js文件 -->
+    <script>
+    seajs.use('http://res.xinlikang.com/p/xlk/js/transaction.js');
+    </script>
+</body>
+
+</html>

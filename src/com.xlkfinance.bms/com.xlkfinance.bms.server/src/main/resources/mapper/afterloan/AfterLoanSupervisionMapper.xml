@@ -1,0 +1,1059 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper
+	namespace="com.xlkfinance.bms.server.afterloan.mapper.AfterLoanSupervisionMapper">
+	<resultMap id="getAfterLoanSupervisionMap" type="com.xlkfinance.bms.rpc.afterloan.Supervision">
+		<result property="pid" column="PID" />
+		<result property="projectName" column="PROJECT_NAME" />
+		<result property="projectNumber" column="PROJECT_NUMBER" />
+		<result property="custypestr" column="CUSTYPESTR" />
+		<result property="startRequestDttm" column="REQUEST_DTTM" />
+		<result property="phone" column="PHONE" />
+		<result property="creditAmt" column="CREDIT_AMT" />
+		<result property="regulatoryuser" column="REGULATORYUSER" />
+		<result property="planBeginDt" column="PLAN_BEGIN_DT" />
+		<result property="remark" column="REMARK" />
+	</resultMap>
+
+
+
+	<resultMap id="getAfterLoanSupervisionMap2" type="com.xlkfinance.bms.rpc.common.GridViewDTO">
+		<result property="pid" column="PID" />
+		<result property="value1" column="PROJECT_NAME" />
+		<result property="value2" column="PROJECT_NUMBER" />
+		<result property="value3" column="CUSTYPESTR" />
+		<result property="value4" column="REQUEST_DTTM" />
+		<result property="value5" column="PHONE" />
+		<result property="value6" column="CREDIT_AMT" />
+		<result property="value7" column="REGULATORYUSER" />
+		<result property="value8" column="PLAN_BEGIN_DT" jdbcType="DATE"
+			javaType="String" />
+		<result property="value9" column="REMARK" />
+	</resultMap>
+
+
+    <resultMap id="getProjectMap" type="com.xlkfinance.bms.rpc.afterloan.ProjectInfo">
+		<result property="pid" column="PID" />
+		<result property="projectName" column="PROJECT_NAME" />
+		<result property="projectNumber" column="PROJECT_NUMBER" />
+		<result property="businessCatelogName" column="BUSINESS_CATELOG_NAME" />
+		<result property="businessTypeName" column="BUSINESS_TYPE_NAME" />
+		<result property="flowCatelogName" column="FLOW_CATELOG_NAME" />
+		<result property="accName" column="ACCT_NAME" />
+	</resultMap>
+	
+	<resultMap id="getToDayUpdate" type="com.xlkfinance.bms.rpc.afterloan.ToDayUpdateDTO">
+		<result property="businessType" column="BUSINESS_TYPE" />
+		<result property="dtlType" column="DTL_TYPE" />
+		<result property="outputAmt" column="OUTPUT_AMT" />
+		<result property="outputDate" column="OUTPUT_DATE" />
+		<result property="acctName" column="ACCT_NAME" />
+		<result property="acctType" column="ACCT_TYPE" />
+		<result property="pmUserName" column="PM_USER_NAME" />
+		<result property="isMortgage" column="IS_MORTGAGE" />
+	</resultMap>
+	
+	<select id="getProjectData" resultMap="getProjectMap"  parameterType="java.lang.Integer">
+		SELECT P.PID PID,
+		P.PROJECT_NAME PROJECT_NAME,
+		P.PROJECT_NUMBER PROJECT_NUMBER,
+		
+		P.BUSINESS_CATELOG,
+		(SELECT SV.LOOKUP_DESC
+		FROM SYS_LOOKUP_VAL SV
+		WHERE SV.LOOKUP_ID = (SELECT SL.PID
+		FROM SYS_LOOKUP SL
+		WHERE 1 = 1
+		AND SL.LOOKUP_TYPE = 'LOAN_FLOW_CATELOG'
+		AND ROWNUM  &lt;= 1)
+		AND ROWNUM  &lt;= 1) AS BUSINESS_CATELOG_NAME,
+		
+		P.BUSINESS_TYPE,
+		(SELECT SV.LOOKUP_VAL
+		FROM SYS_LOOKUP_VAL SV
+		WHERE SV.LOOKUP_ID = (SELECT SL.PID
+		FROM SYS_LOOKUP SL
+		WHERE 1 = 1
+		AND SL.LOOKUP_TYPE = 'LOAN_BUSINESS_TYPE'
+		AND ROWNUM  &lt;= 1)
+		AND ROWNUM  &lt;= 1) AS BUSINESS_TYPE_NAME,
+		
+		P.FLOW_CATELOG,
+		(SELECT SV.LOOKUP_VAL
+		FROM SYS_LOOKUP_VAL SV
+		WHERE SV.LOOKUP_ID =
+		(SELECT SL.PID
+		FROM SYS_LOOKUP SL
+		WHERE 1 = 1
+		AND SL.LOOKUP_TYPE = 'LOAN_BUSINESS_CATELOG'
+		AND ROWNUM  &lt;= 1)
+		AND ROWNUM  &lt;= 1) AS FLOW_CATELOG_NAME,
+		
+		P.PM_USER_ID,
+		(SELECT        cc.real_name
+   				 FROM  sys_user cc 
+   			     WHERE cc.pid = P.PM_USER_ID
+				 AND   ROWNUM  &lt;= 1) ACCT_NAME
+				FROM   BIZ_PROJECT P where 1=1
+			    AND    P.PID = #{pid}
+	</select>
+
+
+	<select id="supervisionList" resultMap="getAfterLoanSupervisionMap2"
+		parameterType="com.xlkfinance.bms.rpc.afterloan.SupervisionSearchBean">
+		SELECT *
+		FROM (SELECT ROWNUM RNUM, AA.*
+		FROM (
+		      SELECT ROWNUM RID,pro.* FROM 
+				(SELECT  
+					distinct	A.PID,
+						A.PROJECT_NAME AS PROJECT_NAME,
+						A.PROJECT_NUMBER AS PROJECT_NUMBER,
+						CASE B.ACCT_TYPE
+						WHEN 1 THEN
+						'个人'
+						WHEN 2 THEN
+						'企业'
+						END AS CUSTYPESTR,
+						A.REQUEST_DTTM AS REQUEST_DTTM,
+						C.CREDIT_AMT AS CREDIT_AMT,
+						cust.telephone as PHONE
+						FROM BIZ_PROJECT A
+						LEFT JOIN CUS_ACCT_V B
+						ON A.ACCT_ID = B.ACCT_ID
+						LEFT JOIN BIZ_LOAN C
+						ON C.PROJECT_ID = A.PID
+					   LEFT JOIN cus_acct_v cust
+                           ON cust.ACCT_ID = A.Acct_Id
+                       LEFT JOIN BIZ_PROJECT_COMPLETE BPC
+                       	   ON BPC.PROJECT_ID = A.PID 
+						WHERE 1 = 1 and A.REQUEST_STATUS =4
+						   AND NVL(BPC.IS_COMPLETE, 0) = 0
+                           AND (BPC.STATUS IS NULL OR BPC.STATUS = 1)
+                           AND A.STATUS = 1
+						<if test="projectName!=null and projectName!=''">
+						    AND A.PROJECT_NAME like '%${projectName}%'
+						</if>
+						<if test="projectNumber!=null and projectNumber!=''">
+							AND A.PROJECT_NUMBER like '%${projectNumber}%'
+						</if>
+						<if test="cusName!=null and cusName!=''">
+							AND cust.acct_name like '%${cusName}%'
+						</if>
+						<if test="cusType!=null and cusType!=-1 and cusType!=0">
+							AND B.ACCT_TYPE = #{cusType,jdbcType=INTEGER}
+						</if>
+						<if test="ecoTrade!=null and ecoTrade != -1 and ecoTrade!=0">
+					 	    AND B.ECO_TRADE=#{ecoTrade}
+						</if>
+						<!-- <if test="startRequestDttm!=null and startRequestDttm!=''"> AND B.CUS_TYPE 
+							= #{cusType} </if> <if test="endRequestDttm!=null and endRequestDttm!=''"> 
+							AND B.CUS_TYPE = #{cusType} </if> -->
+<!-- 						<if test="supervisionPeople!=null and supervisionPeople!=''"> -->
+<!-- 							AND E.USER_NAME like '%${supervisionPeople}%' -->
+<!-- 						</if> -->
+<!-- 						 贷款申请时间 -->
+						<if test="startApplyDttm!=null and startApplyDttm!=''">
+						    AND  A.REQUEST_DTTM <![CDATA[>=]]> #{startApplyDttm,javaType=String,jdbcType=DATE}
+						</if>
+						<if test="endApplyDttm!=null and endApplyDttm!=''">
+						    AND  A.REQUEST_DTTM <![CDATA[<=]]> #{endApplyDttm,javaType=String,jdbcType=DATE}+1
+						</if>
+<!-- 						到期时间 -->
+						<if test="startRequestDttm!=null and startRequestDttm!=''">
+						    AND  A.pid in (select distinct t.PROJECT_ID
+ 											    from biz_loan_plan_v t where t.REPAYDT <![CDATA[>=]]> to_date(#{startRequestDttm},'yyyy-mm-dd'))
+						</if>
+						<if test="endRequestDttm!=null and endRequestDttm!=''">
+						    AND  A.pid in (select distinct t.PROJECT_ID
+ 											    from biz_loan_plan_v t where t.REPAYDT <![CDATA[<=]]> to_date(#{endRequestDttm},'yyyy-mm-dd'))
+						</if>
+<!-- 					    已逾期间 -->
+					<if test="startDttm!=null and startDttm!='' or endDttm!=null and endDttm!=''">
+						   AND A.PID IN (select distinct tt.PROJECT_ID from biz_loan_plan_v tt 
+						   				where 1=1
+						   				<if test="startDttm!=null and startDttm!=''">
+						   				     AND tt.OVERDUENUM <![CDATA[>=]]> #{startDttm}
+						   				</if>
+						   				<if test="endDttm!=null and endDttm!=''">
+						   					and  tt.OVERDUENUM <![CDATA[<=]]> #{endDttm}	
+						   				</if>
+						   				)
+					</if>
+<!-- 						<if test="startSupervisionDttm!=null and startSupervisionDttm!=''"> -->
+<!-- 							AND D.PLAN_BEGIN_DT &gt;=#{startSupervisionDttm} -->
+<!-- 						</if> -->
+<!-- 						<if test="endSupervisionDttm!=null and endSupervisionDttm!=''"> -->
+<!-- 							AND D.PLAN_BEGIN_DT &gt;=#{endSupervisionDttm} -->
+<!-- 						</if> -->
+<!-- 						<if -->
+<!-- 							test="distributionStatus!=null and distributionStatus!='' and distributionStatus!=-1 and distributionStatus!=0"> -->
+<!-- 							AND D.REGULATORY_STATUS=#{distributionStatus,jdbcType=INTEGER}+1 -->
+<!-- 						</if> -->
+				  ) pro
+		) AA) BB
+		WHERE 1 = 1
+		AND RNUM <![CDATA[<=]]>#{page}*#{rows}
+		AND RNUM >=((#{page}-1)*#{rows})+1
+		order by BB.REQUEST_DTTM DESC 
+	</select>
+
+
+
+	<select id="getTotalSupervisionList" resultType="java.lang.Integer"
+		parameterType="com.xlkfinance.bms.rpc.afterloan.SupervisionSearchBean">
+		SELECT COUNT(1)
+		from   (SELECT  
+					distinct	A.PID,
+						A.PROJECT_NAME AS PROJECT_NAME,
+						A.PROJECT_NUMBER AS PROJECT_NUMBER,
+						CASE B.ACCT_TYPE
+						WHEN 1 THEN
+						'个人'
+						WHEN 2 THEN
+						'企业'
+						END AS CUSTYPESTR,
+						C.REQUEST_DTTM AS REQUEST_DTTM,
+						C.CREDIT_AMT AS CREDIT_AMT
+						FROM BIZ_PROJECT A
+						LEFT JOIN CUS_ACCT_V B
+						ON A.ACCT_ID = B.ACCT_ID
+						LEFT JOIN BIZ_LOAN C
+						ON C.PROJECT_ID = A.PID
+							LEFT JOIN cus_acct_v cust
+                           ON cust.ACCT_ID = A.Acct_Id
+                       LEFT JOIN BIZ_PROJECT_COMPLETE BPC
+                            ON BPC.PROJECT_ID = A.PID 
+            WHERE 1 = 1 and A.REQUEST_STATUS =4
+               AND NVL(BPC.IS_COMPLETE, 0) = 0
+                           AND (BPC.STATUS IS NULL OR BPC.STATUS = 1)
+                           AND A.STATUS = 1
+		<if test="projectName!=null and projectName!=''">
+			AND A.PROJECT_NAME like '%${projectName}%'
+		</if>
+		<if test="projectNumber!=null and projectNumber!=''">
+			AND A.PROJECT_NUMBER like '%${projectNumber}%'
+		</if>
+		<if test="cusName!=null and cusName!=''">
+			AND B.ACCT_NAME like '%${cusName}%'
+		</if>
+		<if test="cusType!=null and cusType!=-1 and cusType!=0">
+			AND B.ACCT_TYPE = #{cusType,jdbcType=INTEGER}
+		</if>
+		<if test="ecoTrade!=null and ecoTrade != -1 and ecoTrade!=0">
+			AND B.ECO_TRADE=#{ecoTrade}
+		</if>
+		<!-- <if test="startRequestDttm!=null and startRequestDttm!=''"> AND B.CUS_TYPE 
+			= #{cusType} </if> <if test="endRequestDttm!=null and endRequestDttm!=''"> 
+			AND B.CUS_TYPE = #{cusType} </if> -->
+<!-- 		<if test="supervisionPeople!=null and supervisionPeople!=''"> -->
+<!-- 			AND E.USER_NAME like '%${supervisionPeople}%' -->
+<!-- 		</if> -->
+<!-- 		       贷款申请时间 -->
+				<if test="startApplyDttm!=null and startApplyDttm!=''">
+				    AND  A.REQUEST_DTTM <![CDATA[>=]]> #{startApplyDttm,javaType=String,jdbcType=DATE}
+				</if>
+				<if test="endApplyDttm!=null and endApplyDttm!=''">
+				    AND  A.REQUEST_DTTM <![CDATA[<=]]> #{endApplyDttm,javaType=String,jdbcType=DATE}+1
+				</if>
+<!-- 			到期时间 -->
+				<if test="startRequestDttm!=null and startRequestDttm!=''">
+				    AND  A.pid in (select distinct t.PROJECT_ID
+										    from biz_loan_plan_v t where t.REPAYDT <![CDATA[>=]]> to_date(#{startRequestDttm},'yyyy-mm-dd'))
+				</if>
+				<if test="endRequestDttm!=null and endRequestDttm!=''">
+				    AND  A.pid in (select distinct t.PROJECT_ID
+ 											    from biz_loan_plan_v t where t.REPAYDT <![CDATA[<=]]> to_date(#{endRequestDttm},'yyyy-mm-dd'))
+				</if>
+<!-- 			 已逾期间 -->
+				<if test="startDttm!=null and startDttm!='' or endDttm!=null and endDttm!=''">
+						   AND A.PID IN (select distinct tt.PROJECT_ID from biz_loan_plan_v tt 
+						   				where 1=1
+						   				<if test="startDttm!=null and startDttm!=''">
+						   				     AND tt.OVERDUENUM <![CDATA[>=]]> #{startDttm}
+						   				</if>
+						   				<if test="endDttm!=null and endDttm!=''">
+						   					and   tt.OVERDUENUM <![CDATA[<=]]> #{endDttm}	
+						   				</if>
+						   				)
+				</if>
+<!-- 		<if test="startSupervisionDttm!=null and startSupervisionDttm!=''"> -->
+<!-- 			AND D.PLAN_BEGIN_DT &gt;=#{startSupervisionDttm} -->
+<!-- 		</if> -->
+<!-- 		<if test="endSupervisionDttm!=null and endSupervisionDttm!=''"> -->
+<!-- 			AND D.PLAN_BEGIN_DT &lt;=#{endSupervisionDttm} -->
+<!-- 		</if> -->
+<!-- 		<if -->
+<!-- 			test="distributionStatus!=null and distributionStatus!='' and distributionStatus!=-1 and distributionStatus!=0"> -->
+<!-- 			AND D.REGULATORY_STATUS=#{distributionStatus,jdbcType=INTEGER} -->
+<!-- 		</if> -->
+		)
+	</select>
+
+
+
+	<!-- 跟新监管计划 -->
+	<update id="updateBizProRegPlan" parameterType="com.xlkfinance.bms.rpc.afterloan.BizProjectRegPlan">
+		update BIZ_PROJECT_REG_PLAN
+		set
+		REGULATORY_USER_ID=#{regulatoryUserId},
+		PLAN_BEGIN_DT=#{planBeginDt},
+		IS_MAIL=#{isMail},
+		IS_SMS=#{isSms},
+		REMARK=#{remark}
+		where pid=#{pid}
+	</update>
+
+
+	<!-- 删除监管计划 -->
+	<delete id="deleteSupervisePlan" parameterType="java.util.List">
+		delete from BIZ_PROJECT_REG_PLAN
+		where pid in
+		<foreach item="itemId" collection="list" open="(" separator=","
+			close=")">
+			#{itemId}
+		</foreach>
+	</delete>
+
+	<delete id="deleteResultSuperviseHistory" parameterType="Integer">
+		delete from Biz_Project_Reg_History
+		where pid=#{pid}
+	</delete>
+
+
+
+	<insert id="createBizProRegPlan" parameterType="com.xlkfinance.bms.rpc.afterloan.BizProjectRegPlan">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_BIZ_PROJECT_REG_PLAN.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_PROJECT_REG_PLAN(
+		PID,
+		PROJECT_ID,
+		REGULATORY_USER_ID,
+		PLAN_BEGIN_DT,
+		ASSIGNE_USER_ID,
+		REGULATORY_STATUS,
+		IS_MAIL,
+		IS_SMS,
+		PLAN_DT,
+		REMARK,
+		STATUS
+		)
+		values (
+		#{pid,jdbcType=INTEGER},
+		#{projectId,jdbcType=INTEGER},
+		#{regulatoryUserId,jdbcType=INTEGER},
+		#{planBeginDt,jdbcType=DATE,javaType=String},
+		#{assigneUserId,jdbcType=INTEGER},
+		#{regulatoryStatus,jdbcType=INTEGER},
+		#{isMail,jdbcType=INTEGER},
+		#{isSms,jdbcType=INTEGER},
+		#{planDt,jdbcType=DATE,javaType=String},
+		#{remark,jdbcType=VARCHAR},
+		1
+		)
+	</insert>
+
+	<update id="updateBizProjectRegPlan" parameterType="com.xlkfinance.bms.rpc.afterloan.BizProjectRegPlan">
+		update
+		BIZ_PROJECT_REG_PLAN set
+		REGULATORY_USER_ID = #{regulatoryUserId},
+		PLAN_DT = #{planDt,jdbcType=DATE,javaType=String},
+		IS_MAIL =  #{isMail},
+		IS_SMS =  #{isSms},
+		REMARK = #{remark}
+		where pid=#{pid}
+	</update>
+	
+	<!--  更新监管状态 -->
+	<update id="updateBizProjectRegPlanRegulatoryStatus" parameterType="com.xlkfinance.bms.rpc.afterloan.BizProjectRegPlan">
+		update
+		BIZ_PROJECT_REG_PLAN set
+		REGULATORY_STATUS = #{regulatoryStatus},
+		<if test="assigneUserId!=null and assigneUserId!=''">
+			ASSIGNE_USER_ID = #{assigneUserId},
+		</if>
+		<if test="planBeginDt!=null and planBeginDt!=''">
+			PLAN_BEGIN_DT = #{planBeginDt,jdbcType=DATE,javaType=String},
+		</if>
+		
+		STATUS=1
+		where pid=#{pid}
+	</update>
+	
+	<update id="updateBizTaskStatus" parameterType="Integer">
+		UPDATE BIZ_TASK BT SET BT.STATUS = 0 WHERE BT.ALLOCATION_REF_ID = #{pid}
+	</update>
+	<!-- 打开监管页面，修改等待监管为监管中 -->
+	 <update id="updateBizProjectRegPlanStart" parameterType="com.xlkfinance.bms.rpc.afterloan.BizProjectRegPlan">
+         update
+			BIZ_PROJECT_REG_PLAN set
+			REGULATORY_STATUS = 2,
+		<if test="assigneUserId!=null and assigneUserId!=''">
+			ASSIGNE_USER_ID = #{assigneUserId},
+		</if>
+		<if test="planBeginDt!=null and planBeginDt!=''">
+			PLAN_BEGIN_DT = #{planBeginDt,jdbcType=DATE,javaType=String},
+		</if>
+		STATUS=1
+		where pid=#{pid} and REGULATORY_STATUS in(0,1) 
+    </update>
+
+	<resultMap id="getSupervisionTaskMap"
+		type="com.xlkfinance.bms.rpc.afterloan.ResultBizProjectRegPlan">
+		<result property="pid" column="PID" />
+		<result property="projectId" column="PROJECT_ID" />
+		<result property="projectName" column="PROJECT_NAME" />
+		<result property="projectNumber" column="PROJECT_NUMBER" />
+		<result property="cusTypeStr" column="CUSTYPESTR" />
+		<result property="startRequestDttm" column="STARTREQUESTDTTM" />
+		<result property="regulatoryUser" column="REGULATORYUSER" />
+		<result property="planBeginDt" column="PLAN_BEGIN_DT" />
+		<result property="planDt" column="PLAN_DT" />
+		<result property="regulatoryResult" column="REGULATORY_RESULT" />
+		<result property="userName" column="USER_NAME" />
+		<result property="actualBeginDt" column="ACTUAL_BEGIN_DT" />
+		<result property="regulatoryStatus" column="REGULATORY_STATUS" />
+		<result property="regulatoryStatusStr" column="regulatoryStatusStr" />
+		<result property="isMail" column="IS_MAIL" />
+		<result property="isSms" column="IS_SMS" />
+		<result property="regulatoryUserId" column="regulatoryUserId" />
+	</resultMap>
+	
+	<select id="getProject" resultMap="getSupervisionTaskMap"
+		parameterType="Integer">
+		SELECT PID,PROJECT_NAME, PROJECT_NUMBER FROM BIZ_PROJECT
+		where 1=1
+		<if test="_parameter!=null">
+			and pid=#{pid,jdbcType=INTEGER}
+		</if>
+	</select>
+
+		<!-- 监管任务页面展现的数据 -->
+		<resultMap id="supervisionTaskListBean"
+			type="com.xlkfinance.bms.rpc.afterloan.ResultBizProjectRegPlan">
+			<result property="pid" column="regulatoryPlanId" />
+			<result property="regulatoryPlanId" column="regulatoryPlanId" />
+			<result property="projectId" column="projectId" />
+			<result property="projectName" column="projectName" />
+			<result property="projectNumber" column="projectNumber" />
+			<result property="cusTypeStr" column="cusTypeStr" />
+			<result property="startRequestDttm" column="startRequestDttm" /> 
+			<result property="regulatoryStatusStr" column="regulatoryStatusStr" />
+			<result property="planDt" column="planDt" />
+			<result property="assigneUserName" column="assigneUserName" />
+			<result property="planBeginDt" column="planBeginDt" />
+			<result property="regulatoryUserName" column="regulatoryUserName" />
+	 </resultMap>
+
+
+	<select id="getSupervisionTaskList" resultMap="getSupervisionTaskMap"
+		parameterType="java.lang.Integer">
+		SELECT
+		(SELECT S.Real_Name
+		FROM SYS_USER S
+		WHERE S.PID = (SELECT
+		B.REGULATORY_USER_ID
+		FROM BIZ_PROJECT_REG_PLAN B
+		WHERE B.PID =
+		RH.REGULATORY_PLAN_ID
+		AND ROWNUM &lt;= 1)
+		AND ROWNUM &lt;= 1) AS
+		USER_NAME,
+
+		(SELECT RP.PLAN_BEGIN_DT
+		FROM BIZ_PROJECT_REG_PLAN RP
+		WHERE
+		RP.PID = RH.REGULATORY_PLAN_ID
+		AND ROWNUM &lt;= 1) PLAN_BEGIN_DT,
+
+		(SELECT RP.PROJECT_ID
+		FROM BIZ_PROJECT_REG_PLAN RP
+		WHERE RP.PID =
+		RH.REGULATORY_PLAN_ID
+		AND ROWNUM &lt;= 1) PROJECT_ID,
+
+		(SELECT CASE
+		RP.REGULATORY_STATUS
+		WHEN 1 THEN
+		'等待监管'
+		WHEN 2 THEN
+		'监管中'
+		WHEN 3 THEN
+		'监管完成'
+		END
+		FROM BIZ_PROJECT_REG_PLAN RP
+		WHERE RP.PID =
+		RH.REGULATORY_PLAN_ID
+		AND ROWNUM &lt;= 1) REGULATORY_STATUS,
+
+		(SELECT
+		S.Real_Name
+		FROM SYS_USER S
+		WHERE S.PID = RH.ACTUAL_USER_ID
+		AND ROWNUM
+		&lt;= 1) AS REGULATORYUSER,
+		RH.ACTUAL_BEGIN_DT,
+		(CASE
+		RH.REGULATORY_RESULT
+		WHEN 1 THEN
+		'正常'
+		WHEN 2 THEN
+		'挪用嫌疑'
+		WHEN 3 THEN
+		'违约嫌疑'
+		WHEN 4 THEN
+		'存在挪用行为'
+		WHEN 5 THEN
+		'存在违约行为'
+		END) AS REGULATORY_RESULT
+		FROM
+		BIZ_PROJECT_REG_HISTORY RH
+		WHERE 1=1
+
+
+		<!-- SELECT B.PID, B.PROJECT_ID, (SELECT S.USER_NAME FROM SYS_USER S WHERE 
+			S.PID = B.REGULATORY_USER_ID) AS REGULATORYUSER, B.PLAN_BEGIN_DT, B.REMARK 
+			AS REMARK FROM BIZ_PROJECT_REG_PLAN B WHERE 1 = 1 -->
+		<if test="_parameter!=null">
+			and RH.REGULATORY_PLAN_ID=(SELECT RP.PID
+			FROM
+			BIZ_PROJECT_REG_PLAN RP
+			WHERE RP.PROJECT_ID = #{pid,jdbcType=INTEGER})
+		</if>
+	</select>
+
+	<select id="getSupervisionTask" resultMap="getSupervisionTaskMap"
+		parameterType="java.lang.Integer">
+		SELECT B.PID,
+		B.PROJECT_ID,
+		(SELECT S.Real_Name
+		FROM
+		SYS_USER S
+		WHERE S.PID
+		= B.REGULATORY_USER_ID) AS REGULATORYUSER,
+		B.IS_MAIL,
+		B.IS_SMS,
+		B.PLAN_BEGIN_DT,
+		B.REMARK AS REMARK,
+		B.REGULATORY_STATUS
+		FROM
+		BIZ_PROJECT_REG_PLAN B
+		WHERE 1 = 1
+			and B.Pid=#{pid,jdbcType=INTEGER}
+	</select>
+
+	<insert id="createBizProjectRegHistory"
+		parameterType="com.xlkfinance.bms.rpc.afterloan.BizProjectRegHistory">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_BIZ_PROJECT_REG_HISTORY.Nextval as PID from
+			DUAL
+		</selectKey>
+		INSERT INTO BIZ_PROJECT_REG_HISTORY(
+		PID,
+		REGULATORY_PLAN_ID,
+		ACTUAL_USER_ID,
+		ACTUAL_BEGIN_DT,
+		REGULATORY_SUBJECT,
+		REGULATORY_CONTENT,
+		REGULATORY_RESULT,
+		REGULATORY_MSG,
+		REGULATORY_MSG_OT1,
+		REGULATORY_MSG_OT2,
+		REMARK,
+		STATUS
+		)
+		values (
+		#{pid,jdbcType=INTEGER},
+		#{regulatoryPlanId,jdbcType=INTEGER},
+		#{actualUserId,jdbcType=INTEGER},
+		#{actualBeginDt,jdbcType=DATE,javaType=String},
+		#{regualatorySubject,jdbcType=VARCHAR},
+		#{regualatoryContent,jdbcType=VARCHAR},
+		#{regualatoryResult,jdbcType=INTEGER},
+		#{regualatoryMsg,jdbcType=VARCHAR},
+		#{regualatoryMsgOt1,jdbcType=VARCHAR},
+		#{regualatoryMsgOt2,jdbcType=VARCHAR},
+		#{remark,jdbcType=VARCHAR},
+		1
+		)
+	</insert>
+
+
+	<!-- 监管结果录入查询 -->
+	<resultMap id="getSupervisionRegHistoryMap"
+		type="com.xlkfinance.bms.rpc.afterloan.BizProjectRegHistory">
+		<result property="pid" column="PID" />
+		<result property="regulatoryPlanId" column="REGULATORY_PLAN_ID" />
+		<result property="actualBeginDt" column="ACTUAL_BEGIN_DT"
+			jdbcType="DATE" javaType="String" />
+		<result property="regualatorySubject" column="REGULATORY_SUBJECT" />
+		<result property="regualatoryContent" column="REGULATORY_CONTENT" />
+		<result property="regualatoryResultStr" column="REGULATORY_RESULT" />
+		<result property="regualatoryMsg" column="REGULATORY_MSG" />
+		<result property="regualatoryMsgOt1" column="REGULATORY_MSG_OT1" />
+		<result property="regualatoryMsgOt2" column="REGULATORY_MSG_OT2" />
+	</resultMap>
+	<select id="getBizProjectRegHistoryList" resultMap="getSupervisionRegHistoryMap"
+		parameterType="java.lang.Integer">
+		SELECT PID,
+		ACTUAL_BEGIN_DT,
+		REGULATORY_SUBJECT,
+		REGULATORY_CONTENT,
+		CASE
+		REGULATORY_RESULT
+		WHEN 1 THEN
+		'正常'
+		WHEN 2 THEN
+		'挪用嫌疑'
+		WHEN 3 THEN
+		'违约嫌疑'
+		WHEN 4 THEN
+		'存在挪用行为'
+		WHEN 5 THEN
+		'存在违约行为'
+		END AS REGULATORY_RESULT,
+		REGULATORY_MSG,
+		REGULATORY_MSG_OT1,
+		REGULATORY_MSG_OT2
+		FROM
+		BIZ_PROJECT_REG_HISTORY
+		WHERE 1=1
+		<if test="_parameter!=null">
+			and REGULATORY_PLAN_ID=#{pid,jdbcType=INTEGER}
+		</if>
+	</select>
+	<!-- 编辑查询 -->
+	<select id="getBizProjectRegHistory" resultMap="getSupervisionRegHistoryMap"
+		parameterType="java.lang.Integer">
+		SELECT PID,
+		ACTUAL_BEGIN_DT,
+		REGULATORY_SUBJECT,
+		REGULATORY_CONTENT,
+		REGULATORY_RESULT,
+		REGULATORY_MSG,
+		REGULATORY_MSG_OT1,
+		REGULATORY_MSG_OT2
+		FROM
+		BIZ_PROJECT_REG_HISTORY
+		WHERE 1=1
+		<if test="_parameter!=null">
+			and pid=#{pid,jdbcType=INTEGER}
+		</if>
+	</select>
+	<update id="updateBizProjectRegHistory"
+		parameterType="com.xlkfinance.bms.rpc.afterloan.BizProjectRegHistory">
+		update Biz_Project_Reg_History set
+		ACTUAL_BEGIN_DT=#{actualBeginDt,jdbcType=DATE,javaType=String},
+		REGULATORY_SUBJECT=#{regualatorySubject},
+		REGULATORY_CONTENT=#{regualatoryContent},
+		REGULATORY_RESULT=#{regualatoryResult},
+		REGULATORY_MSG=#{regualatoryMsg},
+		REGULATORY_MSG_OT1=#{regualatoryMsgOt1},
+		REGULATORY_MSG_OT2=#{regualatoryMsgOt2}
+		WHERE 1=1
+		<if test="_parameter!=null">
+			and pid=#{pid,jdbcType=INTEGER}
+		</if>
+	</update>
+
+	<!-- 监管结果查询 -->
+	<resultMap id="getSupervisionResultListMap"
+		type="com.xlkfinance.bms.rpc.afterloan.SupervisionResultList">
+		<result property="resultId" column="resultId" />
+		<result property="projectId" column="projectId" />
+		<result property="regulatoryPlanId" column="regulatoryPlanId" />
+		<result property="regualatorySubject" column="regualatorySubject" />
+		<result property="regualatoryContent" column="regualatoryContent" />
+		<result property="regualatoryMsg" column="regualatoryMsg" />
+		<result property="regualatoryMsgOt1" column="regualatoryMsgOt1" />
+		<result property="regualatoryMsgOt2" column="regualatoryMsgOt2" />
+		<result property="regulatoryResultStr" column="regulatoryResultStr" />
+		<result property="regulatoryStatusStr" column="regulatoryStatusStr" />
+		<result property="actualUser" column="actualUser" />
+		<result property="actualDate" column="actualDate" />
+		<result property="planUser" column="planUser" />
+		<result property="planDate" column="planDate" />
+		<result property="projectName" column="projectName" />
+		<result property="projectNumber" column="projectNumber" />
+		<result property="custType" column="custType" />
+	</resultMap>
+	
+	 <resultMap id="FileInfoMap" type="com.xlkfinance.bms.rpc.file.FileInfo">
+		<result property="dataId" column="PID" />
+		<result property="refId" column="refId" />
+		<result property="fileUrl" column="FILE_URL" />
+		<result property="fileId" column="FILE_ID" />	
+		<result property="fileType" column="FILE_TYPE" />
+		<result property="fileName" column="FILE_NAME" />
+		<result property="fileSize" column="FILE_SIZE" />
+		<result property="uploadDttm" column="UPLOAD_DTTM" javaType="String"
+			jdbcType="TIMESTAMP" />
+		<result property="fileDesc" column="FILE_DESC" />
+	<!-- 	<result property="uploadUserId" column="uploadUserId" />
+		<result property="filePropertyName" column="filePropertyName" />
+		<result property="fileProperty" column="fileProperty" />
+		<result property="status" column="STATUS" />
+		<result property="projectId" column="PROJECT_ID" /> -->
+	</resultMap>
+
+<!-- 获取监管记录，根据项目ID或者计划ID来获取监管记录，主要用于页面的查看监管详情 -->
+	<select id="getRegulatoryRecordList" resultMap="getSupervisionResultListMap"
+		parameterType="com.xlkfinance.bms.rpc.afterloan.SupervisionResultSearch">
+		SELECT result1.* FROM
+		(SELECT 
+		       p.project_id AS projectId,
+		       Pkg_Common.FUN_GET_SYS_USER_NAME(p.regulatory_user_id) AS planUser,
+		       p.plan_dt AS planDate,
+		       PKG_COMMON.FUN_GET_REGULATORY_STATUS(p.regulatory_status) regulatoryStatusStr,
+		       R.REGULATORY_PLAN_ID AS regulatoryPlanId,
+		       R.PID AS resultId,
+		       R.REGULATORY_SUBJECT AS regualatorySubject,
+		       R.REGULATORY_CONTENT AS regualatoryContent,
+		       R.Regulatory_Msg AS regualatoryMsg,
+		       R.REGULATORY_MSG_OT1 AS regualatoryMsgOt1,
+		       R.REGULATORY_MSG_OT2 AS regualatoryMsgOt2,
+		       R.ACTUAL_BEGIN_DT    AS ACTUALDATE, 
+		       Pkg_Common.FUN_GET_SYS_USER_NAME(R.ACTUAL_USER_ID)  AS ACTUALUSER,
+		       PKG_COMMON.FUN_GET_REGULATORY_RESULT(R.REGULATORY_RESULT) AS regulatoryResultStr
+		  FROM BIZ_PROJECT_REG_HISTORY R, BIZ_PROJECT_REG_PLAN P
+		 WHERE R.REGULATORY_PLAN_ID = P.PID) result1 WHERE 1=1
+		<if test="projectId !=0">
+			AND result1.projectId=#{projectId}
+		</if>
+		<if test="planId !=0">
+			AND result1.regulatoryPlanId=#{planId}
+		</if>
+		 ORDER BY result1.ACTUALDATE
+	</select>
+	
+	<!-- 获取监管任务列表 -->
+	<select id="supervisionTaskList" resultMap="supervisionTaskListBean"
+		parameterType="com.xlkfinance.bms.rpc.afterloan.SupervisionSearchBean">
+		SELECT * FROM (
+		  SELECT 
+					result4.*, case result4.acct_TYPE 
+					    WHEN 1 THEN
+					    '个人'
+					    WHEN 2 THEN
+					    '企业'
+					    END AS cusTypeStr FROM
+					(SELECT result3.*
+					FROM 
+					(SELECT ROWNUM RNUM,D.ACCT_TYPE, A.* FROM 
+					(SELECT pro.REQUEST_DTTM AS startRequestDttm,pro.Acct_Id,pro.Project_Name AS projectName,pro.Project_Number AS projectNumber,result2.* FROM 
+					(SELECT result1.* FROM
+							(SELECT 
+							       p.pid AS regulatoryPlanId,
+							       p.project_id AS projectId,
+							       P.Plan_Dt AS planDt,
+							       P.IS_MAIL as isMail,
+							       p.IS_SMS as isSms,
+							       P.REMARK as remark,
+							       P.REGULATORY_USER_ID as regulatoryUserId,
+							       Pkg_Common.FUN_GET_SYS_USER_NAME(p.regulatory_user_id)  AS regulatoryUserName,
+                      Pkg_Common.FUN_GET_SYS_USER_NAME(p.assigne_user_id) AS assigneUserName,
+                      p.plan_begin_dt AS planBeginDt,
+                     PKG_COMMON.FUN_GET_REGULATORY_STATUS(p.regulatory_status) regulatoryStatusStr,
+                     p.regulatory_status AS regulatoryStatus
+                FROM BIZ_PROJECT_REG_PLAN P
+                where 1=1 
+                <if test="userId !=0">
+                	and 
+                	 p.regulatory_user_id IN (
+	      				 SELECT SU.PID AS PIDS  FROM SYS_USER SU
+       					  WHERE SU.SUPERIOR_USER_ID=#{userId}
+        				 OR SU.PID= #{userId})
+                </if>
+               ) result1 WHERE 1=1
+                  <if test="pid !=0 ">
+						AND result1.regulatoryPlanId = #{pid}
+					</if>
+					<if test="regulatoryStatus !=0 ">
+						AND result1.regulatoryStatus = #{regulatoryStatus}
+					</if>
+					<if test="regulatoryUserName != null and regulatoryUserName != '' ">
+				       AND result1.regulatoryUserName LIKE '%${regulatoryUserName}%'
+			      </if>
+			      <if test="startRequestDttm != null and startRequestDttm != '' ">
+						AND result1.planDt &gt;= #{startRequestDttm,jdbcType=DATE,javaType=String}
+					</if>
+					<if test="endRequestDttm != null and endRequestDttm != '' ">
+						AND result1.planDt &lt;=#{endRequestDttm,jdbcType=DATE,javaType=String}+1
+					</if>
+                ) result2      
+               LEFT JOIN BIZ_PROJECT pro ON result2.projectId=pro.Pid) A LEFT JOIN CUS_ACCT_V D ON D.acct_id = A.ACCT_ID LEFT JOIN SYS_USER C
+              ON C.PID = D.PM_USER_ID WHERE 1=1
+			 <if test="cusType!=null and cusType != -1 and cusType!=0">
+				  AND D.acct_TYPE=#{cusType}
+			</if>
+			 <if test="ecoTrade!=null and ecoTrade != -1 and ecoTrade!=0">
+				  AND D.ECO_TRADE=#{ecoTrade}
+			</if>
+			<if test="cusName != null and cusName != '' ">
+				AND D.ACCT_NAME LIKE '%${cusName}%'
+			</if>
+			<if test="projectName != null and projectName != '' ">
+				AND A.projectName LIKE '%${projectName}%'
+			</if>
+			<if test="projectNumber != null and projectNumber != '' ">
+				AND A.projectNumber LIKE '%${projectNumber}%'
+			</if>
+			<if test="projectId !=0 ">
+				AND A.projectId =#{projectId}
+			</if>
+              ) result3 WHERE 1 = 1
+               AND RNUM &lt;=#{page}*#{rows}
+							AND RNUM >=((#{page}-1)*#{rows})+1
+          ) result4    
+          ) A ORDER BY A.planDt DESC 
+	</select>
+	
+	<select id="getTotalSupervisionTask" resultType="java.lang.Integer"
+		parameterType="com.xlkfinance.bms.rpc.afterloan.SupervisionSearchBean">
+		 SELECT 
+					COUNT(1) FROM
+					(SELECT result3.*
+					FROM 
+					(SELECT ROWNUM RNUM,D.ACCT_TYPE, A.* FROM 
+					(SELECT pro.REQUEST_DTTM AS startRequestDttm,pro.Acct_Id,pro.Project_Name AS projectName,pro.Project_Number AS projectNumber,result2.* FROM 
+					(SELECT result1.* FROM
+							(SELECT 
+							       p.pid AS regulatoryPlanId,
+							       p.project_id AS projectId,
+							       P.Plan_Dt AS planDt,
+							       P.IS_MAIL as isMail,
+							       p.IS_SMS as isSms,
+							       P.REMARK as remark,
+							       P.REGULATORY_USER_ID as regulatoryUserId,
+							       Pkg_Common.FUN_GET_SYS_USER_NAME(p.regulatory_user_id)  AS regulatoryUserName,
+                      Pkg_Common.FUN_GET_SYS_USER_NAME(p.assigne_user_id) AS assigneUserName,
+                      p.plan_begin_dt AS planBeginDt,
+                     PKG_COMMON.FUN_GET_REGULATORY_STATUS(p.regulatory_status) regulatoryStatusStr,
+                     p.regulatory_status AS regulatoryStatus
+                	 FROM BIZ_PROJECT_REG_PLAN P
+                         where p.regulatory_user_id IN (
+	      				 SELECT SU.PID AS PIDS  FROM SYS_USER SU
+       					  WHERE SU.SUPERIOR_USER_ID=#{userId}
+        				 OR SU.PID= #{userId})
+                
+               ) result1 WHERE 1=1
+                  <if test="pid !=0 ">
+						AND result1.regulatoryPlanId = #{pid}
+					</if>
+					<if test="regulatoryStatus !=0 ">
+						AND result1.regulatoryStatus = #{regulatoryStatus}
+					</if>
+					<if test="regulatoryUserName != null and regulatoryUserName != '' ">
+				       AND result1.regulatoryUserName LIKE '%${regulatoryUserName}%'
+			      </if>
+			      <if test="startRequestDttm != null and startRequestDttm != '' ">
+						AND result1.planDt &gt;= #{startRequestDttm,jdbcType=DATE,javaType=String}
+					</if>
+					<if test="endRequestDttm != null and endRequestDttm != '' ">
+						AND result1.planDt &lt;=#{endRequestDttm,jdbcType=DATE,javaType=String}+1
+					</if>
+                ) result2      
+               LEFT JOIN BIZ_PROJECT pro ON result2.projectId=pro.Pid) A LEFT JOIN CUS_ACCT_V D ON D.acct_id = A.ACCT_ID LEFT JOIN SYS_USER C
+              ON C.PID = D.PM_USER_ID WHERE 1=1
+			 <if test="cusType!=null and cusType != -1 and cusType!=0">
+				  AND D.ACCT_TYPE=#{cusType}
+			</if>
+			<if test="ecoTrade!=null and ecoTrade != -1 and ecoTrade!=0">
+				  AND D.ECO_TRADE=#{ecoTrade}
+			</if>
+			<if test="cusName != null and cusName != '' ">
+				AND D.ACCT_NAME LIKE '%${cusName}%'
+			</if>
+			<if test="projectName != null and projectName != '' ">
+				AND A.projectName LIKE '%${projectName}%'
+			</if>
+			<if test="projectNumber != null and projectNumber != '' ">
+				AND A.projectNumber LIKE '%${projectNumber}%'
+			</if>
+			<if test="projectId !=0 ">
+				AND A.projectId =#{projectId}
+			</if>
+              ) result3 WHERE 1 = 1
+          ) result4   
+	</select>
+	
+    <!-- 根据条件获取监管结果计划 -->
+	<select id="getSupervisionResultList" resultMap="getSupervisionResultListMap"
+		parameterType="com.xlkfinance.bms.rpc.afterloan.SupervisionResultSearch">
+			SELECT 
+					result4.*,CASE result4.acct_type
+					    WHEN 1 THEN
+					    '个人'
+					    WHEN 2 THEN
+					    '企业'
+					    END AS custType FROM
+					(SELECT result3.*
+					FROM 
+					(SELECT ROWNUM RNUM,D.ACCT_TYPE, A.* FROM 
+					(SELECT pro.Acct_Id,pro.Project_Name AS projectName,pro.Project_Number AS projectNumber,result2.* FROM 
+					(SELECT result1.* FROM
+							(SELECT 
+							       p.project_id AS projectId,
+							       Pkg_Common.FUN_GET_SYS_USER_NAME(p.regulatory_user_id) AS planUser,
+							       p.plan_dt AS planDate,
+							       PKG_COMMON.FUN_GET_REGULATORY_STATUS(p.regulatory_status) regulatoryStatusStr,
+							       R.REGULATORY_PLAN_ID AS regulatoryPlanId,
+							       R.PID AS resultId,
+							       R.REGULATORY_SUBJECT AS regualatorySubject,
+							       R.REGULATORY_CONTENT AS regualatoryContent,
+							       R.Regulatory_Msg AS regualatoryMsg,
+							       R.REGULATORY_MSG_OT1 AS regualatoryMsgOt1,
+							       R.REGULATORY_MSG_OT2 AS regualatoryMsgOt2,
+							       R.ACTUAL_BEGIN_DT    AS ACTUALDATE, 
+							       Pkg_Common.FUN_GET_SYS_USER_NAME(R.ACTUAL_USER_ID)  AS ACTUALUSER,
+					           R.REGULATORY_RESULT AS REGULATORYRESULT,
+							       PKG_COMMON.FUN_GET_REGULATORY_RESULT(R.REGULATORY_RESULT) AS regulatoryResultStr
+					      FROM BIZ_PROJECT_REG_HISTORY R, BIZ_PROJECT_REG_PLAN P
+					     WHERE R.REGULATORY_PLAN_ID = P.PID) result1 WHERE 1=1
+					      <if test="startRequestDttm != null and startRequestDttm != '' ">
+					        AND result1.ACTUALDATE &gt;= #{startRequestDttm,jdbcType=DATE,javaType=String}
+					     </if>
+					    <if test="endRequestDttm != null and endRequestDttm != '' ">
+					        AND result1.ACTUALDATE &lt;=#{endRequestDttm,jdbcType=DATE,javaType=String}+1
+					     </if>
+					      <if test="regulatoryResult!=null and regulatoryResult != -1 and regulatoryResult!=0">
+							   	AND result1.REGULATORYRESULT =#{regulatoryResult}
+							  </if>
+					      ) result2      
+					     LEFT JOIN BIZ_PROJECT pro ON result2.projectId=pro.Pid) A LEFT JOIN CUS_ACCT_V D ON D.ACCT_ID = A.ACCT_ID  LEFT JOIN SYS_USER C
+							ON C.PID = D.PM_USER_ID WHERE 1=1
+					    <if test="cusType!=null and cusType != -1 and cusType!=0">
+							  AND D.ACCT_TYPE=#{cusType}
+						</if>
+						<if test="ecoTrade != null and ecoTrade != '' ">
+		                  AND d.ECO_TRADE like '%${ecoTrade}%'
+		                </if>
+							<if test="cusName != null and cusName != '' ">
+								AND D.ACCT_NAME LIKE '%${cusName}%'
+							</if>
+					    <if test="projectName != null and projectName != '' ">
+								AND A.projectName LIKE '%${projectName}%'
+							</if>
+							<if test="projectNumber != null and projectNumber != '' ">
+								AND A.projectNumber LIKE '%${projectNumber}%'
+							</if>
+					    ) result3 WHERE 1 = 1
+							AND RNUM &lt;=#{page}*#{rows}
+							AND RNUM >=((#{page}-1)*#{rows})+1
+					) result4    
+	</select>
+
+	<select id="getTotalSupervisionResult" resultType="java.lang.Integer"
+		parameterType="com.xlkfinance.bms.rpc.afterloan.SupervisionResultSearch">
+			SELECT 
+					 COUNT(1) FROM
+					(SELECT result3.*
+					FROM 
+					(SELECT D.ACCT_TYPE, A.* FROM 
+					(SELECT pro.Acct_Id,pro.Project_Name AS projectName,pro.Project_Number AS projectNumber,result2.* FROM 
+					(SELECT result1.* FROM
+							(SELECT 
+							       p.project_id AS projectId,
+							       p.plan_dt AS planDate,
+							       R.REGULATORY_PLAN_ID AS regulatoryPlanId,
+							       R.PID AS resultId,
+							       R.ACTUAL_BEGIN_DT    AS ACTUALDATE, 
+					           R.REGULATORY_RESULT AS REGULATORYRESULT
+					      FROM BIZ_PROJECT_REG_HISTORY R, BIZ_PROJECT_REG_PLAN P
+					     WHERE R.REGULATORY_PLAN_ID = P.PID) result1 WHERE 1=1
+					      <if test="startRequestDttm != null and startRequestDttm != '' ">
+					        AND result1.ACTUALDATE &gt;= #{startRequestDttm,jdbcType=DATE,javaType=String}
+					     </if>
+					    <if test="endRequestDttm != null and endRequestDttm != '' ">
+					        AND result1.ACTUALDATE &lt;=#{endRequestDttm,jdbcType=DATE,javaType=String}+1
+					     </if>
+					      <if test="regulatoryResult!=null and regulatoryResult != -1 and regulatoryResult!=0">
+							   	AND result1.REGULATORYRESULT =#{regulatoryResult}
+							  </if>
+					      ) result2      
+					     LEFT JOIN BIZ_PROJECT pro ON result2.projectId=pro.Pid) A LEFT JOIN CUS_ACCT_V D ON D.ACCT_ID = A.ACCT_ID LEFT JOIN SYS_USER C
+							ON C.PID = D.PM_USER_ID WHERE 1=1
+					   <if test="cusType!=null and cusType != -1 and cusType!=0">
+							  AND D.ACCT_TYPE=#{cusType}
+						</if>
+						<if test="ecoTrade != null and ecoTrade != '' ">
+		                  AND d.ECO_TRADE like '%${ecoTrade}%'
+		                </if>
+							<if test="cusName != null and cusName != '' ">
+								AND D.ACCT_NAME LIKE '%${cusName}%'
+							</if>
+					    <if test="projectName != null and projectName != '' ">
+								AND A.projectName LIKE '%${projectName}%'
+							</if>
+							<if test="projectNumber != null and projectNumber != '' ">
+								AND A.projectNumber LIKE '%${projectNumber}%'
+							</if>
+					    ) result3 WHERE 1 = 1
+					) result4    
+	</select>
+	
+	<!--  文件资料 -->
+	<select id="getFileDataList" parameterType="com.xlkfinance.bms.rpc.file.FileInfo"
+		resultMap="FileInfoMap">
+		SELECT ROWNUM RNUM, AA.*
+            FROM (
+            SELECT ROWNUM         RNUM,
+                         A.PID          PID,
+                         A.REGULATORY_PLAN_ID refId,
+                         B.FILE_URL     FILE_URL,
+                         A.FILE_ID      FILE_ID,
+                         FILE_TYPE      FILE_TYPE,
+                         FILE_NAME      FILE_NAME,
+                         FILE_SIZE      FILE_SIZE,
+                         UPLOAD_DTTM    UPLOAD_DTTM,
+                         B.REMARK         FILE_DESC
+                    FROM biz_project_reg_file A
+                    LEFT JOIN BIZ_FILE B
+                      ON A.FILE_ID = B.PID
+                    WHERE 1=1
+                       and  A.REGULATORY_PLAN_ID = #{refId}
+                  ) AA 
+     WHERE 1 = 1
+     AND RNUM &lt;=#{page}*#{rows}
+	 AND RNUM >=((#{page}-1)*#{rows})+1
+	</select>
+	<select id="getFileDataTotal" parameterType="com.xlkfinance.bms.rpc.file.FileInfo"  resultType="java.lang.Integer">
+	      SELECT COUNT(1) FROM biz_project_reg_file A where A.REGULATORY_PLAN_ID = #{refId}
+	</select>
+	
+	<!-- 创建监管文件说明 -->
+	<insert id="createBusinessFile" parameterType="com.xlkfinance.bms.rpc.file.FileInfo">
+		<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="dataId">
+			SELECT SEQ_BIZ_PROJECT_VIOLATION_FILE.Nextval as PID from DUAL
+		</selectKey>
+		    INSERT INTO BIZ_PROJECT_REG_FILE(
+		    	PID,
+		    	REGULATORY_PLAN_ID, 
+		    	file_id, 
+		    	STATUS)
+		    VALUES (
+		    	#{dataId,jdbcType=INTEGER}, 
+		     	#{refId,jdbcType=INTEGER},
+		     	#{fileId,jdbcType=INTEGER},
+		     	1)
+	</insert>
+	
+	<delete id="deleteBusinessFile" parameterType="java.lang.String"   >
+	     delete from BIZ_PROJECT_REG_FILE where pid=#{pid}
+	</delete>
+		
+	<select id="getToDayUpdateList" statementType="CALLABLE" 
+			parameterType="com.xlkfinance.bms.rpc.afterloan.ToDayUpdateDTO"  resultMap="getToDayUpdate">
+			
+		{ CALL PKG_REPAYMENT.PRO_SERACH_TODAY_UPDATE(
+			#{type,mode=IN,jdbcType=INTEGER},
+			#{toDate,mode=IN,jdbcType=VARCHAR},
+			#{results,mode=OUT,jdbcType=CURSOR,javaType=java.sql.ResultSet,resultMap=getToDayUpdate}
+					)} 
+					
+	</select>
+</mapper>

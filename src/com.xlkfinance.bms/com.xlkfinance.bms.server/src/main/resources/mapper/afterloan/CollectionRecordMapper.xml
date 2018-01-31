@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.afterloan.mapper.CollectionRecordMapper">
+<resultMap id="getCollectionRecordMap"	type="com.xlkfinance.bms.rpc.afterloan.CollectionRecord">
+		<result property="pid" column="PID" />
+		<result property="reminderPlanId" column="REMINDER_PLAN_ID" />
+		<result property="cycleNum" column="CYCLE_NUM" />
+		<result property="reminderDttm" column="REMINDER_DTTM" jdbcType="DATE" javaType="String" />
+		<result property="reminderUserId" column="REMINDER_USER_ID" />
+		<result property="reminderSubject" column="REMINDER_SUBJECT"/>
+		<result property="reminderMsg" column="REMINDER_MSG"/>
+		<result property="methodMall" column="METHOD_MAIL" />
+		<result property="methodSms" column="METHOD_SMS"/>
+		<result property="methodPhone" column="METHOD_PHONE"/>
+		<result property="methodPaper" column="METHOD_PAPER"/>
+	</resultMap>
+
+    <select id="getCollectionRecord" resultMap="getCollectionRecordMap" parameterType="com.xlkfinance.bms.rpc.afterloan.CollectionRecord">
+	 	   SELECT BRH.PID, BRH.REMINDER_PLAN_ID,
+		     BRH.CYCLE_NUM, BRH.REMINDER_DTTM,
+		     BRH.REMINDER_USER_ID, BRH.REMINDER_SUBJECT,
+		     BRH.REMINDER_MSG, BRH.METHOD_MAIL,
+		     BRH.METHOD_SMS, BRH.METHOD_PHONE,
+		     BRH.METHOD_PAPER 
+		     FROM BIZ_REMINDER_HISTORY BRH
+	</select>
+	
+	<select id="getCollectionRecordsByProjectIds"  parameterType="java.util.List" resultType="com.xlkfinance.bms.rpc.afterloan.CollectionRecord">
+		WITH TMP AS
+		 (SELECT E.PID,
+		         TO_CHAR(E.REMINDER_DTTM,'yyyy-mm-dd hh24:mi:ss') REMINDER_DTTM,
+		         SU.REAL_NAME REAL_NAME,
+		         E.REMINDER_MSG,
+		         (CASE E.METHOD_MAIL
+		           WHEN 1 THEN
+		            '邮件,'
+		           ELSE
+		            ''
+		         END || CASE E.METHOD_SMS
+		           WHEN 1 THEN
+		            '短信,'
+		           ELSE
+		            ''
+		         END || CASE E.METHOD_PHONE
+		           WHEN 1 THEN
+		            '电话,'
+		           ELSE
+		            ''
+		         END || CASE E.METHOD_PAPER
+		           WHEN 1 THEN
+		            '纸质信件,'
+		           ELSE
+		            ''
+		         END) REMINDER_WAY
+		  
+		    FROM BIZ_REMINDER_HISTORY E, BIZ_PROJECT_REMINDER_PLAN B, SYS_USER SU
+		  
+		   WHERE B.PID = E.REMINDER_PLAN_ID
+		     AND SU.PID(+) = E.REMINDER_USER_ID
+		     AND B.Project_Id IN
+		     <foreach item="itemId" collection="list" open="(" separator="," close=")">
+		          #{itemId}
+			 </foreach>
+		     )
+		SELECT PID pid,ROWNUM rNum,REMINDER_DTTM reminderDttm, REAL_NAME reminderUserName, REMINDER_MSG reminderMsg, SUBSTR(REMINDER_WAY, 0, LENGTH(REMINDER_WAY) - 1) reminderWay
+		  FROM TMP
+	</select>
+</mapper>

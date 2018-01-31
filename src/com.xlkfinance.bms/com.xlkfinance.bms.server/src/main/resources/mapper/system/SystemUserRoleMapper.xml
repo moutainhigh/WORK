@@ -1,0 +1,466 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.system.mapper.SystemUserRoleMapper">
+
+	<!-- 角色表映射 -->
+	<resultMap type="com.xlkfinance.bms.rpc.system.SysRole" id="roleMap">
+		<id column="PID" property="pid"/>
+		<result column="ROLE_NAME" property="roleName"/>
+		<result column="ROLE_DESC" property="roleDesc"/>
+		<result column="ROLE_CODE" property="roleCode"/>
+	</resultMap>
+	
+	<!-- 根据角色code查询角色列表 -->
+	<select id="queryRolesByRoleCodes" resultMap="roleMap" parameterType="List">
+		SELECT T.PID, T.ROLE_NAME, T.ROLE_DESC, T.ROLE_CODE
+		  FROM SYS_ROLE T
+		 WHERE T.STATUS = 1
+		   AND T.ROLE_CODE IN 
+		   <foreach collection="list" item="item" open="(" close=")" separator=",">
+		   		#{item}
+		   </foreach>
+	</select>
+	<select id="getAllRoles" resultType="com.xlkfinance.bms.rpc.system.SysRole">
+		SELECT r.pid,r.role_name as roleName,r.role_desc as roleDesc,r.role_code as roleCode from sys_role r
+	</select>
+	<select id="getRoleById" resultType="com.xlkfinance.bms.rpc.system.SysRole" parameterType="int">
+		SELECT * from sys_role t where t.pid=#{pid}
+	</select>
+	<select id="getRoleByCode" resultType="com.xlkfinance.bms.rpc.system.SysRole" >
+		SELECT * from sys_role t where t.ROLE_CODE=#{roleCode}
+	</select>
+	<!-- 查询所有角色 -->
+	<select id="getAllRolesForPage" resultType="com.xlkfinance.bms.rpc.system.SysRole" parameterType="com.xlkfinance.bms.rpc.system.SysRole">
+		SELECT r.pid,r.role_name as roleName,r.role_desc as roleDesc,r.role_code as roleCode,r.parent_id parentId from sys_role r where rowid IN
+		  	(select rid from 
+		    	(select rownum rn,rid FROM
+		      			(select rowid rid,pid FROM sys_role  order by pid desc)
+		    	where rownum<![CDATA[<=]]>#{page}*#{rows}) 
+		where rn>=((#{page}-1)*#{rows})+1)
+	</select>
+	<!-- 查詢所有角色总记录数 -->
+	<select id="slectAllRoleCountForPage" resultType="java.lang.Integer">
+		SELECT count(pid) from sys_role 
+	</select>
+	
+	<!-- 新增角色 -->
+	<insert id="addSysRole" parameterType="com.xlkfinance.bms.rpc.system.SysRole">
+      	INSERT INTO Sys_Role R(
+      		R.pid,
+      		R.ROLE_NAME,
+      		R.ROLE_DESC,
+      		R.ROLE_CODE,
+      		R.PARENT_ID,
+      		R.STATUS
+      	)
+      	VALUES(
+	      	#{pid},
+	      	#{roleName},
+	      	#{roleDesc},
+	      	#{roleCode},
+	      	#{parentId},
+	      	1
+      	)
+	</insert>
+	
+	<select id="selectSysRoleSeq" resultType="java.lang.Integer">
+	 select seq_sys_role.nextval FROM DUAL
+	</select>
+	 
+	<!-- 查询角色下面的用户-->
+	<select id="getSysUserByRoleId" parameterType="java.util.Map" resultType="com.xlkfinance.bms.rpc.system.SysUser">
+		SELECT  pid,user_name as userName,real_name as realName,member_id as memberId,department,job_title as jobTitle,
+		        mail,personal_qq as personalQQ,enterprise_qq as enterpriseQQ,phone,work_phone as workPhone,extension from 
+		    (select rownum rn,rid, pid,user_name,real_name,member_id,department,job_title,mail,personal_qq,enterprise_qq,phone,work_phone,extension  FROM
+		      (select rowid rid, pid,user_name,real_name,member_id,department,job_title,mail,personal_qq,enterprise_qq,phone,work_phone,extension  FROM  
+		        (SELECT u.pid,u.user_name,real_name,u.member_id,u.department,u.job_title,mail,u.personal_qq,u.enterprise_qq,u.phone,u.work_phone,u.extension
+				    FROM sys_user u,sys_role r,sys_user_role ur
+				    WHERE u.pid = ur.user_id
+				    AND r.pid = ur.role_id
+				    AND u.status <![CDATA[<>]]>0
+				    AND r.pid = #{sysRole.pid}
+				   <if test="realName != null and realName != '' ">
+						AND U.REAL_NAME LIKE '%${realName}%'
+					</if>
+				    )  
+		      order by pid desc)
+		    where rownum<![CDATA[<=]]>#{sysRole.page}*#{sysRole.rows}) 
+		  	where rn>=((#{sysRole.page}-1)*#{sysRole.rows})+1
+	</select>
+	
+	
+		<!-- 查询角色下面的用户总数 -->
+	<select id="getSysUserByRoleIdCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+	    SELECT COUNT(1)
+	      FROM (SELECT U.PID,
+	                   U.USER_NAME,
+	                   U.MEMBER_ID,
+	                   U.DEPARTMENT,
+	                   U.JOB_TITLE,
+	                   MAIL,
+	                   U.PERSONAL_QQ,
+	                   U.ENTERPRISE_QQ,
+	                   U.PHONE,
+	                   U.WORK_PHONE,
+	                   U.EXTENSION
+	              FROM SYS_USER U, SYS_ROLE R, SYS_USER_ROLE UR
+	             WHERE U.PID = UR.USER_ID
+	               AND R.PID = UR.ROLE_ID
+	               AND U.status<![CDATA[<>]]>0
+	               AND r.pid = #{sysRole.pid}
+	               <if test="realName != null and realName != '' ">
+						AND U.REAL_NAME LIKE '%${realName}%'
+					</if>
+	               )
+	</select>
+	
+	<!-- 查询角色下面没有的用户 -->
+	<select id="getRoleNoUserList" parameterType="com.xlkfinance.bms.rpc.system.SysUserRoleSearch" resultType="com.xlkfinance.bms.rpc.system.SysUser">
+		SELECT  
+		   pid,user_name as userName,
+		   member_id as memberId,
+		   department,
+		   job_title as jobTitle,
+		   mail,
+		   personal_qq as personalQQ,
+		   enterprise_qq as enterpriseQQ,
+		   phone,
+		   work_phone as workPhone,
+		   extension 
+		 FROM sys_user where USER_NAME IS NOT NULL 
+		  and rowid IN
+		 (select rid from 
+		    (select rownum rn,rid FROM
+		      (select rowid rid,pid FROM sys_user WHERE pid NOT IN 
+		      	(SELECT user_id FROM sys_user_role WHERE role_id=#{rid}) 
+		      and status = 1 
+		         <if test="userName != null and userName != '' ">
+					AND USER_NAME like '%${userName}%' 
+				</if>
+				<if test="memberId != null and memberId != '' ">
+					AND MEMBER_ID like '%${memberId}%' 
+				</if>
+		      order by pid desc)
+		    where rownum<![CDATA[<=]]>#{page}*#{rows})
+	  	where rn>=((#{page}-1)*#{rows})+1)
+	</select>
+	
+	
+	
+	<!-- 查询角色下面没有的用户总记录条数-->
+	<select id="getRoleNoUserListCount" parameterType="com.xlkfinance.bms.rpc.system.SysUserRoleSearch" resultType="java.lang.Integer">
+		SELECT COUNT(PID)
+		   FROM SYS_USER
+		   WHERE USER_NAME IS NOT NULL 
+		  	and PID NOT IN 
+		   		(SELECT USER_ID
+                FROM SYS_USER_ROLE
+                WHERE ROLE_ID = #{rid})
+		  	AND STATUS = 1
+			   <if test="userName != null and userName != '' ">
+					AND USER_NAME like '%${userName}%' 
+			   </if>
+			   <if test="memberId != null and memberId != '' ">
+					AND MEMBER_ID like '%${memberId}%' 
+			   </if>
+	</select>
+	<!-- 查询用户没有的角色 -->
+	<select id="getRoleByUserId"  parameterType="java.util.Map" resultType="com.xlkfinance.bms.rpc.system.SysRole">
+		SELECT 
+			r.pid ,r.role_name AS roleName,r.role_desc AS roleDesc,role_code from sys_role r where rowid IN
+		  (select rid from 
+		    (select rownum rn,rid FROM
+		      (select rowid rid,pid FROM sys_role WHERE pid NOT IN(
+		      	SELECT role_id FROM sys_user_role WHERE user_id=#{userId})  
+		      	 order by pid desc)
+		    where rownum<![CDATA[<=]]>#{pageNum}*#{pageSize}) 
+	  	where rn>=((#{pageNum}-1)*#{pageSize})+1)
+	</select>
+	<!-- 查询用户的所有角色 -->
+	<select id="getRolesByUserId"  parameterType="java.util.Map" resultMap="roleMap">
+	SELECT R.PID, R.ROLE_NAME AS ROLENAME, R.ROLE_DESC AS ROLEDESC,
+	ROLE_CODE
+	FROM SYS_ROLE R
+	WHERE ROWID IN
+	(SELECT RID
+	FROM (SELECT ROWNUM RN, RID
+	FROM (SELECT ROWID RID, PID
+	FROM SYS_ROLE
+	WHERE PID IN (SELECT ROLE_ID
+	FROM SYS_USER_ROLE
+	WHERE USER_ID = #{userId}))))
+	</select>
+	
+	<!--  查询此用户下没有的角色列表 -->
+	<select id="searchUserNotRoleList" resultType="com.xlkfinance.bms.rpc.system.SysRole" parameterType="com.xlkfinance.bms.rpc.system.SysUserRoleSearch">
+         SELECT 
+			pid ,role_name AS roleName,role_desc AS roleDesc,role_code as roleCode
+		 FROM (SELECT A.*, ROWNUM RN
+		         FROM (SELECT PID, ROLE_NAME, ROLE_DESC, ROLE_CODE
+		                 FROM SYS_ROLE
+		                WHERE STATUS = 1
+		                	<if test="roleName != null and roleName != '' ">
+		                		AND ROLE_NAME LIKE '%${roleName}%'
+		                	</if>
+		                  	AND PID NOT IN
+		                      (SELECT ROLE_ID FROM SYS_USER_ROLE WHERE USER_ID =  #{uid})
+		                ORDER BY PID DESC) A )
+		WHERE RN BETWEEN (((#{page}-1) * #{rows})+1) AND (#{page} * #{rows})
+	</select>
+	
+	<!-- 查询此用户下没有的角色总记录条数 -->
+	<select id="searchUserNotRoleListCount" resultType="Integer" parameterType="com.xlkfinance.bms.rpc.system.SysUserRoleSearch">
+	SELECT COUNT(PID)
+		FROM SYS_ROLE
+	WHERE STATUS = 1
+	<if test="roleName != null and roleName != '' ">
+		AND ROLE_NAME LIKE '%${roleName}%'
+	</if>
+		AND PID NOT IN
+		(SELECT ROLE_ID FROM SYS_USER_ROLE WHERE USER_ID = #{uid})
+	</select>
+	
+	<!-- 查询角色所带有的权限-->
+	<select id="getPermisByRoleId" resultType="com.xlkfinance.bms.rpc.system.SysPermission" parameterType="java.util.Map">
+		SELECT pid,
+			(CASE WHEN permis_type='CDM' THEN '增删修改'
+		      WHEN permis_type='MNU' THEN '菜单权限'
+		      WHEN permis_type='QUY' THEN '数据查询'
+		      END   
+		     )  as permisType,
+			permis_name as permisName,permis_desc as permisDesc from 
+		    (select rownum rn,rid,pid,permis_type,permis_name,permis_desc FROM
+		      (select rowid rid,pid,permis_type,permis_name,permis_desc FROM  
+		        (SELECT p.pid,p.permis_type,p.permis_name,p.permis_desc 
+		        FROM sys_permission p,SYS_ROLE_PERMISSION rp,sys_role r
+		        WHERE rp.permis_id =p.pid
+		        AND r.pid = rp.role_id
+		        AND r.pid = #{sysRole.pid} 
+		
+				<if test="permisName != null and permisName != '' ">
+					AND P.PERMIS_NAME LIKE '%${permisName}%'
+				</if>
+                )
+		      order by permis_name ASC)
+		    where rownum<![CDATA[<=]]>#{sysRole.page}*#{sysRole.rows}) 
+		  	where rn>=((#{sysRole.page}-1)*#{sysRole.rows})+1
+		  	ORDER BY PERMIS_NAME ASC
+	</select>
+	
+	<!-- 增加用户角色关系 -->
+	<insert id="addRoleToUser" parameterType="java.util.Map">
+		<selectKey resultType="int" keyProperty="pid" order="BEFORE">
+	        	SELECT SEQ_SYS_USER_ROLE.NEXTVAL FROM DUAL
+	    </selectKey>
+		INSERT INTO SYS_USER_ROLE (
+			PID,
+			USER_ID,
+			ROLE_ID,
+			STATUS
+		)VALUES(
+			#{pid},
+			#{userId},
+			#{roleId},
+			1
+		)
+	</insert>
+	
+	<!-- 查询角色所拥有权限的总记录数 -->
+	<select id="getPerMisByRoleIdCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+		SELECT count(p.pid)
+          FROM sys_permission p,SYS_ROLE_PERMISSION rp,sys_role r
+         WHERE rp.permis_id =p.pid
+           AND r.pid = rp.role_id
+           AND r.pid = #{sysRole.pid}
+			<if test="permisName != null and permisName != '' ">
+				AND P.PERMIS_NAME LIKE '%${permisName}%'
+			</if>
+	</select>
+	
+	<!-- 查询用户输入的roleCode是否存在重复 -->
+	<select id="getCountByRoleCode" resultType="java.lang.Integer" parameterType="com.xlkfinance.bms.rpc.system.SysRole">
+		select count(pid) from sys_role where role_code = #{roleCode}
+	</select>
+	<!-- 增加一条角色权限关系 -->
+	<insert id="addRolePermisRelation" parameterType="java.util.Map">
+		<selectKey resultType="int" keyProperty="pid" order="BEFORE">
+        	SELECT SEQ_SYS_ROLE_PERMISSION.NEXTVAL FROM DUAL
+      	</selectKey>
+		INSERT INTO SYS_ROLE_PERMISSION RP (
+			RP.pid,
+			RP.ROLE_ID,
+			RP.PERMIS_ID,
+			RP.STATUS
+		)VALUES(
+			#{pid},
+			#{roleId},
+			#{permisId},
+			1
+		)
+	</insert>
+	
+	<!-- 查询当前角色没有有的权限 -->
+	<select id="searchRoleNotHavePermis" resultType="com.xlkfinance.bms.rpc.system.SysPermission"
+		parameterType="java.util.Map">
+		<![CDATA[
+	SELECT D.* FROM (SELECT T.*, ROWNUM RN
+	        FROM (
+   SELECT pid,
+			(CASE WHEN permis_type='CDM' THEN '增删修改'
+		      WHEN permis_type='MNU' THEN '菜单权限'
+		      WHEN permis_type='QUY' THEN '数据查询'
+		      END   
+		     )  as permisType,
+			permis_name as permisName,permis_desc as permisDesc
+  FROM SYS_PERMISSION A
+	]]>
+	<where>
+		<trim>
+			A.PID NOT IN (SELECT RP.PERMIS_ID
+			FROM SYS_ROLE_PERMISSION RP
+			WHERE RP.ROLE_ID = #{sysRole.pid}
+			AND RP.STATUS = 1)
+			<if test="permisName != null and permisName != '' ">
+				AND A.PERMIS_NAME LIKE '%${permisName}%'
+			</if>
+		</trim>
+	</where>
+	<![CDATA[
+	) T
+	WHERE ROWNUM <=#{sysRole.page}*#{sysRole.rows}
+	) D
+	WHERE D.RN > ((#{sysRole.page}-1)*#{sysRole.rows})
+	]]>
+	</select>
+	
+	<!-- 查询当前角色没有的权限记录数 -->
+	<select id="searchRoleNotHavePermisCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+	SELECT
+	count(pid)
+	FROM (SELECT pid
+	FROM SYS_PERMISSION A
+	<where>
+		<trim>
+			A.pID NOT IN (SELECT RP.PERMIS_ID
+			FROM SYS_ROLE_PERMISSION RP
+			WHERE RP.ROLE_ID = #{sysRole.pid}
+			AND RP.STATUS = 1)
+			<if test="permisName != null and permisName != '' ">
+				AND A.PERMIS_NAME LIKE '%${permisName}%'
+			</if>
+		</trim>
+	</where>
+	)
+	</select>
+	
+	<!-- 删除一个角色 -->
+	<delete id="deleteRole" parameterType="java.util.Map">
+		delete from sys_role R where R.pid=#{pid}
+	</delete>
+	
+	<!-- 删除一个角色的同时要更新权限关系 -->
+	<delete id="deleteRoleAndPermisRalation" parameterType="java.util.Map">
+		delete from SYS_ROLE_PERMISSION rp where rp.role_id=#{pid}
+	</delete>
+	
+	<!-- 删除一个角色的同时要更新他和用户的关系 -->
+	<delete id="deleteRoleAndUserRalation" parameterType="java.util.Map">
+		delete from SYS_USER_ROLE UR where UR.role_id=#{pid}
+	</delete>
+	
+	<!-- 模糊查询 -->
+	<select id="searchRoleListByRoleName" resultType="com.xlkfinance.bms.rpc.system.SysRole" parameterType="com.xlkfinance.bms.rpc.system.SysRole">
+		SELECT r.pid,r.role_name  as roleName,r.role_desc as roleDesc,r.role_code as roleCode from sys_role r where rowid IN
+	  		(select rid from 
+	    	(select rownum rn,rid FROM
+	      			(select rowid rid,pid FROM sys_role 
+	      			  where 1=1
+	      				<if test="roleName!=null and roleName!='' ">  
+				            and role_Name like '%'||#{roleName}||'%'
+				        </if>
+	      			 order by pid desc)
+	    	where rownum<![CDATA[<=]]>#{page}*#{rows}) 
+	  	where rn>=((#{page}-1)*#{rows})+1)
+  		  
+	</select>
+	
+	<!-- 模糊查询角色记录数 -->
+	<select id="searchRoleListByRoleNameCount" resultType="java.lang.Integer" parameterType="com.xlkfinance.bms.rpc.system.SysRole">
+	  	SELECT count(r.pid)from sys_role r 
+	 	 where  1=1
+	  	<if test="roleName!=null and roleName!='' ">
+	  		 and role_Name like '%'||#{roleName}||'%'  
+	  	</if>	
+	</select>
+	<!-- 删除角色的某个权限 -->
+	<delete id="deletePermisOfRoleByPid" parameterType="java.util.Map">
+		DELETE FROM SYS_ROLE_PERMISSION rp where rp.role_id=#{roleId} and rp.permis_id=#{permisId}
+	</delete>
+	
+	<!-- 更新角色信息 -->
+	<update id="updateRoleById" parameterType="com.xlkfinance.bms.rpc.system.SysRole">
+		UPDATE Sys_Role SET role_name = #{roleName},role_desc=#{roleDesc},role_code = #{roleCode}
+		<if test="parentId != null">
+			,parent_id = #{parentId,jdbcType=INTEGER}
+		</if>
+	 	 WHERE pid=#{pid}
+	</update>
+	
+	<!-- 删除用户与角色的关系 -->
+	<delete id="delUserToRole" parameterType="java.util.Map">
+		DELETE FROM sys_user_role rp where rp.role_id=#{roleId} and rp.user_Id=#{userId}
+	</delete>
+	
+	<!-- 角色权限关系重复插入校验 -->
+	<select id="searchRolePermisRalationByIds" parameterType="java.util.Map" resultType="java.lang.Integer">
+		select count(pid) FROM SYS_ROLE_PERMISSION rp where rp.role_id=#{roleId} and rp.permis_id=#{permisId}
+	</select>
+	
+	<!-- 根据角色code查询用户信息 -->
+	<select id="getUserListByRoleCode" resultType="com.xlkfinance.bms.rpc.system.SysUserDto"  parameterType="com.xlkfinance.bms.rpc.system.SysRole">
+		SELECT
+			SU.pid,SU.user_name as userName,SU.Real_Name AS realName ,SU.member_id as memberId,SU.department,SU.job_title as jobTitle,
+			SU.mail,SU.personal_qq as personalQQ,SU.enterprise_qq as enterpriseQQ,SU.phone,SU.work_phone as workPhone,
+			SU.extension,sr.role_Name as roleName,sr.role_desc as roleDesc
+	  	  FROM SYS_USER SU, SYS_USER_ROLE SUR, SYS_ROLE SR
+		 WHERE SU.PID = SUR.USER_ID
+	       AND SR.PID = SUR.ROLE_ID
+	       AND SU.STATUS = 1
+    	   AND SR.STATUS = 1
+	       AND SR.ROLE_CODE = #{roleCode}
+	</select>
+	
+	<!-- 根据角色ID在用户角色关系表查询记录数 -->
+	<select id="searchRoleCountByRoleUserId" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+		select count(1) from SYS_USER_ROLE where ROLE_ID=#{pid}
+	</select>
+	
+	<!-- 根据用户账户查询用户角色Id -->
+	<select id="getRoleIdListByUserName" parameterType="java.util.Map" resultMap="roleMap">
+	select pid,role_name,role_code,role_desc from
+		(select rownum rn,SR.PID as pid,sr.role_name as role_name,	sr.role_code as role_code,sr.role_desc as role_desc
+			FROM SYS_ROLE SR
+				WHERE SR.PID in 
+				(
+					SELECT SUR.ROLE_ID FROM SYS_USER_ROLE SUR WHERE SUR.USER_ID =
+					(SELECT SU.PID as userId	FROM SYS_USER SU	WHERE SU.USER_NAME = '${userName}')
+				)
+				and rownum<![CDATA[<=]]>#{pageNum}*#{pageSize})
+	  	where rn<![CDATA[>=]]>((#{pageNum}-1)*#{pageSize})+1
+	</select>
+	
+	<!-- 根据用户账户查询用户角色Id -->
+	<select id="getRoleIdListByUserNameCount" resultType="java.lang.Integer" parameterType="java.util.Map" >
+	SELECT count(1)
+	FROM SYS_ROLE SR
+	WHERE SR.PID in (
+	SELECT SUR.ROLE_ID
+	FROM SYS_USER_ROLE SUR
+	WHERE SUR.USER_ID =
+	(SELECT SU.PID as userId
+	FROM SYS_USER SU
+	WHERE SU.USER_NAME = '${userName}')
+	)
+	</select>
+	
+</mapper>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.product.mapper.ActProductMapper">
+
+<resultMap type="com.xlkfinance.bms.rpc.product.ActProduct" id="actProductMapper">
+  		<id property="pid" column="PID"/>
+  		<id property="actId" column="ACT_ID"/>
+  		<id property="productId" column="PRODUCT_ID"/>
+  		<id property="actType" column="ACT_TYPE"/>
+  		<id property="actTypeText" column="ACT_TYPE_TEXT"/>
+</resultMap>
+
+<!-- 新增产品 -->
+<insert id="addActProduct" parameterType="com.xlkfinance.bms.rpc.product.ActProduct">
+  	<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+		SELECT SEQ_ACT_PRODUCT.Nextval as PID from DUAL
+	</selectKey>
+	INSERT INTO ACT_PRODUCT 
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+        PID, 
+    	<if test="actId != null and actId !=''">
+    	ACT_ID, 
+    	</if>
+    	<if test="productId != null and productId>0">
+    	PRODUCT_ID, 
+    	</if>
+    	<if test="actType != null and actType>0">
+    	ACT_TYPE, 
+    	</if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+    		#{pid,jdbcType=INTEGER}, 
+    	<if test="actId != null and actId !=''">
+    		#{actId,jdbcType=NVARCHAR}, 
+    	</if>
+    	<if test="productId != null and productId>0">
+    		#{productId,jdbcType=INTEGER}, 
+    	</if>
+    	<if test="actType != null and actType>0">
+    		#{actType,jdbcType=INTEGER}, 
+    	</if>
+    </trim>
+</insert>
+
+<!-- 修改产品信息 -->
+<update id="updateByPrimaryKey" parameterType="com.xlkfinance.bms.rpc.product.ActProduct">
+	UPDATE ACT_PRODUCT
+	<set>
+		<if test="actId != null and actId!=''">
+    		ACT_ID = #{actId,jdbcType=NVARCHAR}, 
+    	</if>
+    	<if test="productId != null and productId>0">
+    		PRODUCT_ID = #{productId,jdbcType=INTEGER}, 
+    	</if>
+    	<if test="actType != null and actType>0">
+    		ACT_TYPE = #{actType,jdbcType=VARCHAR}, 
+    	</if>
+	</set>
+	where pid = #{pid}
+</update>
+
+<select id="getAllActProduct" parameterType="com.xlkfinance.bms.rpc.product.ActProduct" resultMap="actProductMapper">
+	select P.*,(SELECT LK.LOOKUP_DESC FROM SYS_LOOKUP_VAL LK  WHERE LK.PID = P.ACT_TYPE) ACT_TYPE_TEXT 
+	from ACT_PRODUCT P where 1=1
+	
+	<if test="actId != null and actId!=''">
+    	AND	ACT_ID = #{actId,jdbcType=NVARCHAR}
+   	</if>
+   	<if test="productId != null and productId>0">
+   		AND	PRODUCT_ID = #{productId,jdbcType=INTEGER} 
+   	</if>
+   	<if test="actType != null and actType>0">
+   		AND	ACT_TYPE = #{actType,jdbcType=VARCHAR} 
+   	</if>
+   	<if test="pid != null and pid>0">
+    	AND	PID = #{pid,jdbcType=NVARCHAR}
+   	</if>
+</select>
+
+<delete id="deleteActProductById" parameterType="java.lang.Integer">
+        delete from ACT_PRODUCT where pid=#{pid}
+</delete>
+</mapper>

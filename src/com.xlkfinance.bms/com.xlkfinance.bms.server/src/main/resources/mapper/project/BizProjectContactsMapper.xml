@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xlkfinance.bms.server.project.mapper.BizProjectContactsMapper">
+	<resultMap id="bizProjectContactsMap" type="com.xlkfinance.bms.rpc.project.BizProjectContacts">
+		<id property="pid" column="PID" />
+		<id property="projectId" column="PROJECT_ID" />
+		<id property="acctId" column="ACCT_ID" />
+		<id property="contactsName" column="CONTACTS_NAME" />
+		<id property="contactsPhone" column="CONTACTS_PHONE" />
+		<id property="contactsRalation" column="CONTACTS_RALATION" />
+		<id property="createDate" column="CREATE_DATE" />
+		<id property="createrId" column="CREATER_ID" />
+		<id property="updateId" column="UPDATE_ID" />
+		<id property="updateDate" column="UPDATE_DATE" />
+	</resultMap>
+	<sql id="column_list">
+        PID,PROJECT_ID,ACCT_ID,CONTACTS_NAME,CONTACTS_PHONE,CONTACTS_RALATION,CREATE_DATE,CREATER_ID,UPDATE_ID,UPDATE_DATE
+	</sql>
+	<!-- 查询所有 -->
+	<select id="getAll" resultMap="bizProjectContactsMap" parameterType="com.xlkfinance.bms.rpc.project.BizProjectContacts">
+		SELECT
+		<include refid="column_list" />
+		FROM BIZ_PROJECT_CONTACTS
+		<where>
+			<trim>
+			  1=1
+		      <if test="pid != null and pid >0">
+	           AND PID=#{pid}
+	          </if>
+		      <if test="projectId != null and projectId >0">
+	          AND PROJECT_ID=#{projectId}
+	          </if>
+		      <if test="acctId != null and acctId >0">
+	          AND ACCT_ID=#{acctId}
+	          </if>
+		      <if test="contactsName != null and contactsName !=''">
+	          AND CONTACTS_NAME=#{contactsName}
+	          </if>
+		      <if test="contactsPhone != null and contactsPhone !=''">
+	          AND CONTACTS_PHONE=#{contactsPhone}
+	          </if>
+		      <if test="contactsRalation != null and contactsRalation !=''">
+	          AND CONTACTS_RALATION=#{contactsRalation}
+	          </if>
+		      <if test="createDate != null and createDate !=''">
+	          AND CREATE_DATE=#{createDate}
+	          </if>
+		      <if test="createrId != null and createrId >0">
+	          AND CREATER_ID=#{createrId}
+	          </if>
+		      <if test="updateId != null and updateId >0">
+	          AND UPDATE_ID=#{updateId}
+	          </if>
+		      <if test="updateDate != null and updateDate !=''">
+	          AND UPDATE_DATE=#{updateDate}
+	          </if>
+	          <if test="contactIdList != null">
+	          AND PID IN 
+	          <foreach collection="contactIdList" item="item" index="index" open="("
+			      separator="," close=")">#{item}
+		     </foreach>
+	          </if>
+			</trim>
+		</where>
+	</select>
+	
+	<!-- 根据项目id获取 -->
+	<select id="getContactsByProjectId" resultMap="bizProjectContactsMap">
+		SELECT <include refid="column_list" /> FROM BIZ_PROJECT_CONTACTS WHERE PROJECT_ID=#{projectId}
+	</select>
+	
+	
+	<!-- 根据id获取 -->
+	<select id="getById" resultMap="bizProjectContactsMap">
+		SELECT <include refid="column_list" /> FROM BIZ_PROJECT_CONTACTS WHERE PID=#{pid}
+	</select>
+	<!-- 插入一条数据 -->
+	<insert id="insert" parameterType="com.xlkfinance.bms.rpc.project.BizProjectContacts">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_BIZ_PROJECT_CONTACTS.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_PROJECT_CONTACTS
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+				PID,
+			</if>
+		    <if test="projectId != null and projectId >0">
+				PROJECT_ID,
+			</if>
+		    <if test="acctId != null and acctId >0">
+				ACCT_ID,
+			</if>
+		    <if test="contactsName != null and contactsName !=''">
+				CONTACTS_NAME,
+			</if>
+		    <if test="contactsPhone != null and contactsPhone !=''">
+				CONTACTS_PHONE,
+			</if>
+		    <if test="contactsRalation != null and contactsRalation !=''">
+				CONTACTS_RALATION,
+			</if>
+		    <if test="createDate != null and createDate !=''">
+				CREATE_DATE,
+			</if>
+		    <if test="createrId != null and createrId >0">
+				CREATER_ID,
+			</if>
+		    <if test="updateId != null and updateId >0">
+				UPDATE_ID,
+			</if>
+		    <if test="updateDate != null and updateDate !=''">
+				UPDATE_DATE,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+		    <if test="pid != null and pid >0">
+		    #{pid},
+			</if>
+		    <if test="projectId != null and projectId >0">
+		    #{projectId},
+			</if>
+		    <if test="acctId != null and acctId >0">
+		    #{acctId},
+			</if>
+		    <if test="contactsName != null and contactsName !=''">
+		    #{contactsName},
+			</if>
+		    <if test="contactsPhone != null and contactsPhone !=''">
+		    #{contactsPhone},
+			</if>
+		    <if test="contactsRalation != null and contactsRalation !=''">
+		    #{contactsRalation},
+			</if>
+		    <if test="createDate != null and createDate !=''">
+		    #{createDate,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		    <if test="createrId != null and createrId >0">
+		    #{createrId},
+			</if>
+		    <if test="updateId != null and updateId >0">
+		    #{updateId},
+			</if>
+		    <if test="updateDate != null and updateDate !=''">
+		    #{updateDate,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		</trim>
+	</insert>
+	<!-- 根据id删除数据 -->
+	<delete id="deleteById" parameterType="com.xlkfinance.bms.rpc.project.BizProjectContacts">
+		<![CDATA[DELETE FROM BIZ_PROJECT_CONTACTS WHERE PID=#{pid}]]>
+	</delete>
+	<!-- 根据id更新数据 -->
+		<update id="update" parameterType="com.xlkfinance.bms.rpc.project.BizProjectContacts">
+		UPDATE BIZ_PROJECT_CONTACTS
+		<set>
+		    <if test="pid != null and pid >0">
+		     PID=#{pid},
+			</if>
+		    <if test="projectId != null and projectId >0">
+		     PROJECT_ID=#{projectId},
+			</if>
+		    <if test="acctId != null and acctId >0">
+		     ACCT_ID=#{acctId},
+			</if>
+		    <if test="contactsName != null and contactsName !=''">
+		     CONTACTS_NAME=#{contactsName},
+			</if>
+		    <if test="contactsPhone != null and contactsPhone !=''">
+		     CONTACTS_PHONE=#{contactsPhone},
+			</if>
+		    <if test="contactsRalation != null and contactsRalation !=''">
+		     CONTACTS_RALATION=#{contactsRalation},
+			</if>
+		    <if test="createDate != null and createDate !=''">
+		     CREATE_DATE=#{createDate,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		    <if test="createrId != null and createrId >0">
+		     CREATER_ID=#{createrId},
+			</if>
+		    <if test="updateId != null and updateId >0">
+		     UPDATE_ID=#{updateId},
+			</if>
+		    <if test="updateDate != null and updateDate !=''">
+		     UPDATE_DATE=#{updateDate,jdbcType= TIMESTAMP,javaType= java.lang.String},
+			</if>
+		</set>
+		WHERE PID = #{pid}
+	</update>
+	<!-- 根据传入多个id删除数据 -->
+	<delete id="deleteByIds" parameterType="java.util.List">
+		DELETE FROM BIZ_PROJECT_CONTACTS WHERE PID in
+		<foreach collection="list" item="item" index="index" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+	
+</mapper>

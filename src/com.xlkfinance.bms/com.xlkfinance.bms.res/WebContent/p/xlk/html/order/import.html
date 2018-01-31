@@ -1,0 +1,576 @@
+<!doctype html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <title></title>
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+    <!-- 基础文件 -->
+    <link rel="stylesheet" href="http://res.xinlikang.com/base/reset.css" />
+    <script src="http://res.xinlikang.com/l/seajs/sea.js"></script>
+    <script src="http://res.xinlikang.com/base/config.js"></script>
+
+    <!-- 项目样式文件 -->
+    <link rel="stylesheet" href="http://res.xinlikang.com/p/xlk/css/sub.css" />
+</head>
+
+<body>
+    <div class="g_o content">
+        <div class="g_cf hd">
+            <h3 class="g_fl title">
+                <strong>进口下单</strong>
+            </h3>
+            <div class="g_fr crumbs"><a href="">首页</a>&gt;<a href="">我的订单</a>&gt;进口下单</div>
+        </div>
+
+        <div class="import_order">
+            <form action="" class="form_bd">
+                <ul class="f_import">
+                    <li class="f_title">进口订单</li>
+                    <li class="g_cf">
+                        <div class="key">
+                            <span class="star">*</span>报关类型：</div>
+                        <div class="value">
+                            <input name="" type="radio">香港清关
+                            <input name="" type="radio">机场清关
+                            <input name="" type="radio">福田保税
+                            <input name="" type="radio">盐田保税
+                        </div>
+                    </li>
+                    <li class="g_cf">
+                        <div class="key">
+                            <span class="star">*</span>代理方式：</div>
+                        <div class="value">
+                            <input name="" type="radio">代理采购
+                            <input name="" type="radio">代理进口
+                        </div>
+                    </li>
+                    <li class="g_cf">
+                        <div class="key">
+                            <span class="star">*</span>进口产品：</div>
+                        <div class="value">
+                            <input name="" type="checkbox">电子产品
+                            <input name="" type="checkbox">设备
+                        </div>
+                    </li>
+                </ul>
+                <ul class="f_supplier">
+                    <li class="f_title">供应商</li>
+                    <li class="g_cf">
+                        <div class="key">
+                            <span class="star">*</span>名称：</div>
+                        <div class="value">
+                            <input name="" type="text" class="txt">
+                        </div>
+                    </li>
+                    <li class="g_cf">
+                        <div class="key">联系人：</div>
+                        <div class="value">
+                            <input name="" type="text" class="txt">
+                        </div>
+                    </li>
+                    <li class="g_cf">
+                        <div class="key">联系电话：</div>
+                        <div class="value">
+                            <input name="" type="text" class="txt">
+                        </div>
+                    </li>
+                    <li class="g_cf">
+                        <div class="key">手机：</div>
+                        <div class="value">
+                            <input name="" type="text" class="txt">
+                        </div>
+                    </li>
+                </ul>
+                <ul class="f_prodetail">
+                    <li class="f_title">产品明细</li>
+                    
+                    <li class="g_cf">
+                        <div class="key">
+                            <span class="star">*</span>品名：</div>
+                        <div class="value">
+                            <input name="" type="text" class="txt">
+                        </div>
+                    </li>
+                    <li class="g_cf">
+                        <div class="key">
+                            <span class="star">*</span>型号：</div>
+                        <div class="value">
+                            <input name="productType" type="text" class="txt">
+                        </div>
+                    </li>
+                    <li class="g_cf">
+                        <div class="key">品牌：</div>
+                        <div class="value">
+                            <input name="" type="text" class="txt">
+                        </div>
+                    </li>
+                    <li class="g_cf">
+                        <div class="key">产地：</div>
+                        <div class="value">
+                            <input name="" type="text" class="txt">
+                        </div>
+                    </li>
+                    <li class="g_cf">
+                        <div class="key">
+                            <span class="star">*</span>数量：</div>
+                        <div class="value">
+                            <input name="" type="text" class="txt">
+                        </div>
+                    </li>
+                    <li class="g_cf">
+                        <div class="key">
+                            <span class="star">*</span>单价：</div>
+                        <div class="value">
+                            <input name="" type="text" class="txt">
+                        </div>
+                    </li>
+                    <li class="g_cf">
+                        <div class="key">币别：</div>
+                        <div class="value">
+                            <select class="select" name="">
+                                <option value="1">人民币</option>
+                                <option value="2">美元</option>
+                                <option value="3">港币</option>
+                            </select>
+                        </div>
+                    </li>
+                    <li class="g_cf">
+                        <div class="key">料号：</div>
+                        <div class="value">
+                            <input name="" type="text" class="txt">
+                        </div>
+                    </li>
+                    <li class="g_cf">
+                        <div class="key">合同号/订单号：</div>
+                        <div class="value">
+                            <input name="" type="text" class="txt">
+                        </div>
+                    </li>
+                    <li class="g_cf">
+                        <div class="key"></div>
+                        <div class="value">
+                            <span class="f_tips">注意：如在报关前型号、数量变更，商务将联系贵司，并于我司系统修改后实物报关。</span>
+                        </div>
+                    </li>
+                </ul>
+                <ul class="f_hk_delivery">
+                    <li class="f_title">香港交货方式</li>
+                    <li class="g_cf">
+                        <div class="key"></div>
+                        <div class="value">
+                            <input type="radio" value>供应商配送
+                            <ol class="hide_item">
+                                <li class="g_cf">
+                                    <div class="subkey"><span class="star">*</span>联系电话：</div>
+                                    <div class="subvalue">
+                                        <input type="text" class="txt">
+                                    </div>
+                                </li>
+                                <li class="g_cf">
+                                    <div class="subkey"><span class="star">*</span>联系人：</div>
+                                    <div class="subvalue">
+                                        <input type="text" class="txt">
+                                    </div>
+                                </li>
+                                <li class="g_cf">
+                                    <div class="subkey">提货文件：</div>
+                                    <div class="subvalue pdl1">
+                                        <input type="text" id="imgurl1" readonly /> <input type="text" id="picUpload1" /><br/>
+                                        <span class="f_tips">仅能上传.doc .docx .pdf .jpg .png和 .gif扩展名的文件 ，小于2M</span>
+                                    </div>
+                                </li>
+                                <li class="g_cf">
+                                    <div class="subkey"></div>
+                                    <div class="subvalue">
+                                        <span class="red">随货时需附有正本发票及装箱单，同时写明订单号。否则可能无法及时确认货物对应的订单，或被拒收</span>
+                                    </div>
+                                </li>
+
+                            </ol>
+                        </div>
+                    </li>
+                    <li class="g_cf">
+                        <div class="key"></div>
+                        <div class="value">
+                            <input type="radio">快递送货
+                            <ol class="hide_item">
+                                <li class="g_cf">
+                                    <div class="subkey">快递公司名称：</div>
+                                    <div class="subvalue">
+                                        <input type="text" class="txt">
+                                    </div>
+                                </li>
+                                <li class="g_cf">
+                                    <div class="subkey">快递单号：</div>
+                                    <div class="subvalue">
+                                        <input type="text" class="txt">
+                                    </div>
+                                </li>
+                                <li class="g_cf">
+                                    <div class="subkey"></div>
+                                    <div class="subvalue">
+                                        <span class="red">快递单运上必须备注写明订单号，并随货附有正本发票及装箱单，否则可能无法及时确认货物对应的订单</span>
+                                    </div>
+                                </li>
+                            </ol>
+                        </div>
+                    </li>
+                    <li class="g_cf">
+                        <div class="key"></div>
+                        <div class="value">
+                            <input type="radio">华科代为提货
+                            <ol class="hide_item">
+                                <li class="g_cf">
+                                    <div class="subkey">提货地址：</div>
+                                    <div class="subvalue">
+                                        <input type="text" class="txt">
+                                    </div>
+                                </li>
+                                <li class="g_cf">
+                                    <div class="subkey">联系人：</div>
+                                    <div class="subvalue">
+                                        <input type="text" class="txt">
+                                    </div>
+                                </li>
+                                <li class="g_cf">
+                                    <div class="subkey">联系电话：</div>
+                                    <div class="subvalue">
+                                        <input type="text" class="txt">
+                                    </div>
+                                </li>
+                                <li class="g_cf">
+                                    <div class="subkey">提货时间：</div>
+                                    <div class="subvalue pdl1">
+                                        <input type="text" placeholder="选择日期" class="txt w150" readonly="" onclick="WdatePicker({dateFmt:'yyyy年MM月dd日 HH时mm分'})"><br/>
+                                        <span class="f_tips">请选择提货时间，包括日期及时间段，格式：2012-12-25 8:00</span>
+                                    </div>
+                                </li>
+                                <li class="g_cf">
+                                    <div class="subkey">提货文件：</div>
+                                    <div class="subvalue pdl1">
+                                        <input type="text" id="imgurl2" readonly /> <input type="text" id="picUpload2" />
+                                    </div>
+                                </li>
+                                <li class="g_cf">
+                                    <div class="subkey">到货通知书：</div>
+                                    <div class="subvalue pdl1">
+                                        <input type="text" id="imgurl3" readonly /> <input type="text" id="picUpload3" /><br/>
+                                        <span class="f_tips">仅能上传.doc .docx .pdf .jpg .png和 .gif扩展名的文件 ，小于2M</span>
+                                    </div>
+                                </li>
+                                <li class="g_cf">
+                                    <div class="subkey"></div>
+                                    <div class="subvalue">
+                                        <span class="red">
+                                            备注：A、费用客户承担，实报实销；
+                                            B、请上传发票与装箱单（如码头提柜还需上传到货通知书和提单或提柜纸）
+                                    </span>                                   
+                                    </div>
+                                </li>
+                            </ol>
+                        </div>
+                    </li>
+                     <li class="g_cf">
+                        <div class="key">备注：</div>
+                        <div class="value"><textarea name="" id="" cols="50" rows="5"></textarea></div>
+                    </li>
+                </ul>
+                <ul class="f_g_delivery">
+                    <li class="f_title">过货方式</li>
+                    <li class="g_cf">
+                        <div class="key"></div>
+                        <div class="value">
+                            <input type="radio" value>散货拼车</div>
+                    </li>
+                    <li class="g_cf">
+                        <div class="key"></div>
+                        <div class="value">
+                            <input type="radio">包车
+                            <ol class="hide_item">
+                                <li class="g_cf">
+                                    <div class="subkey"></div>
+                                    <div class="subvalue">
+                                        <input type="radio"> 吨车
+                                    </div>
+                                </li>
+                                <li class="g_cf">
+                                    <div class="subkey"></div>
+                                    <div class="subvalue">
+                                        <span class="f_tips">注意：① 8 &lt; 卡板 &lt; 14 且货值 &gt; 10万USD，车费我司承担  ② 设备类车费由客户承担</span>
+                                    </div>
+                                </li>
+                                <li class="g_cf">
+                                    <div class="subkey"></div>
+                                    <div class="subvalue">
+                                        <input type="radio"> 货车
+                                    </div>
+                                </li>
+                                <li class="g_cf">
+                                    <div class="subkey"></div>
+                                    <div class="subvalue">
+                                        <span class="f_tips">注意：车费客户承担</span>
+                                    </div>
+                                </li>
+                            </ol>
+                        </div>
+                    </li>
+                </ul>
+                <ul class="f_payment">
+                    <li class="f_title">货款支付</li>
+                    <li class="g_cf">
+                        <div class="key"></div>
+                        <div class="value">
+                            <input type="radio">垫付
+                            <ol class="hide_item">
+                                <li class="g_cf">
+                                    <div class="subkey"></div>
+                                    <div class="subvalue">
+                                        <input type="radio"> COD ：①收款方：<input type="text" class="txt line_input"> ；   ②付款比例：<input type="text" class="txt line_input">；
+                                    </div>
+                                </li>
+                                <li class="g_cf">
+                                    <div class="subkey"></div>
+                                    <div class="subvalue">
+                                        <input type="radio"> TT ： ①收款方：<input type="text" class="txt line_input">；   ②付款比例：<input type="text" class="txt line_input">；  ③交期：<input type="text" class="txt line_input">；
+                                    </div>
+                                </li>
+                                <li class="g_cf">
+                                    <div class="subkey"></div>
+                                    <div class="subvalue">
+                                        <input type="radio"> 期票<input type="text" class="txt line_input">天  ：（支票抬头：<input type="text" class="txt line_input"> ）
+                                    </div>
+                                </li>
+                                <li class="g_cf">
+                                    <div class="subkey"></div>
+                                    <div class="subvalue">
+                                        <input type="radio"> 信用证
+                                    </div>
+                                </li>
+                            </ol>
+                        </div>
+                    </li>
+                    <li class="g_cf">
+                        <div class="key"></div>
+                        <div class="value">
+                            <input type="radio" value>暂不付款</div>
+                    </li>
+                </ul>
+                <ul class="f_domestic_settlement">
+                    <li class="f_title">境内结算方式</li>
+                    <li class="g_cf">
+                        <div class="key"></div>
+                        <div class="value">
+                            <input type="radio">现结
+                            <ol class="hide_item">
+                                <li class="g_cf">
+                                    <div class="subkey"></div>
+                                    <div class="subvalue">
+                                        <input type="radio"> 预付款 
+                                    </div>
+                                </li>
+                                <li class="g_cf">
+                                    <div class="subkey"></div>
+                                    <div class="subvalue">
+                                        <input type="radio"> 发货前支付
+                                    </div>
+                                </li>
+                                <li class="g_cf">
+                                    <div class="subkey"></div>
+                                    <div class="subvalue">
+                                        <input type="radio"> 货到后3天内支付
+                                    </div>
+                                </li>
+                            </ol>
+                        </div>
+                    </li>
+                    <li class="g_cf">
+                        <div class="key"></div>
+                        <div class="value">
+                            <input type="radio"> 帐期<input type="text" class="txt line_input bg_white">天；
+                        </div>
+                    </li>
+                    <li class="g_cf">
+                        <div class="key"></div>
+                        <div class="value">
+                            <input type="radio"> 计息帐期<input type="text" class="txt line_input bg_white">天；
+                        </div>
+                    </li>
+                    <li class="g_cf">
+                        <div class="key"></div>
+                        <div class="value">
+                            <input type="radio"> 税费账期<input type="text" class="txt line_input bg_white">天；
+                        </div>
+                    </li>
+                </ul>
+                <ul class="f_logistics">
+                    <li class="f_title">国内物流信息</li>
+                    <li class="g_cf">
+                        <div class="key">出库方式：</div>
+                        <div class="value">
+                            <input type="radio"> 整批
+                        </div>
+                    </li>
+                    <li class="g_cf">
+                        <div class="key"></div>
+                        <div class="value">
+                            <input type="radio"> 分批
+                            <ol class="hide_item">
+                                <li class="g_cf">
+                                    <div class="subkey"><span class="star">*</span>产品型号：</div>
+                                    <div class="subvalue">
+                                        <input type="text" class="txt"> 
+                                    </div>
+                                </li>
+                                <li class="g_cf">
+                                    <div class="subkey"><span class="star">*</span>产品数量：</div>
+                                    <div class="subvalue">
+                                        <input type="text" class="txt"> 
+                                    </div>
+                                </li>
+                                <li class="g_cf">
+                                    <div class="subkey"><span class="star">*</span>物流信息备注：</div>
+                                    <div class="subvalue">
+                                        <input type="text" class="txt"> 
+                                    </div>
+                                </li>
+                            </ol>
+                        </div>
+                    </li>
+                    <li class="g_cf">
+                        <div class="key">收货信息：</div>
+                        <div class="value">
+                            <ol class="hide_item">
+                                <li class="g_cf">
+                                    <div class="subkey">收货方：</div>
+                                    <div class="subvalue">
+                                        <input type="text" class="txt"> 
+                                    </div>
+                                </li>
+                                <li class="g_cf">
+                                    <div class="subkey">收货地址：</div>
+                                    <div class="subvalue">
+                                        <input type="text" class="txt"> 
+                                    </div>
+                                </li>
+                                <li class="g_cf">
+                                    <div class="subkey">联系人：</div>
+                                    <div class="subvalue">
+                                        <input type="text" class="txt"> 
+                                    </div>
+                                </li>
+                                <li class="g_cf">
+                                    <div class="subkey">电话：</div>
+                                    <div class="subvalue">
+                                        <input type="text" class="txt"> 
+                                    </div>
+                                </li>
+                                <li class="g_cf">
+                                    <div class="subkey">手机：</div>
+                                    <div class="subvalue">
+                                        <input type="text" class="txt"> 
+                                    </div>
+                                </li>
+                            </ol>
+                        </div>
+                    </li>
+                    <li class="g_cf">
+                        <div class="key">发货方式：</div>
+                        <div class="value">
+                            <input type="radio"> 配送
+                        </div>
+                    </li>
+                    <li class="g_cf">
+                        <div class="key"></div>
+                        <div class="value">
+                            <span class="f_tips">注意： ① AAA以下客户仅限深圳市内； ② VIP客户仅限深圳与东莞（凤岗，雁田，大岭山，长安，塘厦，大朗） ③ 如货值》80万，可配送广州、惠州
+                            </span>
+                        </div>
+                    </li>
+                    <li class="g_cf">
+                        <div class="key"></div>
+                        <div class="value">
+                            <input type="radio"> 自提
+                            <ol class="hide_item">
+                                <li class="g_cf">
+                                    <div class="subkey"></div>
+                                    <div class="subvalue">
+                                        <a href="/file/pickupAttorneyFormat.doc" style="color:blue">提货委托书下载</a><br>
+                                        <input type="text" id="imgurl0" readonly /> <input type="text" id="picUpload" /><br>
+                                        <span class="f_tips">注意：请上传提货委托书</span>
+                                    </div>
+                                </li>
+                            </ol>
+                        </div>
+                    </li>
+                    <li class="g_cf">
+                        <div class="key"></div>
+                        <div class="value">
+                            <input type="radio"> 发货
+                            <ol class="hide_item">
+                                <li class="g_cf">
+                                    <div class="subkey">运输方式：</div>
+                                    <div class="subvalue">
+                                        <input type="radio"> 公路快件 
+                                        <input type="radio"> 公路普件
+                                        <input type="radio"> 航空急件
+                                        <input type="radio"> 航空普检
+                                        <input type="radio"> 中港运输（ 注意：深圳市外运费客户承担）
+                                        <input type="radio"> 快递
+                                    </div>
+                                </li>
+                                <li class="g_cf">
+                                    <div class="subkey">承运方：</div>
+                                    <div class="subvalue">
+                                        <input type="radio"> 顺丰 
+                                        <input type="radio"> 德邦
+                                        <input type="radio"> 其他 <input type="text" class="txt line_input">
+                                    </div>
+                                </li>
+                                <li class="g_cf">
+                                    <div class="subkey">运费支付：</div>
+                                    <div class="subvalue">
+                                        <input type="radio"> 垫付 
+                                        <input type="radio"> 到付
+                                        <input type="radio"> 信利康承担
+                                    </div>
+                                </li>
+                                <li class="g_cf">
+                                    <div class="subkey">收货时间：</div>
+                                    <div class="subvalue">
+                                        <input type="text" placeholder="选择日期" class="txt w150" readonly="" onclick="WdatePicker()">
+                                    </div>
+                                </li>
+                                <li class="g_cf">
+                                    <div class="subkey">其他说明：</div>
+                                    <div class="subvalue">
+                                        <textarea name="" id="" cols="50" rows="5"></textarea>
+                                    </div>
+                                </li>
+                            </ol>
+                        </div>
+                    </li>
+                </ul>
+                <ul class="f_others">
+                    <li class="f_title">其他说明</li>
+                    <li class="g_cf">
+                        <div class="key"></div>
+                        <div class="value">
+                            <textarea name="" id="" cols="50" rows="5"></textarea>
+                        </div>
+                    </li>
+                    <li class="g_cf">
+                        <div class="key"></div>
+                        <div class="value"><input type="submit" value="提交"></div>
+                    </li>
+                </ul>                
+            </form>
+        </div>
+    </div>
+    <!-- 项目js文件 -->
+    <script>seajs.use('http://res.xinlikang.com/p/xlk/js/import_order.js');</script>
+</body>
+
+</html>

@@ -1,0 +1,274 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+	id="WebApp_ID" version="3.0">
+	
+	<display-name>com.xlkfinance.bms.web</display-name>
+	
+	<!-- 指定Spring的配置文件,否则Spring会默认从WEB-INF下寻找配置文件, contextConfigLocation属性是Spring内部固定的 -->
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>/WEB-INF/classes/config/spring-mvc.xml,/WEB-INF/classes/config/job-config.xml</param-value>
+	</context-param>
+	
+	<!-- 配置Shiro过滤器,先让Shiro过滤系统接收到的请求 -->  
+    <!-- 这里filter-name必须对应applicationContext.xml中定义的<bean id="shiroFilter"/> -->  
+    <!-- 使用[/*]匹配所有请求,保证所有的可控请求都经过Shiro的过滤 -->  
+    <!-- 通常会将此filter-mapping放置到最前面(即其他filter-mapping前面),以保证它是过滤器链中第一个起作用的 -->  
+	<filter>
+		<filter-name>shiroFilter</filter-name>
+		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>shiroFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<!-- 防止发生java.beans.Introspector内存泄露,应将它配置在ContextLoaderListener的前面 -->
+	<listener>
+		<listener-class>org.springframework.web.util.IntrospectorCleanupListener</listener-class>
+	</listener>
+
+	<!-- 实例化Spring容器,应用启动时,该监听器被执行,它会读取Spring相关配置文件,其默认会到WEB-INF中查找applicationContext.xml -->
+	<listener>
+		<description>spring监听器</description>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+
+	<listener>
+        <listener-class>
+            org.springframework.web.context.request.RequestContextListener
+        </listener-class>
+	</listener>  
+	
+	<!-- 
+	<context-param>
+		<param-name>webAppRootKey</param-name>
+		<param-value>app.root</param-value>
+	</context-param>
+	 -->
+	<!-- spring logback -->
+	<context-param>
+		<param-name>logbackConfigLocation</param-name>
+		<param-value>/WEB-INF/classes/logback.xml</param-value>
+	</context-param>
+	<listener>
+		<listener-class>com.xlkfinance.bms.web.logger.LogbackConfigListener</listener-class>
+	</listener>
+	
+	<filter>
+		<filter-name>SetContextPath</filter-name>
+		<filter-class>com.xlkfinance.bms.web.filter.ContextPathFilter</filter-class>
+		<init-param>
+			<description>是否使用远程静态资源</description>
+			<param-name>isRemoteResources</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		<init-param>
+			<description>静态资源URL,当isRemoteResources=true时，该参数必须</description>
+			<param-name>remotereSourcesUrl</param-name>
+		    <param-value>http://localhost:8080/RES</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>SetContextPath</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
+	<filter>
+		<description>字符集过滤器</description>
+		<filter-name>encodingFilter</filter-name>
+		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+		<init-param>
+			<description>字符集编码</description>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>encodingFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
+	<filter>
+		<description>检查未处理预警事项过滤器</description>
+		<filter-name>handleDifferWarnFilter</filter-name>
+		<filter-class> com.xlkfinance.bms.web.filter.HandleDifferWarnFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>handleDifferWarnFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
+	
+	<servlet>
+		 <servlet-name>kaptcha</servlet-name>
+		<servlet-class>com.google.code.kaptcha.servlet.KaptchaServlet</servlet-class>
+		<init-param>
+			<description>图片边框，合法值：yes , no</description>
+			<param-name>kaptcha.border</param-name>
+			<param-value>no</param-value>
+		</init-param>
+		<init-param>
+			<description>边框颜色，合法值： r,g,b (and optional alpha) 或者 white,black,blue.</description>
+			<param-name>kaptcha.border.color</param-name>
+			<param-value>red</param-value>
+		</init-param>
+		<init-param>
+			<description>边框厚度，合法值：>0</description>
+			<param-name>kaptcha.border.thickness</param-name>
+			<param-value>5</param-value>
+		</init-param>
+		<init-param>
+			<description>图片宽</description>
+			<param-name>kaptcha.image.width</param-name>
+			<param-value>85</param-value>
+		</init-param>
+		<init-param>
+			<description>图片高</description>
+			<param-name>kaptcha.image.height</param-name>
+			<param-value>35</param-value>
+		</init-param>
+		<init-param>
+			<description>图片实现类</description>
+			<param-name>kaptcha.producer.impl</param-name>
+			<param-value>com.google.code.kaptcha.impl.DefaultKaptcha </param-value>
+		</init-param>
+		<init-param>
+			<description>文本实现类</description>
+			<param-name>kaptcha.textproducer.impl</param-name>
+			<param-value>com.google.code.kaptcha.text.impl.DefaultTextCreator</param-value>
+		</init-param>
+		<init-param>
+			<description>文本集合，验证码值从此集合中获取</description>
+			<param-name>kaptcha.textproducer.char.string</param-name>
+			<param-value>acdefkmnrstwxy134578AEFGHKMNPQRSWXY</param-value>
+		</init-param>
+		<init-param>
+			<description>验证码长度</description>
+			<param-name>kaptcha.textproducer.char.length</param-name>
+			<param-value>1</param-value>
+		</init-param>
+		<init-param>
+			<description>字体</description>
+			<param-name>kaptcha.textproducer.font.names</param-name>
+			<param-value>Arial, Courier</param-value>
+		</init-param>
+		<init-param>
+			<description>字体大小</description>
+			<param-name>kaptcha.textproducer.font.size</param-name>
+			<param-value>23</param-value>
+		</init-param>
+		<init-param>
+			<description>字体颜色，合法值： r,g,b  或者 white,black,blue.</description>
+			<param-name>kaptcha.textproducer.font.color</param-name>
+			<param-value>black</param-value>
+		</init-param>
+		<init-param>
+			<description>文字间隔</description>
+			<param-name>kaptcha.textproducer.char.space</param-name>
+			<param-value>2</param-value>
+		</init-param>
+		<init-param>
+			<description>干扰实现类</description>
+			<param-name>kaptcha.noise.impl</param-name>
+			<param-value>com.google.code.kaptcha.impl.NoNoise </param-value>
+		</init-param>
+		<init-param>
+			<description>干扰颜色，合法值： r,g,b 或者 white,black,blue.</description>
+			<param-name>kaptcha.noise.color</param-name>
+			<param-value>blue</param-value>
+		</init-param>
+		<init-param>
+			<description>图片样式： 水纹com.google.code.kaptcha.impl.WaterRipple 鱼眼com.google.code.kaptcha.impl.FishEyeGimpy 阴影com.google.code.kaptcha.impl.ShadowGimpy</description>
+			<param-name>kaptcha.obscurificator.impl</param-name>
+			<param-value>com.google.code.kaptcha.impl.ShadowGimpy</param-value>
+		</init-param>
+		<init-param>
+			<description>背景实现类</description>
+			<param-name>kaptcha.background.impl</param-name>
+			<param-value>com.google.code.kaptcha.impl.DefaultBackground</param-value>
+		</init-param>
+		<init-param>
+			<description>背景颜色渐变，开始颜色</description>
+			<param-name>kaptcha.background.clear.from</param-name>
+			<param-value>167,167,167</param-value>
+		</init-param>
+		<init-param>
+			<description>背景颜色渐变，结束颜色</description>
+			<param-name>kaptcha.background.clear.to</param-name>
+			<param-value>167,167,167</param-value>
+		</init-param>
+		<init-param>
+			<description>文字渲染器</description>
+			<param-name>kaptcha.word.impl</param-name>
+			<param-value>com.google.code.kaptcha.text.impl.DefaultWordRenderer</param-value>
+		</init-param> 
+		<init-param>
+			<description>session key</description>
+			<param-name>kaptcha.session.key</param-name>
+			<param-value>KAPTCHA_SESSION_KEY</param-value>
+		</init-param>
+		<init-param>
+			<description>session date</description>
+			<param-name>kaptcha.session.date</param-name>
+			<param-value>KAPTCHA_SESSION_DATE</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>kaptcha</servlet-name>
+		<url-pattern>/Kaptcha.jpg</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>BMS-WEB</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>classpath:config/spring-mvc.xml</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>BMS-WEB</servlet-name>
+		<url-pattern>*.action</url-pattern>
+	</servlet-mapping>
+	
+	<welcome-file-list>
+		<welcome-file>login.jsp</welcome-file>
+	</welcome-file-list>
+	
+	<error-page>
+		<error-code>404</error-code>
+		<location>/error/404.jsp</location>
+	</error-page>
+	<error-page>
+		<error-code>405</error-code>
+		<location>/error/error.jsp</location>
+	</error-page>
+	<error-page>
+		<error-code>500</error-code>
+		<location>/error/error.jsp</location>
+	</error-page>
+	<error-page>
+		<error-code>503</error-code>
+		<location>/error/error.jsp</location>
+	</error-page>
+	<error-page>
+		<exception-type>java.lang.Exception</exception-type>
+		<location>/error/error.jsp</location>
+	</error-page> 
+	<error-page>
+		<exception-type>java.lang.NoSuchMethodException</exception-type>
+		<location>/error/error.jsp</location>
+	</error-page>
+	<error-page>
+		<exception-type>java.io.IOException</exception-type>
+		<location>/error/error.jsp</location>
+	</error-page>
+	
+	<session-config>
+         <session-timeout>180</session-timeout>
+    </session-config>
+</web-app>

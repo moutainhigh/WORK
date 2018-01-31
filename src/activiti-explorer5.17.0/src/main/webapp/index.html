@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>activit dome</title>
+<link rel="stylesheet" type="text/css" href="js/jquery-easyui-1.4.1/themes/icon.css" />
+<link rel="stylesheet" type="text/css" href="js/jquery-easyui-1.4.1/themes/default/easyui.css" />
+
+<script type="text/javascript" src="js/jquery-easyui-1.4.1/jquery.min.js"></script>
+<script type="text/javascript" src="js/jquery-easyui-1.4.1/jquery.easyui.min.js"></script>
+<script type="text/javascript">
+	$.get("modelList",null,function(data){
+		$('#modelList').datagrid('loadData',data);
+	});
+</script>
+</head>
+<body>
+		<a href="createModel" class="easyui-linkbutton" data-options="iconCls:'icon-add'">Add Model</a>
+        <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-remove',onClick:function(){
+        	var row = $('#modelList').datagrid('getSelected');
+        	$.get('removeModel',{id:row.id});
+        	$('#modelList').datagrid('deleteRow',$('#modelList').datagrid('getRowIndex',row));
+        }">remove Model</a>
+        <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-edit',onClick:function(){
+        	var row = $('#modelList').datagrid('getSelected');
+        	if(row) window.location.href='modeler.html?modelId='+row.id;
+        }">update Model</a>
+        <a href="deploy/1325101" class="easyui-linkbutton" data-options="iconCls:'icon-setting'">Deploy Model</a>
+    <table id="modelList" class="easyui-datagrid" title="MODEL LIST" style="width:700px;height:250px"
+            data-options="singleSelect:true,collapsible:true,url:'',method:'get'">
+        <thead>
+            <tr>
+                <th data-options="field:'id',width:80">ID</th>
+                <th data-options="field:'name',width:100">NAME</th>
+            </tr>
+        </thead>
+    </table>
+</body>
+</html>

@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.inloan.mapper.BizDynamicMapper">
+	<resultMap type="bizDynamic" id="bizDynamicMap">
+		<id property="pid" column="PID" />
+		<id property="projectId" column="PROJECT_ID" />
+		<id property="moduelNumber" column="MODUEL_NUMBER" />
+		<id property="dynamicNumber" column="DYNAMIC_NUMBER" />
+		<id property="dynamicName" column="DYNAMIC_NAME" />
+		<id property="parentDynamicNumber" column="PARENT_DYNAMIC_NUMBER" />
+		<id property="status" column="STATUS" />
+		<id property="finishDate" column="FINISH_DATE" />
+		<id property="remark" column="REMARK" />
+		<id property="createrDate" column="CREATER_DATE" />
+		<id property="updateDate" column="UPDATE_DATE" />
+		<id property="handleAuthorId" column="HANDLE_AUTHOR_ID" />
+		<id property="handleAuthorName" column="HANDLE_AUTHOR_NAME" />
+		<id property="createrDateStr" column="CREATER_DATE_STR" />
+		
+	</resultMap>
+	<!-- 添加业务动态信息 -->
+	<insert id="addBizDynamic" parameterType="bizDynamic">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_BIZ_DYNAMIC.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_DYNAMIC
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			PID,
+			<if test="projectId != null and projectId >0">
+				PROJECT_ID,
+			</if>
+			<if test="moduelNumber != null and moduelNumber !=''">
+				MODUEL_NUMBER,
+			</if>
+			<if test="dynamicNumber != null and dynamicNumber !=''">
+				DYNAMIC_NUMBER,
+			</if>
+			<if test="parentDynamicNumber != null and parentDynamicNumber !=''">
+				PARENT_DYNAMIC_NUMBER,
+			</if>
+			<if test="status != null and status >0">
+				STATUS,
+			</if>
+			<if test="finishDate != null and finishDate !=''">
+				FINISH_DATE,
+			</if>
+			<if test="remark != null and remark !=''">
+				REMARK,
+			</if>
+			<if test="handleAuthorId != null and handleAuthorId >0">
+				HANDLE_AUTHOR_ID,
+			</if>
+			<if test="dynamicName != null and dynamicName !=''">
+				DYNAMIC_NAME,
+			</if>
+			CREATER_DATE,
+			UPDATE_DATE
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{pid},
+			<if test="projectId != null and projectId >0">
+				#{projectId},
+			</if>
+			<if test="moduelNumber != null and moduelNumber !=''">
+				#{moduelNumber},
+			</if>
+			<if test="dynamicNumber != null and dynamicNumber !=''">
+				#{dynamicNumber},
+			</if>
+			<if test="parentDynamicNumber != null and parentDynamicNumber !=''">
+				#{parentDynamicNumber},
+			</if>
+			<if test="status != null and status >0">
+				#{status},
+			</if>
+			<if test="finishDate != null and finishDate !=''">
+				#{finishDate,jdbcType=TIMESTAMP,javaType=String},
+			</if>
+			<if test="remark != null and remark !=''">
+				#{remark},
+			</if>
+			<if test="handleAuthorId != null and handleAuthorId >0">
+				#{handleAuthorId},
+			</if>
+			<if test="dynamicName != null and dynamicName !=''">
+				#{dynamicName},
+			</if>
+			SYSDATE,
+			SYSDATE
+		</trim>
+	</insert>
+	<!-- 根据id更新业务动态信息 -->
+	<update id="updateBizDynamic" parameterType="bizDynamic">
+		UPDATE BIZ_DYNAMIC
+		<set>
+			<if test="projectId != null and projectId >0">
+				PROJECT_ID=#{projectId},
+			</if>
+			<if test="moduelNumber != null and moduelNumber !=''">
+				MODUEL_NUMBER=#{moduelNumber},
+			</if>
+			<if test="dynamicNumber != null and dynamicNumber !=''">
+				DYNAMIC_NUMBER=#{dynamicNumber},
+			</if>
+			<if test="parentDynamicNumber != null and parentDynamicNumber !=''">
+				PARENT_DYNAMIC_NUMBER=#{parentDynamicNumber},
+			</if>
+			<if test="status != null and status >0">
+				STATUS=#{status},
+			</if>
+			<if test="finishDate != null and finishDate !=''">
+				FINISH_DATE=#{finishDate,jdbcType=TIMESTAMP,javaType=String},
+			</if>
+			<if test="remark != null and remark !=''">
+				REMARK=decode(#{remark},null,'',#{remark}),
+			</if>
+			<if test="handleAuthorId != null and handleAuthorId >0">
+				HANDLE_AUTHOR_ID=#{handleAuthorId},
+			</if>
+			<if test="dynamicName != null and dynamicName !=''">
+				DYNAMIC_NAME=#{dynamicName},
+			</if>
+			UPDATE_DATE=SYSDATE
+		</set>
+		where pid = #{pid}
+	</update>
+	
+	<sql id="dynamic_Column_List">
+	A.PID,A.PROJECT_ID,A.MODUEL_NUMBER,A.DYNAMIC_NUMBER,A.DYNAMIC_NAME,
+    A.PARENT_DYNAMIC_NUMBER,A.STATUS,A.HANDLE_AUTHOR_ID,A.REMARK,
+    TO_CHAR(A.UPDATE_DATE,'YYYY-MM-DD HH24:MI:SS') UPDATE_DATE,
+    S.REAL_NAME AS HANDLE_AUTHOR_NAME,TO_CHAR(A.UPDATE_DATE,'YYYY-MM-DD') CREATER_DATE_STR
+	
+	</sql>
+	
+	<!-- 根据条件查询业务动态信息（分页查询） -->
+	<select id="queryBizDynamic" resultMap="bizDynamicMap"
+		parameterType="bizDynamic">
+		<if test="page!=-1">
+			SELECT D.* FROM (SELECT T.*, ROWNUM RN
+			FROM (
+		</if>
+		SELECT <include refid="dynamic_Column_List" />  FROM
+		BIZ_DYNAMIC A LEFT JOIN SYS_USER S
+		ON A.HANDLE_AUTHOR_ID = S.PID
+		<where>
+			
+			<trim>
+				<if test="userIds!=null and userIds.size()>0">
+					AND A.PM_USER_ID IN
+					<foreach item="itemId" collection="userIds" open="("
+						separator="," close=")">
+						#{itemId}
+					</foreach>
+				</if>
+				<if test="moduelNumber != null and moduelNumber !=''">
+					AND MODUEL_NUMBER=#{moduelNumber}
+				</if>
+				<if test="dynamicNumber != null and dynamicNumber !=''">
+					AND DYNAMIC_NUMBER=#{dynamicNumber}
+				</if>
+				<if test="parentDynamicNumber != null and parentDynamicNumber !=''">
+					AND PARENT_DYNAMIC_NUMBER=#{parentDynamicNumber}
+				</if>
+				<if test="status !=null and status >0">
+					AND A.STATUS = #{status}
+				</if>
+				<if test="projectId !=null and projectId >0">
+					AND A.PROJECT_ID = #{projectId}
+				</if>
+				<if test="pid!=null and pid>0">
+					AND A.PID = #{pid}
+				</if>
+			</trim>
+		</where>
+	ORDER BY A.MODUEL_NUMBER,A.DYNAMIC_NUMBER
+		<if test="page!=-1">
+	<![CDATA[
+	) T
+	WHERE ROWNUM <=#{page}*#{rows}
+	) D
+	WHERE D.RN > ((#{page}-1)*#{rows})
+	]]>
+		</if>
+	</select>
+	<!-- 根据条件查询业务动态信息总数 -->
+	<select id="getBizDynamicTotal" resultType="Integer"
+		parameterType="bizDynamic">
+	<![CDATA[
+	SELECT COUNT(1) FROM
+			(SELECT * FROM BIZ_DYNAMIC A
+	]]>
+		<where>
+			<trim>
+				<if test="userIds!=null and userIds.size()>0">
+					AND A.PM_USER_ID IN
+					<foreach item="itemId" collection="userIds" open="("
+						separator="," close=")">
+						#{itemId}
+					</foreach>
+				</if>
+				<if test="moduelNumber != null and moduelNumber !=''">
+					AND MODUEL_NUMBER=#{moduelNumber}
+				</if>
+				<if test="dynamicNumber != null and dynamicNumber !=''">
+					AND DYNAMIC_NUMBER=#{dynamicNumber}
+				</if>
+				<if test="parentDynamicNumber != null and parentDynamicNumber !=''">
+					AND PARENT_DYNAMIC_NUMBER=#{parentDynamicNumber}
+				</if>
+				<if test="status !=null and status >0">
+					AND A.STATUS = #{status}
+				</if>
+				<if test="projectId !=null and projectId >0">
+					AND A.PROJECT_ID = #{projectId}
+				</if>
+				<if test="pid!=null and pid>0">
+					AND A.PID = #{pid}
+				</if>
+			</trim>
+		</where>
+		) T
+	</select>
+	<!-- 根据ID,项目ID,模块编号,删除业务动态 -->
+	<delete id="delBizDynamic" parameterType="bizDynamic">
+		DELETE FROM BIZ_DYNAMIC
+		<where>
+			<trim>
+				<if test="projectId !=null and projectId >0">
+					AND PROJECT_ID = #{projectId}
+					<if test="moduelNumber !=null and moduelNumber >0">
+						AND MODUEL_NUMBER = #{moduelNumber}
+					</if>
+				</if>
+				<if test="pid !=null and pid >0">
+					AND PID = #{pid}
+				</if>
+			</trim>
+		</where>
+	</delete>
+	<!-- 根据父级动态id级联删除子节点，不包括父节点 -->
+	<delete id="delBizDynamicByCascade" parameterType="bizDynamic">
+		<if test="projectId !=null and projectId >0 and moduelNumber !=null and moduelNumber !='' and parentDynamicNumber !=null and parentDynamicNumber !=''">
+			DELETE FROM BIZ_DYNAMIC
+			WHERE PID IN (SELECT A.PID
+			FROM BIZ_DYNAMIC A
+			WHERE A.MODUEL_NUMBER = #{moduelNumber}
+			AND A.PROJECT_ID = #{projectId}
+			START WITH A.PARENT_DYNAMIC_NUMBER = #{parentDynamicNumber}
+			CONNECT BY PRIOR A.DYNAMIC_NUMBER = A.PARENT_DYNAMIC_NUMBER
+			GROUP BY A.PID)
+		</if>
+	</delete>
+	
+	
+	<!-- 项目ID,模块编号,驳回的节点Id删除业务动态-->
+	<delete id="delBizDynamicByLastId" parameterType="bizDynamic">
+		DELETE FROM BIZ_DYNAMIC
+		<where>
+			<trim>
+				<if test="projectId !=null and projectId >0">
+					AND PROJECT_ID = #{projectId}
+					<if test="moduelNumber !=null and moduelNumber !=''">
+						AND MODUEL_NUMBER = #{moduelNumber}
+					</if>
+					<if test="dynamicNumber !=null and dynamicNumber !=''">
+						AND DYNAMIC_NUMBER > #{dynamicNumber}
+					</if>
+				</if>
+			</trim>
+		</where>
+	</delete>
+</mapper>

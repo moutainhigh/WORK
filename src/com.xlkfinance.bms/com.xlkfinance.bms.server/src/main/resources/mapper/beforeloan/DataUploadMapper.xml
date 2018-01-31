@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.beforeloan.mapper.DataUploadMapper">
+  <resultMap id="BaseResultMap" type="com.xlkfinance.bms.rpc.beforeloan.DataInfo">
+        <id property="dataId" column="PID"/>
+        <result property="projectId" column="PROJECT_ID" />
+        <result property="fileId" column="FILE_ID" />
+        <result property="userId" column="FILE_SOURCE" />
+        <result property="filePropertyName" column="filePropertyName"/>
+        <result property="fileProperty" column="fileProperty" />
+        <result property="fileDesc" column="FILE_DESC" />
+        <result property="status" column="STATUS" />
+        <result property="fileName" column="FILE_NAME"/>
+        <result property="fileType" column="FILE_TYPE"/>
+        <result property="fileSize" column="FILE_SIZE"/>
+        <result property="fileUrl" column="FILE_URL"/>
+        <result property="uploadDttm" column="UPLOAD_DTTM" javaType="String" jdbcType="TIMESTAMP"/>
+        <result property="collectFileStatus" column="COLLECT_FILE_STATUS"/>
+        <result property="createUserName" column="CREATE_USER_NAME"/>
+        <result property="createNode" column="CREATE_NODE"/>
+    </resultMap>
+    
+    <sql id="DatalistAll">
+    	PID,LOOKUP_DESC AS FILEPROPERTYNAME,A.FILE_PROPERTY AS FILEPROPERTY,
+    	B.FILE_DESC,B.STATUS,B.PROJECT_ID,B.FILE_SOURCE,B.FILE_NAME,B.FILE_TYPE,B.FILE_SIZE,B.FILE_URL,B.UPLOAD_DTTM
+    </sql>
+	
+  	<select id="dataList" resultMap="BaseResultMap" parameterType="com.xlkfinance.bms.rpc.beforeloan.DataInfo">
+		SELECT PID,FILEPROPERTYNAME,FILEPROPERTY,
+    	FILE_DESC,STATUS,PROJECT_ID,FILE_SOURCE,FILE_NAME,
+    	FILE_TYPE,FILE_SIZE,FILE_URL,UPLOAD_DTTM,rownum rn FROM(
+    		SELECT D.*,ROWNUM RN FROM (
+    		SELECT DISTINCT C.* FROM (
+    		SELECT 
+		    	<include refid="DatalistAll"/> 
+	  				FROM (
+	  					SELECT LV.PID AS FILE_PROPERTY, LV.LOOKUP_DESC
+	          			FROM SYS_LOOKUP L, SYS_LOOKUP_VAL LV
+	         			WHERE L.PID = LV.LOOKUP_ID
+	           				AND L.LOOKUP_TYPE = 'FILE_PROPERTY'
+	           				) A,
+	  		   			(SELECT BP.PID AS PROJECT_ID,BPF.PID,FILE_PROPERTY,BPF.STATUS,
+	  		   			BPF.FILE_DESC,BPF.FILE_SOURCE,BF.FILE_NAME,BF.FILE_TYPE,BF.FILE_SIZE,
+	  		   			BF.FILE_URL,BF.UPLOAD_DTTM
+	               		FROM BIZ_PROJECT BP, BIZ_PROJECT_FILE BPF, BIZ_FILE BF
+	              		WHERE BP.PID = BPF.PROJECT_ID
+	          				AND BPF.FILE_ID = BF.PID
+	                		AND BP.PID = #{projectId}
+	                		AND BPF.STATUS = 1) B
+	   		   WHERE A.FILE_PROPERTY = B.FILE_PROPERTY
+	   		 UNION ALL
+		    SELECT 
+		    	<include refid="DatalistAll"/>
+	  				FROM (
+	  					SELECT LV.PID AS FILE_PROPERTY, LV.LOOKUP_DESC
+	          			FROM SYS_LOOKUP L, SYS_LOOKUP_VAL LV
+	         			WHERE L.PID = LV.LOOKUP_ID
+	           				AND L.LOOKUP_TYPE = 'FILE_PROPERTY'
+	           				<!-- <if test="cusType!=null and cusType!=''">
+	           					AND LV.LOOKUP_VAL =#{cusType,jdbcType=VARCHAR}
+	           				</if> -->
+	           				) A
+	  		   LEFT JOIN (
+	  		   			SELECT BP.PID AS PROJECT_ID,BPF.PID,FILE_PROPERTY,BPF.STATUS,
+	  		   			BPF.FILE_DESC,BPF.FILE_SOURCE,BF.FILE_NAME,BF.FILE_TYPE,BF.FILE_SIZE,
+	  		   			BF.FILE_URL,BF.UPLOAD_DTTM
+	               		FROM BIZ_PROJECT BP, BIZ_PROJECT_FILE BPF, BIZ_FILE BF
+	              		WHERE BP.PID = BPF.PROJECT_ID
+	          				AND BPF.FILE_ID = BF.PID
+	                		AND BP.PID = #{projectId}
+	                		AND BPF.STATUS = 1) B
+	   		   ON A.FILE_PROPERTY = B.FILE_PROPERTY
+	   		) C ORDER BY FILE_SIZE ASC ) D WHERE ROWNUM<![CDATA[<=]]>#{page}*#{rows}
+		) WHERE rn>=((#{page}-1)*#{rows})+1
+  	</select>
+	
+	<select id="getDataTotal" parameterType="com.xlkfinance.bms.rpc.beforeloan.DataInfo" resultType="java.lang.Integer">
+		SELECT COUNT(1) FROM (
+			SELECT D.*,ROWNUM RN FROM (
+    		SELECT DISTINCT C.* FROM (
+    		SELECT 
+		    	<include refid="DatalistAll"/> 
+	  				FROM (
+	  					SELECT LV.PID AS FILE_PROPERTY, LV.LOOKUP_DESC
+	          			FROM SYS_LOOKUP L, SYS_LOOKUP_VAL LV
+	         			WHERE L.PID = LV.LOOKUP_ID
+	           				AND L.LOOKUP_TYPE = 'FILE_PROPERTY'
+	           				) A,
+	  		   			(SELECT BP.PID AS PROJECT_ID,BPF.PID,FILE_PROPERTY,BPF.STATUS,
+	  		   			BPF.FILE_DESC,BPF.FILE_SOURCE,BF.FILE_NAME,BF.FILE_TYPE,BF.FILE_SIZE,
+	  		   			BF.FILE_URL,BF.UPLOAD_DTTM
+	               		FROM BIZ_PROJECT BP, BIZ_PROJECT_FILE BPF, BIZ_FILE BF
+	              		WHERE BP.PID = BPF.PROJECT_ID
+	          				AND BPF.FILE_ID = BF.PID
+	                		AND BP.PID = #{projectId}
+	                		AND BPF.STATUS = 1) B
+	   		   WHERE A.FILE_PROPERTY = B.FILE_PROPERTY
+	   		 UNION ALL
+		    SELECT 
+		    	<include refid="DatalistAll"/>
+	  				FROM (
+	  					SELECT LV.PID AS FILE_PROPERTY, LV.LOOKUP_DESC
+	          			FROM SYS_LOOKUP L, SYS_LOOKUP_VAL LV
+	         			WHERE L.PID = LV.LOOKUP_ID
+	           				AND L.LOOKUP_TYPE = 'FILE_PROPERTY'
+	           				<!-- <if test="cusType!=null and cusType!=''">
+	           					AND LV.LOOKUP_VAL =#{cusType,jdbcType=VARCHAR}
+	           				</if> -->
+	           				) A
+	  		   LEFT JOIN (
+	  		   			SELECT BP.PID AS PROJECT_ID,BPF.PID,FILE_PROPERTY,BPF.STATUS,
+	  		   			BPF.FILE_DESC,BPF.FILE_SOURCE,BF.FILE_NAME,BF.FILE_TYPE,BF.FILE_SIZE,
+	  		   			BF.FILE_URL,BF.UPLOAD_DTTM
+	               		FROM BIZ_PROJECT BP, BIZ_PROJECT_FILE BPF, BIZ_FILE BF
+	              		WHERE BP.PID = BPF.PROJECT_ID
+	          				AND BPF.FILE_ID = BF.PID
+	                		AND BP.PID = #{projectId}
+	                		AND BPF.STATUS = 1) B
+	   		   ON A.FILE_PROPERTY = B.FILE_PROPERTY
+	   		) C ORDER BY FILE_SIZE ASC ) D
+		)
+	</select>
+	
+	<insert id="saveData" parameterType="com.xlkfinance.bms.rpc.beforeloan.DataInfo">
+		<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="dataId">
+			SELECT SEQ_BIZ_PROJECT_FILE.Nextval as PID from DUAL
+		</selectKey>
+		    INSERT INTO BIZ_PROJECT_FILE(
+		    	PID,
+		    	PROJECT_ID, 
+		    	FILE_ID, 
+		    	FILE_SOURCE,
+		    	FILE_PROPERTY,
+		    	CREATE_NODE,
+		    	FILE_DESC,
+		    	STATUS)
+		    VALUES (
+		    	#{dataId,jdbcType=INTEGER}, 
+		     	#{projectId,jdbcType=INTEGER},
+		     	#{fileId,jdbcType=INTEGER},
+		     	#{userId,jdbcType=INTEGER},
+		     	#{fileProperty,jdbcType=INTEGER},
+		     	#{createNode,jdbcType=INTEGER},
+		     	#{fileDesc,jdbcType=VARCHAR},
+		     	1)
+	</insert>
+	
+	<update id="delData" parameterType="java.lang.Integer">
+		UPDATE BIZ_PROJECT_FILE SET
+			STATUS = 0
+		WHERE PID = #{dataId}
+	</update>
+	 
+	<update id="editData" parameterType="com.xlkfinance.bms.rpc.beforeloan.DataInfo">
+		UPDATE BIZ_PROJECT_FILE SET
+			FILE_ID = #{fileId,jdbcType=INTEGER},
+			FILE_DESC = #{fileDesc,jdbcType=VARCHAR},
+			CREATE_NODE = #{createNode,jdbcType=INTEGER}
+		WHERE PID = #{dataId,jdbcType=INTEGER}
+	</update>
+	
+	<select id="findUserType" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+		SELECT CA.CUS_TYPE 
+		  FROM BIZ_PROJECT BP, CUS_ACCT CA
+		WHERE BP.ACCT_ID = CA.PID
+		AND BP.PID = #{projectId}
+	</select>
+	
+	<!-- 查询项目相关文件列表 -->
+	<select id="findProjectFiles" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+		SELECT B.PID,A.PID AS PROJECT_ID,B.FILE_ID, C.FILE_NAME,B.FILE_DESC,B.FILE_PROPERTY AS fileProperty,C.FILE_TYPE,C.FILE_SIZE,
+		C.FILE_URL,TO_CHAR(C.UPLOAD_DTTM,'yyyy-MM-dd hh24:mi:ss') AS UPLOAD_DTTM,D.LOOKUP_DESC AS filePropertyName,B.status
+  			FROM BIZ_PROJECT A, BIZ_PROJECT_FILE B, BIZ_FILE C,SYS_LOOKUP_VAL D
+ 				WHERE A.PID = B.PROJECT_ID
+   						AND B.FILE_ID = C.PID
+   						AND B.FILE_PROPERTY = D.PID
+   						AND B.STATUS = 1
+ 						AND A.PID = #{projectId}
+ 						ORDER BY C.UPLOAD_DTTM
+	</select>
+	<!-- 根据项目类型以及项目ID查询上传资料列表 -->
+	<select id="dataListByType" resultMap="BaseResultMap" parameterType="com.xlkfinance.bms.rpc.beforeloan.DataInfo">
+		<if test="page!=-1">
+		SELECT PID,FILEPROPERTYNAME,FILEPROPERTY,
+    	FILE_DESC,STATUS,PROJECT_ID,FILE_SOURCE,FILE_NAME,
+    	FILE_TYPE,FILE_SIZE,FILE_URL,UPLOAD_DTTM, CREATE_USER_NAME,CREATE_NODE,rownum rn FROM(
+    		SELECT D.*,ROWNUM RN FROM (
+    	</if>
+    		SELECT DISTINCT C.* FROM (
+    		SELECT 
+		    	<include refid="DatalistAll"/> 
+                       ,B.REAL_NAME AS CREATE_USER_NAME,B.CREATE_NODE
+	  				FROM (
+	  					SELECT LV.PID AS FILE_PROPERTY, LV.LOOKUP_DESC
+	          			FROM SYS_LOOKUP L, SYS_LOOKUP_VAL LV
+	         			WHERE L.PID = LV.LOOKUP_ID
+	           				AND L.LOOKUP_TYPE = 'FILE_PROPERTY'
+	           				) A,
+	  		   			(SELECT BP.PID AS PROJECT_ID,BPF.PID,FILE_PROPERTY,BPF.STATUS,
+	  		   			BPF.FILE_DESC,BPF.FILE_SOURCE,BF.FILE_NAME,BF.FILE_TYPE,BF.FILE_SIZE,
+	  		   			BF.FILE_URL,BF.UPLOAD_DTTM,S.REAL_NAME,BPF.CREATE_NODE
+	               		FROM BIZ_PROJECT BP, BIZ_PROJECT_FILE BPF, BIZ_FILE BF,SYS_USER S
+	              		WHERE BP.PID = BPF.PROJECT_ID
+	              			AND BF.UPLOAD_USER_ID = S.PID(+)
+	          				AND BPF.FILE_ID = BF.PID
+	                		AND BP.PID = #{projectId}
+	                		AND BPF.STATUS = 1) B
+	   		   WHERE A.FILE_PROPERTY = B.FILE_PROPERTY
+	   		 UNION ALL
+		    SELECT 
+		    	<include refid="DatalistAll"/>
+		    	,B.REAL_NAME AS CREATE_USER_NAME,B.CREATE_NODE
+	  				FROM (
+	  					SELECT LV.PID AS FILE_PROPERTY, LV.LOOKUP_DESC
+	          			FROM SYS_LOOKUP L, SYS_LOOKUP_VAL LV
+	         			WHERE L.PID = LV.LOOKUP_ID
+	           				AND L.LOOKUP_TYPE = 'FILE_PROPERTY'
+	           				<if test="projectTypes!=null and projectTypes.size()>0">
+								AND LV.LOOKUP_VAL IN
+								<foreach item="itemId" collection="projectTypes" open="(" separator="," close=")">
+								          #{itemId}
+								</foreach>
+							</if>
+	           				) A
+	  		   LEFT JOIN (
+	  		   			SELECT BP.PID AS PROJECT_ID,BPF.PID,FILE_PROPERTY,BPF.STATUS,
+	  		   			BPF.FILE_DESC,BPF.FILE_SOURCE,BF.FILE_NAME,BF.FILE_TYPE,BF.FILE_SIZE,
+	  		   			BF.FILE_URL,BF.UPLOAD_DTTM,S.REAL_NAME,BPF.CREATE_NODE
+	               		FROM BIZ_PROJECT BP, BIZ_PROJECT_FILE BPF, BIZ_FILE BF,SYS_USER S
+	              		WHERE BP.PID = BPF.PROJECT_ID
+	              			AND BF.UPLOAD_USER_ID = S.PID(+)
+	          				AND BPF.FILE_ID = BF.PID
+	                		AND BP.PID = #{projectId}
+	                		AND BPF.STATUS = 1) B
+	   		   ON A.FILE_PROPERTY = B.FILE_PROPERTY
+	   		) C ORDER BY FILE_SIZE ASC
+	   		<if test="page!=-1">
+	   		 	 ) D WHERE ROWNUM<![CDATA[<=]]>#{page}*#{rows}
+				) WHERE rn>=((#{page}-1)*#{rows})+1
+			</if>
+  	</select>
+	
+	<!-- 根据项目类型以及项目ID查询上传资料总数 -->
+	<select id="getDataTotalByType" parameterType="com.xlkfinance.bms.rpc.beforeloan.DataInfo" resultType="java.lang.Integer">
+		SELECT COUNT(1) FROM (
+			SELECT D.*,ROWNUM RN FROM (
+    		SELECT DISTINCT C.* FROM (
+    		SELECT 
+		    	<include refid="DatalistAll"/> 
+	  				FROM (
+	  					SELECT LV.PID AS FILE_PROPERTY, LV.LOOKUP_DESC
+	          			FROM SYS_LOOKUP L, SYS_LOOKUP_VAL LV
+	         			WHERE L.PID = LV.LOOKUP_ID
+	           				AND L.LOOKUP_TYPE = 'FILE_PROPERTY'
+	           				) A,
+	  		   			(SELECT BP.PID AS PROJECT_ID,BPF.PID,FILE_PROPERTY,BPF.STATUS,
+	  		   			BPF.FILE_DESC,BPF.FILE_SOURCE,BF.FILE_NAME,BF.FILE_TYPE,BF.FILE_SIZE,
+	  		   			BF.FILE_URL,BF.UPLOAD_DTTM
+	               		FROM BIZ_PROJECT BP, BIZ_PROJECT_FILE BPF, BIZ_FILE BF
+	              		WHERE BP.PID = BPF.PROJECT_ID
+	          				AND BPF.FILE_ID = BF.PID
+	                		AND BP.PID = #{projectId}
+	                		AND BPF.STATUS = 1) B
+	   		   WHERE A.FILE_PROPERTY = B.FILE_PROPERTY
+	   		 UNION ALL
+		    SELECT 
+		    	<include refid="DatalistAll"/>
+	  				FROM (
+	  					SELECT LV.PID AS FILE_PROPERTY, LV.LOOKUP_DESC
+	          			FROM SYS_LOOKUP L, SYS_LOOKUP_VAL LV
+	         			WHERE L.PID = LV.LOOKUP_ID
+	           				AND L.LOOKUP_TYPE = 'FILE_PROPERTY'
+	           				<if test="projectTypes!=null and projectTypes.size()>0">
+								AND LV.LOOKUP_VAL IN
+								<foreach item="itemId" collection="projectTypes" open="(" separator="," close=")">
+								          #{itemId}
+								</foreach>
+							</if>
+	           				) A
+	  		   LEFT JOIN (
+	  		   			SELECT BP.PID AS PROJECT_ID,BPF.PID,FILE_PROPERTY,BPF.STATUS,
+	  		   			BPF.FILE_DESC,BPF.FILE_SOURCE,BF.FILE_NAME,BF.FILE_TYPE,BF.FILE_SIZE,
+	  		   			BF.FILE_URL,BF.UPLOAD_DTTM
+	               		FROM BIZ_PROJECT BP, BIZ_PROJECT_FILE BPF, BIZ_FILE BF
+	              		WHERE BP.PID = BPF.PROJECT_ID
+	          				AND BPF.FILE_ID = BF.PID
+	                		AND BP.PID = #{projectId}
+	                		AND BPF.STATUS = 1) B
+	   		   ON A.FILE_PROPERTY = B.FILE_PROPERTY
+	   		) C ORDER BY FILE_SIZE ASC ) D
+		)
+	</select>
+	
+	
+	<!-- 查询项目相关文件列表 -->
+	<select id="findProjectFilesByfileIds" parameterType="java.util.List" resultMap="BaseResultMap">
+	SELECT A.PID,
+			       A.HANDLE_DYNAMIC_ID,
+			       A.FILE_ID,
+			       B.STATUS,
+			       B.REMARK,
+			       B.UPLOAD_USER_ID,
+			       B.FILE_NAME,
+			       B.FILE_TYPE,
+			       B.FILE_SIZE,
+			       B.FILE_URL
+			  FROM BIZ_LOAN_HANDLE_DYNAMIC_FILE A
+			  LEFT JOIN BIZ_FILE B ON A.FILE_ID = B.PID
+                   where a.file_id in
+ 			<foreach item="fileId" collection="fileIds" open="("
+						separator="," close=")">
+						#{fileId}
+				</foreach>
+	</select>
+	
+</mapper>

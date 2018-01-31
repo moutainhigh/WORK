@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.customer.mapper.CusAcctPotentialMapper">
+  <resultMap id="CusAcctPotentialsMap" type="com.xlkfinance.bms.rpc.common.GridViewDTO" >
+   		<id column="PID" property="pid"  />
+    	<result column="ACCT_NAME" property="value1"  />
+    	<result column="ACCT_TYPE" property="value2" />
+    	<result column="ACCT_LEVEL" property="value3" />
+    	<result column="CERT_NUMBER" property="value4" />
+    	<result column="PHONE" property="value5"  />
+    	<result column="REMARK" property="value6"  />
+    	<result column="SU_PID" property="value7"  />
+   </resultMap>
+   
+    <resultMap id="selectCusAcctPotentialsMap" type="com.xlkfinance.bms.rpc.customer.CusAcctPotential" >
+   		<id column="PID" property="pid"  />
+    	<result column="ACCT_NAME" property="acctName"  />
+    	<result column="ACCT_TYPE" property="acctType" />
+    	<result column="ACCT_LEVEL" property="acctLevel" />
+    	<result column="CERT_NUMBER" property="certNumber" />
+    	<result column="PHONE" property="phone"  />
+    	<result column="REMARK" property="remark"  />
+    	<result column="CERT_TYPE" property="certType"  />
+   </resultMap>
+<insert id="insert" parameterType="com.xlkfinance.bms.rpc.customer.CusAcctPotential">
+   <selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+		SELECT SEQ_CUS_ACCT_POTENTIAL.Nextval as PID from DUAL
+	</selectKey>
+    insert into cus_acct_potential (
+	    PID, 
+	    <if test="acctName != null and acctName !=''">
+	    ACCT_NAME, 
+	    </if>
+	    <if test="acctType != null">
+	    ACCT_TYPE, 
+	    </if>
+	    <if test="phone != null and phone !=''">
+	    PHONE, 
+	    </if>
+	    <if test="certType != null">
+	    CERT_TYPE, 
+	    </if>
+	    <if test="certNumber != null and certNumber !=''">
+	    CERT_NUMBER, 
+	    </if>
+	    <if test="acctLevel != null">
+	    ACCT_LEVEL, 
+	    </if>
+	    <if test="createUserId != null">
+	      CRE_USER_ID, 
+	    </if>
+	      <if test="remark != null and remark !=''">
+	    REMARK,
+	    </if>
+	    STATUS)
+    values (
+	    #{pid,jdbcType=INTEGER},
+	   <if test="acctName != null and acctName !=''">
+	    #{acctName,jdbcType=VARCHAR},
+	    </if>
+	    <if test="acctType != null"> 
+	    #{acctType,jdbcType=INTEGER},
+	    </if>
+	    <if test="phone != null and phone !=''">
+	    #{phone,jdbcType=VARCHAR}, 
+	    </if>
+	    <if test="certType != null">
+	    #{certType,jdbcType=INTEGER},
+	    </if>
+	   <if test="certNumber != null and certNumber !=''">
+	    #{certNumber,jdbcType=VARCHAR},
+	    </if>
+	    <if test="acctLevel != null">
+	    #{acctLevel,jdbcType=INTEGER},
+	    </if>
+	     <if test="createUserId != null">
+	     #{createUserId,jdbcType=INTEGER},
+	    </if>
+	      <if test="remark != null and remark !=''">
+	    #{remark,jdbcType=VARCHAR},
+	    </if>
+	    #{status,jdbcType=INTEGER})
+  </insert>
+<!--   往用户表里面插入数据 -->
+  <insert id="insertsysUserId" parameterType="com.xlkfinance.bms.rpc.customer.CusAcctPotential">
+       <selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="PID">
+			 SELECT SEQ_SYS_USER.NEXTVAL AS PID FROM DUAL
+		</selectKey>
+		insert into SYS_USER(
+		  PID,
+		  status
+		)values(
+		 <if test="createUserId != null">
+		  	#{createUserId,jdbcType=INTEGER},
+		 </if>
+		  1)	
+  </insert>
+  
+    <update id="updateByPrimaryKey" parameterType="com.xlkfinance.bms.rpc.customer.CusAcctPotential">
+		update cus_acct_potential
+		<set>
+		<if test="acctName != null and acctName !=''">
+			ACCT_NAME = #{acctName,jdbcType=VARCHAR},
+		</if>
+		<if test="acctType != null">
+	    	ACCT_TYPE = #{acctType,jdbcType=INTEGER},
+	    </if>
+		<if test="phone != null and phone !=''">
+	    	PHONE = #{phone,jdbcType=VARCHAR}, 
+	    </if>
+		<if test="certType != null">
+	    	CERT_TYPE = #{certType,jdbcType=INTEGER},
+	    </if>
+		 <if test="certNumber != null and certNumber !=''">
+	   		CERT_NUMBER = #{certNumber,jdbcType=VARCHAR},
+	    </if>
+		<if test="acctLevel != null">
+	    	ACCT_LEVEL = #{acctLevel,jdbcType=INTEGER},
+	    </if>
+		 <if test="remark != null and remark !=''">
+	    	REMARK = #{remark,jdbcType=VARCHAR},
+	    </if>
+	    <if test="status != null">
+	    	STATUS = #{status,jdbcType=INTEGER},
+	    </if>
+		</set>
+		where pid = #{pid,jdbcType=INTEGER}
+	</update>
+	<!-- 	查询潜在客户 -->
+	<select id="getCusAcctPotentials" resultMap="CusAcctPotentialsMap" parameterType="com.xlkfinance.bms.rpc.customer.CusAcctPotential">
+	   select * from( 
+	   SELECT  rownum rn,
+	        CAP.PID, 
+	   		CAP.ACCT_NAME,
+	       CASE CAP.ACCT_TYPE
+	         WHEN 1 THEN
+	          '个人'
+	         WHEN 2 THEN
+	          '企业'
+	       END ACCT_TYPE,
+          (SELECT SLV.LOOKUP_VAL FROM SYS_LOOKUP_VAL SLV WHERE SLV.PID=CAP.ACCT_LEVEL) ACCT_LEVEL,
+	       CAP.CERT_NUMBER,
+	       CAP.PHONE,
+	       CAP.REMARK,
+	       (SELECT SU.PID  FROM SYS_USER SU  WHERE SU.PID=CAP.CRE_USER_ID) SU_PID
+		  FROM CUS_ACCT_POTENTIAL CAP
+		  WHERE 1=1
+		  and cap.status=1
+		  <if test="acctName != null and acctName !=''">
+		  AND   CAP.ACCT_NAME LIKE '%${acctName}%'
+		  </if>
+		  <if test="certNumber != null and certNumber !=''">
+		  AND   CAP.CERT_NUMBER LIKE '%${certNumber}%'
+		  </if>
+		   <if test="acctType != null and acctType !=0">
+		   AND CAP.ACCT_TYPE = #{acctType,jdbcType=INTEGER}
+		   </if>
+		   AND rownum<![CDATA[<=]]>#{page}*#{rows})
+     		WHERE rn>=((#{page}-1)*#{rows})+1
+	</select>
+<!-- 	根据ID查潜在客户信息 -->
+	<select id="selectByIdPotential" parameterType="java.lang.Integer" resultMap="selectCusAcctPotentialsMap">
+	   SELECT  CAP.PID, 
+	   		CAP.ACCT_NAME,
+	   		CAP.ACCT_TYPE,
+	   		CAP.ACCT_LEVEL,
+	       CAP.CERT_NUMBER,
+	       CAP.PHONE,
+	       CAP.REMARK,
+	       CAP.CERT_TYPE
+		  FROM CUS_ACCT_POTENTIAL CAP
+		  where cap.status=1
+		  and cap.pid= #{pid,jdbcType=INTEGER}
+	</select>
+<!-- 	批量删除 -->
+	<update id="deleteCusAcctPotential" parameterType="java.util.List" >
+	    update 
+	  		CUS_ACCT_POTENTIAL 
+  		set 
+  			status=0 
+		where pid in 
+		<foreach item="itemId" collection="list" open="(" separator="," close=")">
+		          #{itemId}
+		</foreach>
+	</update>
+<!-- 	查询总记录数 -->
+	<select id="getTotalPotential" parameterType="com.xlkfinance.bms.rpc.customer.CusAcctPotential" resultType="java.lang.Integer">
+	    SELECT COUNT(PID) FROM (
+	        SELECT  CAP.PID, 
+	   		CAP.ACCT_NAME,
+	       CASE CAP.ACCT_TYPE
+	         WHEN 1 THEN
+	          '个人'
+	         WHEN 2 THEN
+	          '企业'
+	       END ACCT_TYPE,
+          (SELECT SLV.LOOKUP_VAL FROM SYS_LOOKUP_VAL SLV WHERE SLV.PID=CAP.ACCT_LEVEL) ACCT_LEVEL,
+	       CAP.CERT_NUMBER,
+	       CAP.PHONE,
+	       CAP.REMARK
+		  FROM CUS_ACCT_POTENTIAL CAP
+		  WHERE 1=1
+		  and cap.status=1
+		  <if test="acctName != null and acctName !=''">
+		  AND   CAP.ACCT_NAME LIKE '%${acctName}%'
+		  </if>
+		  <if test="certNumber != null and certNumber !=''">
+		  AND   CAP.CERT_NUMBER LIKE '%${certNumber}%'
+		  </if>
+		   <if test="acctType != null and acctType !=0">
+		   AND CAP.ACCT_TYPE = #{acctType,jdbcType=INTEGER}
+		   </if>)
+	</select>
+</mapper>

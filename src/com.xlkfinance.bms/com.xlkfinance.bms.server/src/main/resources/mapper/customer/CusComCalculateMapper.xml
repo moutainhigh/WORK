@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.customer.mapper.CusComCalculateMapper">
+    	
+    <resultMap id="CusComBalanceSheetCalculateDTOMap" type="com.xlkfinance.bms.rpc.customer.CusComBalanceSheetCalculateDTO">
+        <result property="lineNum" column="LINE_NUM" />
+        <result property="accountsName" column="ACCOUNTS_NAME" />
+        <result property="beginVal" column="BEGIN_VAL" />
+        <result property="endVal" column="END_VAL" />
+    </resultMap>
+    
+    <resultMap id="CusComIncomeReportCalculateDTOMap" type="com.xlkfinance.bms.rpc.customer.CusComIncomeReportCalculateDTO">
+        <result property="lineNum" column="LINE_NUM" />
+        <result property="itemName" column="ITEM_NAME" />
+        <result property="thisMonthVal" column="THIS_MONTH_VAL" />
+        <result property="thisYearVal" column="THIS_YEAR_VAL" />
+    </resultMap>
+    
+    <resultMap id="CusComCashFlowReportCalculateDTOMap" type="com.xlkfinance.bms.rpc.customer.CusComCashFlowReportCalculateDTO">
+        <result property="lineNum" column="LINE_NUM" />
+        <result property="itemName" column="ITEM_NAME" />
+        <result property="thisYearVal" column="THIS_YEAR_VAL" />
+    </resultMap>
+    
+     <select id="obtainLeftCusComBSLCalculatesByReportId" resultMap="CusComBalanceSheetCalculateDTOMap" parameterType="java.lang.Integer">
+		SELECT BSM.LINE_NUM,BSM.ACCOUNTS_NAME,BS.BEGIN_VAL,BS.END_VAL FROM CUS_COM_BALANCE_SHEET BS
+		JOIN CUS_COM_BALANCE_SHEET_META BSM
+		ON BS.ACCOUNTS_ID=BSM.PID
+		WHERE 1=1
+		AND SHOW_POSITION='left'
+		AND BS.REPORT_ID=#{reportId,jdbcType=INTEGER}
+		ORDER BY BSM.LINE_NUM
+  	</select> 
+  	
+  	<select id="obtainRightCusComBSLCalculatesByReportId" resultMap="CusComBalanceSheetCalculateDTOMap" parameterType="java.lang.Integer">
+		SELECT BSM.LINE_NUM,BSM.ACCOUNTS_NAME,BS.BEGIN_VAL,BS.END_VAL FROM CUS_COM_BALANCE_SHEET BS
+		JOIN CUS_COM_BALANCE_SHEET_META BSM
+		ON BS.ACCOUNTS_ID=BSM.PID
+		WHERE 1=1
+		AND SHOW_POSITION='right'
+		AND BS.REPORT_ID=#{reportId,jdbcType=INTEGER}
+		ORDER BY BSM.LINE_NUM
+  	</select>
+  	
+  	<select id="obtainPIDForMaxMonth" resultType="java.lang.String" parameterType="java.util.Map">
+		SELECT PID || ':' || ACCOUNTING_MONTH
+		  FROM CUS_COM_FINANCE_REPORT FR1
+		 WHERE 1 = 1
+		   AND ACCOUNTING_MONTH =
+		       (SELECT MAX(ACCOUNTING_MONTH)
+		          FROM (SELECT FR.ACCOUNTING_MONTH
+		                  FROM CUS_COM_FINANCE_REPORT FR
+		                 WHERE FR.COM_ID = #{comId,jdbcType=INTEGER}
+		                   AND FR.ACCOUNTING_YEAR = #{accountingYear,jdbcType=INTEGER}))
+		   AND FR1.COM_ID = #{comId,jdbcType=INTEGER}
+		   AND FR1.ACCOUNTING_YEAR = #{accountingYear,jdbcType=INTEGER}
+
+  	</select>
+  	
+  	<select id="obtainIncomeReportCalculateByReportId" resultMap="CusComIncomeReportCalculateDTOMap" parameterType="java.lang.Integer">
+		SELECT IRM.LINE_NUM, IRM.ITEM_NAME, IR.THIS_MONTH_VAL, IR.THIS_YEAR_VAL
+		  FROM CUS_COM_INCOME_REPORT IR
+		  JOIN CUS_COM_INCOME_REPORT_META IRM
+		    ON IR.INCOME_ITEM_ID = IRM.PID
+		 WHERE IR.REPORT_ID = #{reportId,jdbcType=INTEGER}
+		 ORDER BY IRM.LINE_NUM
+  	</select>
+  	
+  	<select id="obtainCashFlowCalculateByReportId" resultMap="CusComCashFlowReportCalculateDTOMap" parameterType="java.lang.Integer">
+		SELECT CFM.LINE_NUM, CFM.ITEM_NAME, CF.THIS_YEAR_VAL
+		  FROM CUS_COM_CASH_FLOW CF
+		  JOIN CUS_COM_CASH_FLOW_META CFM
+		    ON CF.CASH_FLOW_ITEM_ID = CFM.PID
+		 WHERE 1 = 1
+		   AND CF.REPORT_ID = #{reportId,jdbcType=INTEGER}
+		   AND CFM.IS_MAIN = 0
+		 ORDER BY CFM.LINE_NUM ASC
+  	</select>
+  	
+  	<select id="obtainSupplementCashFlowCalculateByReportId" resultMap="CusComCashFlowReportCalculateDTOMap" parameterType="java.lang.Integer">
+		SELECT CFM.LINE_NUM, CFM.ITEM_NAME, CF.THIS_YEAR_VAL
+		  FROM CUS_COM_CASH_FLOW CF
+		  JOIN CUS_COM_CASH_FLOW_META CFM
+		    ON CF.CASH_FLOW_ITEM_ID = CFM.PID
+		 WHERE 1 = 1
+		   AND CF.REPORT_ID = #{reportId,jdbcType=INTEGER}
+		   AND CFM.IS_MAIN = 1
+		 ORDER BY CFM.LINE_NUM ASC
+  	</select>
+  
+</mapper>

@@ -1,0 +1,512 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.task.mapper.TaskMapper">
+	<!-- 将TaskVo与表BIZ_Task做字段映射 -->
+	<resultMap id="taskVoMap" type="com.xlkfinance.bms.rpc.workflow.TaskVo">
+		<id column="PID" property="pid" jdbcType="INTEGER"/>
+		<result column="TASK_USER_NAME" property="taskUserName" jdbcType="VARCHAR" />
+		<result column="TASK_TYPE" property="taskType" jdbcType="VARCHAR" />
+		<result column="ALLOCATION_TYPE" property="allocationType" jdbcType="VARCHAR" />
+		<result column="ALLOCATION_REF_ID" property="allocationRefId" jdbcType="INTEGER" />
+		<result column="TASK_NAME" property="taskName" jdbcType="VARCHAR" />
+		<result column="WORKFLOW_NAME" property="workflowName" jdbcType="VARCHAR" />
+		<result column="ALLOCATION_DTTM" property="allocationDttm" javaType="String" jdbcType="TIMESTAMP" />
+		<result column="COMPLETE_DTTM" property="completeDttm" javaType="String" jdbcType="TIMESTAMP" />
+		<result column="TASK_STATUS" property="taskStatus" jdbcType="INTEGER" />
+		<result column="STATUS" property="status" jdbcType="INTEGER" />
+	</resultMap>
+	
+	<!-- BIZ_TASK表字段 -->
+	<sql id="task_fields">
+		T.PID,
+		T.TASK_USER_NAME,
+		T.TASK_TYPE,
+		T.ALLOCATION_TYPE,
+		T.ALLOCATION_REF_ID,
+		T.TASK_NAME,
+		T.WORKFLOW_NAME,
+		T.ALLOCATION_DTTM,
+		T.COMPLETE_DTTM,
+		T.TASK_STATUS,
+		T.STATUS
+	</sql>
+	
+	<!-- 新增BIZ_TASK字段 -->
+	<sql id="insert_task_fields">
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+				PID,
+			<if test="null != taskUserName">
+				TASK_USER_NAME,
+			</if>
+			<if test="null != taskType">
+				TASK_TYPE,
+			</if>
+			<if test="null != allocationType">
+				ALLOCATION_TYPE,
+			</if>
+			<if test="null != allocationRefId">
+				ALLOCATION_REF_ID,
+			</if>
+			<if test="null != taskName">
+				TASK_NAME,
+			</if>
+			<if test="null != workflowName">
+				WORKFLOW_NAME,
+			</if>
+			<if test="null != allocationDttm">
+				ALLOCATION_DTTM,
+			</if>
+			<if test="null != completeDttm">
+				COMPLETE_DTTM,
+			</if>
+			<if test="null != taskStatus">
+				TASK_STATUS,
+			</if>
+			<if test="null != status">
+				STATUS
+			</if>
+		</trim>
+	</sql>
+	
+	<!-- 根据TaskVo实体类查询任务列  表:BIZ_TASK-->
+	<select id="getTaskVosByTaskVo" parameterType="com.xlkfinance.bms.rpc.workflow.TaskVo" resultMap="taskVoMap">
+		SELECT
+			<include refid="task_fields"/>
+		FROM BIZ_TASK T 
+		<trim prefix="WHERE" prefixOverrides="AND |OR">
+			T.STATUS = 1
+			<if test="pid>0">
+				AND T.PID = #{pid}
+			</if>
+			<if test=" null != taskUserName">
+				AND T.TASK_USER_NAME = #{taskUserName}
+			</if>
+			<if test="taskType>0">
+				AND T.TASK_TYPE = #{taskType}
+			</if>
+			<if test=" null != allocationType">
+				AND T.ALLOCATION_TYPE = #{allocationType}
+			</if>
+			<if test=" allocationRefId>0">
+				AND T.ALLOCATION_REF_ID = #{allocationRefId}
+			</if>
+			<if test=" null != taskName">
+				AND T.TASK_NAME = #{taskName}
+			</if>
+			<if test=" null != workflowName">
+				AND T.WORKFLOW_NAME = #{workflowName}
+			</if>
+			<if test=" null != allocationDttm">
+				AND T.ALLOCATION_DTTM = #{allocationDttm}
+			</if>
+			<if test=" null != completeDttm">
+				AND T.COMPLETE_DTTM = #{completeDttm}
+			</if>
+			<if test="taskStatus>0">
+				AND T.TASK_STATUS = #{taskStatus}
+			</if>
+		</trim>
+	</select>
+	
+	<!-- 新增任务  表：BIZ_TASK-->
+	<insert id="insertTaskVo" parameterType="com.xlkfinance.bms.rpc.workflow.TaskVo">
+		<!-- 获取序列号 -->
+		<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+			SELECT SEQ_BIZ_TASK.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_TASK
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+				PID,
+			<if test="null != taskUserName">
+				TASK_USER_NAME,
+			</if>
+			<if test="null != taskType">
+				TASK_TYPE,
+			</if>
+			<if test="null != allocationType">
+				ALLOCATION_TYPE,
+			</if>
+			<if test="null != allocationRefId">
+				ALLOCATION_REF_ID,
+			</if>
+			<if test="null != taskName">
+				TASK_NAME,
+			</if>
+			<if test="null != workflowName">
+				WORKFLOW_NAME,
+			</if>
+			<if test="null != allocationDttm">
+				ALLOCATION_DTTM,
+			</if>
+			<if test="null != completeDttm">
+				COMPLETE_DTTM,
+			</if>
+			<if test="null != taskStatus">
+				TASK_STATUS,
+			</if>
+			<if test="null != status">
+				STATUS
+			</if>
+		</trim>	
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+				#{pid},
+			<if test="null != taskUserName">
+				#{taskUserName},
+			</if>
+			<if test="null != taskType">
+				#{taskType},
+			</if>
+			<if test="null != allocationType">
+				#{allocationType},
+			</if>
+			<if test="null != allocationRefId">
+				#{allocationRefId},
+			</if>
+			<if test="null != taskName">
+				#{taskName},
+			</if>
+			<if test="null != workflowName">
+				#{workflowName},
+			</if>
+			<if test="null != allocationDttm">
+				#{allocationDttm,javaType=String,jdbcType=TIMESTAMP},
+			</if>
+			<if test="null != completeDttm">
+				#{completeDttm,javaType=String,jdbcType=TIMESTAMP},
+			</if>
+			<if test="null != taskStatus">
+				#{taskStatus},
+			</if>
+			<if test="null != status">
+				#{status},
+			</if>
+		</trim>
+	</insert>
+	
+	<!-- 新增任务集合  表:BIZ_TASK-->
+	<insert id="insertTaskVos"  parameterType="java.util.List">
+		<foreach collection="list" index="i" item="item" separator=";">
+			INSERT INTO BIZ_TASK
+			<trim prefix="(" suffix=")" suffixOverrides=",">
+					PID,
+				<if test="null != item.taskUserName">
+					TASK_USER_NAME,
+				</if>
+				<if test="null != item.taskType">
+					TASK_TYPE,
+				</if>
+				<if test="null != item.allocationType">
+					ALLOCATION_TYPE,
+				</if>
+				<if test="null != item.allocationRefId">
+					ALLOCATION_REF_ID,
+				</if>
+				<if test="null != item.taskName">
+					TASK_NAME,
+				</if>
+				<if test="null != item.workflowName">
+					WORKFLOW_NAME,
+				</if>
+				<if test="null != item.allocationDttm">
+					ALLOCATION_DTTM,
+				</if>
+				<if test="null != item.completeDttm">
+					COMPLETE_DTTM,
+				</if>
+				<if test="null != item.taskStatus">
+					TASK_STATUS,
+				</if>
+				<if test="null != item.status">
+					STATUS,
+				</if>
+			</trim>	
+			<trim prefix="values (" suffix=")" suffixOverrides=",">
+					SELECT SEQ_BIZ_TASK.Nextval ,
+				<if test="null != item.taskUserName">
+					#{item.taskUserName},
+				</if>
+				<if test="null != item.taskType">
+					#{item.taskType},
+				</if>
+				<if test="null != item.allocationType">
+					#{item.allocationType},
+				</if>
+				<if test="null != item.allocationRefId">
+					#{item.allocationRefId},
+				</if>
+				<if test="null != item.taskName">
+					#{item.taskName},
+				</if>
+				<if test="null != item.workflowName">
+					#{item.workflowName},
+				</if>
+				<if test="null != item.allocationDttm">
+					#{item.allocationDttm,javaType=String,jdbcType=TIMESTAMP},
+				</if>
+				<if test="null != item.completeDttm">
+					#{item.completeDttm,javaType=String,jdbcType=TIMESTAMP},
+				</if>
+				<if test="null != item.taskStatus">
+					#{item.taskStatus},
+				</if>
+				<if test="null != item.status">
+					#{item.status},
+				</if>
+			</trim>
+		</foreach>
+	</insert>
+	<update id="updateTaskVos" parameterType="java.util.List">
+		<foreach collection="list" item="item" index="index" separator=";">
+			 UPDATE BIZ_TASK T SET
+			 <trim prefix="values (" suffix=")" suffixOverrides=",">
+				<if test="null != item.taskUserName">
+					T.TASK_USER_NAME = #{item.taskUserName},
+				</if>
+				<if test="null != item.taskType">
+					T.TASK_TYPE = #{item.taskType},
+				</if>
+				<if test="null != item.allocationType">
+					T.ALLOCATION_TYPE = #{item.allocationType},
+				</if>
+				<if test="null != item.allocationRefId">
+					T.ALLOCATION_REF_ID = #{item.allocationRefId},
+				</if>
+				<if test="null != item.taskName">
+					T.TASK_NAME = #{item.taskName},
+				</if>
+				<if test="null != item.workflowName">
+					T.WORKFLOW_NAME = #{item.workflowName},
+				</if>
+				<if test="null != item.allocationDttm">
+					T.ALLOCATION_DTTM = #{item.allocationDttm,javaType=String,jdbcType=TIMESTAMP},
+				</if>
+				<if test="null != item.completeDttm">
+					T.COMPLETE_DTTM = #{item.completeDttm,javaType=String,jdbcType=TIMESTAMP},
+				</if>
+				<if test="null != item.taskStatus">
+					T.TASK_STATUS = #{item.taskStatus},
+				</if>
+				<if test="null != item.status">
+					T.STATUS = #{item.status},
+				</if>
+			</trim>
+			WHERE T.PID = #{pid}
+		</foreach>
+	</update>
+	<!--  -->
+	<resultMap type="com.xlkfinance.bms.rpc.task.TaskSettingVo" id="taskSettingMap">
+		<id column="PID" property="pid"/>
+		<result column="WORKFLOW_PROCESS_DEF_ID" property="workflowProcessDefId"/>
+		<result column="WORKFLOW_PROCESS_DEF_NAME" property="workflowProcessDefName"/>
+		<result column="WORKFLOW_TASK_ID" property="workflowTaskId"/>
+		<result column="WORKFLOW_TASK_NAME" property="workflowTaskName"/>
+		<result column="OLD_USER_ID" property="oldUserId"/>
+		<result column="AGENCY_USER_ID" property="agencyUserId"/>
+		<result column="AGENCY_USER_NAME" property="agencyUserName"/>
+		<result column="BEGIN_DT" property="beginDt" javaType="String" jdbcType="DATE"/>
+		<result column="END_DT" property="endDt" javaType="String" jdbcType="DATE"/>
+		<result column="USE_STATUS" property="useStatus"/>
+		<result column="CRE_DTTM" property="creDttm"/>
+		<result column="STATUS" property="status"/>
+	</resultMap>
+	<sql id="task_setting_fields">
+		  T.PID,                    
+		  T.WORKFLOW_PROCESS_DEF_ID,
+		  T.WORKFLOW_TASK_ID,       
+		  T.OLD_USER_ID,             
+		  T.AGENCY_USER_ID,          
+		  T.BEGIN_DT,                
+		  T.END_DT,                 
+		  T.USE_STATUS,              
+		  T.CRE_DTTM,                
+		  T.STATUS
+	</sql>
+	<select id="findTaskSettingsByUserIdInNow"  resultMap="taskSettingMap" parameterType="java.util.Map">
+		SELECT 
+			<include refid="task_setting_fields"/>
+		  FROM BIZ_TASK_AGENCY_SETTING T
+		 WHERE T.USE_STATUS = 1
+   			AND T.STATUS = 1
+		 	AND T.BEGIN_DT <![CDATA[<=]]> TO_DATE(TO_CHAR(SYSDATE, 'yyyy/mm/dd'), 'yyyy/mm/dd')
+		    AND T.END_DT <![CDATA[>=]]> TO_DATE(TO_CHAR(SYSDATE, 'yyyy/mm/dd'), 'yyyy/mm/dd')
+		    AND T.OLD_USER_ID =
+		       (SELECT U.PID FROM SYS_USER U WHERE U.STATUS = 1 AND U.USER_NAME = #{userName})
+		 	AND T.WORKFLOW_PROCESS_DEF_ID = #{workflowProcessDefId}
+   			AND T.WORKFLOW_TASK_ID =#{workflowTaskId}
+	</select>
+	
+	<select id="findTaskSettingsByUserId" parameterType="Integer" resultMap="taskSettingMap">
+		SELECT T.PID,
+	       T.WORKFLOW_PROCESS_DEF_ID,
+	       (SELECT L.LOOKUP_NAME
+	          FROM SYS_LOOKUP L
+	         WHERE L.LOOKUP_TYPE = T.WORKFLOW_PROCESS_DEF_ID)
+	        AS WORKFLOW_PROCESS_DEF_NAME,
+	       T.WORKFLOW_TASK_ID,
+	       (SELECT L.LOOKUP_DESC
+	          FROM SYS_LOOKUP_VAL L
+	         WHERE L.LOOKUP_VAL = T.WORKFLOW_TASK_ID
+	           AND L.LOOKUP_ID =
+	               (SELECT LV.PID
+	                  FROM SYS_LOOKUP LV
+	                 WHERE LV.LOOKUP_TYPE = T.WORKFLOW_PROCESS_DEF_ID)) AS WORKFLOW_TASK_NAME,
+	       T.OLD_USER_ID,
+	       T.AGENCY_USER_ID,
+	       (SELECT U.REAL_NAME FROM SYS_USER U WHERE U.PID = T.AGENCY_USER_ID) AS AGENCY_USER_NAME,
+	       T.BEGIN_DT,
+	       T.END_DT,
+	       T.USE_STATUS,
+	       T.CRE_DTTM,
+	       T.STATUS,
+	       T.ROWID
+	  FROM BIZ_TASK_AGENCY_SETTING T
+	 	WHERE T.STATUS = 1
+	   	AND T.OLD_USER_ID = #{pid}
+	</select>
+	
+	<select id="findTaskSettingsByTaskSetting" parameterType="com.xlkfinance.bms.rpc.task.TaskSettingVo" resultMap="taskSettingMap">
+		SELECT 
+		  <include refid="task_setting_fields"/>
+		 FROM BIZ_TASK_AGENCY_SETTING T 
+		 <trim prefix="WHERE" prefixOverrides="AND |OR">
+				T.STATUS = 1
+			<if test=" null != pid">
+				AND T.PID = #{pid}
+			</if>
+			<if test=" null != workflowProcessDefId">
+				AND T.WORKFLOW_PROCESS_DEF_ID = #{workflowProcessDefId}
+			</if>
+			<if test=" null != workflowTaskId">
+				AND T.WORKFLOW_TASK_ID = #{workflowTaskId}
+			</if>
+			<if test=" null != oldUserId">
+				AND T.OLD_USER_ID = #{oldUserId}
+			</if>
+			<if test=" null != agencyUserId">
+				AND T.AGENCY_USER_ID = #{agencyUserId}
+			</if>
+			<if test=" null != beginDt">
+				AND T.BEGIN_DT = #{beginDt}
+			</if>
+			<if test=" null != endDt">
+				AND T.END_DT = #{endDt}
+			</if>
+			<if test=" null != useStatus">
+				AND T.USE_STATUS = #{useStatus}
+			</if>
+			<if test=" null != creDttm">
+				AND T.CRE_DTTM = #{creDttm}
+			</if>
+			<if test=" and null != status">
+				AND T.STATUS = #{status}
+			</if>
+		</trim>
+	</select>
+	
+	<insert id="insertTaskSetting" parameterType="com.xlkfinance.bms.rpc.task.TaskSettingVo">
+		<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="pid">
+			SELECT SEQ_BIZ_TASK_AGENCY_SETTING.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_TASK_AGENCY_SETTING
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+				PID,
+			<if test="null != workflowProcessDefId">
+				WORKFLOW_PROCESS_DEF_ID,
+			</if>
+			<if test="null != workflowTaskId">
+				WORKFLOW_TASK_ID,
+			</if>
+			<if test="null != oldUserId">
+				OLD_USER_ID,
+			</if>
+			<if test="null != agencyUserId">
+				AGENCY_USER_ID,
+			</if>
+			<if test="null != beginDt">
+				BEGIN_DT,
+			</if>
+			<if test="null != endDt">
+				END_DT,
+			</if>
+			<if test="null != useStatus">
+				USE_STATUS,
+			</if>
+			<if test="null != creDttm">
+				CRE_DTTM,
+			</if>
+			<if test="null != status">
+				STATUS,
+			</if>
+		</trim>	
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+				#{pid},
+			<if test="null != workflowProcessDefId">
+				#{workflowProcessDefId},
+			</if>
+			<if test="null != workflowTaskId">
+				#{workflowTaskId},
+			</if>
+			<if test="null != oldUserId">
+				#{oldUserId},
+			</if>
+			<if test="null != agencyUserId">
+				#{agencyUserId},
+			</if>
+			<if test="null != beginDt">
+				#{beginDt,javaType=String,jdbcType=DATE},
+			</if>
+			<if test="null != endDt">
+				#{endDt,javaType=String,jdbcType=DATE},
+			</if>
+			<if test="null != useStatus">
+				#{useStatus},
+			</if>
+			<if test="null != creDttm">
+				#{creDttm,javaType=String,jdbcType=TIMESTAMP},
+			</if>
+			<if test="null != status">
+				1
+			</if>
+		</trim>
+	</insert>
+	<update id="updateTaskSetting" parameterType="com.xlkfinance.bms.rpc.task.TaskSettingVo">
+		 UPDATE BIZ_TASK_AGENCY_SETTING T SET  
+		<trim suffixOverrides=",">
+			<if test="null != workflowProcessDefId">
+				T.WORKFLOW_PROCESS_DEF_ID = #{workflowProcessDefId},
+			</if>
+			<if test="null != workflowTaskId">
+				T.WORKFLOW_TASK_ID = #{workflowTaskId},
+			</if>
+			<if test="null != oldUserId">
+				T.OLD_USER_ID = #{oldUserId},
+			</if>
+			<if test="null != agencyUserId">
+				T.AGENCY_USER_ID = #{agencyUserId},
+			</if>
+			<if test="null != beginDt">
+				T.BEGIN_DT = #{beginDt,javaType=String,jdbcType=DATE},
+			</if>
+			<if test="null != endDt">
+				T.END_DT = #{endDt,javaType=String,jdbcType=DATE},
+			</if>
+			<if test="null != useStatus">
+				T.USE_STATUS = #{useStatus},
+			</if>
+			<if test="null != creDttm">
+				T.CRE_DTTM = #{creDttm},
+			</if>
+		</trim>
+		WHERE T.PID = #{pid}
+	</update>
+	
+	<update id="deleteTaskSetting" parameterType="String">
+	 	UPDATE BIZ_TASK_AGENCY_SETTING T SET  T.STATUS = 0 WHERE T.PID = #{pid}
+	</update>
+	<update id="deleteTaskSettings" parameterType="List">
+		UPDATE BIZ_TASK_AGENCY_SETTING T SET  T.STATUS = 0 WHERE T.PID in 
+		<foreach collection="list" item="item" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</update>
+</mapper>

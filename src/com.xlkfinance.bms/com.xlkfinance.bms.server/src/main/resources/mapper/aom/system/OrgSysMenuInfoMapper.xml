@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.xlkfinance.bms.server.aom.system.mapper.OrgSysMenuInfoMapper">
+	<resultMap id="orgSysMenuInfoMap" type="com.qfang.xk.aom.rpc.system.OrgSysMenuInfo">
+		<id property="pid" column="PID" />
+		<id property="menuName" column="MENU_NAME" />
+		<id property="parentId" column="PARENT_ID" />
+		<id property="level" column="LEVEL" />
+		<id property="url" column="URL" />
+		<id property="status" column="STATUS" />
+		<id property="menuIndex" column="MENU_INDEX" />
+		<id property="iconCls" column="ICON_CLS" />
+		<id property="userType" column="USER_TYPE" />
+	</resultMap>
+	<resultMap id="treeSysMenuMap" type="com.qfang.xk.aom.rpc.system.OrgSysMenuInfo">
+		<id property="pid" column="PID" />
+		<id property="menuName" column="MENU_NAME" />
+		<id property="parentId" column="PARENT_ID" />
+		<id property="level" column="LEVEL" />
+		<id property="url" column="URL" />
+		<id property="status" column="STATUS" />
+		<id property="menuIndex" column="MENU_INDEX" />
+		<id property="iconCls" column="ICON_CLS" />
+		<id property="userType" column="USER_TYPE" />
+		<collection property="childrenList"
+			ofType="com.qfang.xk.aom.rpc.system.OrgSysMenuInfo">
+			<id property="pid" column="C_PID" />
+			<id property="menuName" column="C_MENU_NAME" />
+			<id property="parentId" column="C_PARENT_ID" />
+			<id property="level" column="C_LEVEL" />
+			<id property="url" column="C_URL" />
+			<id property="status" column="C_STATUS" />
+			<id property="menuIndex" column="C_MENU_INDEX" />
+			<id property="iconCls" column="C_ICON_CLS" />
+			<id property="userType" column="USER_TYPE" />
+		</collection>
+	</resultMap>
+	<sql id="column_list">
+		PID, MENU_NAME, PARENT_ID, "LEVEL", "URL", STATUS, MENU_INDEX, ICON_CLS,USER_TYPE
+	</sql>
+	<!-- 查询所有 -->
+	<select id="getAll" resultMap="orgSysMenuInfoMap"
+		parameterType="com.qfang.xk.aom.rpc.system.OrgSysMenuInfo">
+		SELECT
+		<include refid="column_list" />
+		FROM ORG_SYS_MENU_INFO
+		<where>
+			<trim>
+				<if test="pid != null and pid >0">
+					PID=#{pid}
+				</if>
+				<if test="menuName != null and menuName !=''">
+					AND MENU_NAME=#{menuName}
+				</if>
+				<if test="parentId != null and parentId >0">
+					AND PARENT_ID=#{parentId}
+				</if>
+				<if test="level != null and level >0">
+					AND "LEVEL"=#{level}
+				</if>
+				<if test="url != null and url !=''">
+					AND "URL"=#{url}
+				</if>
+				<if test="status != null and status >0">
+					AND STATUS=#{status}
+				</if>
+				<if test="menuIndex != null and menuIndex >0">
+					AND MENU_INDEX=#{menuIndex}
+				</if>
+				<if test="iconCls != null and iconCls !=''">
+					AND ICON_CLS=#{iconCls}
+				</if>
+				<if test="userType != null and userType >0">
+					AND USER_TYPE=#{userType}
+				</if>
+			</trim>
+		</where>
+	</select>
+	<!-- 根据id获取 -->
+	<select id="getById" resultMap="orgSysMenuInfoMap">
+		SELECT
+		<include refid="column_list" />
+		FROM ORG_SYS_MENU_INFO WHERE PID=#{pid}
+	</select>
+	<!-- 获取二级的树 -->
+	<select id="getTree" resultMap="treeSysMenuMap" parameterType="com.qfang.xk.aom.rpc.system.OrgUserInfo"> 
+		SELECT A.PID,
+       A.MENU_NAME,
+       A.PARENT_ID,
+       A."LEVEL",
+       A."URL",
+       A.STATUS,
+       A.MENU_INDEX,
+       A.ICON_CLS,
+       A.USER_TYPE,
+       B.PID        AS C_PID,
+       B.MENU_NAME  AS C_MENU_NAME,
+       B.PARENT_ID  AS C_PARENT_ID,
+       B."LEVEL"    AS C_LEVEL,
+       B."URL"      AS C_URL,
+       B.STATUS     AS C_STATUS,
+       B.MENU_INDEX AS C_MENU_INDEX,
+       B.ICON_CLS   AS C_ICON_CLS,
+       B.USER_TYPE   AS C_USER_TYPE
+  FROM ORG_SYS_MENU_INFO A, ORG_SYS_MENU_INFO B
+  LEFT JOIN ORG_USER_MENU_INFO C
+    ON B.PID = C.MENU_ID
+ WHERE A.PID = B.PARENT_ID 
+	 <if test="menuType ==1 or menuType ==2">
+	 AND A.USER_TYPE=#{menuType}
+	 </if>
+	 <if test="pid != null and pid >0 and userType ==3">
+	 AND C.USER_ID=#{pid}
+	 </if>
+	 ORDER BY A.MENU_INDEX,B.MENU_INDEX
+	</select>
+	<!-- 插入一条数据 -->
+	<insert id="insert" parameterType="com.qfang.xk.aom.rpc.system.OrgSysMenuInfo">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_ORG_SYS_MENU_INFO.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO ORG_SYS_MENU_INFO
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="pid != null and pid >0">
+				PID,
+			</if>
+			<if test="menuName != null and menuName !=''">
+				MENU_NAME,
+			</if>
+			<if test="parentId != null and parentId >0">
+				PARENT_ID,
+			</if>
+			<if test="level != null and level >0">
+				"LEVEL",
+			</if>
+			<if test="url != null and url !=''">
+				"URL",
+			</if>
+			<if test="status != null and status >0">
+				STATUS,
+			</if>
+			<if test="menuIndex != null and menuIndex >0">
+				MENU_INDEX,
+			</if>
+			<if test="iconCls != null and iconCls !=''">
+				ICON_CLS,
+			</if>
+			<if test="userType != null and userType >0">
+			    USER_TYPE,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="pid != null and pid >0">
+				#{pid},
+			</if>
+			<if test="menuName != null and menuName !=''">
+				#{menuName},
+			</if>
+			<if test="parentId != null and parentId >0">
+				#{parentId},
+			</if>
+			<if test="level != null and level >0">
+				#{level},
+			</if>
+			<if test="url != null and url !=''">
+				#{url},
+			</if>
+			<if test="status != null and status >0">
+				#{status},
+			</if>
+			<if test="menuIndex != null and menuIndex >0">
+				#{menuIndex},
+			</if>
+			<if test="iconCls != null and iconCls !=''">
+				#{iconCls},
+			</if>
+			<if test="userType != null and userType >0">
+			   #{userType},
+			</if>
+		</trim>
+	</insert>
+	<!-- 根据id删除数据 -->
+	<delete id="deleteById" parameterType="com.qfang.xk.aom.rpc.system.OrgSysMenuInfo">
+		<![CDATA[DELETE FROM ORG_SYS_MENU_INFO WHERE PID=#{pid}]]>
+	</delete>
+	<!-- 根据id更新数据 -->
+	<update id="update" parameterType="com.qfang.xk.aom.rpc.system.OrgSysMenuInfo">
+		UPDATE ORG_SYS_MENU_INFO
+		<set>
+			<if test="pid != null and pid >0">
+				PID=#{pid},
+			</if>
+			<if test="menuName != null and menuName !=''">
+				MENU_NAME=#{menuName},
+			</if>
+			<if test="parentId != null and parentId >0">
+				PARENT_ID=#{parentId},
+			</if>
+			<if test="level != null and level >0">
+				"LEVEL"=#{level},
+			</if>
+			<if test="url != null and url !=''">
+				"URL"=#{url},
+			</if>
+			<if test="status != null and status >0">
+				STATUS=#{status},
+			</if>
+			<if test="menuIndex != null and menuIndex >0">
+				MENU_INDEX=#{menuIndex},
+			</if>
+			<if test="iconCls != null and iconCls !=''">
+				ICON_CLS=#{iconCls},
+			</if>
+			<if test="userType != null and userType >0">
+			   USER_TYPE=#{userType},
+			</if>
+		</set>
+		WHERE PID = #{pid}
+	</update>
+	<!-- 根据传入多个id删除数据 -->
+	<delete id="deleteByIds" parameterType="java.util.List">
+		DELETE FROM ORG_SYS_MENU_INFO WHERE PID in
+		<foreach collection="list" item="item" index="index" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+</mapper>

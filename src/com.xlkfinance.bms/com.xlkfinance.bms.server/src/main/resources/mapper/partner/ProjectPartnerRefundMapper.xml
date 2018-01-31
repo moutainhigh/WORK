@@ -1,0 +1,603 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlkfinance.bms.server.partner.mapper.ProjectPartnerRefundMapper">
+
+<resultMap type="com.xlkfinance.bms.rpc.partner.ProjectPartnerRefund" id="baseResultMap">
+  		<id property="pid" column="PID"/>
+  		<id property="partnerId" column="PARTNER_ID"/>
+  		<id property="projectId" column="PROJECT_ID"/>
+  		<id property="partnerNo" column="PARTNER_NO"/>
+  		<id property="loanId" column="LOAN_ID"/>
+  		<id property="currNo" column="CURR_NO"/>
+  		<id property="currPlanRefundDate" column="CURR_PLAN_REFUND_DATE"/>
+  		<id property="currShouldCapitalMoney" column="CURR_SHOULD_CAPITAL_MONEY"/>
+  		<id property="currShouldXiFee" column="CURR_SHOULD_XI_FEE"/>
+  		<id property="currShouldManageFee" column="CURR_SHOULD_MANAGE_FEE"/>
+  		<id property="currShouldOtherFee" column="CURR_SHOULD_OTHER_FEE"/>
+  		<id property="currShouldTotalMoney" column="CURR_SHOULD_TOTAL_MONEY"/>
+  		<id property="currRealRefundDate" column="CURR_REAL_REFUND_DATE"/>
+  		<id property="currRealCapitalMoney" column="CURR_REAL_CAPITAL_MONEY"/>
+  		<id property="currRealXiFee" column="CURR_REAL_XI_FEE"/>
+  		<id property="currRealManageFee" column="CURR_REAL_MANAGE_FEE"/>
+  		<id property="currRealOtherFee" column="CURR_REAL_OTHER_FEE"/>
+  		<id property="currRealTotalMoney" column="CURR_REAL_TOTAL_MONEY"/>
+  		<id property="currOverdueStatus" column="CURR_OVERDUE_STATUS"/>
+  		<id property="currOverdueDays" column="CURR_OVERDUE_DAYS"/>
+  		<id property="oweCapitalMoney" column="OWE_CAPITAL_MONEY"/>
+  		<id property="currCapitalMoneyFile" column="CURR_CAPITAL_MONEY_FILE"/>
+  		<id property="currXiFeeFile" column="CURR_XI_FEE_FILE"/>
+  		<id property="isSettlementStatus" column="IS_SETTLEMENT_STATUS"/>
+  		<id property="isForbit" column="IS_FORBIT"/>
+  		<id property="refundStatus" column="REFUND_STATUS"/>
+  		<id property="partnerRealRefundDate" column="PARTNER_REAL_REFUND_DATE"/>
+  		<id property="partnerRefundFile" column="PARTNER_REFUND_FILE"/>
+  		<id property="partnerInterests" column="PARTNER_INTERESTS"/>
+  		<id property="createTime" column="CREATE_TIME"/>
+  		<id property="updateTime" column="UPDATE_TIME"/>
+  		<id property="refundRemark" column="REFUND_REMARK"/>
+  		
+</resultMap>
+
+<!-- 获取项目合作机构还款的PID -->
+<select id="getSeqBizProjectPartnerRefund" resultType="java.lang.Integer">
+	SELECT SEQ_BIZ_PROJECT_PARTNER_REFUND.Nextval as PID from DUAL 
+</select>
+
+<!-- 查询列表 -->
+<select id="findAllProjectPartnerRefund" resultMap="baseResultMap" parameterType="com.xlkfinance.bms.rpc.partner.ProjectPartnerRefund">
+	 
+	 select PR.PID,PR.PARTNER_ID,PR.PROJECT_ID ,PR.PARTNER_NO ,PR.LOAN_ID ,
+	 		PR.CURR_NO ,
+	 		to_char(PR.CURR_PLAN_REFUND_DATE,'yyyy-MM-dd') AS CURR_PLAN_REFUND_DATE,
+	 		PR.CURR_SHOULD_CAPITAL_MONEY ,PR.CURR_SHOULD_XI_FEE ,
+	 		PR.CURR_SHOULD_MANAGE_FEE ,PR.CURR_SHOULD_OTHER_FEE ,PR.CURR_SHOULD_TOTAL_MONEY ,
+	 		
+	 		to_char(PR.CURR_REAL_REFUND_DATE,'yyyy-MM-dd') AS CURR_REAL_REFUND_DATE,
+	 		PR.CURR_REAL_CAPITAL_MONEY ,PR.CURR_REAL_XI_FEE ,
+	 		PR.CURR_REAL_MANAGE_FEE ,PR.CURR_REAL_OTHER_FEE ,PR.CURR_REAL_TOTAL_MONEY ,PR.CURR_OVERDUE_STATUS ,
+	 		PR.CURR_OVERDUE_DAYS , PR.OWE_CAPITAL_MONEY,PR.CURR_CAPITAL_MONEY_FILE ,
+	 		PR.CURR_XI_FEE_FILE ,PR.IS_SETTLEMENT_STATUS ,PR.IS_FORBIT ,PR.REFUND_STATUS ,
+	 		
+	 		to_char(PR.PARTNER_REAL_REFUND_DATE,'yyyy-MM-dd') AS PARTNER_REAL_REFUND_DATE,
+	 		
+	 		PR.PARTNER_REFUND_FILE ,PR.PARTNER_INTERESTS ,
+	 		
+	 		to_char(PR.CREATE_TIME,'yyyy-MM-dd HH:mm') AS CREATE_TIME,
+	 		to_char(PR.UPDATE_TIME,'yyyy-MM-dd HH:mm') AS UPDATE_TIME,
+	 		PR.REFUND_REMARK
+	 		
+	 	from BIZ_PROJECT_PARTNER_REFUND PR 
+	 		LEFT JOIN BIZ_PROJECT PRO ON PRO.PID = PR.PROJECT_ID
+	 where 	1 = 1 
+	 
+	<if test="pid != null and pid > 0">
+    		AND PR.PID = #{pid}
+    </if>
+	<if test="partnerId != null and partnerId > 0">
+    		AND PR.PARTNER_ID = #{partnerId}
+    </if>
+	<if test="projectId != null and projectId > 0">
+    		AND PR.PROJECT_ID = #{projectId}
+    </if>
+	<if test="partnerNo != null and partnerNo != ''">
+    		AND PR.PARTNER_NO = #{partnerNo}
+    </if>
+	<if test="loanId != null and loanId != ''">
+    		AND PR.LOAN_ID = #{loanId}
+    </if>
+	<if test="currOverdueStatus != null and currOverdueStatus > 0">
+    		AND PR.CURR_OVERDUE_STATUS = #{currOverdueStatus}
+    </if>
+	<if test="isSettlementStatus != null and isSettlementStatus > 0">
+    		AND PR.IS_SETTLEMENT_STATUS = #{isSettlementStatus}
+    </if>
+	<if test="isForbit != null and isForbit > 0">
+    		AND PR.IS_FORBIT = #{isForbit}
+    </if>
+	<if test="refundStatus != null and refundStatus > 0">
+    		AND PR.REFUND_STATUS = #{refundStatus}
+    </if>
+ 	<if test="pids!=null and pids.size()>0">
+		AND	PR.PID in
+		<foreach item="itemId" collection="pids" open="(" separator="," close=")">
+		          #{itemId}
+		</foreach>
+	</if>
+ 	<if test="currOverdueStatusList!=null and currOverdueStatusList.size()>0">
+		AND	PR.CURR_OVERDUE_STATUS in
+		<foreach item="itemId" collection="currOverdueStatusList" open="(" separator="," close=")">
+		          #{itemId}
+		</foreach>
+	</if>
+ 	<if test="refundStatusList!=null and refundStatusList.size()>0">
+		AND	PR.REFUND_STATUS in
+		<foreach item="itemId" collection="refundStatusList" open="(" separator="," close=")">
+		          #{itemId}
+		</foreach>
+	</if>
+    
+<!-- 	<if test="userIds!=null and userIds.size()>0">
+		AND	PRO.PM_USER_ID in
+		<foreach item="itemId" collection="userIds" open="(" separator="," close=")">
+		          #{itemId}
+		</foreach>
+	</if> -->
+    
+</select>
+
+
+<!-- 查询列表数量 -->
+<select id="findAllProjectPartnerRefundCount" resultType="java.lang.Integer" parameterType="com.xlkfinance.bms.rpc.partner.ProjectPartnerRefund">
+	 
+	select count(0) from BIZ_PROJECT_PARTNER_REFUND
+	 where 	1 = 1 
+	<if test="pid != null and pid > 0">
+    		AND PID = #{pid}
+    </if>
+	<if test="partnerId != null and partnerId > 0">
+    		AND PARTNER_ID = #{partnerId}
+    </if>
+	<if test="projectId != null and projectId > 0">
+    		AND PROJECT_ID = #{projectId}
+    </if>
+	<if test="partnerNo != null and partnerNo != ''">
+    		AND PARTNER_NO = #{partnerNo}
+    </if>
+	<if test="loanId != null and loanId != ''">
+    		AND LOAN_ID = #{loanId}
+    </if>
+	<if test="currOverdueStatus != null and currOverdueStatus > 0">
+    		AND CURR_OVERDUE_STATUS = #{currOverdueStatus}
+    </if>
+	<if test="isSettlementStatus != null and isSettlementStatus > 0">
+    		AND IS_SETTLEMENT_STATUS = #{isSettlementStatus}
+    </if>
+	<if test="isForbit != null and isForbit > 0">
+    		AND IS_FORBIT = #{isForbit}
+    </if>
+	<if test="refundStatus != null and refundStatus > 0">
+    		AND REFUND_STATUS = #{refundStatus}
+    </if>
+ 	<if test="pids!=null and pids.size()>0">
+		AND	PR.PID in
+		<foreach item="itemId" collection="pids" open="(" separator="," close=")">
+		          #{itemId}
+		</foreach>
+	</if>
+ 	<if test="currOverdueStatusList!=null and currOverdueStatusList.size()>0">
+		AND	PR.CURR_OVERDUE_STATUS in
+		<foreach item="itemId" collection="currOverdueStatusList" open="(" separator="," close=")">
+		          #{itemId}
+		</foreach>
+	</if>
+ 	<if test="refundStatusList!=null and refundStatusList.size()>0">
+		AND	PR.REFUND_STATUS in
+		<foreach item="itemId" collection="refundStatusList" open="(" separator="," close=")">
+		          #{itemId}
+		</foreach>
+	</if>
+</select>
+
+
+<!-- 查询列表 -->
+<select id="findProjectPartnerRefund" resultMap="baseResultMap" parameterType="com.xlkfinance.bms.rpc.partner.ProjectPartnerRefund">
+	 
+	 select PR.PID,PR.PARTNER_ID,PR.PROJECT_ID ,PR.PARTNER_NO ,PR.LOAN_ID ,
+	 		PR.CURR_NO ,
+	 		to_char(PR.CURR_PLAN_REFUND_DATE,'yyyy-MM-dd') AS CURR_PLAN_REFUND_DATE,
+	 		PR.CURR_SHOULD_CAPITAL_MONEY ,PR.CURR_SHOULD_XI_FEE ,
+	 		PR.CURR_SHOULD_MANAGE_FEE ,PR.CURR_SHOULD_OTHER_FEE ,PR.CURR_SHOULD_TOTAL_MONEY ,
+	 		
+	 		to_char(PR.CURR_REAL_REFUND_DATE,'yyyy-MM-dd') AS CURR_REAL_REFUND_DATE,
+	 		PR.CURR_REAL_CAPITAL_MONEY ,PR.CURR_REAL_XI_FEE ,
+	 		PR.CURR_REAL_MANAGE_FEE ,PR.CURR_REAL_OTHER_FEE ,PR.CURR_REAL_TOTAL_MONEY ,PR.CURR_OVERDUE_STATUS ,
+	 		PR.CURR_OVERDUE_DAYS , PR.OWE_CAPITAL_MONEY,PR.CURR_CAPITAL_MONEY_FILE ,
+	 		PR.CURR_XI_FEE_FILE ,PR.IS_SETTLEMENT_STATUS ,PR.IS_FORBIT ,PR.REFUND_STATUS ,
+	 		
+	 		to_char(PR.PARTNER_REAL_REFUND_DATE,'yyyy-MM-dd') AS PARTNER_REAL_REFUND_DATE,
+	 		
+	 		PR.PARTNER_REFUND_FILE ,PR.PARTNER_INTERESTS ,
+	 		
+	 		to_char(PR.CREATE_TIME,'yyyy-MM-dd hh24:mi') AS CREATE_TIME,
+	 		to_char(PR.UPDATE_TIME,'yyyy-MM-dd hh24:mi') AS UPDATE_TIME,
+	 		PR.REFUND_REMARK
+	 		
+	 	from BIZ_PROJECT_PARTNER_REFUND PR 
+	 		LEFT JOIN BIZ_PROJECT PRO ON PRO.PID = PR.PROJECT_ID
+	 where 	1 = 1 
+	 
+    	AND PR.PID = #{pid}
+	<if test="partnerId != null and partnerId > 0">
+    		AND PR.PARTNER_ID = #{partnerId}
+    </if>
+	<if test="projectId != null and projectId > 0">
+    		AND PR.PROJECT_ID = #{projectId}
+    </if>
+	<if test="partnerNo != null and partnerNo != ''">
+    		AND PR.PARTNER_NO = #{partnerNo}
+    </if>
+	<if test="loanId != null and loanId != ''">
+    		AND PR.LOAN_ID = #{loanId}
+    </if>
+	<if test="currOverdueStatus != null and currOverdueStatus > 0">
+    		AND PR.CURR_OVERDUE_STATUS = #{currOverdueStatus}
+    </if>
+	<if test="isSettlementStatus != null and isSettlementStatus > 0">
+    		AND PR.IS_SETTLEMENT_STATUS = #{isSettlementStatus}
+    </if>
+	<if test="isForbit != null and isForbit > 0">
+    		AND PR.IS_FORBIT = #{isForbit}
+    </if>
+	<if test="refundStatus != null and refundStatus > 0">
+    		AND PR.REFUND_STATUS = #{refundStatus}
+    </if>
+</select>
+
+
+
+<!-- 新增附件 -->
+<insert id="addProjectPartnerRefund" parameterType="com.xlkfinance.bms.rpc.partner.ProjectPartnerRefund">
+ 
+	INSERT INTO BIZ_PROJECT_PARTNER_REFUND
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+        PID, 
+		<if test="partnerId != null and partnerId > 0">
+	    		PARTNER_ID , 
+	    </if>
+		<if test="projectId != null and projectId > 0">
+	    		PROJECT_ID, 
+	    </if>
+		<if test="partnerNo != null and partnerNo != ''">
+	    		PARTNER_NO, 
+	    </if>
+		<if test="loanId != null and loanId != ''">
+	    		LOAN_ID, 
+	    </if>
+		<if test="currNo != null and currNo > 0">
+	    		CURR_NO, 
+	    </if>
+		<if test="currPlanRefundDate != null and currPlanRefundDate !=''">
+	    		CURR_PLAN_REFUND_DATE,
+	    </if>
+		<if test="currShouldCapitalMoney != null and currShouldCapitalMoney > 0">
+	    		CURR_SHOULD_CAPITAL_MONEY, 
+	    </if>
+		<if test="currShouldXiFee != null and currShouldXiFee > 0">
+	    		CURR_SHOULD_XI_FEE, 
+	    </if>
+		<if test="currShouldManageFee != null and currShouldManageFee > 0">
+	    		CURR_SHOULD_MANAGE_FEE, 
+	    </if>
+		<if test="currShouldOtherFee != null and currShouldOtherFee > 0">
+	    		CURR_SHOULD_OTHER_FEE, 
+	    </if>
+		<if test="currShouldTotalMoney != null and currShouldTotalMoney > 0">
+	    		CURR_SHOULD_TOTAL_MONEY, 
+	    </if>
+		<if test="currRealRefundDate != null and currRealRefundDate != ''">
+	    		CURR_REAL_REFUND_DATE, 
+	    </if>
+		<if test="currRealCapitalMoney != null and currRealCapitalMoney > 0">
+	    		CURR_REAL_CAPITAL_MONEY, 
+	    </if>
+		<if test="currRealXiFee != null and currRealXiFee > 0">
+	    		CURR_REAL_XI_FEE, 
+	    </if>
+		<if test="currRealManageFee != null and currRealManageFee > 0">
+	    		CURR_REAL_MANAGE_FEE, 
+	    </if>
+		<if test="currRealOtherFee != null and currRealOtherFee > 0">
+	    		CURR_REAL_OTHER_FEE, 
+	    </if>
+		<if test="currRealTotalMoney != null and currRealTotalMoney > 0">
+	    		CURR_REAL_TOTAL_MONEY, 
+	    </if>
+		<if test="currOverdueStatus != null and currOverdueStatus > 0">
+	    		CURR_OVERDUE_STATUS, 
+	    </if>
+		<if test="currOverdueDays != null and currOverdueDays > 0">
+	    		CURR_OVERDUE_DAYS, 
+	    </if>
+		<if test="oweCapitalMoney != null and oweCapitalMoney > 0">
+	    		OWE_CAPITAL_MONEY, 
+	    </if>
+		<if test="currCapitalMoneyFile != null and currCapitalMoneyFile != ''">
+	    		CURR_CAPITAL_MONEY_FILE, 
+	    </if>
+		<if test="currXiFeeFile != null and currXiFeeFile != ''">
+	    		CURR_XI_FEE_FILE, 
+	    </if>
+		<if test="isSettlementStatus != null and isSettlementStatus > 0">
+	    		IS_SETTLEMENT_STATUS, 
+	    </if>
+		<if test="isForbit != null and isForbit > 0">
+	    		IS_FORBIT, 
+	    </if>
+		<if test="refundStatus != null and refundStatus > 0">
+	    		REFUND_STATUS, 
+	    </if>
+		<if test="partnerRealRefundDate != null and partnerRealRefundDate != ''">
+	    		PARTNER_REAL_REFUND_DATE, 
+	    </if>
+		<if test="partnerRefundFile != null and partnerRefundFile != ''">
+	    		PARTNER_REFUND_FILE, 
+	    </if>
+		<if test="partnerInterests != null and partnerInterests > 0">
+	    		PARTNER_INTERESTS, 
+	    </if>
+		<if test="createTime != null and createTime != ''">
+	    		CREATE_TIME, 
+	    </if>
+		<if test="updateTime != null and updateTime != ''">
+	    		UPDATE_TIME, 
+	    </if>
+		<if test="refundRemark != null and refundRemark != ''">
+	    		REFUND_REMARK, 
+	    </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+    		#{pid,jdbcType=INTEGER}, 
+		<if test="partnerId != null and partnerId > 0">
+	    		#{partnerId,jdbcType=INTEGER}, 
+	    </if>
+		<if test="projectId != null and projectId > 0">
+	    		#{projectId,jdbcType=INTEGER}, 
+	    </if>
+		<if test="partnerNo != null and partnerNo != ''">
+	    		#{partnerNo}, 
+	    </if>
+		<if test="loanId != null and loanId != ''">
+	    		#{loanId}, 
+	    </if>
+		<if test="currNo != null and currNo > 0">
+	    		#{currNo,jdbcType=INTEGER}, 
+	    </if>
+		<if test="currPlanRefundDate != null and currPlanRefundDate !=''">
+	    		#{currPlanRefundDate,javaType=String, jdbcType=TIMESTAMP}, 
+	    </if>
+		<if test="currShouldCapitalMoney != null and currShouldCapitalMoney > 0">
+	    		#{currShouldCapitalMoney},  
+	    </if>
+		<if test="currShouldXiFee != null and currShouldXiFee > 0">
+	    		#{currShouldXiFee},  
+	    </if>
+		<if test="currShouldManageFee != null and currShouldManageFee > 0">
+	    		#{currShouldManageFee},  
+	    </if>
+		<if test="currShouldOtherFee != null and currShouldOtherFee > 0">
+	    		#{currShouldOtherFee},  
+	    </if>
+		<if test="currShouldTotalMoney != null and currShouldTotalMoney > 0">
+	    		#{currShouldTotalMoney},  
+	    </if>
+		<if test="currRealRefundDate != null and currRealRefundDate != ''">
+	    		#{currRealRefundDate,javaType=String, jdbcType=TIMESTAMP}, 
+	    </if>
+		<if test="currRealCapitalMoney != null and currRealCapitalMoney > 0">
+	    		#{currRealCapitalMoney},  
+	    </if>
+		<if test="currRealXiFee != null and currRealXiFee > 0">
+	    		#{currRealXiFee},  
+	    </if>
+		<if test="currRealManageFee != null and currRealManageFee > 0">
+	    		#{currRealManageFee},  
+	    </if>
+		<if test="currRealOtherFee != null and currRealOtherFee > 0">
+	    		#{currRealOtherFee},  
+	    </if>
+		<if test="currRealTotalMoney != null and currRealTotalMoney > 0">
+	    		#{currRealTotalMoney},  
+	    </if>
+		<if test="currOverdueStatus != null and currOverdueStatus > 0">
+	    		#{currOverdueStatus,jdbcType=INTEGER}, 
+	    </if>
+		<if test="currOverdueDays != null and currOverdueDays > 0">
+	    		#{currOverdueDays,jdbcType=INTEGER}, 
+	    </if>
+		<if test="oweCapitalMoney != null and oweCapitalMoney > 0">
+	    		#{oweCapitalMoney},  
+	    </if>
+		<if test="currCapitalMoneyFile != null and currCapitalMoneyFile != ''">
+	    		#{currCapitalMoneyFile},  
+	    </if>
+		<if test="currXiFeeFile != null and currXiFeeFile != ''">
+	    		#{currXiFeeFile},  
+	    </if>
+		<if test="isSettlementStatus != null and isSettlementStatus > 0">
+	    		#{isSettlementStatus,jdbcType=INTEGER}, 
+	    </if>
+		<if test="isForbit != null and isForbit > 0">
+	    		#{isForbit,jdbcType=INTEGER}, 
+	    </if>
+		<if test="refundStatus != null and refundStatus > 0">
+	    		#{refundStatus,jdbcType=INTEGER}, 
+	    </if>
+		<if test="partnerRealRefundDate != null and partnerRealRefundDate != ''">
+	    		#{partnerRealRefundDate,javaType=String, jdbcType=TIMESTAMP}, 
+	    </if>
+		<if test="partnerRefundFile != null and partnerRefundFile != ''">
+	    		#{partnerRefundFile},  
+	    </if>
+		<if test="partnerInterests != null and partnerInterests > 0">
+	    		#{partnerInterests},  
+	    </if>
+		<if test="createTime != null and createTime != ''">
+	    		#{createTime,javaType=String, jdbcType=TIMESTAMP}, 
+	    </if>
+		<if test="updateTime != null and updateTime != ''">
+	    		#{updateTime,javaType=String, jdbcType=TIMESTAMP}, 
+	    </if>
+		<if test="refundRemark != null and refundRemark != ''">
+	    		#{refundRemark}, 
+	    </if>
+    </trim>
+</insert>
+
+
+<!-- 修改 -->
+<update id="updateProjectPartnerRefund" parameterType="com.xlkfinance.bms.rpc.partner.ProjectPartnerRefund">
+	UPDATE BIZ_PROJECT_PARTNER_REFUND
+	<set>
+		<if test="partnerId != null and partnerId > 0">
+	    		PARTNER_ID =#{partnerId,jdbcType=INTEGER}, 
+	    </if>
+		<if test="projectId != null and projectId > 0">
+	    		PROJECT_ID =#{projectId,jdbcType=INTEGER}, 
+	    </if>
+		<if test="partnerNo != null and partnerNo != ''">
+	    		PARTNER_NO =#{partnerNo}, 
+	    </if>
+		<if test="loanId != null and loanId != ''">
+	    		LOAN_ID =#{loanId},  
+	    </if>
+		<if test="currNo != null and currNo > 0">
+	    		CURR_NO =#{currNo,jdbcType=INTEGER}, 
+	    </if>
+		<if test="currPlanRefundDate != null and currPlanRefundDate !=''">
+	    		CURR_PLAN_REFUND_DATE =#{currPlanRefundDate,javaType=String, jdbcType=TIMESTAMP}, 
+	    </if>
+		<if test="currShouldCapitalMoney != null and currShouldCapitalMoney > 0">
+	    		CURR_SHOULD_CAPITAL_MONEY =#{currShouldCapitalMoney},  
+	    </if>
+		<if test="currShouldXiFee != null and currShouldXiFee > 0">
+	    		CURR_SHOULD_XI_FEE =#{currShouldXiFee},  
+	    </if>
+		<if test="currShouldManageFee != null and currShouldManageFee > 0">
+	    		CURR_SHOULD_MANAGE_FEE =#{currShouldManageFee},  
+	    </if>
+		<if test="currShouldOtherFee != null and currShouldOtherFee > 0">
+	    		CURR_SHOULD_OTHER_FEE =#{currShouldOtherFee},  
+	    </if>
+		<if test="currShouldTotalMoney != null and currShouldTotalMoney > 0">
+	    		CURR_SHOULD_TOTAL_MONEY =#{currShouldTotalMoney},  
+	    </if>
+		<if test="currRealRefundDate != null and currRealRefundDate != ''">
+	    		CURR_REAL_REFUND_DATE =#{currRealRefundDate,javaType=String, jdbcType=TIMESTAMP}, 
+	    </if>
+		<if test="currRealCapitalMoney != null and currRealCapitalMoney > 0">
+	    		CURR_REAL_CAPITAL_MONEY =#{currRealCapitalMoney},  
+	    </if>
+		<if test="currRealXiFee != null and currRealXiFee > 0">
+	    		CURR_REAL_XI_FEE =#{currRealXiFee},  
+	    </if>
+		<if test="currRealManageFee != null and currRealManageFee > 0">
+	    		CURR_REAL_MANAGE_FEE =#{currRealManageFee},  
+	    </if>
+		<if test="currRealOtherFee != null and currRealOtherFee > 0">
+	    		CURR_REAL_OTHER_FEE =#{currRealOtherFee},  
+	    </if>
+		<if test="currRealTotalMoney != null and currRealTotalMoney > 0">
+	    		CURR_REAL_TOTAL_MONEY =#{currRealTotalMoney},  
+	    </if>
+		<if test="currOverdueStatus != null and currOverdueStatus > 0">
+	    		CURR_OVERDUE_STATUS =#{currOverdueStatus,jdbcType=INTEGER}, 
+	    </if>
+		<if test="currOverdueDays != null and currOverdueDays > 0">
+	    		CURR_OVERDUE_DAYS =#{currOverdueDays},  
+	    </if>
+		<if test="oweCapitalMoney != null and oweCapitalMoney > 0">
+	    		OWE_CAPITAL_MONEY =#{oweCapitalMoney},  
+	    </if>
+		<if test="currCapitalMoneyFile != null and currCapitalMoneyFile != ''">
+	    		CURR_CAPITAL_MONEY_FILE =#{currCapitalMoneyFile},  
+	    </if>
+		<if test="currXiFeeFile != null and currXiFeeFile != ''">
+	    		CURR_XI_FEE_FILE =#{currXiFeeFile},  
+	    </if>
+		<if test="isForbit != null and isForbit > 0">
+	    		IS_FORBIT =#{isForbit,jdbcType=INTEGER}, 
+	    </if>
+		<if test="refundStatus != null and refundStatus > 0">
+	    		REFUND_STATUS =#{refundStatus,jdbcType=INTEGER}, 
+	    </if>
+		<if test="partnerRealRefundDate != null and partnerRealRefundDate != ''">
+	    		PARTNER_REAL_REFUND_DATE =#{partnerRealRefundDate,javaType=String, jdbcType=TIMESTAMP}, 
+	    </if>
+		<if test="partnerRefundFile != null and partnerRefundFile != ''">
+	    		PARTNER_REFUND_FILE =#{partnerRefundFile},  
+	    </if>
+		<if test="partnerInterests != null and partnerInterests > 0">
+	    		PARTNER_INTERESTS =#{partnerInterests},  
+	    </if>
+		<if test="createTime != null and createTime != ''">
+	    		CREATE_TIME =#{createTime,javaType=String, jdbcType=TIMESTAMP}, 
+	    </if>
+		<if test="updateTime != null and updateTime != ''">
+	    		UPDATE_TIME =#{updateTime,javaType=String, jdbcType=TIMESTAMP}, 
+	    </if>
+		<if test="refundRemark != null and refundRemark != ''">
+	    		REFUND_REMARK = #{refundRemark}, 
+	    </if>
+		<if test="isSettlementStatus != null and isSettlementStatus != ''">
+	    		IS_SETTLEMENT_STATUS =#{isSettlementStatus,jdbcType=INTEGER}, 
+	    </if>
+	    
+	    <!-- 提前还款清空其它费用字段 -->
+	    <if test="isSettlementStatus != null and isSettlementStatus == 1">
+	    		CURR_REAL_XI_FEE = 0,
+	    		CURR_REAL_MANAGE_FEE = 0,
+	    		CURR_REAL_OTHER_FEE = 0,
+	    </if>
+	    
+	</set>
+	where PID =#{pid}
+</update>
+
+
+<!-- 更新分期还款金额（可改为0） -->
+<update id="updatePartnerRefundMoney" parameterType="com.xlkfinance.bms.rpc.partner.ProjectPartnerRefund">
+	UPDATE BIZ_PROJECT_PARTNER_REFUND
+	<set>
+		<if test="currRealRefundDate != null and currRealRefundDate != ''">
+	    		CURR_REAL_REFUND_DATE =#{currRealRefundDate,javaType=String, jdbcType=TIMESTAMP}, 
+	    </if>
+		<if test="currRealCapitalMoney != null ">
+	    		CURR_REAL_CAPITAL_MONEY =#{currRealCapitalMoney},  
+	    </if>
+		<if test="currRealTotalMoney != null">
+	    		CURR_REAL_TOTAL_MONEY =#{currRealTotalMoney},  
+	    </if>
+		<if test="currOverdueStatus != null and currOverdueStatus > 0">
+	    		CURR_OVERDUE_STATUS =#{currOverdueStatus,jdbcType=INTEGER}, 
+	    </if>
+		<if test="currOverdueDays != null">
+	    		CURR_OVERDUE_DAYS =#{currOverdueDays},  
+	    </if>
+		<if test="oweCapitalMoney != null and oweCapitalMoney > 0">
+	    		OWE_CAPITAL_MONEY =#{oweCapitalMoney},  
+	    </if>
+		<if test="updateTime != null and updateTime != ''">
+	    		UPDATE_TIME =#{updateTime,javaType=String, jdbcType=TIMESTAMP}, 
+	    </if>
+		<if test="refundRemark != null and refundRemark != ''">
+	    		REFUND_REMARK = #{refundRemark}, 
+	    </if>
+		<if test="isSettlementStatus != null and isSettlementStatus != ''">
+	    		IS_SETTLEMENT_STATUS =#{isSettlementStatus,jdbcType=INTEGER}, 
+	    </if>
+	    <!-- 提前还款清空其它费用字段 -->
+	    <if test="isSettlementStatus != null and isSettlementStatus == 1">
+	    		CURR_REAL_XI_FEE = 0,
+	    		CURR_REAL_MANAGE_FEE = 0,
+	    		CURR_REAL_OTHER_FEE = 0,
+	    </if>
+	   	<!-- 非提前还款 -->
+	    <if test="isSettlementStatus != null and isSettlementStatus != 1">
+			<if test="currRealXiFee != null">
+		    		CURR_REAL_XI_FEE =#{currRealXiFee},  
+		    </if>
+			<if test="currRealManageFee != null">
+		    		CURR_REAL_MANAGE_FEE =#{currRealManageFee},  
+		    </if>
+			<if test="currRealOtherFee != null">
+		    		CURR_REAL_OTHER_FEE =#{currRealOtherFee},  
+		    </if>
+	    </if>
+	</set>
+	where PID =#{pid}
+</update>
+
+
+
+
+
+</mapper>

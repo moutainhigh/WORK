@@ -1,0 +1,999 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.xlkfinance.bms.server.foreafterloan.mapper.ForeAfterLoanMapper">
+	<resultMap id="transitMonitorIndexMap"
+		type="com.xlkfinance.bms.rpc.foreafterloan.TransitMonitorIndex">
+		<id property="projectId" column="PROJECT_ID" />
+		<id property="projectName" column="PROJECT_NAME" />
+		<id property="receDate" column="RECE_DATE" />
+		<id property="loanDays" column="LOAN_DAYS" />
+		<id property="loanMoney" column="LOAN_MONEY" />
+		<id property="businessSourceStr" column="BUSINESS_SOURCE_STR" />
+		<id property="buyerName" column="BUYER_NAME" />
+		<id property="sellerName" column="SELLER_NAME" />
+		<id property="houseName" column="HOUSE_NAME" />
+		<id property="housePropertyCard" column="HOUSE_PROPERTY_CARD" />
+		<id property="productName" column="PRODUCT_NAME" />
+		<id property="planRepaymentDate" column="PLAN_REPAYMENT_DATE" />
+		<id property="repaymentDate" column="REPAYMENT_DATE" />
+		<id property="repaymentDateDiff" column="REPAYMENT_DATE_DIFF" />
+		<id property="foreAfterMonitorStatus" column="FORE_AFTER_MONITOR_STATUS" />
+		<id property="repaymentStatus" column="REPAYMENT_STATUS" />
+		<id property="makeLoansRes" column="MAKE_LOANS_RES" />
+	</resultMap>
+	<!--异常业务列表 -->
+	<resultMap id="transitExceptionIndexMap"
+		type="com.xlkfinance.bms.rpc.foreafterloan.TransitExceptionIndex">
+		<id property="projectId" column="PROJECT_ID" />
+		<id property="projectName" column="PROJECT_NAME" />
+		<id property="receDate" column="RECE_DATE" />
+		<id property="loanDays" column="LOAN_DAYS" />
+		<id property="loanMoney" column="LOAN_MONEY" />
+		<id property="businessSourceStr" column="BUSINESS_SOURCE_STR" />
+		<id property="buyerName" column="BUYER_NAME" />
+		<id property="sellerName" column="SELLER_NAME" />
+		<id property="houseName" column="HOUSE_NAME" />
+		<id property="housePropertyCard" column="HOUSE_PROPERTY_CARD" />
+		<id property="productName" column="PRODUCT_NAME" />
+		<id property="planRepaymentDate" column="PLAN_REPAYMENT_DATE" />
+		<id property="repaymentDate" column="REPAYMENT_DATE" />
+		<id property="repaymentDateDiff" column="REPAYMENT_DATE_DIFF" />
+		<id property="repaymentStatus" column="REPAYMENT_STATUS" />
+		<id property="applyStatus" column="APPLY_STATUS" />
+		<id property="dangerLevel" column="DANGER_LEVEL" />
+		<id property="monitorStatus" column="MONITOR_STATUS" />
+		<id property="makeLoansRes" column="MAKE_LOANS_RES" />
+		<id property="businessSource" column="BUSINESS_SOURCE" />
+		<id property="cpyName" column="CPY_NAME" />
+		<id property="partnerLoanDate" column="NEW_REPAYMENT_DATE" />
+		<id property="updateDate" column="UPDATE_DATE" />
+		<id property="payDate" column="PAY_DATE" />
+		<id property="totalCount" column="REINSURANCE_TOTAL" />
+		<id property="totalMoney" column="REINSURANCE_TOTAL_MONEY" />
+		<id property="certNumber" column="CERT_NUMBER" />
+		<id property="chinaName" column="CHINA_NAME" />
+		<id property="returnNormalRemark" column="RETURN_NORMAL_REMARK" />
+		
+		<id property="singleUpperLimit" column="SINGLE_UPPER_LIMIT" />
+		<id property="availableLimit" column="ACTIVATE_CREDIT_LIMIT" />
+		<id property="assureMoney" column="REAL_ASSURE_MONEY" />
+		<id property="partnerLoanDate" column="PARTNER_LOAN_DATE" />
+		
+	</resultMap>
+	<!-- 异常监控 -->
+	<resultMap id="exceptionTransitIndexMap"
+		type="com.xlkfinance.bms.rpc.foreafterloan.ExceptionMonitorIndex">
+		<id property="pid" column="PID" />
+		<id property="exceptionId" column="EXCEPTION_ID" />
+		<id property="projectId" column="PROJECT_ID" />
+		<id property="monitorDate" column="MONITOR_DATE" />
+		<id property="monitorTitle" column="MONITOR_TITLE" />
+		<id property="monitorContent" column="MONITOR_CONTENT" />
+		<id property="monitorResult" column="MONITOR_RESULT" />
+		<id property="monitorOpinion" column="MONITOR_OPINION" />
+
+		<id property="nextMonitorDate" column="NEXT_MONITOR_DATE" />
+		<id property="nextFollowId" column="NEXT_FOLLOW_ID" />
+		<id property="followId" column="FOLLOW_ID" />
+		<id property="noticeWay" column="NOTICE_WAY" />
+		<id property="dangerLevel" column="DANGER_LEVEL" />
+		<id property="followStatus" column="FOLLOW_STATUS" />
+		<id property="followName" column="FOLLOW_NAME" />
+	</resultMap>
+
+	<!-- 申请报告 -->
+	<resultMap id="TransitApplyReportIndexMap"
+		type="com.xlkfinance.bms.rpc.foreafterloan.TransitApplyReportIndex">
+		<id property="pid" column="PID" />
+		<id property="exceptionId" column="EXCEPTION_ID" />
+		<id property="projectId" column="PROJECT_ID" />
+		<id property="userId" column="USER_ID" />
+		<id property="reportDate" column="REPORT_DATE" />
+		<id property="unAssureCondition" column="UN_ASSURE_CONDITION" />
+		<id property="houseProperyCondition" column="HOUSE_PROPERY_CONDITION" />
+		<id property="remark" column="REMARK" />
+	</resultMap>
+
+	<!-- 诉讼 -->
+	<resultMap id="LegalIndexMap"
+		type="com.xlkfinance.bms.rpc.foreafterloan.LegalIndex">
+		<id property="pid" column="PID" />
+		<id property="reportId" column="REPORT_ID" />
+		<id property="status" column="STATUS" />
+		<id property="legalContent" column="LEGAL_CONTENT" />
+	</resultMap>
+
+	<!-- 在途业务监控列表(分页查询) -->
+	<select id="queryTransitMonitorIndex" resultMap="transitMonitorIndexMap"
+		parameterType="com.xlkfinance.bms.rpc.foreafterloan.TransitMonitorIndex">
+		<if test="page!=-1">
+			SELECT D.* FROM (SELECT T.*, ROWNUM RN
+			FROM (
+		</if>
+		SELECT 
+		A.PID AS PROJECT_ID,
+		A.PROJECT_NAME,
+		A.FORE_AFTER_MONITOR_STATUS,
+		E.RECE_DATE,
+		E.LOAN_DAYS,
+		F.LOAN_MONEY,
+		C.BUSINESS_SOURCE_STR,
+		B.BUYER_NAME,
+		B.SELLER_NAME,
+		EH.HOUSE_NAME,
+		EH.HOUSE_PROPERTY_CARD,
+		D.PRODUCT_NAME,
+		E.PAYMENT_DATE AS PLAN_REPAYMENT_DATE,
+		G.NEW_REPAYMENT_DATE AS REPAYMENT_DATE,
+		(CASE WHEN (G.STATUS IS NULL OR G.STATUS=1) THEN
+		(TO_DATE(TO_CHAR(E.PAYMENT_DATE, 'YYYY-MM-DD'), 'YYYY-MM-DD')
+		-TO_DATE(TO_CHAR(SYSDATE, 'YYYY-MM-DD'), 'YYYY-MM-DD'))
+		END) AS REPAYMENT_DATE_DIFF,
+		DECODE(G.STATUS,null,'1',G.STATUS) AS REPAYMENT_STATUS,
+		H.PRO_RESOURCE AS MAKE_LOANS_RES
+		FROM BIZ_PROJECT A
+		LEFT JOIN BIZ_PROJECT_PROPERTY B
+		ON A.PID = B.PROJECT_ID
+		LEFT JOIN V_HOUSE_NAME EH
+    		ON EH.PROJECT_ID = A.PID
+		LEFT JOIN BUSINESS_SOURCE_V C
+		ON A.PID = C.PID
+		LEFT JOIN BIZ_PRODUCT D
+		ON A.PRODUCT_ID = D.PID
+		LEFT JOIN BIZ_PROJECT_FORECLOSURE E
+		ON E.PROJECT_ID = A.PID
+		LEFT JOIN BIZ_PROJECT_GUARANTEE F
+		ON A.PID = F.PROJECT_ID
+		LEFT JOIN BIZ_LOAN_REPAYMENT G
+		ON A.PID = G.PROJECT_ID
+		LEFT JOIN FINANCE_MAKE_LOANS_RES_V H
+		ON H.PROJECT_ID=A.PID
+		<where>
+			<trim>
+				<if test="1==1">
+					AND A.FORECLOSURE_STATUS IN(11,12,13) AND A.PROJECT_TYPE
+					IN(2,6)
+					AND A.PROJECT_TYPE IN(2,6)
+					AND A.IS_CLOSED =2
+					AND A.IS_NEED_HANDLE=1
+					AND (G.STATUS IS NULL OR G.STATUS=1)
+				</if>
+				<if test="userIds!=null and userIds.size()>0">
+					AND A.PM_USER_ID IN
+					<foreach item="itemId" collection="userIds" open="("
+						separator="," close=")">
+						#{itemId}
+					</foreach>
+				</if>
+				<if test="projectName != null and projectName !=''">
+					AND A.PROJECT_NAME LIKE '%${projectName}%'
+				</if>
+				<if test="businessSourceStr != null and businessSourceStr !=''">
+					AND C.BUSINESS_SOURCE_STR LIKE '%${businessSourceStr}%'
+				</if>
+				<if test="makeLoansRes != null and makeLoansRes !=''">
+					AND H.PRO_RESOURCE LIKE '%${makeLoansRes}%'
+				</if>
+				<if test="foreAfterMonitorStatus != null and foreAfterMonitorStatus >0">
+					AND A.FORE_AFTER_MONITOR_STATUS =
+					#{foreAfterMonitorStatus}
+				</if>
+				<if test="repaymentStatus != null and repaymentStatus >0">
+					AND G.STATUS = #{repaymentStatus}
+				</if>
+				<if test="repaymentDate !=null and repaymentDate !=''">
+					AND G.NEW_REPAYMENT_DATE <![CDATA[>=]]>
+					to_date(#{repaymentDate},'yyyy-MM-dd')
+				</if>
+				<if test="repaymentEndDate !=null and repaymentEndDate !=''">
+					AND AFH.NEW_REPAYMENT_DATE <![CDATA[<=]]>
+					TO_DATE(CONCAT(#{repaymentEndDate},' 23:59:59'),'yyyy-mm-dd
+					hh24:mi:ss')
+				</if>
+				<if test="planRepaymentDate !=null and planRepaymentDate !=''">
+					AND E.PAYMENT_DATE <![CDATA[>=]]>
+					to_date(#{planRepaymentDate},'yyyy-MM-dd')
+				</if>
+				<if test="planRepaymentEndDate !=null and planRepaymentEndDate !=''">
+					AND E.PAYMENT_DATE <![CDATA[<=]]>
+					TO_DATE(CONCAT(#{planRepaymentEndDate},' 23:59:59'),'yyyy-mm-dd
+					hh24:mi:ss')
+				</if>
+			</trim>
+		</where>
+		ORDER BY REPAYMENT_DATE_DIFF,E.RECE_DATE DESC
+		<if test="page!=-1">
+	<![CDATA[
+	) T
+	WHERE ROWNUM <=#{page}*#{rows}
+	) D
+	WHERE D.RN > ((#{page}-1)*#{rows})
+	]]>
+		</if>
+	</select>
+	<!--在途业务监控列表总数 -->
+	<select id="getTransitMonitorIndexTotal" resultType="Integer"
+		parameterType="com.xlkfinance.bms.rpc.foreafterloan.TransitMonitorIndex">
+	<![CDATA[
+	SELECT COUNT(1) FROM
+			( SELECT A.PROJECT_NAME
+  FROM BIZ_PROJECT A
+  LEFT JOIN BIZ_PROJECT_PROPERTY B
+    ON A.PID = B.PROJECT_ID
+  LEFT JOIN BUSINESS_SOURCE_V C
+    ON A.PID = C.PID
+  LEFT JOIN BIZ_PRODUCT D
+    ON A.PRODUCT_ID = D.PID
+  LEFT JOIN BIZ_PROJECT_FORECLOSURE E
+    ON E.PROJECT_ID = A.PID
+  LEFT JOIN BIZ_PROJECT_GUARANTEE F
+    ON A.PID = F.PROJECT_ID
+  LEFT JOIN BIZ_LOAN_REPAYMENT G
+    ON A.PID = G.PROJECT_ID
+  LEFT JOIN FINANCE_MAKE_LOANS_RES_V H
+    ON H.PROJECT_ID=A.PID
+	]]>
+		<where>
+			<trim>
+				<if test="1==1">
+					AND A.FORECLOSURE_STATUS IN(11,12,13) AND A.PROJECT_TYPE
+					IN(2,6)
+					 AND A.IS_CLOSED =2
+					AND A.IS_NEED_HANDLE=1
+					AND (G.STATUS IS NULL OR G.STATUS=1)
+				</if>
+				<if test="userIds!=null and userIds.size()>0">
+					AND A.PM_USER_ID IN
+					<foreach item="itemId" collection="userIds" open="("
+						separator="," close=")">
+						#{itemId}
+					</foreach>
+				</if>
+				<if test="projectName != null and projectName !=''">
+					AND A.PROJECT_NAME LIKE '%${projectName}%'
+				</if>
+				<if test="businessSourceStr != null and businessSourceStr !=''">
+					AND C.BUSINESS_SOURCE_STR LIKE '%${businessSourceStr}%'
+				</if>
+				<if test="makeLoansRes != null and makeLoansRes !=''">
+					AND H.PRO_RESOURCE LIKE '%${makeLoansRes}%'
+				</if>
+				<if test="foreAfterMonitorStatus != null and foreAfterMonitorStatus >0">
+					AND A.FORE_AFTER_MONITOR_STATUS =
+					#{foreAfterMonitorStatus}
+				</if>
+				<if test="repaymentStatus != null and repaymentStatus >0">
+					AND G.STATUS = #{repaymentStatus}
+				</if>
+				<if test="repaymentDate !=null and repaymentDate !=''">
+					AND G.NEW_REPAYMENT_DATE <![CDATA[>=]]>
+					to_date(#{repaymentDate},'yyyy-MM-dd')
+				</if>
+				<if test="repaymentEndDate !=null and repaymentEndDate !=''">
+					AND AFH.NEW_REPAYMENT_DATE <![CDATA[<=]]>
+					TO_DATE(CONCAT(#{repaymentEndDate},' 23:59:59'),'yyyy-mm-dd
+					hh24:mi:ss')
+				</if>
+				<if test="planRepaymentDate !=null and planRepaymentDate !=''">
+					AND E.PAYMENT_DATE <![CDATA[>=]]>
+					to_date(#{planRepaymentDate},'yyyy-MM-dd')
+				</if>
+				<if test="planRepaymentEndDate !=null and planRepaymentEndDate !=''">
+					AND E.PAYMENT_DATE <![CDATA[<=]]>
+					TO_DATE(CONCAT(#{planRepaymentEndDate},' 23:59:59'),'yyyy-mm-dd
+					hh24:mi:ss')
+				</if>
+			</trim>
+		</where>
+		) T
+	</select>
+
+	<!-- 异常业务监控列表(分页查询) -->
+	<select id="queryTransitExceptionIndex" resultMap="transitExceptionIndexMap"
+		parameterType="com.xlkfinance.bms.rpc.foreafterloan.TransitExceptionIndex">
+		<if test="page!=-1">
+			SELECT D.* FROM (SELECT T.*, ROWNUM RN
+			FROM (
+		</if>
+		SELECT Q.RETURN_NORMAL_REMARK, Q.PROJECT_ID,Q.BUSINESS_SOURCE_STR, Q.PROJECT_NAME,Q.FORE_AFTER_MONITOR_STATUS,Q.MONITOR_STATUS, Q.APPLY_STATUS, Q.DANGER_LEVEL, Q.RECE_DATE, Q.LOAN_DAYS, Q.LOAN_MONEY,
+        Q.BUYER_NAME,Q.SELLER_NAME, Q.HOUSE_NAME, Q.HOUSE_PROPERTY_CARD, Q.PRODUCT_NAME,
+        Q.PLAN_REPAYMENT_DATE, Q.REPAYMENT_DATE, Q.REPAYMENT_DATE_DIFF,
+        Q.REPAYMENT_STATUS, Q.MAKE_LOANS_RES, Q.CPY_NAME, Q.NEW_REPAYMENT_DATE,Q.UPDATE_DATE, Q.PAY_DATE,
+        Q.REINSURANCE_TOTAL,Q.REINSURANCE_TOTAL_MONEY,Q.CERT_NUMBER
+       FROM (
+      SELECT DISTINCT A.PID AS PROJECT_ID,A.RETURN_NORMAL_REMARK AS RETURN_NORMAL_REMARK, A.FORE_AFTER_MONITOR_STATUS, A.PROJECT_NAME,A.BUSINESS_SOURCE,
+          A.FORE_AFTER_MONITOR_STATUS AS MONITOR_STATUS, A.FORE_AFTER_REPORT_STATUS AS APPLY_STATUS,BM.DANGER_LEVEL,
+          E.RECE_DATE,E.LOAN_DAYS,F.LOAN_MONEY,C.BUSINESS_SOURCE_STR,B.BUYER_NAME,B.SELLER_NAME,EH.HOUSE_NAME,
+          EH.HOUSE_PROPERTY_CARD,D.PRODUCT_NAME,E.PAYMENT_DATE AS PLAN_REPAYMENT_DATE,G.NEW_REPAYMENT_DATE AS REPAYMENT_DATE,
+          (CASE WHEN (G.STATUS IS NULL OR G.STATUS=1) THEN
+          (TO_DATE(TO_CHAR(E.PAYMENT_DATE, 'YYYY-MM-DD'), 'YYYY-MM-DD')
+          -TO_DATE(TO_CHAR(SYSDATE, 'YYYY-MM-DD'), 'YYYY-MM-DD'))
+          END) AS REPAYMENT_DATE_DIFF,DECODE(G.STATUS,null,'1',G.STATUS) AS REPAYMENT_STATUS,H.PRO_RESOURCE AS MAKE_LOANS_RES,
+           (SELECT TO_CHAR(WM_CONCAT(CCB.CPY_NAME)) FROM CUS_COM_BASE CCB WHERE CCB.STATUS = 1 AND CCB.ACCT_ID = A.ACCT_ID
+                  ) AS CPY_NAME, G.NEW_REPAYMENT_DATE, G.UPDATE_DATE, J.Pay_Date,
+          (SELECT COUNT(1) FROM ORG_BIZ_PROJECT_VIEW PV
+                LEFT JOIN BIZ_LOAN_REPAYMENT R ON PV.PID = R.PROJECT_ID
+                LEFT JOIN BIZ_LOAN_FINANCE_HANDLE FH ON PV.PID = FH.PROJECT_ID
+               WHERE PV.ORG_ID = A.Org_Id
+                 AND FH.STATUS = 3 AND (R.STATUS = 1 OR R.STATUS IS NULL)) AS REINSURANCE_TOTAL,
+             (SELECT SUM(AFH.REC_MONEY)
+                FROM ORG_BIZ_PROJECT_VIEW PV
+                LEFT JOIN BIZ_LOAN_FINANCE_HANDLE FH ON PV.PID = FH.PROJECT_ID
+                LEFT JOIN BIZ_LOAN_APPLY_FINANCE_HANDLE AFH  ON AFH.FINANCE_HANDLE_ID = FH.PID
+                LEFT JOIN BIZ_LOAN_REPAYMENT R ON PV.PID = R.PROJECT_ID
+               WHERE PV.ORG_ID = A.Org_Id
+                 AND AFH.REC_PRO IN (3, 4) AND FH.STATUS = 3 AND (R.STATUS = 1 OR R.STATUS IS NULL)) AS REINSURANCE_TOTAL_MONEY,
+                (SELECT B.CERT_NUMBER FROM CUS_PERSON B WHERE A.ACCT_ID = B.ACCT_ID AND B.RELATION_TYPE =1) AS CERT_NUMBER ,
+                ROW_NUMBER() OVER (PARTITION BY A.PID ORDER BY  bm.UPDATE_DATE DESC) RN
+          FROM   BIZ_PROJECT A
+          LEFT JOIN   BIZ_EXCEPTION_MONITOR BM ON BM.PROJECT_ID = A.PID
+          LEFT JOIN BIZ_PROJECT_PROPERTY B ON A.PID = B.PROJECT_ID
+          LEFT JOIN V_HOUSE_NAME EH ON EH.PROJECT_ID = A.PID
+          LEFT JOIN BUSINESS_SOURCE_V C ON A.PID = C.PID
+          LEFT JOIN BIZ_PRODUCT D ON A.PRODUCT_ID = D.PID
+          LEFT JOIN BIZ_PROJECT_FORECLOSURE E ON E.PROJECT_ID = A.PID
+          LEFT JOIN BIZ_PROJECT_GUARANTEE F ON A.PID = F.PROJECT_ID
+          LEFT JOIN BIZ_LOAN_REPAYMENT G ON A.PID = G.PROJECT_ID
+          LEFT JOIN FINANCE_MAKE_LOANS_RES_V H ON H.PROJECT_ID=A.PID
+          LEFT JOIN BIZ_LOAN_HANDLE_INFO K ON K.PROJECT_ID = A.PID
+          LEFT JOIN BIZ_LOAN_HOUSE_BALANCE J ON J.HANDLE_ID = K.PID 
+		<where>
+			<trim>
+				<if test="1==1">
+				 A.FORECLOSURE_STATUS IN(11,12,13)
+		          AND A.FORE_AFTER_MONITOR_STATUS IN(2,3)
+		          AND A.PROJECT_TYPE IN(2,6)
+		           AND A.IS_CLOSED =2
+		          AND (G.STATUS IS NULL OR G.STATUS=1)
+		          AND J.COUNT=1
+				</if>
+				
+				<if test="userIds!=null and userIds.size()>0">
+					AND A.PM_USER_ID IN
+					<foreach item="itemId" collection="userIds" open="("
+						separator="," close=")">
+						#{itemId}
+					</foreach>
+				</if>
+				<if test="applyStatus != null and applyStatus ==2">
+					AND A.FORE_AFTER_REPORT_STATUS=2
+				</if>
+				<if test="projectName != null and projectName !=''">
+					AND A.PROJECT_NAME LIKE '%${projectName}%'
+				</if>
+				<if test="businessSourceStr != null and businessSourceStr !=''">
+					AND C.BUSINESS_SOURCE_STR LIKE '%${businessSourceStr}%'
+				</if>
+				<if test="monitorStatus != null and monitorStatus >0">
+					AND A.FORE_AFTER_MONITOR_STATUS = #{monitorStatus}
+				</if>
+				<if test="repaymentDate !=null and repaymentDate !=''">
+					AND G.NEW_REPAYMENT_DATE <![CDATA[>=]]>
+					to_date(#{repaymentDate},'yyyy-MM-dd')
+				</if>
+				<if test="repaymentEndDate !=null and repaymentEndDate !=''">
+					AND AFH.NEW_REPAYMENT_DATE <![CDATA[<=]]>
+					TO_DATE(CONCAT(#{repaymentEndDate},' 23:59:59'),'yyyy-mm-dd
+					hh24:mi:ss')
+				</if>
+				<if test="planRepaymentDate !=null and planRepaymentDate !=''">
+					AND E.PAYMENT_DATE <![CDATA[>=]]>
+					to_date(#{planRepaymentDate},'yyyy-MM-dd')
+				</if>
+				<if test="planRepaymentEndDate !=null and planRepaymentEndDate !=''">
+					AND E.PAYMENT_DATE <![CDATA[<=]]>
+					TO_DATE(CONCAT(#{planRepaymentEndDate},' 23:59:59'),'yyyy-mm-dd
+					hh24:mi:ss')
+				</if>
+			</trim>
+		</where>
+		ORDER BY BM.DANGER_LEVEL DESC,REPAYMENT_DATE_DIFF ASC
+		)Q  WHERE Q.RN = 1
+		
+		<if test="page!=-1">
+	<![CDATA[
+	) T
+	WHERE ROWNUM <=#{page}*#{rows}
+	) D
+	WHERE D.RN > ((#{page}-1)*#{rows})
+	]]>
+		</if>
+	</select>
+	<!--异常列表总数 -->
+	<select id="getTransitExceptionIndexTotal" resultType="Integer"
+		parameterType="com.xlkfinance.bms.rpc.foreafterloan.TransitExceptionIndex">
+	<![CDATA[
+	SELECT COUNT(1) FROM
+			( 
+			SELECT Q.PROJECT_ID
+ 			FROM (SELECT DISTINCT A.PID AS PROJECT_ID,
+                ROW_NUMBER() OVER (PARTITION BY A.PID ORDER BY  bm.UPDATE_DATE DESC) RN
+          FROM   BIZ_PROJECT A
+          left join   BIZ_EXCEPTION_MONITOR BM ON BM.PROJECT_ID = A.PID
+          LEFT JOIN BIZ_PROJECT_PROPERTY B ON A.PID = B.PROJECT_ID
+          LEFT JOIN BUSINESS_SOURCE_V C ON A.PID = C.PID
+          LEFT JOIN BIZ_PRODUCT D ON A.PRODUCT_ID = D.PID
+          LEFT JOIN BIZ_PROJECT_FORECLOSURE E ON E.PROJECT_ID = A.PID
+          LEFT JOIN BIZ_PROJECT_GUARANTEE F ON A.PID = F.PROJECT_ID
+          LEFT JOIN BIZ_LOAN_REPAYMENT G ON A.PID = G.PROJECT_ID
+          LEFT JOIN FINANCE_MAKE_LOANS_RES_V H ON H.PROJECT_ID=A.PID
+          LEFT JOIN BIZ_LOAN_HANDLE_INFO K ON K.PROJECT_ID = A.PID
+          LEFT JOIN BIZ_LOAN_HOUSE_BALANCE J ON J.HANDLE_ID = K.PID  
+	]]>
+		<where>
+			<trim>
+				<if test="1==1">
+					AND A.FORECLOSURE_STATUS IN(11,12,13)
+					AND A.FORE_AFTER_MONITOR_STATUS IN(2,3)
+					AND A.PROJECT_TYPE IN(2,6)
+					AND A.IS_CLOSED =2
+					AND (G.STATUS IS NULL OR G.STATUS=1)
+					AND J.COUNT=1
+				</if>
+				<if test="userIds!=null and userIds.size()>0">
+					AND A.PM_USER_ID IN
+					<foreach item="itemId" collection="userIds" open="("
+						separator="," close=")">
+						#{itemId}
+					</foreach>
+				</if>
+				<if test="projectName != null and projectName !=''">
+					AND A.PROJECT_NAME LIKE '%${projectName}%'
+				</if>
+				<if test="applyStatus != null and applyStatus ==2">
+					AND A.FORE_AFTER_REPORT_STATUS=2
+				</if>
+				<if test="businessSourceStr != null and businessSourceStr !=''">
+					AND C.BUSINESS_SOURCE_STR LIKE '%${businessSourceStr}%'
+				</if>
+				<if test="monitorStatus != null and monitorStatus >0">
+					AND A.FORE_AFTER_MONITOR_STATUS = #{monitorStatus}
+				</if>
+				<if test="repaymentDate !=null and repaymentDate !=''">
+					AND G.NEW_REPAYMENT_DATE <![CDATA[>=]]>
+					to_date(#{repaymentDate},'yyyy-MM-dd')
+				</if>
+				<if test="repaymentEndDate !=null and repaymentEndDate !=''">
+					AND AFH.NEW_REPAYMENT_DATE <![CDATA[<=]]>
+					TO_DATE(CONCAT(#{repaymentEndDate},' 23:59:59'),'yyyy-mm-dd
+					hh24:mi:ss')
+				</if>
+				<if test="planRepaymentDate !=null and planRepaymentDate !=''">
+					AND E.PAYMENT_DATE <![CDATA[>=]]>
+					to_date(#{planRepaymentDate},'yyyy-MM-dd')
+				</if>
+				<if test="planRepaymentEndDate !=null and planRepaymentEndDate !=''">
+					AND E.PAYMENT_DATE <![CDATA[<=]]>
+					TO_DATE(CONCAT(#{planRepaymentEndDate},' 23:59:59'),'yyyy-mm-dd
+					hh24:mi:ss')
+				</if>
+			</trim>
+		</where>
+		)Q  WHERE Q.RN = 1
+		) T
+	</select>
+	
+	<!-- 根据项目ID查询异常业务监控列表 -->
+	<select id="getTransitExceptionIndexById" resultMap="transitExceptionIndexMap"
+		parameterType="com.xlkfinance.bms.rpc.foreafterloan.TransitExceptionIndex">
+		SELECT
+             DISTINCT A.PID AS PROJECT_ID,
+             A.RETURN_NORMAL_REMARK AS RETURN_NORMAL_REMARK,
+             A.FORE_AFTER_MONITOR_STATUS,
+             A.PROJECT_NAME,
+             A.BUSINESS_SOURCE,
+             A.FORE_AFTER_MONITOR_STATUS AS MONITOR_STATUS,
+             A.FORE_AFTER_REPORT_STATUS AS APPLY_STATUS,
+             BM.DANGER_LEVEL,
+             E.RECE_DATE,
+             E.LOAN_DAYS,
+             F.LOAN_MONEY,
+             C.BUSINESS_SOURCE_STR,
+             B.BUYER_NAME,
+             B.SELLER_NAME,
+             EH.HOUSE_NAME AS HOUSE_NAME,
+             EH.HOUSE_PROPERTY_CARD AS HOUSE_PROPERTY_CARD,
+             D.PRODUCT_NAME,
+             HH.UPDATE_TIME AS NEW_REPAYMENT_DATE,
+             E.PAYMENT_DATE AS PLAN_REPAYMENT_DATE,
+             G.NEW_REPAYMENT_DATE AS REPAYMENT_DATE,
+             Cc.REINSURANCE_TOTAL_MONEY,
+             Cc.REINSURANCE_TOTAL,
+             bb.SINGLE_UPPER_LIMIT,
+            bb.activate_credit_limit,
+            bb.REAL_ASSURE_MONEY,
+             (CASE WHEN (G.STATUS IS NULL OR G.STATUS=1) THEN
+             (TO_DATE(TO_CHAR(E.PAYMENT_DATE, 'YYYY-MM-DD'), 'YYYY-MM-DD')
+             -TO_DATE(TO_CHAR(SYSDATE, 'YYYY-MM-DD'), 'YYYY-MM-DD'))
+             END) AS REPAYMENT_DATE_DIFF,
+             DECODE(G.STATUS,NULL,'1',G.STATUS) AS REPAYMENT_STATUS,
+             H.PRO_RESOURCE AS MAKE_LOANS_RES,
+              (SELECT TO_CHAR(WM_CONCAT(CCB.CPY_NAME))
+                        FROM CUS_COM_BASE CCB
+                        WHERE CCB.STATUS = 1
+                        AND CCB.ACCT_ID = A.ACCT_ID
+                     ) AS CPY_NAME,
+                     G.NEW_REPAYMENT_DATE,
+                   HH.PARTNER_LOAN_DATE AS PARTNER_LOAN_DATE,
+                    J.PAY_DATE,
+                    BC.CERT_NUMBER,
+                    BC.CHINA_NAME
+             FROM  BIZ_PROJECT A 
+             left join BIZ_EXCEPTION_MONITOR BM ON BM.PROJECT_ID = A.PID
+             LEFT JOIN BIZ_PROJECT_PROPERTY B ON A.PID = B.PROJECT_ID
+             LEFT JOIN BUSINESS_SOURCE_V C ON A.PID = C.PID
+             LEFT JOIN BIZ_PRODUCT D ON A.PRODUCT_ID = D.PID
+             LEFT JOIN BIZ_PROJECT_FORECLOSURE E ON E.PROJECT_ID = A.PID
+             LEFT JOIN BIZ_PROJECT_GUARANTEE F ON A.PID = F.PROJECT_ID
+             LEFT JOIN BIZ_LOAN_REPAYMENT G ON A.PID = G.PROJECT_ID
+			LEFT JOIN V_HOUSE_NAME EH
+    		ON EH.PROJECT_ID = A.PID
+             LEFT JOIN FINANCE_MAKE_LOANS_RES_V H ON H.PROJECT_ID=A.PID
+             LEFT JOIN BIZ_PROJECT_PARTNER HH ON HH.PROJECT_ID = A.PID AND HH.LOAN_STATUS =4
+             LEFT JOIN BIZ_AFTER_EXCEPTION_REPORT MN ON MN.PROJECT_ID = A.PID
+             LEFT JOIN BIZ_LOAN_HANDLE_INFO K ON K.PROJECT_ID = A.PID
+             LEFT JOIN BIZ_LOAN_HOUSE_BALANCE J ON J.HANDLE_ID = K.PID 
+             LEFT JOIN ORG_COOPERAT_COMPANY_APPLY_INF BB ON A.BUSINESS_SOURCE_NO = BB.ORG_ID
+             LEFT JOIN (SELECT A.BUSINESS_SOURCE_NO,SUM(G.LOAN_MONEY) AS REINSURANCE_TOTAL_MONEY,COUNT(A.PID)
+             
+              AS REINSURANCE_TOTAL FROM BIZ_PROJECT A LEFT JOIN BIZ_LOAN_REPAYMENT R
+                                  ON A.PID = R.PROJECT_ID
+                                LEFT JOIN BIZ_LOAN_FINANCE_HANDLE FH
+                                  ON A.PID = FH.PROJECT_ID
+                          
+                                   LEFT JOIN BIZ_PROJECT_GUARANTEE G
+                                   ON A.PID = G.PROJECT_ID
+                               WHERE FH.STATUS = 3
+                               AND A.PROJECT_SOURCE  IN (2,3) 
+                                 AND (R.STATUS = 1 OR R.STATUS IS NULL)
+                                 GROUP BY A.BUSINESS_SOURCE_NO) CC
+                                 ON A.BUSINESS_SOURCE_NO = CC.BUSINESS_SOURCE_NO
+                 LEFT JOIN (SELECT B.CERT_NUMBER,B.CHINA_NAME,AA.PID AS project_id  FROM CUS_PERSON B
+                  LEFT JOIN BIZ_PROJECT AA ON AA.ACCT_ID = B.ACCT_ID 
+                  AND B.RELATION_TYPE =1)BC ON bc.project_id = A.PID                                   
+                 WHERE A.FORECLOSURE_STATUS IN(11,12,13)
+                   AND A.FORE_AFTER_MONITOR_STATUS IN(2,3)
+                   AND A.PROJECT_TYPE IN(2,6)
+                   AND (G.STATUS IS NULL OR G.STATUS=1)
+                   AND J.COUNT=1
+            <if test="projectId !=null and projectId > 0">
+                  AND A.PID = #{projectId}
+          </if>
+	</select>
+
+	<!-- 添加异常监控 -->
+	<insert id="addExceptionMonitorIndex"
+		parameterType="com.xlkfinance.bms.rpc.foreafterloan.ExceptionMonitorIndex">
+		<!-- 获取序列号 -->
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_EXCEPTION_MONITOR.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_EXCEPTION_MONITOR
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			PID,
+			<if test="exceptionId != null and exceptionId != -1 ">
+				EXCEPTION_ID,
+			</if>
+			<if test="projectId != null and projectId != -1 ">
+				PROJECT_ID,
+			</if>
+			<if test="monitorDate != null and monitorDate != '' ">
+				MONITOR_DATE,
+			</if>
+			<if test="monitorTitle != null and monitorTitle != '' ">
+				MONITOR_TITLE,
+			</if>
+			<if test="monitorContent != null and monitorContent != '' ">
+				MONITOR_CONTENT,
+			</if>
+			<if test="monitorResult != null and monitorResult != '' ">
+				MONITOR_RESULT,
+			</if>
+			<if test=" monitorOpinion !=null and monitorOpinion != '' ">
+				MONITOR_OPINION,
+			</if>
+			<if test="dangerLevel != null and dangerLevel != -1 ">
+				DANGER_LEVEL,
+			</if>
+			<if test="followStatus != null and followStatus != -1 ">
+				FOLLOW_STATUS,
+			</if>
+			<if test="nextMonitorDate != null and nextMonitorDate != '' ">
+				NEXT_MONITOR_DATE,
+			</if>
+			<if test="nextFollowId != null and nextFollowId != -1 ">
+				NEXT_FOLLOW_ID,
+			</if>
+			<if test="followId != null and followId != '' ">
+				FOLLOW_ID,
+			</if>
+			<if test="followName != null and followName != '' ">
+				FOLLOW_NAME,
+			</if>
+			<if test="createId != null and createId != -1 ">
+				NOTICE_WAY,
+			</if>
+			<if test=" remark!= null and remark != '' ">
+				REMARK,
+			</if>
+				CREATER_DATE,
+				UPDATE_DATE,
+			<if test="createId != null and createId != -1 ">
+				CREATE_ID,
+			</if>
+			<if test="updateId != null and updateDate != -1 ">
+				UPDATE_ID,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{pid},
+			<if test="exceptionId != null and exceptionId != -1 ">
+				#{exceptionId},
+			</if>
+			<if test="projectId != null and projectId != -1 ">
+				#{projectId},
+			</if>
+			<if test="monitorDate != null and monitorDate != '' ">
+				#{monitorDate,jdbcType=DATE,javaType=String},
+			</if>
+			<if test="monitorTitle != null and monitorTitle != '' ">
+				#{monitorTitle},
+			</if>
+			<if test="monitorContent != null and monitorContent != '' ">
+				#{monitorContent},
+			</if>
+			<if test="monitorResult != null and monitorResult != '' ">
+				#{monitorResult},
+			</if>
+			<if test=" monitorOpinion !=null and monitorOpinion != '' ">
+				#{monitorOpinion},
+			</if>
+			<if test="dangerLevel != null and dangerLevel != -1 ">
+				#{dangerLevel},
+			</if>
+			<if test="followStatus != null and followStatus != -1 ">
+				#{followStatus},
+			</if>
+			<if test="nextMonitorDate != null and nextMonitorDate != '' ">
+				#{nextMonitorDate,jdbcType=DATE,javaType=String},
+			</if>
+			<if test="nextFollowId != null and nextFollowId != -1 ">
+				#{nextFollowId},
+			</if>
+			<if test="followId != null and followId != '' ">
+				#{followId},
+			</if>
+			<if test=" remark!= null and remark != '' ">
+				#{remark},
+			</if>
+			<if test="followName != null and followName != '' ">
+				#{followName},
+			</if>
+			SYSDATE,
+				SYSDATE,
+			<if test="createId != null and createId != -1 ">
+				#{createId},
+			</if>
+			<if test="updateId != null and updateDate != -1 ">
+				#{updateId},
+			</if>
+		</trim>
+	</insert>
+	<!-- 异常业务监控(分页查询) -->
+	<select id="queryExceptionMonitorIndex" resultMap="exceptionTransitIndexMap"
+		parameterType="com.xlkfinance.bms.rpc.foreafterloan.ExceptionMonitorIndex">
+		<if test="page!=-1">
+			SELECT D.* FROM (SELECT T.*, ROWNUM RN
+			FROM (
+			SELECT
+			A.PID,
+			A.EXCEPTION_ID,
+			A.PROJECT_ID,
+			A.MONITOR_DATE,
+			A.MONITOR_TITLE,
+			A.MONITOR_CONTENT,
+			A.MONITOR_RESULT,
+			A.MONITOR_OPINION,
+			A.NEXT_MONITOR_DATE,
+			A.NEXT_FOLLOW_ID,
+			A.FOLLOW_ID,
+			A.FOLLOW_NAME,
+			A.NOTICE_WAY,
+			A.DANGER_LEVEL,
+			A.FOLLOW_STATUS
+			FROM BIZ_EXCEPTION_MONITOR A
+			<where>
+				<trim>
+					<if test="projectId != null and projectId != -1 ">
+						A.PROJECT_ID = #{projectId}
+					</if>
+				</trim>
+			</where>
+		</if>
+		<if test="page!=-1">
+	<![CDATA[
+	) T
+	WHERE ROWNUM <=#{page}*#{rows}
+	) D
+	WHERE D.RN > ((#{page}-1)*#{rows})
+	]]>
+		</if>
+	</select>
+	<!--异常监控总数 -->
+	<select id="getExceptionMonitorIndexTotal" resultType="Integer"
+		parameterType="com.xlkfinance.bms.rpc.foreafterloan.ExceptionMonitorIndex">
+	<![CDATA[
+	SELECT COUNT(1) FROM
+			( 
+		SELECT A.EXCEPTION_ID,
+       A.PROJECT_ID,
+       A.MONITOR_DATE,
+       A.MONITOR_TITLE,
+       A.MONITOR_CONTENT,
+       A.MONITOR_RESULT,
+       A.MONITOR_OPINION,
+       A.NEXT_MONITOR_DATE,
+       A.NEXT_FOLLOW_ID,
+       A.FOLLOW_ID,
+       A.NOTICE_WAY,
+       A.DANGER_LEVEL
+ 	 FROM BIZ_EXCEPTION_MONITOR A
+ 	 
+	]]>
+		<where>
+			<trim>
+				<if test="projectId != null and projectId != -1 ">
+					A.PROJECT_ID = #{projectId}
+				</if>
+			</trim>
+		</where>
+		) T
+	</select>
+
+	<!-- 添加申请报告表 -->
+	<insert id="addTransitApplyReportIndex"
+		parameterType="com.xlkfinance.bms.rpc.foreafterloan.TransitApplyReportIndex">
+		<!-- 获取序列号 -->
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_APPLY_REPORT.Nextval as PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_APPLY_REPORT
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			PID,
+			<if test="exceptionId != null and exceptionId != -1 ">
+				EXCEPTION_ID,
+			</if>
+			<if test="projectId != null and projectId != -1 ">
+				PROJECT_ID,
+			</if>
+			<if test="userId != null and userId != -1 ">
+				USER_ID,
+			</if>
+			<if test="reportDate != null and reportDate != '' ">
+				REPORT_DATE,
+			</if>
+			<if test="unAssureCondition != null and unAssureCondition != '' ">
+				UN_ASSURE_CONDITION,
+			</if>
+			<if test="houseProperyCondition != null and houseProperyCondition != '' ">
+				HOUSE_PROPERY_CONDITION,
+			</if>
+			<if test=" remark!= null and remark != '' ">
+				REMARK,
+			</if>
+			<if test="createDate != null and createDate != '' ">
+				CREATE_DATE,
+			</if>
+			<if test="createId != null and createId != -1 ">
+				CREATE_ID,
+			</if>
+			<if test="updateDate != null and updateDate != '' ">
+				UPDATE_DATE,
+			</if>
+			<if test="updateId != null and updateDate != -1 ">
+				UPDATE_ID,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{pid},
+			<if test="exceptionId != null and exceptionId != -1 ">
+				#{exceptionId},
+			</if>
+			<if test="projectId != null and projectId != -1 ">
+				#{projectId},
+			</if>
+			<if test="userId != null and userId != -1 ">
+				#{userId},
+			</if>
+			<if test="reportDate != null and reportDate != '' ">
+				#{reportDate},
+			</if>
+			<if test="unAssureCondition != null and unAssureCondition != '' ">
+				#{unAssureCondition},
+			</if>
+			<if test="houseProperyCondition != null and houseProperyCondition != '' ">
+				#{houseProperyCondition},
+			</if>
+			<if test="remark != null and remark != '' ">
+				#{remark},
+			</if>
+			<if test="createDate != null and createDate != '' ">
+				#{createDate},
+			</if>
+			<if test="createId != null and createId != -1 ">
+				#{createId},
+			</if>
+			<if test="updateDate != null and updateDate != '' ">
+				#{updateDate},
+			</if>
+			<if test="updateId != null and updateDate != -1 ">
+				#{updateId},
+			</if>
+		</trim>
+	</insert>
+	<!-- 根据Id查询申请报告表 -->
+	<select id="getById" resultMap="TransitApplyReportIndexMap"
+		parameterType="com.xlkfinance.bms.rpc.foreafterloan.TransitApplyReportIndex">
+		SELECT
+		DISTINCT A.PID,
+		A.EXCEPTION_ID,
+		A.PROJECT_ID,
+		A.USER_ID,
+		A.REPORT_DATE,
+		A.UN_ASSURE_CONDITION,
+		A.HOUSE_PROPERY_CONDITION,
+		A.USER_ID,
+		A.REMARK
+		FROM BIZ_APPLY_REPORT A
+		<where>
+			<trim>
+				<if test="projectId != null and projectId != -1 ">
+					A.PROJECT_ID = #{projectId}
+				</if>
+			</trim>
+		</where>
+	</select>
+
+	<!-- 根据Id查询诉讼列表 -->
+	<select id="getLegalListByReport" resultMap="LegalIndexMap"
+		parameterType="com.xlkfinance.bms.rpc.foreafterloan.LegalIndex">
+		SELECT A.PID,A.REPORT_ID,A.STATUS,A.LEGAL_CONTENT FROM
+		BIZ_AFTER_LOAN_LEGAL A
+		<where>
+			<trim>
+				<if test="reportId != null and reportId != -1 ">
+					A.REPORT_ID = #{reportId}
+				</if>
+			</trim>
+		</where>
+	</select>
+		<!-- 根据Id查询诉讼列表 -->
+	<select id="getExceptionMonitorIndexById" resultMap="exceptionTransitIndexMap"
+		parameterType="com.xlkfinance.bms.rpc.foreafterloan.ExceptionMonitorIndex">
+		SELECT
+			DISTINCT A.EXCEPTION_ID,
+			A.PROJECT_ID,
+			A.MONITOR_DATE,
+			A.MONITOR_TITLE,
+			A.MONITOR_CONTENT,
+			A.MONITOR_RESULT,
+			A.MONITOR_OPINION,
+			A.NEXT_MONITOR_DATE,
+			A.NEXT_FOLLOW_ID,
+			A.FOLLOW_ID,
+			A.FOLLOW_NAME,
+			A.NOTICE_WAY,
+			A.DANGER_LEVEL,
+			A.FOLLOW_STATUS
+			FROM BIZ_EXCEPTION_MONITOR A
+			<where>
+				<trim>
+					<if test="projectId != null and projectId != -1 ">
+						A.PROJECT_ID = #{projectId}
+					</if>
+				</trim>
+			</where>
+	</select>
+	
+	<!-- 更新申请报告表 -->
+	<update id="updateTransitApplyReportIndex"
+		parameterType="com.xlkfinance.bms.rpc.foreafterloan.TransitApplyReportIndex">
+		UPDATE BIZ_APPLY_REPORT
+		<trim prefix="set" suffixOverrides=",">
+			<if test="unAssureCondition != null and unAssureCondition != '' ">
+				UN_ASSURE_CONDITION = #{unAssureCondition},
+			</if>
+			<if test="houseProperyCondition != null and houseProperyCondition != '' ">
+				HOUSE_PROPERY_CONDITION = #{houseProperyCondition},
+			</if>
+			<if test="remark != null and remark != '' ">
+				REMARK = #{remark},
+			</if>
+		</trim>
+		WHERE PROJECT_ID = #{projectId}
+	</update>
+
+	<!-- 添加诉讼表 -->
+	<insert id="addLegalIndex" parameterType="com.xlkfinance.bms.rpc.foreafterloan.LegalIndex">
+		<!-- 获取序列号 -->
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="pid">
+			SELECT SEQ_AFTER_LOAN_LEGAL.Nextval AS PID from DUAL
+		</selectKey>
+		INSERT INTO BIZ_AFTER_LOAN_LEGAL
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			PID,
+			<if test="reportId != null and reportId != -1 ">
+				REPORT_ID,
+			</if>
+			<if test="status != null and status != -1 ">
+				STATUS,
+			</if>
+			<if test="legalContent != null and legalContent != ''">
+				LEGAL_CONTENT,
+			</if>
+			<if test="createDate != null and createDate != '' ">
+				CREATE_DATE,
+			</if>
+			<if test="createId != null and createId != -1 ">
+				CREATE_ID,
+			</if>
+			<if test="updateDate != null and updateDate != '' ">
+				UPDATE_DATE,
+			</if>
+			<if test="updateId != null and updateDate != -1 ">
+				UPDATE_ID
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{pid},
+			<if test="reportId != null and reportId != -1 ">
+				#{reportId},
+			</if>
+			<if test="status != null and status != -1 ">
+				#{status},
+			</if>
+			<if test="legalContent != null and legalContent != ''">
+				#{legalContent},
+			</if>
+			<if test="createDate != null and createDate != '' ">
+				#{createDate},
+			</if>
+			<if test="createId != null and createId != -1 ">
+				#{createId},
+			</if>
+			<if test="updateDate != null and updateDate != '' ">
+				#{updateDate},
+			</if>
+			<if test="updateId != null and updateDate != -1 ">
+				#{updateId}
+			</if>
+		</trim>
+	</insert>
+
+	<!-- 删除诉讼表根据Id -->
+	<delete id="deleteLegalIndexByIds" parameterType="java.util.List">
+		DELETE FROM BIZ_AFTER_LOAN_LEGAL WHERE PID IN
+		<foreach collection="list" item="item" index="index" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+
+	<!-- 修改诉讼表 -->
+	<update id="updateLegal" parameterType="com.xlkfinance.bms.rpc.foreafterloan.LegalIndex">
+		UPDATE BIZ_AFTER_LOAN_LEGAL
+		<trim prefix="set" suffixOverrides=",">
+			<if test="status != null and status != -1 ">
+				STATUS = #{status},
+			</if>
+			<if test="legalContent != null and legalContent != '' ">
+				LEGAL_CONTENT = #{legalContent}
+			</if>
+		</trim>
+		WHERE PID = #{pid}
+	</update>
+</mapper>

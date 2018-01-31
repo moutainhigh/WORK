@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <title></title>
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+    <!-- 基础文件 -->
+    <link rel="stylesheet" href="http://res.xinlikang.com/base/reset.css" />
+    <script src="http://res.xinlikang.com/l/seajs/sea.js"></script>
+    <script src="http://res.xinlikang.com/base/config.js"></script>
+
+    <!-- 项目样式文件 -->
+    <link rel="stylesheet" href="http://res.xinlikang.com/p/xlk/css/member.css" />
+</head>
+
+<body>
+    <div class="g_o">
+        <div class="content">
+            <div class="g_cf hd">
+                <h3 class="g_fl title">
+                    <strong>收货地址管理</strong>
+                </h3>
+                <div class="g_fr crumbs"><a href="">首页</a>&gt;<a href="">客户中心</a>&gt;收货地址管理</div>
+            </div>
+            <div class="address_manage pd10 bg_eee">
+                <div class="common_tb">
+                    <table cellpadding="0" cellspadding="0" border="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th>收货人</th>
+                                <th>详细地址</th>
+                                <th>银行电话/手机</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Mr Yang</td>
+                                <td>广东省清远市清城区123</td>
+                                <td>12312312312,0755-12345678</td>
+                                <td>默认|<a href="javascript:" class="modify">编辑</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Mr Yang</td>
+                                <td>广东省清远市清城区123</td>
+                                <td>12312312312,0755-12345678</td>
+                                <td><a href="javascript:" class="set_default">设置为默认</a>|<a href="javascript:" class="del">删除</a>|<a href="javascript:" class="modify">编辑</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Mr Yang</td>
+                                <td>广东省清远市清城区123</td>
+                                <td>12312312312,0755-12345678</td>
+                                <td><a href="javascript:" class="set_default">设置为默认</a>|<a href="javascript:" class="del">删除</a>|<a href="javascript:" class="modify">编辑</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+            <div class="add_address">
+                <form class="form_bd">
+                    <ul>
+                        <li class="g_cf">
+                            <div class="key"><span class="star">*</span>收货人姓名：</div>
+                            <div class="value">
+                                <input type="text" class="txt">
+                            </div>
+                        </li>
+                        <li class="g_cf">
+                            <div class="key"><span class="star">*</span>地区选择：</div>
+                            <div class="value">
+                                <select id="province">
+                                        <option value="0">请选择</option>
+                                        <option value="360000">江西省</option>
+                                        <option value="370000">山东省</option>
+                                        <option value="150000">内蒙古自治区</option>
+                                        <option value="210000">辽宁省</option>
+                                        <option value="140000">山西省</option>
+                                        <option value="110000">北京</option>
+                                        <option value="120000">天津</option>
+                                        <option value="130000">河北省</option>
+                                        <option value="220000">吉林省</option>
+                                        <option value="230000">黑龙江省</option>
+                                        <option value="310000">上海</option>
+                                        <option value="320000">江苏省</option>
+                                        <option value="330000">浙江省</option>
+                                        <option value="340000">安徽省</option>
+                                        <option value="350000">福建省</option>
+                                        <option value="540000">西藏自治区</option>
+                                        <option value="610000">陕西省</option>
+                                        <option value="620000">甘肃省</option>
+                                        <option value="630000">青海省</option>
+                                        <option value="640000">宁夏回族自治区</option>
+                                        <option value="650000">新疆维吾尔自治区</option>
+                                        <option value="710000">台湾省</option>
+                                        <option value="810000">香港特别行政区</option>
+                                        <option value="820000">澳门特别行政区</option>
+                                        <option value="990000">海外</option>
+                                        <option value="410000">河南省</option>
+                                        <option value="420000">湖北省</option>
+                                        <option value="430000">湖南省</option>
+                                        <option value="440000">广东省</option>
+                                        <option value="450000">广西壮族自治区</option>
+                                        <option value="460000">海南省</option>
+                                        <option value="500000">重庆</option>
+                                        <option value="510000">四川省</option>
+                                        <option value="520000">贵州省</option>
+                                        <option value="530000">云南省</option>
+                                </select>
+                                <select id="city">
+                                    <option value="0">请选择</option>
+                                </select>
+                                <select id="area">
+                                    <option value="0">请选择</option>
+                                </select>
+                            </div>
+                        </li>
+                        <li class="g_cf">
+                            <div class="key"><span class="star">*</span>详细地址：</div>
+                            <div class="value"><textarea name="" id="" cols="40" rows="5"></textarea></div>
+                        </li>
+                        <li class="g_cf">
+                            <div class="key"><span class="star">*</span>收货人手机：</div>
+                            <div class="value"><input type="text" class="txt"></div>
+                        </li>
+                        <li class="g_cf">
+                            <div class="key"><span class="star">*</span>收货人电话：</div>
+                            <div class="value"><input type="text" class="txt"></div>
+                        </li>
+                        <li class="g_cf">
+                            <div class="key"></div>
+                            <div class="value"><input type="checkbox">设置为默认sdf</div>
+                        </li>
+                        <li class="g_cf ">
+                            <div class="key"></div>
+                            <div class="value "><input type="submit" value="提交" class="btn"></div>
+                        </li>
+                    </ul>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- 项目js文件 -->
+    <script>seajs.use('http://res.xinlikang.com/p/xlk/js/mem_address.js');</script>
+</body>
+
+</html>

@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <title></title>
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+    <!-- 基础文件 -->
+    <link rel="stylesheet" href="http://res.xinlikang.com/base/reset.css" />
+    <script src="http://res.xinlikang.com/l/seajs/sea.js"></script>
+    <script src="http://res.xinlikang.com/base/config.js"></script>
+
+    <!-- 项目样式文件 -->
+    <link rel="stylesheet" href="http://res.xinlikang.com/p/xlk/css/sub.css" />
+</head>
+
+<body>
+    <div class="g_o content">
+        <div class="g_cf hd">
+            <h3 class="g_fl title">
+                <strong>出口下单</strong>
+            </h3>
+            <div class="g_fr crumbs"><a href="">首页</a>&gt;<a href="">我的订单</a>&gt;出口下单</div>
+        </div>
+
+        <div class="export_order">
+            <form action="" class="form_bd">
+                <ul class="f_import">
+                    <li class="f_title">出口订单</li>
+                    <li class="g_cf">
+                        <div class="key">
+                            <span class="star">*</span>报关类型：</div>
+                        <div class="value">
+                            <input name="" type="radio">香港清关
+                            <input name="" type="radio">机场清关
+                            <input name="" type="radio">福田保税
+                            <input name="" type="radio">盐田保税
+                            <input name="" type="radio">前海湾保税
+                            <input name="" type="radio">口岸清关
+                        </div>
+                    </li>
+                    <li class="g_cf">
+                        <div class="key">
+                            <span class="star">*</span>代理方式：</div>
+                        <div class="value">
+                            <input name="" type="radio">现结出口
+                            <input name="" type="radio">账期出口
+                        </div>
+                    </li>
+                    <li class="g_cf">
+                        <div class="key">
+                            <span class="star">*</span>目的口岸：</div>
+                        <div class="value">
+                            <input name="" type="radio">香港
+                            <input name="" type="radio">直接出口其他国家 <input type="text" class="txt line_input bg_white">
+                        </div>
+                    </li>
+                    <li class="g_cf">
+                        <div class="key">客户合同号：</div>
+                        <div class="value">
+                            <input name="" type="text" class="txt">
+                        </div>
+                    </li>
+                    <li class="g_cf">
+                        <div class="key">签收单：</div>
+                        <div class="value">
+                            <input name="" type="radio">是 <input name="" type="radio">否
+                        </div>
+                    </li>   
+                </ul>
+                <ul class="f_supplier">
+                    <li class="f_title">供应商</li>
+                    <li class="g_cf">
+                        <div class="key">
+                            <span class="star">*</span>名称：</div>
+                        <div class="value">
+                            <input name="" type="text" class="txt">
+                        </div>
+                    </li>
+                    <li class="g_cf">
+                        <div class="key">联系人：</div>
+                        <div class="value">
+                            <input name="" type="text" class="txt">
+                        </div>
+                    </li>
+                    <li class="g_cf">
+                        <div class="key">联系电话：</div>
+                        <div class="value">
+                            <input name="" type="text" class="txt">
+                        </div>
+                    </li>
+                    <li class="g_cf">
+                        <div class="key">手机：</div>
+                        <div class="value">
+                            <input name="" type="text" class="txt">
+                        </div>
+                    </li>
+                </ul>
+                <ul class="f_prodetail" id="export_prodetail">
+                    <li class="f_title">产品明细</li>
+                    <li class="g_cf">
+                        <div class="common_tb pro_list_tb">
+                            <table cellpadding="0" cellspadding="0" border="0" width="100%">
+                                <thead>
+                                <tr>
+                                    <th>品名</th>
+                                    <th>型号</th>
+                                    <th>品牌</th>
+                                    <th>产地</th>
+                                    <th>数量</th>
+                                    <th>单价</th>
+                                    <th>币别</th>
+                                    <th>箱数</th>
+                                    <th>毛重</th>
+                                    <th>净重</th>
+                                    <th>唛头</th>
+                                    <th>配件</th>
+                                    <th>功能</th>
+                                    <th>备注</th>
+                                    <th>操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>品名</td>
+                                        <td>型号</td>
+                                        <td>品牌</td>
+                                        <td>产地</td>
+                                        <td>数量</td>
+                                        <td>单价</td>
+                                        <td>币别</td>
+                                        <td>箱数</td>
+                                        <td>毛重</td>
+                                        <td>净重</td>
+                                        <td>唛头</td>
+                                        <td>配件</td>
+                                        <td>功能</td>
+                                        <td>备注</td>
+                                        <td><a href="javascript:" class="pro_modify">修改</a> | <a href="javascript:" class="pro_del">删除</a></td>
+                                    </tr>
+                                </tbdoy>
+                            </table>
+                        </div>
+                    </li>
+                    <li class="g_cf">
+                        <div class="key">
+                            <span class="star">*</span>品名：</div>
+                        <div class="value">
+                            <input name="" type="text" class="txt">
+                        </div>
+                    </li>
+                    <li class="g_cf">
+                        <div class="key">
+                            <span class="star">*</span>型号：</div>
+                        <div class="value">
+                            <input name="" type="text" class="txt">
+                        </div>
+                    </li>
+                    <li class="g_cf">
+                        <div class="key">品牌：</div>
+                        <div class="value">
+                            <input name="" type="text" class="txt">
+                        </div>
+                    </li>
+                    <li class="g_cf">
+                        <div class="key">产地：</div>
+                        <div class="value">
+                            <input name="" type="text" class="txt">
+                        </div>
+                    </li>
+                    <li class="g_cf">
+                        <div class="key">
+                            <span class="star">*</span>数量：</div>
+                        <div class="value">
+                            <input name="" type="text" class="txt">
+                        </div>
+                    </li>
+                    <li class="g_cf">
+                        <div class="key">
+                            <span class="star">*</span>单价：</div>
+                        <div class="value">
+                            <input name="" type="text" class="txt">
+                        </div>
+                    </li>
+                    <li class="g_cf">
+                        <div class="key">币别：</div>
+                        <div class="value">
+                            <select class="select" name="">
+                                <option value="1">人民币</option>
+                                <option value="2">美元</option>
+                                <option value="3">港币</option>
+                            </select>
+                        </div>
+                    </li>
+                    <li class="g_cf">
+                        <div class="key">箱数：</div>
+                        <div class="value">
+                            <input name="" type="text" class="txt">
+                        </div>
+                    </li>
+                    <li class="g_cf">
+                        <div class="key">毛重：</div>
+                        <div class="value">
+                            <input name="" type="text" class="txt">
+                        </div>
+                    </li>
+                    <li class="g_cf">
+                        <div class="key">净重：</div>
+                        <div class="value">
+                            <input name="" type="text" class="txt">
+                        </div>
+                    </li>
+                    <li class="g_cf">
+                        <div class="key">唛头：</div>
+                        <div class="value">
+                            <input name="" type="text" class="txt">
+                        </div>
+                    </li>
+                    <li class="g_cf">
+                        <div class="key">配件：</div>
+                        <div class="value">
+                            <input name="" type="text" class="txt">
+                        </div>
+                    </li>
+                    <li class="g_cf">
+                        <div class="key">功能：</div>
+                        <div class="value">
+                            <input name="" type="text" class="txt">
+                        </div>
+                    </li>
+                    <li class="g_cf">
+                        <div class="key">备注：</div>
+                        <div class="value">
+                            <textarea name="" id="" cols="60" rows="5"></textarea>
+                        </div>
+                    </li>
+                    
+                    <li class="g_cf">
+                        <div class="key"></div>
+                        <div class="value">
+                            <span class="f_tips">注意：如在报关前型号、数量变更，商务将联系贵司，并于我司系统修改后实物报关。</span>
+                        </div>
+                    </li>
+                    <li class="g_cf">
+                        <div class="key"></div>
+                        <div class="value">
+                            <input type="button" class="add_pro" value="保存">
+                        </div>
+                    </li>
+                </ul>
+                <ul class="f_t_delivery">
+                    <li class="f_title">提货方式</li>
+                    <li class="g_cf">
+                        <div class="key"></div>
+                        <div class="value">
+                            <input type="radio">客户自送</div>
+                    </li>
+                    <li class="g_cf">
+                        <div class="key"></div>
+                        <div class="value">
+                            <input type="radio">注册地提货</div>
+                    </li>
+                    <li class="g_cf">
+                        <div class="key"></div>
+                        <div class="value">
+                            <input type="radio">加工厂提货</div>
+                    </li>
+                </ul>
+                <ul class="f_hk_delivery">
+                    <li class="f_title">香港交货方式</li>
+                    <li class="g_cf">
+                        <div class="key"></div>
+                        <div class="value">
+                            <input type="radio" value>华科配送</div>
+                    </li>
+                    <li class="g_cf">
+                        <div class="key"></div>
+                        <div class="value">
+                            <input type="radio">货代自提（提前预约）</div>
+                    </li>
+                    <li class="g_cf">
+                        <div class="key"></div>
+                        <div class="value">
+                            <input type="radio">暂存华科（提前预约申请）
+                        </div>
+                    </li>
+                </ul>
+                <ul class="f_transport">
+                    <li class="f_title">深圳运输方式</li>
+                    <li class="g_cf">
+                        <div class="key"></div>
+                        <div class="value">
+                            <input type="radio" value>散货拼车
+                            <ol class="hide_item">
+                                <li class="g_cf">
+                                    <div class="subkey"></div>
+                                    <div class="subvalue">
+                                        <input type="radio"> 9：00
+                                        <input type="radio"> 11：00 
+                                        <input type="radio"> 14：00
+                                        <input type="radio"> 16：00
+                                        <input type="radio"> 18：00
+                                    </div>
+                                </li>
+                                <li class="g_cf">
+                                    <div class="subkey"></div>
+                                    <div class="subvalue">
+                                        <span class="f_tips">（客户需注明发货时间）下单时间</span>
+                                    </div>
+                                </li>
+                            </ol>
+                        </div>
+                    </li>
+                    <li class="g_cf">
+                        <div class="key"></div>
+                        <div class="value">
+                            <input type="radio">包车
+                            <ol class="hide_item">
+                                <li class="g_cf">
+                                    <div class="subkey"></div>
+                                    <div class="subvalue">
+                                        <input type="radio"> 吨车
+                                    </div>
+                                </li>
+                                <li class="g_cf">
+                                    <div class="subkey"></div>
+                                    <div class="subvalue">
+                                        <span class="f_tips">①订单总金额 &gt;= USD20万；或板数 &gt;= 8板，车费我司承担   ②客户自行承担车费，不限卡板和金额
+                                        </span>
+                                    </div>
+                                </li>
+                                <li class="g_cf">
+                                    <div class="subkey"></div>
+                                    <div class="subvalue">
+                                        <input type="radio"> 香港柜车
+                                    </div>
+                                </li>
+                                <li class="g_cf">
+                                    <div class="subkey"></div>
+                                    <div class="subvalue">
+                                        <span class="f_tips">订单总金额 &gt;= USD20万，车费我司承担；否则客户承担</span>
+                                    </div>
+                                </li>
+                                <li class="g_cf">
+                                    <div class="subkey"></div>
+                                    <div class="subvalue">
+                                        <input type="radio"> 深圳柜车
+                                    </div>
+                                </li>
+                                <li class="g_cf">
+                                    <div class="subkey"></div>
+                                    <div class="subvalue">
+                                        <span class="f_tips">订单总金额 &gt;= USD10万，车费我司承担；否则客户承担</span>
+                                    </div>
+                                </li>
+                                <li class="g_cf">
+                                    <div class="subkey"></div>
+                                    <div class="subvalue">
+                                        <input type="radio"> 深圳交仓
+                                    </div>
+                                </li>
+                                <li class="g_cf">
+                                    <div class="subkey"></div>
+                                    <div class="subvalue">
+                                        <span class="f_tips">车辆无限制</span>
+                                    </div>
+                                </li>
+                            </ol>
+                        </div>
+                    </li>
+                </ul>
+                <ul class="f_payment">
+                    <li class="f_title">货款支付</li>
+                    <li class="g_cf">
+                        <div class="key"></div>
+                        <div class="value">
+                            <input type="radio">结汇
+                        </div>
+                    </li>
+                    <li class="g_cf">
+                        <div class="key"></div>
+                        <div class="value">
+                            <input type="radio">预结汇
+                        </div>
+                    </li>
+                    <li class="g_cf">
+                        <div class="key"></div>
+                        <div class="value">
+                            <input type="radio" value>信用证</div>
+                    </li>
+                </ul>
+                <ul class="f_others">
+                    <li class="f_title">其他说明</li>
+                    <li class="g_cf">
+                        <div class="key"></div>
+                        <div class="value">
+                            <textarea name="" id="" cols="50" rows="5"></textarea>
+                        </div>
+                    </li>
+                    <li class="g_cf">
+                        <div class="key"></div>
+                        <div class="value"><input type="submit" value="提交"></div>
+                    </li>
+                </ul>                
+            </form>
+        </div>
+    </div>
+    <!-- 项目js文件 -->
+    <script>
+    seajs.use('http://res.xinlikang.com/p/xlk/js/export_order.js');
+    </script>
+</body>
+
+</html>
